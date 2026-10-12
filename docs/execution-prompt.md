@@ -44,12 +44,11 @@ AI HD textures/audio). Planning and core decisions are done; implement one phase
 - Line numbers in the docs are for ioRTCW commit 438e7d4 and will drift. Always grep before you edit.
   If the code doesn't match what a doc says, stop and tell the user. Don't improvise around it.
 - Two git repos:
-  - The outer repo (this folder, branch `main`) holds docs, scripts, container files, mod/,
-    and patches/.
-  - iortcw/ is a clone of https://github.com/illescasDaniel/iortcw (branch `codmod`, based on
+  - The outer repo (this folder, branch `main`) holds docs, scripts, container files, and mod/.
+  - iortcw/ is a clone of https://github.com/illescasDaniel/iortcw (branch `main`, based on
     upstream 438e7d4). All engine and game code commits go there.
   Make small commits prefixed by phase (e.g. "P2: time-based sprint stamina"). After each phase,
-  run scripts/export-patches.sh and commit the patches backup in the outer repo. Never push. Never open PRs.
+  commit in both repos as needed. Never push. Never open PRs.
 - Build on the host by default (it's verified to work with GCC 16). The podman container is optional.
   Docker isn't installed.
 - The user's shell is fish. Scripts are bash files with a `#!/usr/bin/env bash` shebang.

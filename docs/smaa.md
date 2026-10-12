@@ -118,7 +118,7 @@ Note GPU idle (earlier noisy numbers came from background GPU work). Take refere
   with MSAA 2 + SMAA on.
 
 ### 9. Wrap-up
-- `scripts/export-patches.sh` so the engine patch is kept. Update `docs/performance.md`, `memory/progress.md`,
+- Update `docs/performance.md`, `memory/progress.md`,
   `memory/decisions.md` (+ jevmem fact): "SMAA 1x High replaces MSAA 2x as default; reasons + numbers".
 
 ## Alternatives considered

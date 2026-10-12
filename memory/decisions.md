@@ -11,6 +11,12 @@ Append-only log, newest first. Never rewrite history: if a decision is reversed,
 - **Rationale:** <why, and what we rejected>
 -->
 
+## 2026-10-12: Remove `patches/` and `export-patches.sh`
+
+- **Context:** The fork's `main` carries the full engine history, so the format-patch mirror was redundant.
+- **Decision:** Deleted `patches/` and `scripts/export-patches.sh`; docs updated. Older entries below mention them as history.
+- **Rationale:** One source of truth (the fork); the series was only a backup and added churn to every engine commit.
+
 ## 2026-10-12: Fork default branch is `main`; `codmod` and patches branches deleted
 
 - **Context:** After merging fork PR #2 into `master`, `codmod` (ancestor, identical tree) and `cursor/codmod-patches-0f47` (identical tree, bot history) were redundant.

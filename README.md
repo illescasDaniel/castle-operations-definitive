@@ -219,8 +219,7 @@ stay English. Nothing from them is included in this repo. Real translation suppo
 ## Development
 
 Contributor docs start at [`docs/plan.md`](docs/plan.md). Engine changes live in the
-[iortcw fork](https://github.com/illescasDaniel/iortcw) (`main` branch). `patches/` is a
-`format-patch` backup (`scripts/export-patches.sh` regenerates it from `iortcw/`); menus are edited as
+[iortcw fork](https://github.com/illescasDaniel/iortcw) (`main` branch); menus are edited as
 described in [`docs/menus.md`](docs/menus.md).
 
 ### AI-assistant files (optional, can be disabled)
@@ -245,7 +244,6 @@ rtcw-cod/
 ├── tools/hd-textures/    # local AI upscale pipeline (uv); outputs git-ignored
 ├── tools/hd-audio/       # local AI audio remaster (uv); outputs git-ignored
 ├── mod/codmod/           # configs, menu deltas, small original pk3s (not compiled)
-├── patches/              # format-patch backup of the fork's codmod commits
 ├── iortcw/               # clone of illescasDaniel/iortcw (git-ignored; own repo)
 └── run/                  # runtime tree (git-ignored)
 ```
@@ -266,7 +264,7 @@ flags may still change. Design notes and history: [`docs/plan.md`](docs/plan.md)
 - AI-upscaled textures and AI-improved audio are derived from the original game assets, so the **generated packs are not
   distributed**. The tools in `tools/` produce them on your machine. Check the licenses of the models they download
   (Real-ESRGAN, AudioSR).
-- Engine and game-code changes (the [iortcw fork](https://github.com/illescasDaniel/iortcw) `main` branch, also
-  mirrored in `patches/`) and the scripts in this repository are released under the **GNU GPL v3 with ioRTCW's
+- Engine and game-code changes (the [iortcw fork](https://github.com/illescasDaniel/iortcw) `main` branch)
+  and the scripts in this repository are released under the **GNU GPL v3 with ioRTCW's
   additional terms**, see [`LICENSE`](LICENSE). The engine is derived from the id Software RTCW source release and ioRTCW.
 - Third-party code and ideas (SMAA, Enemy Territory: Legacy prone, OpenAL Soft, ...) are credited in [`docs/credits.md`](docs/credits.md).

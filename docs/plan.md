@@ -73,13 +73,11 @@ rtcw-cod/                         ← this folder; its own git repo (docs, scrip
 │   ├── build.sh                  ← build (host by default, --container for podman)
 │   ├── install.sh                ← copy built binaries into run/ (main + codmod)
 │   ├── run.sh                    ← launch the game (vanilla or codmod, extra args passed through)
-│   └── export-patches.sh         ← git format-patch codmod branch → patches/
 ├── container/
 │   ├── Containerfile             ← optional reproducible build image
 │   └── compose.yaml              ← podman-compose service "builder"
 ├── mod/codmod/                   ← mod files that are NOT compiled (cfg, later pk3 contents)
 │   └── codmod.cfg                ← default binds and cvars for the mod
-├── patches/                      ← format-patch backup of fork codmod commits (not applied by setup)
 ├── iortcw/                       ← clone of illescasDaniel/iortcw (branch "codmod"); git-ignored by the outer repo
 └── run/                          ← runtime tree (git-ignored)
     ├── iowolfsp.x86_64           ← copied from the build
@@ -93,7 +91,7 @@ rtcw-cod/                         ← this folder; its own git repo (docs, scrip
 
 - ioRTCW upstream base: `438e7d413b5f7277187c35b032eb0ef9093ae778` (2024-05-26). The
   `main` branch on [illescasDaniel/iortcw](https://github.com/illescasDaniel/iortcw) is built
-  from that pin; `setup.sh` clones the fork's `main` branch (patches already applied).
+  from that pin; `setup.sh` clones the fork's `main` branch (engine changes already in the fork).
 - `make -j32 release` in `iortcw/SP` **builds cleanly on the host** (CachyOS, GCC 16.2.1),
   with no extra packages: it uses bundled headers and libs and links at runtime against the host's
   `sdl2-compat`, `openal`, and `libglvnd`. Output lands in

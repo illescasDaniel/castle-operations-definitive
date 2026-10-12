@@ -29,9 +29,8 @@
 git clone --branch main --single-branch https://github.com/illescasDaniel/iortcw.git iortcw
 ```
 All engine and game changes live on the fork's `main` branch (based on upstream
-`438e7d413b5f7277187c35b032eb0ef9093ae778`). `scripts/export-patches.sh` still runs
-`git -C iortcw format-patch 438e7d4..main -o patches/` so the outer repo keeps a backup;
-`setup.sh` no longer applies that series.
+`438e7d413b5f7277187c35b032eb0ef9093ae778`). The old `patches/` series and
+`export-patches.sh` were removed; the fork's git history is the source of truth.
 
 ### 1.3 `scripts/setup.sh` (idempotent)
 1. Clone ioRTCW if `iortcw/` is missing (as in 1.2).

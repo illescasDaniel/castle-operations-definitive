@@ -6,7 +6,7 @@ _Last updated: 2026-10-12_
 
 ## Current focus
 
-Wire castle-operations-definitive to [illescasDaniel/iortcw](https://github.com/illescasDaniel/iortcw) (`codmod` branch) so `setup.sh` no longer `git am`s `patches/`. Companion engine PR: https://github.com/illescasDaniel/iortcw/pull/1
+Wire castle-operations-definitive to [illescasDaniel/iortcw](https://github.com/illescasDaniel/iortcw) (`codmod` branch) so `setup.sh` no longer `git am`s `patches/`. Companion engine PR: https://github.com/illescasDaniel/iortcw/pull/2 (clean branch; #1 closed — red staging Actions only).
 
 ## Blockers
 

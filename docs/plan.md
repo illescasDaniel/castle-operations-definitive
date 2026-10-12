@@ -40,7 +40,7 @@ ioRTCW fork and in a separate `fs_game` mod folder named **`codmod`**.
 5. **Everything tunable.** Hard numbers go behind `cod_*` cvars (see
    [architecture.md §5](architecture.md#5-tuning-cvars-cod_)) so the user can tune feel in-game
    without recompiling. Defaults come from [reference-values.md](reference-values.md).
-6. **Small, reviewable commits** on the `codmod` branch of the ioRTCW clone, one logical
+6. **Small, reviewable commits** on the `main` branch of the ioRTCW fork clone (`iortcw/`), one logical
    change per commit, prefixed by phase (e.g. `P2: CoD4 speed scales for player`).
 7. No pushing to any remote, no PRs, unless the user asks.
 8. The tools named in the original brief ("universal-modder toolset", "rea") **do not exist

@@ -4,7 +4,7 @@
 **Read first:** [architecture.md](architecture.md) (especially the golden rules) and
 [reference-values.md](reference-values.md).
 
-Work in this order. Each step is one or more commits on `iortcw`'s `codmod` branch. Build
+Work in this order. Each step is one or more commits on the `iortcw` fork's `main` branch. Build
 with `scripts/build.sh --game-only && scripts/install.sh` (engine untouched in this phase).
 
 ---

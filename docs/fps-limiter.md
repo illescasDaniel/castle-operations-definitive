@@ -4,7 +4,7 @@ Goal: a frametime graph that is a **flat line** at the cap (e.g. 6.944 ms for 14
 like MangoHud `fps_limit_method=early` / RTSS / Special K, but done inside ioRTCW so it
 can also fix what an external limiter cannot: the **game's own time step**.
 
-Status: **implemented 2026-10-12** (uncommitted, awaiting user review). Engine work lives in `iortcw/` (`codmod` branch).
+Status: **implemented 2026-10-12** (committed). Engine work lives in `iortcw/` (`main` branch of the fork).
 See "Implementation notes" at the end for what shipped and where it differs from the plan.
 
 ## 1. Why the current cap is not flat

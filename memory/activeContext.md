@@ -56,3 +56,6 @@ Done and playtested by user ("sounds AMAZING"). `s_alHRTF` On/Off (default On; a
 
 ## Fork switch (2026-10-12)
 `iortcw/` origin is now https://github.com/illescasDaniel/iortcw (old origin renamed `upstream`); `setup.sh` clones the fork's `codmod`, no `git am`. Fork branches `codmod` and `cursor/codmod-engine-0f47` (PR #2) were force-pushed with the real 65-commit history (local tag `codmod-pre-fork-backup`). `patches/` has since been removed (see decisions.md). HD pk3s stay in `run/codmod/` (checksums verified unchanged after setup/build/install). Next: user playtest (HUD, ESC, HD assets), review/merge fork PR #2, then this PR; `../iortcw` (sibling clone) is redundant.
+
+## Verification (2026-10-12)
+setup.sh verified in place and from a fresh clone (clones fork `main`, no patches); fresh-clone and in-place builds + install OK; AGENTS.md/README/docs updated for fork-only engine flow; `patches/` removed. Fork now has only `main`.

@@ -69,7 +69,7 @@ ioRTCW fork and in a separate `fs_game` mod folder named **`codmod`**.
 rtcw-cod/                         ← this folder; its own git repo (docs, scripts, mod files)
 ├── docs/                         ← these planning docs
 ├── scripts/
-│   ├── setup.sh                  ← clone ioRTCW, create run/ tree and symlinks (idempotent)
+│   ├── setup.sh                  ← clone illescasDaniel/iortcw (codmod), create run/ tree (idempotent)
 │   ├── build.sh                  ← build (host by default, --container for podman)
 │   ├── install.sh                ← copy built binaries into run/ (main + codmod)
 │   ├── run.sh                    ← launch the game (vanilla or codmod, extra args passed through)
@@ -79,8 +79,8 @@ rtcw-cod/                         ← this folder; its own git repo (docs, scrip
 │   └── compose.yaml              ← podman-compose service "builder"
 ├── mod/codmod/                   ← mod files that are NOT compiled (cfg, later pk3 contents)
 │   └── codmod.cfg                ← default binds and cvars for the mod
-├── patches/                      ← exported patch series (backup of our engine/game changes)
-├── iortcw/                       ← upstream clone (own git repo, branch "codmod"); git-ignored by the outer repo
+├── patches/                      ← format-patch backup of fork codmod commits (not applied by setup)
+├── iortcw/                       ← clone of illescasDaniel/iortcw (branch "codmod"); git-ignored by the outer repo
 └── run/                          ← runtime tree (git-ignored)
     ├── iowolfsp.x86_64           ← copied from the build
     ├── renderer_sp_*_x86_64.so
@@ -91,8 +91,9 @@ rtcw-cod/                         ← this folder; its own git repo (docs, scrip
 
 ## 5. Key facts already verified (2026-10-08)
 
-- ioRTCW upstream HEAD: `438e7d413b5f7277187c35b032eb0ef9093ae778` (2024-05-26). **Pin this
-  commit** as the base of the `codmod` branch.
+- ioRTCW upstream base: `438e7d413b5f7277187c35b032eb0ef9093ae778` (2024-05-26). The
+  `codmod` branch on [illescasDaniel/iortcw](https://github.com/illescasDaniel/iortcw) is built
+  from that pin; `setup.sh` clones the fork's `codmod` branch (patches already applied).
 - `make -j32 release` in `iortcw/SP` **builds cleanly on the host** (CachyOS, GCC 16.2.1),
   with no extra packages: it uses bundled headers and libs and links at runtime against the host's
   `sdl2-compat`, `openal`, and `libglvnd`. Output lands in

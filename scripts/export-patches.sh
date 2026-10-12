@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 # Export iortcw/codmod commits as a patch series into patches/ (outer-repo backup).
+# setup.sh no longer applies these — the engine fork already has them on branch codmod —
+# but keeping the series makes the outer repo self-describing without cloning the fork.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-BASE="${IORTCW_COMMIT:-438e7d413b5f7277187c35b032eb0ef9093ae778}"
+BASE="${IORTCW_UPSTREAM_COMMIT:-${IORTCW_COMMIT:-438e7d413b5f7277187c35b032eb0ef9093ae778}}"
 OUT="$ROOT/patches"
 
 if [[ ! -d "$ROOT/iortcw/.git" ]]; then

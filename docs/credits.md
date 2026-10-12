@@ -17,7 +17,8 @@ Paper: J. Jimenez et al., "SMAA: Enhanced Subpixel Morphological Antialiasing", 
 
 ## ioRTCW and the RTCW source
 
-The engine and game code are derived from [ioRTCW](https://github.com/iortcw/iortcw) (GPLv3 with additional terms) and
+The engine and game code are derived from [ioRTCW](https://github.com/iortcw/iortcw) via our fork
+[illescasDaniel/iortcw](https://github.com/illescasDaniel/iortcw) (GPLv3 with additional terms) and
 the Return to Castle Wolfenstein source released by id Software. See `LICENSE`.
 
 ## Enemy Territory: Legacy

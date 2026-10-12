@@ -1,7 +1,8 @@
 # Castle Operations Definitive
 
 **Castle Operations Definitive** (`codmod`) is a single-player remaster of **Return to Castle Wolfenstein**, built on
-the [ioRTCW](https://github.com/iortcw/iortcw) source port. It plays like a modern shooter and looks and sounds
+the [ioRTCW](https://github.com/iortcw/iortcw) source port (engine fork:
+[illescasDaniel/iortcw](https://github.com/illescasDaniel/iortcw)). It plays like a modern shooter and looks and sounds
 better, while the campaign stays RTCW.
 
 > **Status: early development (pre-release).** This is the first public snapshot, not a final release. Things will
@@ -76,7 +77,7 @@ From the repo root:
 
 What that does:
 
-1. **`setup.sh`** — clones ioRTCW into `iortcw/` (branch `codmod`), applies the `patches/` series, creates `run/`, symlinks Steam SP paks into `run/main/`, links mod configs into `run/codmod/`.
+1. **`setup.sh`** — clones our [ioRTCW fork](https://github.com/illescasDaniel/iortcw) into `iortcw/` (branch `codmod`, patches already applied), creates `run/`, symlinks Steam SP paks into `run/main/`, links mod configs into `run/codmod/`.
 2. **`build.sh`** — builds ioRTCW SP on the host.
 3. **`install.sh --vanilla`** — copies the engine into `run/` and game modules into both `run/codmod/` and `run/main/` (vanilla kept for A/B). Later rebuilds usually use `./scripts/install.sh` (codmod only).
 
@@ -217,9 +218,10 @@ stay English. Nothing from them is included in this repo. Real translation suppo
 
 ## Development
 
-Contributor docs start at [`docs/plan.md`](docs/plan.md). Engine changes live as a patch series in `patches/`
-(`scripts/export-patches.sh` regenerates it from the `iortcw/` clone); menus are edited as described in
-[`docs/menus.md`](docs/menus.md).
+Contributor docs start at [`docs/plan.md`](docs/plan.md). Engine changes live in the
+[iortcw fork](https://github.com/illescasDaniel/iortcw) (`codmod` branch). `patches/` is a
+`format-patch` backup (`scripts/export-patches.sh` regenerates it from `iortcw/`); menus are edited as
+described in [`docs/menus.md`](docs/menus.md).
 
 ### AI-assistant files (optional, can be disabled)
 
@@ -243,8 +245,8 @@ rtcw-cod/
 ├── tools/hd-textures/    # local AI upscale pipeline (uv); outputs git-ignored
 ├── tools/hd-audio/       # local AI audio remaster (uv); outputs git-ignored
 ├── mod/codmod/           # configs, menu deltas, small original pk3s (not compiled)
-├── patches/              # ioRTCW patch series (applied by setup.sh)
-├── iortcw/               # ioRTCW clone (git-ignored; own repo)
+├── patches/              # format-patch backup of the fork's codmod commits
+├── iortcw/               # clone of illescasDaniel/iortcw (git-ignored; own repo)
 └── run/                  # runtime tree (git-ignored)
 ```
 
@@ -264,7 +266,7 @@ flags may still change. Design notes and history: [`docs/plan.md`](docs/plan.md)
 - AI-upscaled textures and AI-improved audio are derived from the original game assets, so the **generated packs are not
   distributed**. The tools in `tools/` produce them on your machine. Check the licenses of the models they download
   (Real-ESRGAN, AudioSR).
-- Engine and game-code changes (`patches/`, applied on top of ioRTCW) and the scripts in this repository are released
-  under the **GNU GPL v3 with ioRTCW's additional terms**, see [`LICENSE`](LICENSE). The engine is derived from the
-  id Software RTCW source release and ioRTCW.
+- Engine and game-code changes (the [iortcw fork](https://github.com/illescasDaniel/iortcw) `codmod` branch, also
+  mirrored in `patches/`) and the scripts in this repository are released under the **GNU GPL v3 with ioRTCW's
+  additional terms**, see [`LICENSE`](LICENSE). The engine is derived from the id Software RTCW source release and ioRTCW.
 - Third-party code and ideas (SMAA, Enemy Territory: Legacy prone, OpenAL Soft, ...) are credited in [`docs/credits.md`](docs/credits.md).

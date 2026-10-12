@@ -1,15 +1,15 @@
 _Last updated: 2026-10-12_
 
 ## Public release prep (2026-10-12)
-Project renamed in docs to "Castle Operations Definitive" (`codmod`). README rewritten (features, pre-release status, Legal), `LICENSE` (ioRTCW GPLv3 + terms), `setup.sh` now applies `patches/` (62, re-exported) and finds Steam data without a hardcoded path, home paths removed from tools. History squashed to one initial commit 2026-10-12 (pre-squash backup bundle: `../rtcw-cod-pre-squash.bundle`). No remote yet.
+Project renamed in docs to "Castle Operations Definitive" (`codmod`). README rewritten (features, pre-release status, Legal), `LICENSE` (ioRTCW GPLv3 + terms), `setup.sh` now applies `patches/` (62, re-exported) and finds Steam data without a hardcoded path, home paths removed from tools. History squashed to one initial commit 2026-10-12 (pre-squash backup bundle: `../rtcw-cod-pre-squash.bundle`). Outer repo remote: castle-operations-definitive.
 
 Done since: ET: Legacy attribution in `PM_CodCheckProne`; menus moved to deltas + `scripts/menus.py` (see decisions.md).
 
-Legal review done 2026-10-12: menu deltas v2 (references, no original passages), model credits/licenses, Ani4K now downloads from Sirosky/Upscale-Hub, home paths removed, CoD wording softened, README Development section explains disabling the AI-assistant hooks/MCP. Still open: publish the iortcw fork or rely on patches; `menus.txt`/`ingame.txt` are near-verbatim RTCW lists; keep `../rtcw-cod-pre-squash.bundle` private (old menus).
+Legal review done 2026-10-12: menu deltas v2 (references, no original passages), model credits/licenses, Ani4K now downloads from Sirosky/Upscale-Hub, home paths removed, CoD wording softened, README Development section explains disabling the AI-assistant hooks/MCP. Engine fork published (see Fork section); `menus.txt`/`ingame.txt` are near-verbatim RTCW lists; keep `../rtcw-cod-pre-squash.bundle` private (old menus).
 
 ## Branch
 
-`main` (outer) / `codmod` (iortcw) — recovered from failed GRAPHICS benchmark attempt.
+`cursor/use-iortcw-fork-0f47` (outer, PR) / `codmod` (iortcw, tracks `origin` = illescasDaniel/iortcw).
 
 ## Current focus
 
@@ -53,3 +53,6 @@ Implemented all of `docs/fps-limiter.md` (pacer, present hooks, `r_vsync` 0-4, c
 
 ## HRTF 3D audio (2026-10-12)
 Done and playtested by user ("sounds AMAZING"). `s_alHRTF` On/Off (default On; auto mode dropped, it never triggered), `s_alHRTFProfile`, menu row in sound menus, `s_volume` locked to 1.0 in codmod.cfg. Details: `docs/audio-3d.md`. Committed in both repos.
+
+## Fork switch (2026-10-12)
+`iortcw/` origin is now https://github.com/illescasDaniel/iortcw (old origin renamed `upstream`); `setup.sh` clones the fork's `codmod`, no `git am`. Fork branches `codmod` and `cursor/codmod-engine-0f47` (PR #2) were force-pushed with the real 65-commit history (local tag `codmod-pre-fork-backup`). `patches/` is a backup only. HD pk3s stay in `run/codmod/` (checksums verified unchanged after setup/build/install). Next: user playtest (HUD, ESC, HD assets), review/merge fork PR #2, then this PR; `../iortcw` (sibling clone) is redundant.

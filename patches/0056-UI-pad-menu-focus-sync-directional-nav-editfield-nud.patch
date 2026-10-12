@@ -1,7 +1,7 @@
 From c16f8f3ce88e244b96c4c024778c503db07dcc5e Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Sun, 11 Oct 2026 16:46:02 +0200
-Subject: [PATCH 56/64] UI: pad menu focus sync, directional nav, editfield
+Subject: [PATCH 56/65] UI: pad menu focus sync, directional nav, editfield
  nudge, safer menu close.
 
 Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>

@@ -1,7 +1,7 @@
 From 1cb2466f0148372bcd429714664c07b8e6193758 Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Mon, 12 Oct 2026 16:28:04 +0200
-Subject: [PATCH 63/64] Kick: cod_kickDamage (default 50); +quickkick pad
+Subject: [PATCH 63/65] Kick: cod_kickDamage (default 50); +quickkick pad
  command (R3 tap quickknife, hold kick).
 
 Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>

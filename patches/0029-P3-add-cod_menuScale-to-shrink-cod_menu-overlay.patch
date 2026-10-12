@@ -1,7 +1,7 @@
 From c0f8c83e37ccd96ff81d99277b26c1fa2fea9aca Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Thu, 8 Oct 2026 22:42:07 +0200
-Subject: [PATCH 29/64] P3: add cod_menuScale to shrink /cod_menu overlay
+Subject: [PATCH 29/65] P3: add cod_menuScale to shrink /cod_menu overlay
 
 Default 0.7 with a MENU UI row so text and panel size can be tuned live without covering most of the screen.
 

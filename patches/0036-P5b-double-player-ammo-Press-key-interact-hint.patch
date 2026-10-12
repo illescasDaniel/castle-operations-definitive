@@ -1,7 +1,7 @@
 From 84f6724ae6ad416be26ba604e2c7a4df622fc52e Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Thu, 8 Oct 2026 23:43:18 +0200
-Subject: [PATCH 36/64] P5b: double player ammo + Press-key interact hint
+Subject: [PATCH 36/65] P5b: double player ammo + Press-key interact hint
 
 cod_ammoScale 2 multiplies Add_Ammo grants and max carry for the
 player only. Cursor hints for doors/activate show "Press <key> to

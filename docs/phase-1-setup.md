@@ -24,14 +24,14 @@
 - Already done: the outer repo exists (branch `main`), with the docs and a `.gitignore`
   (`iortcw/`, `run/`, `*.log`, `build*/`) committed. Commit the scripts, container, and mod files of this phase on top.
 
-### 1.2 ioRTCW clone (pinned)
+### 1.2 ioRTCW fork clone (`codmod`)
 ```bash
-git clone https://github.com/iortcw/iortcw.git iortcw
-git -C iortcw checkout -b codmod 438e7d413b5f7277187c35b032eb0ef9093ae778
+git clone --branch codmod --single-branch https://github.com/illescasDaniel/iortcw.git iortcw
 ```
-All engine and game changes in later phases are commits on `iortcw`'s `codmod` branch.
-`scripts/export-patches.sh` runs `git -C iortcw format-patch 438e7d4..codmod -o patches/`,
-so the outer repo keeps a backup.
+All engine and game changes live on the fork's `codmod` branch (based on upstream
+`438e7d413b5f7277187c35b032eb0ef9093ae778`). `scripts/export-patches.sh` still runs
+`git -C iortcw format-patch 438e7d4..codmod -o patches/` so the outer repo keeps a backup;
+`setup.sh` no longer applies that series.
 
 ### 1.3 `scripts/setup.sh` (idempotent)
 1. Clone ioRTCW if `iortcw/` is missing (as in 1.2).

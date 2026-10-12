@@ -1,7 +1,7 @@
 From 35f61fd7abdd352c11bf1124d6c6b7705fd8e9dd Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Thu, 8 Oct 2026 23:08:52 +0200
-Subject: [PATCH 31/64] P4: raise sprint gun defaults so more weapon stays
+Subject: [PATCH 31/65] P4: raise sprint gun defaults so more weapon stays
  on-screen
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8

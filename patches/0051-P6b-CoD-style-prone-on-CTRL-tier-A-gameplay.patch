@@ -1,7 +1,7 @@
 From a0a6dba9fbb87126a1ae5c09eb7ee264de5f850d Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Fri, 9 Oct 2026 14:47:43 +0200
-Subject: [PATCH 51/64] P6b: CoD-style prone on CTRL (tier A gameplay).
+Subject: [PATCH 51/65] P6b: CoD-style prone on CTRL (tier A gameplay).
 
 Adds prone stance via networked STAT_COD_* (crawl, transitions, ADS/fire rules),
 packs WBUTTON_EXTRA7 in CL_CmdButtons, and locks crawl at cod_proneScale 0.55.

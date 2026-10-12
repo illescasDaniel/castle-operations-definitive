@@ -1,7 +1,7 @@
 From 33a345fc91cce5ca96e4bae8d2ada5fd0734e57a Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Thu, 8 Oct 2026 17:34:21 +0200
-Subject: [PATCH 07/64] P3: ADS input - WBUTTON_COD_ADS = WBUTTON_EXTRA6 (3.1)
+Subject: [PATCH 07/65] P3: ADS input - WBUTTON_COD_ADS = WBUTTON_EXTRA6 (3.1)
 
 Co-authored-by: Cursor <cursoragent@cursor.com>
 ---

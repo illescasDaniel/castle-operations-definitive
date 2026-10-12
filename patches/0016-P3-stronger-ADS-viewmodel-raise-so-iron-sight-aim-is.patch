@@ -1,7 +1,7 @@
 From 08070cd5757895b7f5ea6b75d6efa4c62893d204 Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Thu, 8 Oct 2026 18:15:08 +0200
-Subject: [PATCH 16/64] P3: stronger ADS viewmodel raise so iron-sight aim is
+Subject: [PATCH 16/65] P3: stronger ADS viewmodel raise so iron-sight aim is
  obvious
 
 Previous ~1-3u offsets only nudged the gun, so ADS felt like FOV zoom

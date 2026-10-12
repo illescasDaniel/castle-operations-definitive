@@ -1,7 +1,7 @@
 From 2fc77b9ab82b432aefd3a855343ab2be0ab6b026 Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Fri, 9 Oct 2026 15:45:16 +0200
-Subject: [PATCH 52/64] P3: per-weapon ADS iron-sight bake and tune tooling.
+Subject: [PATCH 52/65] P3: per-weapon ADS iron-sight bake and tune tooling.
 
 Absolute cg_codAdsView rows from the in-game SAVE log, zero global iron-sight offsets, keep Start/Next/Save plus crosshair-force for later re-tune, and show hip crosshair on Garand/Mauser.
 

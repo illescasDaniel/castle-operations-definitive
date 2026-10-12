@@ -1,7 +1,7 @@
 From 45054f232678ae62f5aeadb0cde35841bf701bec Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Thu, 8 Oct 2026 19:41:39 +0200
-Subject: [PATCH 24/64] P3: add cod_adsYaw/Roll/Pitch bias for diagonal ADS
+Subject: [PATCH 24/65] P3: add cod_adsYaw/Roll/Pitch bias for diagonal ADS
  hold
 
 RTCW hip-fire meshes can still look crooked after tag_flash align.

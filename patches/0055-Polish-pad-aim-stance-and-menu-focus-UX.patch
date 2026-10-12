@@ -1,7 +1,7 @@
 From 69a813d2a406e5ce845c6eaa7f8ec81027eb0c67 Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Sun, 11 Oct 2026 12:29:29 +0200
-Subject: [PATCH 55/64] Polish pad aim, stance, and menu focus UX.
+Subject: [PATCH 55/65] Polish pad aim, stance, and menu focus UX.
 
 Always-on stick filters with LOS friction, ADS-only auto-aim snap,
 +reloaduse/+crouchprone, crouch/prone jump stands without hopping,

@@ -1,7 +1,7 @@
 From 111bab24e9f2dd12ae9dd1ca22b5db0196980f8d Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Thu, 8 Oct 2026 20:13:48 +0200
-Subject: [PATCH 26/64] P3: add sectioned /cod_menu tune overlay with log dumps
+Subject: [PATCH 26/65] P3: add sectioned /cod_menu tune overlay with log dumps
 
 In-game menu lists every cod_* cvar by section; changes and F5 dumps
 go to the console and codmod_tune.log for agent-side review.

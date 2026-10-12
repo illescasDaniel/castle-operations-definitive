@@ -1,7 +1,7 @@
 From 03a1ab1776b6866b43b8dbf07d1af43ac07434f0 Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Fri, 9 Oct 2026 13:44:56 +0200
-Subject: [PATCH 50/64] Flashlight: rend2 eye-origin spot cones
+Subject: [PATCH 50/65] Flashlight: rend2 eye-origin spot cones
  (AddSpotLightToScene).
 
 Replace the point-dlight chain (and wall-impact blob) with dual spot

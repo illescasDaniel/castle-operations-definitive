@@ -1,7 +1,7 @@
 From 5ce4ed6e0c2e0be9c4fca2e1b67f7ea4c7339a56 Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Mon, 12 Oct 2026 15:35:26 +0200
-Subject: [PATCH 62/64] UI: fix editfield editing (cursor at end on entry,
+Subject: [PATCH 62/65] UI: fix editfield editing (cursor at end on entry,
  scroll/cursor clamping, truncated buffer, stale edit focus).
 
 Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>

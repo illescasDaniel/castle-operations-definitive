@@ -1,7 +1,7 @@
 From 9573c722c9c0c8ea863bb45d680af39aba10e28c Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Thu, 8 Oct 2026 17:19:25 +0200
-Subject: [PATCH 06/64] P2: default cod_enable to 1 so the mod is active out of
+Subject: [PATCH 06/65] P2: default cod_enable to 1 so the mod is active out of
  the box
 
 cod_enable 0 remains the instant A/B back to vanilla.

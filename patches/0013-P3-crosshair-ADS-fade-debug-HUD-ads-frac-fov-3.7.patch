@@ -1,7 +1,7 @@
 From c886a124cc281bad5cf54e40c96c072ffe610d7a Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Thu, 8 Oct 2026 17:44:39 +0200
-Subject: [PATCH 13/64] P3: crosshair ADS fade + debug HUD ads frac/fov (3.7)
+Subject: [PATCH 13/65] P3: crosshair ADS fade + debug HUD ads frac/fov (3.7)
 
 Co-authored-by: Cursor <cursoragent@cursor.com>
 ---

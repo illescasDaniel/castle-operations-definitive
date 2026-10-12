@@ -1,7 +1,7 @@
 From 4300175cf529e0d4a230a125feae08ed6dc3eb20 Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Fri, 9 Oct 2026 00:10:54 +0200
-Subject: [PATCH 38/64] =?UTF-8?q?P5c:=20CoD=20HUD=20=E2=80=94=20clip/reser?=
+Subject: [PATCH 38/65] =?UTF-8?q?P5c:=20CoD=20HUD=20=E2=80=94=20clip/reser?=
  =?UTF-8?q?ve=20ammo,=20heat/health=20colour,=20low-HP=20blood.?=
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8

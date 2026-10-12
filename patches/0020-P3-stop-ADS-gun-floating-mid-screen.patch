@@ -1,7 +1,7 @@
 From f2ecc03deb43da3cfb54c6835bcaa553d8454920 Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Thu, 8 Oct 2026 19:15:33 +0200
-Subject: [PATCH 20/64] P3: stop ADS gun floating mid-screen
+Subject: [PATCH 20/65] P3: stop ADS gun floating mid-screen
 
 Clamp sightDist to viewmodel range (5-12), default 8, and cap wild
 tag deltas. Large sightDist was parking the arms in mid-view.

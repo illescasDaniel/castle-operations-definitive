@@ -1,7 +1,7 @@
 From 686cfa75fc77111557afdfbcad1a1d980d2f5f1a Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Thu, 8 Oct 2026 19:04:22 +0200
-Subject: [PATCH 18/64] P3: fix ADS looking inside the gun
+Subject: [PATCH 18/65] P3: fix ADS looking inside the gun
 
 Raise the sight line with view-up (not flaky tag Z), add eye relief,
 and drop the bore-align rotation that aimed down the barrel.

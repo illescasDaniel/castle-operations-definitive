@@ -1,7 +1,7 @@
 From 4fbc17cb3068b5bf2cc79b753be0a4a64cdce1dc Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Fri, 9 Oct 2026 12:01:03 +0200
-Subject: [PATCH 47/64] Fix save cameraPortal crash; flashlight uses spotlight
+Subject: [PATCH 47/65] Fix save cameraPortal crash; flashlight uses spotlight
  beam.
 
 Ignore raw cameraPortal/persistantPowerup pointers on load (legacy saves

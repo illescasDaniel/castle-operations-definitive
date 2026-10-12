@@ -1,7 +1,7 @@
 From e728cefc6383252fa48f849a7d0625fd99cae26e Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Thu, 8 Oct 2026 17:14:38 +0200
-Subject: [PATCH 03/64] P2: crouch transitions -
+Subject: [PATCH 03/65] P2: crouch transitions -
  cod_duckTime/duckEase/duckGunDip (2.2)
 
 - cgame/cg_view.c CG_OffsetFirstPersonView: duck viewheight smoothing uses

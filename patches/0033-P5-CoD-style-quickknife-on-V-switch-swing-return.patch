@@ -1,7 +1,7 @@
 From 7393b47dec34f0a88fa8a986476921642e902eca Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Thu, 8 Oct 2026 23:19:09 +0200
-Subject: [PATCH 33/64] P5: CoD-style quickknife on V (switch, swing, return)
+Subject: [PATCH 33/65] P5: CoD-style quickknife on V (switch, swing, return)
 
 Cgame quickknife command: save previous weapon, raise knife, pulse
 one attack, switch back. Not +kick. Timeout failsafe + abort on

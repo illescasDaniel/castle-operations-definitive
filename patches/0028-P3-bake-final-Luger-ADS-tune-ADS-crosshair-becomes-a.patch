@@ -1,7 +1,7 @@
 From 0064aa38f1a0756fc61799cc80d6ad7fa94ce744 Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Thu, 8 Oct 2026 20:30:00 +0200
-Subject: [PATCH 28/64] P3: bake final Luger ADS tune; ADS crosshair becomes a
+Subject: [PATCH 28/65] P3: bake final Luger ADS tune; ADS crosshair becomes a
  dot
 
 Defaults from the latest codmod_tune.log session. While ADS, show a

@@ -1,7 +1,7 @@
 From b5c007f025ee30ce4f775ea21ec59ca96cc14504 Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Thu, 8 Oct 2026 17:47:14 +0200
-Subject: [PATCH 14/64] P3: hold-to-scope on scoped rifles via ADS button (3.8)
+Subject: [PATCH 14/65] P3: hold-to-scope on scoped rifles via ADS button (3.8)
 
 Co-authored-by: Cursor <cursoragent@cursor.com>
 ---

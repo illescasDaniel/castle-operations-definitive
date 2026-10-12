@@ -1,0 +1,7 @@
+{
+  "enabledMcpjsonServers": ["jevmem"],
+  "hooks": {
+    "SessionStart": [{"hooks": [{"type": "command", "command": "uvx jevmem hook session-start", "timeout": 15}]}],
+    "UserPromptSubmit": [{"hooks": [{"type": "command", "command": "uvx jevmem hook user-prompt", "timeout": 20}]}]
+  }
+}

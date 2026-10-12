@@ -1,0 +1,24 @@
+# Generated from menu-deltas/ by scripts/menus.py (derived from RTCW's own menus: not redistributed)
+/controls.menu
+/controls_kb.menu
+/controls_pad.menu
+/game.menu
+/hud.menu
+/ingame.menu
+/ingame_controls.menu
+/ingame_controls_kb.menu
+/ingame_controls_pad.menu
+/ingame_game.menu
+/ingame_leave.menu
+/ingame_options.menu
+/ingame_settings.menu
+/ingame_sound.menu
+/ingame_system.menu
+/main.menu
+/mods.menu
+/options.menu
+/setup.menu
+/singleplayer.menu
+/sound.menu
+/system.menu
+/.menus-state.json

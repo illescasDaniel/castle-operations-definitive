@@ -1,0 +1,34 @@
+// menu defs (codmod — adds singleplayer hub)
+//
+{
+	loadMenu { "ui/main.menu" }
+ 	loadMenu { "ui/setup.menu" }
+	loadMenu { "ui/singleplayer.menu" }
+	loadMenu { "ui/controls.menu" }
+	loadMenu { "ui/controls_kb.menu" }
+	loadMenu { "ui/controls_pad.menu" }
+	loadMenu { "ui/cdkey.menu" }
+	loadMenu { "ui/system.menu" }
+	loadMenu { "ui/options.menu" }
+	loadMenu { "ui/sound.menu" }
+	loadMenu { "ui/game.menu" }
+	loadMenu { "ui/credit.menu" }
+	loadMenu { "ui/connect.menu" }
+	loadMenu { "ui/quit.menu" }
+	loadMenu { "ui/vid_restart.menu" }
+	loadMenu { "ui/snd_restart.menu" }
+	loadMenu { "ui/rec_restart.menu" }
+	loadMenu { "ui/default.menu" }
+	loadMenu { "ui/error.menu" }
+	loadMenu { "ui/serverinfo.menu" }
+	loadMenu { "ui/quitcredit.menu" }
+	loadMenu { "ui/resetscore.menu" }
+	loadMenu { "ui/buy_pop.menu" }
+	loadMenu { "ui/multiplayer_pop.menu" }
+
+	loadMenu { "ui/play.menu" }
+	loadMenu { "ui/load.menu" }
+	loadMenu { "ui/mods.menu" }
+	loadMenu { "ui/briefing.menu" }
+
+}

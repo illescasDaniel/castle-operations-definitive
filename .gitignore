@@ -1,0 +1,33 @@
+iortcw
+iortcw/
+run/
+*.log
+build*/
+**/__pycache__/
+
+# MangoHud Shift+F2 logs from game_run.sh (written next to scripts/MangoHud.conf)
+scripts/*.csv
+
+# HD texture pipeline (proprietary derivatives — never commit)
+tools/hd-textures/samples/
+tools/hd-textures/.cache/
+tools/hd-textures/.venv/
+mod/codmod/codmod_hd.pk3
+**/codmod_hd.pk3
+
+# HD audio pipeline (proprietary derivatives — never commit)
+tools/hd-audio/samples/
+tools/hd-audio/.cache/
+tools/hd-audio/.venv/
+mod/codmod/codmod_hd_audio.pk3
+**/codmod_hd_audio.pk3
+
+# bench output (frame-time logs, results.csv)
+benchmarks/
+
+# Menu pk3s are built from mod/codmod/menu-deltas/ + the user's RTCW paks (RTCW menus are not redistributed)
+mod/codmod/codmod_menus.pk3
+mod/codmod/codmod_hud.pk3
+
+# personal Claude Code overrides
+.claude/settings.local.json

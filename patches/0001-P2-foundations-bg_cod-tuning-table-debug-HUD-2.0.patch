@@ -1,0 +1,583 @@
+From 2b6a9d38113de70489ab6ed9178bfa859738ad76 Mon Sep 17 00:00:00 2001
+From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
+Date: Thu, 8 Oct 2026 17:11:55 +0200
+Subject: [PATCH 01/64] P2: foundations - bg_cod tuning table + debug HUD (2.0)
+
+- game/bg_cod.h, game/bg_cod.c: codTuning_t, bg_codCvars[] single source of
+  truth for all phase 2 cod_* cvars, BG_CodRegisterCvars/BG_CodUpdateCvars
+  helpers. Compiled into both qagame and cgame (SP/Makefile Q3GOBJ_/Q3CGOBJ_,
+  next to bg_pmove.o).
+- game/bg_public.h: STAT_COD_ADS/SLIDE/FLAGS/SLIDE_SPEED/STAT_COD_STANCE after
+  STAT_PLAYER_CLASS, COD_SF_SPRINTING bit, compile-time check that they stay
+  inside ps->stats[MAX_STATS].
+- game/g_main.c, cgame/cg_main.c: register/update the cod_* cvars from
+  G_RegisterCvars/G_UpdateCvars and CG_RegisterCvars/CG_UpdateCvars.
+- cgame/cg_cod.c (new): CG_CodDrawDebugHud() top-left overlay (cod_debugHud
+  1/2) and CG_CodDump_f ("cod_dump" console command), registered in
+  cg_consolecmds.c and hooked from CG_Draw2D next to cg_drawFPS.
+- cgame/cg_local.h: include bg_cod.h, add cg.codDuckDuration (used by 2.2),
+  prototypes for cg_cod.c.
+
+Co-authored-by: Cursor <cursoragent@cursor.com>
+---
+ SP/Makefile                    |   3 +
+ SP/code/cgame/cg_cod.c         | 146 +++++++++++++++++++++++++++++++++
+ SP/code/cgame/cg_consolecmds.c |   4 +-
+ SP/code/cgame/cg_draw.c        |   3 +
+ SP/code/cgame/cg_local.h       |  10 +++
+ SP/code/cgame/cg_main.c        |   9 +-
+ SP/code/game/bg_cod.c          | 114 +++++++++++++++++++++++++
+ SP/code/game/bg_cod.h          |  73 +++++++++++++++++
+ SP/code/game/bg_public.h       |  18 +++-
+ SP/code/game/g_main.c          |  11 +++
+ 10 files changed, 388 insertions(+), 3 deletions(-)
+ create mode 100644 SP/code/cgame/cg_cod.c
+ create mode 100644 SP/code/game/bg_cod.c
+ create mode 100644 SP/code/game/bg_cod.h
+
+diff --git a/SP/Makefile b/SP/Makefile
+index 74a126d2..adc27073 100644
+--- a/SP/Makefile
++++ b/SP/Makefile
+@@ -2508,8 +2508,10 @@ Q3CGOBJ_ = \
+   $(B)/$(BASEGAME)/cgame/bg_animation.o \
+   $(B)/$(BASEGAME)/cgame/bg_misc.o \
+   $(B)/$(BASEGAME)/cgame/bg_pmove.o \
++  $(B)/$(BASEGAME)/cgame/bg_cod.o \
+   $(B)/$(BASEGAME)/cgame/bg_slidemove.o \
+   $(B)/$(BASEGAME)/cgame/bg_lib.o \
++  $(B)/$(BASEGAME)/cgame/cg_cod.o \
+   $(B)/$(BASEGAME)/cgame/cg_consolecmds.o \
+   $(B)/$(BASEGAME)/cgame/cg_draw.o \
+   $(B)/$(BASEGAME)/cgame/cg_drawtools.o \
+@@ -2582,6 +2584,7 @@ Q3GOBJ_ = \
+   $(B)/$(BASEGAME)/game/bg_animation.o \
+   $(B)/$(BASEGAME)/game/bg_misc.o \
+   $(B)/$(BASEGAME)/game/bg_pmove.o \
++  $(B)/$(BASEGAME)/game/bg_cod.o \
+   $(B)/$(BASEGAME)/game/bg_slidemove.o \
+   $(B)/$(BASEGAME)/game/bg_lib.o \
+   $(B)/$(BASEGAME)/game/g_active.o \
+diff --git a/SP/code/cgame/cg_cod.c b/SP/code/cgame/cg_cod.c
+new file mode 100644
+index 00000000..f051ce72
+--- /dev/null
++++ b/SP/code/cgame/cg_cod.c
+@@ -0,0 +1,146 @@
++// codmod: new file (phase 2.0) -- cg_cod.c
++//
++// Debug HUD and dump command for the cod_* tuning values. See docs/architecture.md
++// section 6. Extended in later phases (ADS, slide, prone).
++
++#include "cg_local.h"
++
++/*
++================
++CG_CodStateName
++
++codmod: picks the debug HUD state label. Priority matches the order in architecture.md
++section 6 (RUN|WALK|SPRINT|CROUCH|AIR); PRONE/CRAWL/SLIDE are added in phases 4/4b.
++================
++*/
++static const char *CG_CodStateName( void ) {
++	playerState_t *ps;
++	usercmd_t cmd;
++
++	ps = &cg.predictedPlayerState;
++
++	if ( ps->groundEntityNum == ENTITYNUM_NONE ) {
++		return "AIR";
++	}
++	if ( ps->pm_flags & PMF_DUCKED ) {
++		return "CROUCH";
++	}
++	if ( ps->stats[STAT_COD_FLAGS] & COD_SF_SPRINTING ) {
++		return "SPRINT";
++	}
++
++	trap_GetUserCmd( trap_GetCurrentCmdNumber(), &cmd );
++	if ( cmd.buttons & BUTTON_WALKING ) {
++		return "WALK";
++	}
++
++	return "RUN";
++}
++
++/*
++================
++CG_CodNearestAISpeed
++
++codmod: cod_debugHud 2 extra line (phase 2.4 check). Cgame doesn't get other entities'
++playerState_t, only entityState_t, so "nearest AI" here means the nearest other ET_PLAYER
++entity -- close enough for a tuning HUD. Reads cg_entities the same way
++CG_PlayerAnimation does for its own speed estimate (cg_players.c).
++================
++*/
++static float CG_CodNearestAISpeed( void ) {
++	int i;
++	float bestDistSq;
++	float speed;
++
++	bestDistSq = -1.0f;
++	speed = 0.0f;
++
++	for ( i = 0; i < MAX_GENTITIES; i++ ) {
++		centity_t *cent;
++		float distSq;
++
++		cent = &cg_entities[i];
++
++		if ( !cent->currentValid ) {
++			continue;
++		}
++		if ( cent->currentState.eType != ET_PLAYER ) {
++			continue;
++		}
++		if ( cent->currentState.number == cg.snap->ps.clientNum ) {
++			continue;   // that's the local player
++		}
++
++		distSq = DistanceSquared( cg.predictedPlayerState.origin, cent->lerpOrigin );
++		if ( bestDistSq < 0.0f || distSq < bestDistSq ) {
++			bestDistSq = distSq;
++			speed = sqrt( cent->currentState.pos.trDelta[0] * cent->currentState.pos.trDelta[0]
++						  + cent->currentState.pos.trDelta[1] * cent->currentState.pos.trDelta[1] );
++		}
++	}
++
++	return speed;
++}
++
++/*
++================
++CG_CodDrawDebugHud
++
++codmod: top-left overlay, "cod_debugHud 1" (phase 2.0). Hooked from CG_Draw2D next to
++cg_drawFPS. Horizontal speed is sqrt(vx^2+vy^2) of the predicted player's velocity, as
++specified in architecture.md section 6.
++================
++*/
++void CG_CodDrawDebugHud( void ) {
++	playerState_t *ps;
++	vec4_t color = { 1.0f, 1.0f, 1.0f, 1.0f };
++	float xySpeed;
++	char line[128];
++	int y;
++
++	if ( !bg_cod.debugHud ) {
++		return;
++	}
++
++	ps = &cg.predictedPlayerState;
++	xySpeed = sqrt( ps->velocity[0] * ps->velocity[0] + ps->velocity[1] * ps->velocity[1] );
++	y = 4;
++
++	Com_sprintf( line, sizeof( line ), "spd %.1f u/s  state %s", xySpeed, CG_CodStateName() );
++	CG_DrawSmallStringColor( 4, y, line, color );
++	y += SMALLCHAR_HEIGHT;
++
++	Com_sprintf( line, sizeof( line ), "stam %d/20000  viewh %d", ps->sprintTime, ps->viewheight );
++	CG_DrawSmallStringColor( 4, y, line, color );
++	y += SMALLCHAR_HEIGHT;
++
++	Com_sprintf( line, sizeof( line ), "lean %.1f/%.0f", ps->leanf, bg_cod.leanMax );
++	CG_DrawSmallStringColor( 4, y, line, color );
++	y += SMALLCHAR_HEIGHT;
++
++	if ( bg_cod.debugHud >= 2 ) {
++		Com_sprintf( line, sizeof( line ), "ai spd %.1f u/s", CG_CodNearestAISpeed() );
++		CG_DrawSmallStringColor( 4, y, line, color );
++		y += SMALLCHAR_HEIGHT;
++	}
++}
++
++/*
++================
++CG_CodDump_f
++
++codmod: "cod_dump" console command (phase 2.0). Prints "seta cod_xxx value" for every
++tuning cvar so a tuned feel can be pasted into mod/codmod/codmod.cfg or back into
++bg_codCvars (bg_cod.c).
++================
++*/
++void CG_CodDump_f( void ) {
++	int i;
++
++	for ( i = 0; i < bg_numCodCvars; i++ ) {
++		char value[MAX_CVAR_VALUE_STRING];
++
++		trap_Cvar_VariableStringBuffer( bg_codCvars[i].name, value, sizeof( value ) );
++		CG_Printf( "seta %s \"%s\"\n", bg_codCvars[i].name, value );
++	}
++}
+diff --git a/SP/code/cgame/cg_consolecmds.c b/SP/code/cgame/cg_consolecmds.c
+index 7f940a94..5a7f9994 100644
+--- a/SP/code/cgame/cg_consolecmds.c
++++ b/SP/code/cgame/cg_consolecmds.c
+@@ -420,8 +420,10 @@ static consoleCommand_t commands[] = {
+ 	{ "mp_QuickMessage", CG_QuickMessage_f },
+ 	{ "OpenLimboMenu", CG_OpenLimbo_f },
+ 	{ "CloseLimboMenu", CG_CloseLimbo_f },
+-	{ "LimboMessage", CG_LimboMessage_f }
++	{ "LimboMessage", CG_LimboMessage_f },
+ 	// -NERVE - SMF
++
++	{ "cod_dump", CG_CodDump_f }    // codmod: phase 2.0, see cg_cod.c
+ };
+ 
+ 
+diff --git a/SP/code/cgame/cg_draw.c b/SP/code/cgame/cg_draw.c
+index 0801786c..1fd47b4f 100644
+--- a/SP/code/cgame/cg_draw.c
++++ b/SP/code/cgame/cg_draw.c
+@@ -3817,6 +3817,9 @@ static void CG_Draw2D(stereoFrame_t stereoFrame) {
+ 		CG_DrawUpperRight(stereoFrame);
+ 	}
+ 
++	// codmod: phase 2.0 debug overlay ("cod_debugHud 1"), see cg_cod.c
++	CG_CodDrawDebugHud();
++
+ 	if ( cg_oldWolfUI.integer ) {
+ 		CG_DrawLowerRight();
+ 	}
+diff --git a/SP/code/cgame/cg_local.h b/SP/code/cgame/cg_local.h
+index b3e39970..0c4f9be0 100644
+--- a/SP/code/cgame/cg_local.h
++++ b/SP/code/cgame/cg_local.h
+@@ -40,6 +40,7 @@ If you have questions concerning this license or the applicable additional terms
+ #include "../qcommon/q_shared.h"
+ #include "../renderer/tr_types.h"
+ #include "../game/bg_public.h"
++#include "../game/bg_cod.h"    // codmod: phase 2 tuning (bg_cod.c is built into cgame too)
+ #include "cg_public.h"
+ 
+ 
+@@ -780,6 +781,9 @@ typedef struct {
+ 
+ 	float duckChange;                   // for duck viewheight smoothing
+ 	int duckTime;
++	int codDuckDuration;                 // codmod: ms for the current duck transition (phase 2.2);
++										  // kept separate from cod_duckTime so phase 4b (prone) can
++										  // set a different duration without touching this code again
+ 
+ 	float landChange;                   // for landing hard
+ 	int landTime;
+@@ -2191,6 +2195,12 @@ const char *CG_translateString( const char *str );
+ qboolean CG_DrawScoreboard( void );
+ void CG_DrawTourneyScoreboard( void );
+ 
++//
++// cg_cod.c
++//
++void CG_CodDrawDebugHud( void );
++void CG_CodDump_f( void );
++
+ //
+ // cg_consolecmds.c
+ //
+diff --git a/SP/code/cgame/cg_main.c b/SP/code/cgame/cg_main.c
+index 13362aff..752fad4b 100644
+--- a/SP/code/cgame/cg_main.c
++++ b/SP/code/cgame/cg_main.c
+@@ -44,6 +44,9 @@ int forceModelModificationCount = -1;
+ void CG_Init( int serverMessageNum, int serverCommandSequence );
+ void CG_Shutdown( void );
+ 
++// codmod: cgame's copy of the cod_* cvars; filled in by BG_CodRegisterCvars/BG_CodUpdateCvars
++static vmCvar_t codCvars[BG_COD_MAX_CVARS];
++
+ 
+ /*
+ ================
+@@ -505,7 +508,8 @@ void CG_RegisterCvars( void ) {
+ 	trap_Cvar_Register( NULL, "model", DEFAULT_MODEL, CVAR_USERINFO | CVAR_ARCHIVE );
+ 	trap_Cvar_Register( NULL, "head", DEFAULT_HEAD, CVAR_USERINFO | CVAR_ARCHIVE );
+ 
+-
++	// codmod: register the cod_* tuning cvars (bg_cod.c is the single source of truth)
++	BG_CodRegisterCvars( codCvars, BG_COD_MAX_CVARS );
+ }
+ 
+ /*
+@@ -542,6 +546,9 @@ void CG_UpdateCvars( void ) {
+ 		trap_Cvar_Update( cv->vmCvar );
+ 	}
+ 
++	// codmod: re-apply every frame so cvar changes take effect at once
++	BG_CodUpdateCvars( codCvars, BG_COD_MAX_CVARS );
++
+ /* RF, disabled this, not needed anymore
+ 	// if force model changed
+ 	if ( forceModelModificationCount != cg_forceModel.modificationCount ) {
+diff --git a/SP/code/game/bg_cod.c b/SP/code/game/bg_cod.c
+new file mode 100644
+index 00000000..15eda188
+--- /dev/null
++++ b/SP/code/game/bg_cod.c
+@@ -0,0 +1,114 @@
++// codmod: new file (phase 2.0) -- bg_cod.c
++//
++// Defines the cod_* tuning cvar table and the codTuning_t instance that bg_pmove.c (and
++// qagame/cgame modules) read every frame. See bg_cod.h and docs/architecture.md section 5.
++
++#include "../qcommon/q_shared.h"
++#include "bg_public.h"
++#include "bg_cod.h"
++
++// codmod: forward-declared the same way bg_pmove.c declares cg_gameType/g_gametype --
++// this file is compiled once into qagame (-DGAMEDLL) and once into cgame (-DCGAMEDLL),
++// and both modules already have these traps with an identical signature.
++void trap_Cvar_Register( vmCvar_t *cvar, const char *var_name, const char *value, int flags );
++void trap_Cvar_Update( vmCvar_t *cvar );
++
++// codmod: zero-initialized; real values come from BG_CodUpdateCvars() before first use.
++codTuning_t bg_cod;
++
++#define CODOFS( x ) ( (size_t)&( ( (codTuning_t *)0 )->x ) )
++
++// codmod: Phase 2 cvars (docs/reference-values.md + docs/phase-2-movement.md). Flags are 0
++// for tunables (not archived, so code defaults always apply -- user overrides live in
++// mod/codmod/codmod.cfg) except cod_debugHud, which is a user preference.
++const codCvarDef_t bg_codCvars[] = {
++	{ "cod_enable",             "0",    0,            CODOFS( enable ),             1 },
++	{ "cod_moveEnable",         "1",    0,            CODOFS( moveEnable ),         1 },
++	{ "cod_leanEnable",         "1",    0,            CODOFS( leanEnable ),         1 },
++
++	{ "cod_runSpeed",           "200",  0,            CODOFS( runSpeed ),           0 },
++	{ "cod_sprintScale",        "1.5",  0,            CODOFS( sprintScale ),        0 },
++	{ "cod_walkScale",          "0.45", 0,            CODOFS( walkScale ),          0 },
++	{ "cod_crouchScale",        "0.65", 0,            CODOFS( crouchScale ),        0 },
++	{ "cod_backScale",          "0.7",  0,            CODOFS( backScale ),          0 },
++	{ "cod_strafeScale",        "0.85", 0,            CODOFS( strafeScale ),        0 },
++
++	{ "cod_sprintTime",         "4",    0,            CODOFS( sprintTime ),         0 },
++	{ "cod_sprintRechargeTime", "5",    0,            CODOFS( sprintRechargeTime ), 0 },
++	{ "cod_sprintMinTime",      "1",    0,            CODOFS( sprintMinTime ),      0 },
++	{ "cod_sprintForwardOnly",  "1",    0,            CODOFS( sprintForwardOnly ),  1 },
++	{ "cod_sprintJumpCost",     "2000", 0,            CODOFS( sprintJumpCost ),     0 },
++
++	{ "cod_duckTime",           "70",   0,            CODOFS( duckTime ),           0 },
++	{ "cod_duckEase",           "1",    0,            CODOFS( duckEase ),           1 },
++	{ "cod_duckGunDip",         "1",    0,            CODOFS( duckGunDip ),         1 },
++
++	{ "cod_leanMax",            "32",   0,            CODOFS( leanMax ),            0 },
++	{ "cod_leanRollScale",      "0.6",  0,            CODOFS( leanRollScale ),      0 },
++	{ "cod_leanTimeIn",         "200",  0,            CODOFS( leanTimeIn ),         0 },
++	{ "cod_leanTimeOut",        "180",  0,            CODOFS( leanTimeOut ),        0 },
++	{ "cod_leanAllowFire",      "1",    0,            CODOFS( leanAllowFire ),      1 },
++	{ "cod_leanEase",           "1",    0,            CODOFS( leanEase ),           1 },
++
++	{ "cod_aiSpeedMode",        "1",    0,            CODOFS( aiSpeedMode ),        1 },
++	{ "cod_aiSpeedScale",       "1",    0,            CODOFS( aiSpeedScale ),       0 },
++
++	{ "cod_debugHud",           "0",    CVAR_ARCHIVE, CODOFS( debugHud ),           1 },
++};
++
++const int bg_numCodCvars = sizeof( bg_codCvars ) / sizeof( bg_codCvars[0] );
++
++/*
++================
++BG_CodRegisterCvars
++
++codmod: registers every entry of bg_codCvars into the caller's vmCvar_t array (one slot
++per entry, in order), then applies the just-registered values into bg_cod.
++================
++*/
++void BG_CodRegisterCvars( vmCvar_t *cvars, int maxCvars ) {
++	int i;
++	int n;
++
++	n = bg_numCodCvars;
++	if ( n > maxCvars ) {
++		n = maxCvars;    // codmod: should never happen -- bump BG_COD_MAX_CVARS if it does
++	}
++
++	for ( i = 0; i < n; i++ ) {
++		trap_Cvar_Register( &cvars[i], bg_codCvars[i].name, bg_codCvars[i].def, bg_codCvars[i].flags );
++	}
++
++	BG_CodUpdateCvars( cvars, n );
++}
++
++/*
++================
++BG_CodUpdateCvars
++
++codmod: pulls current cvar values into bg_cod. Called every frame from G_UpdateCvars /
++CG_UpdateCvars so cvar changes (and savegame loads, see architecture.md section 7) take
++effect immediately.
++================
++*/
++void BG_CodUpdateCvars( vmCvar_t *cvars, int maxCvars ) {
++	int i;
++	int n;
++	byte *dst;
++
++	n = bg_numCodCvars;
++	if ( n > maxCvars ) {
++		n = maxCvars;
++	}
++
++	for ( i = 0; i < n; i++ ) {
++		trap_Cvar_Update( &cvars[i] );
++
++		dst = (byte *)&bg_cod + bg_codCvars[i].ofs;
++		if ( bg_codCvars[i].isInt ) {
++			*(int *)dst = cvars[i].integer;
++		} else {
++			*(float *)dst = cvars[i].value;
++		}
++	}
++}
+diff --git a/SP/code/game/bg_cod.h b/SP/code/game/bg_cod.h
+new file mode 100644
+index 00000000..2e225040
+--- /dev/null
++++ b/SP/code/game/bg_cod.h
+@@ -0,0 +1,73 @@
++// codmod: new file (phase 2.0) -- bg_cod.h
++//
++// Shared CoD4-style tuning table for the player. Compiled into *both* qagame and cgame
++// (see bg_pmove.o entries in SP/Makefile) -- each module gets its own copy of bg_cod,
++// kept in sync every frame because g_main.c and cg_main.c both read the same cvars.
++//
++// See docs/architecture.md section 5 (outer repo) for the design rationale.
++
++#ifndef __BG_COD_H__
++#define __BG_COD_H__
++
++#include "../qcommon/q_shared.h"
++
++// codmod: all CoD-style tuning in one struct, filled in by BG_CodUpdateCvars() every frame.
++// Never add playerState_t fields for this -- see the golden rules in architecture.md.
++typedef struct {
++	int enable;             // master switch: 0 = vanilla behaviour everywhere
++	int moveEnable;         // speed/sprint/walk changes (2.1)
++	int leanEnable;         // lean changes (2.3)
++
++	float runSpeed;         // u/s, player jog
++	float sprintScale;      // x runSpeed
++	float walkScale;        // x runSpeed when BUTTON_WALKING
++	float crouchScale;      // x runSpeed
++	float backScale;        // x runSpeed when moving backward
++	float strafeScale;      // x runSpeed when strafing
++
++	float sprintTime;           // seconds, full stamina bar drain time while sprinting+moving
++	float sprintRechargeTime;   // seconds, empty -> full recharge time
++	float sprintMinTime;        // seconds of stamina required to *start* a new sprint
++	int sprintForwardOnly;      // qboolean-ish: sprint requires cmd.forwardmove > 0
++	float sprintJumpCost;       // stamina units taken on jump (vanilla default 2000)
++
++	float duckTime;    // ms, cgame duck viewheight smoothing
++	int duckEase;       // ease-out curve instead of linear
++	int duckGunDip;     // small viewmodel dip following the same curve
++
++	float leanMax;         // u, lean offset
++	float leanRollScale;   // camera roll = leanf * leanRollScale
++	float leanTimeIn;      // ms, time to reach full lean
++	float leanTimeOut;     // ms, time to return to center
++	int leanAllowFire;     // allow firing (and crosshair) while leaned
++	int leanEase;          // smoothstep the displayed lean fraction (cgame-only)
++
++	int aiSpeedMode;     // 0 = vanilla, 1 = match player speeds, 2 = scale anim-derived speeds
++	float aiSpeedScale;  // multiplier used by aiSpeedMode 2
++
++	int debugHud;    // 0 off, 1 HUD, 2 HUD + nearest AI speed
++} codTuning_t;
++
++// codmod: one instance per module (qagame and cgame each link their own bg_cod.o).
++extern codTuning_t bg_cod;
++
++// codmod: single source of truth for cvar name/default/flags and where it lands in bg_cod.
++typedef struct {
++	const char *name;
++	const char *def;
++	int flags;
++	size_t ofs;      // offset into codTuning_t, see CODOFS() in bg_cod.c
++	int isInt;       // qtrue: read cvar.integer, qfalse: read cvar.value
++} codCvarDef_t;
++
++extern const codCvarDef_t bg_codCvars[];
++extern const int bg_numCodCvars;
++
++// codmod: g_main.c / cg_main.c each keep a static vmCvar_t[BG_COD_MAX_CVARS] and pass it in.
++// Bump this if bg_codCvars ever grows past it -- BG_CodRegisterCvars() clamps defensively.
++#define BG_COD_MAX_CVARS 32
++
++void BG_CodRegisterCvars( vmCvar_t *cvars, int maxCvars );
++void BG_CodUpdateCvars( vmCvar_t *cvars, int maxCvars );
++
++#endif // __BG_COD_H__
+diff --git a/SP/code/game/bg_public.h b/SP/code/game/bg_public.h
+index 47e1ba5d..60f3b63d 100644
+--- a/SP/code/game/bg_public.h
++++ b/SP/code/game/bg_public.h
+@@ -336,9 +336,25 @@ typedef enum {
+ 	STAT_DEAD_YAW,                  // look this direction when dead (FIXME: get rid of?)
+ 	STAT_CLIENTS_READY,             // bit mask of clients wishing to exit the intermission (FIXME: configstring?)
+ 	STAT_MAX_HEALTH,                // health / armor limit, changable by handicap
+-	STAT_PLAYER_CLASS               // DHM - Nerve :: player class in multiplayer
++	STAT_PLAYER_CLASS,              // DHM - Nerve :: player class in multiplayer
++
++	// codmod: networked state for CoD-style movement (phase 2+). stats[] entries are
++	// plain ints here, but msg.c only delta-encodes 16 bits of change per entry, so treat
++	// these as shorts (-32768..32767). See docs/architecture.md section 3.
++	STAT_COD_ADS = 8,        // phase 3: ADS fraction * 1000
++	STAT_COD_SLIDE,          // phase 4: >0 slide ms left, <0 cooldown ms
++	STAT_COD_FLAGS,          // bitfield, see COD_SF_*
++	STAT_COD_SLIDE_SPEED,    // phase 4: start speed of the current slide, u/s
++	STAT_COD_STANCE          // phase 4b: >0 prone transition ms left, <0 prone cooldown ms
+ } statIndex_t;
+ 
++// codmod: compile-time check that STAT_COD_* stay inside ps->stats[MAX_STATS] (q_shared.h).
++// A negative array size here is a compile error, which is the point.
++typedef char bg_cod_statIndexRangeCheck_t[ ( STAT_COD_STANCE < MAX_STATS ) ? 1 : -1 ];
++
++// codmod: ps->stats[STAT_COD_FLAGS] bits (phase 2+)
++#define COD_SF_SPRINTING 1
++
+ 
+ // player_state->persistant[] indexes
+ // these fields are the only part of player_state that isn't
+diff --git a/SP/code/game/g_main.c b/SP/code/game/g_main.c
+index 0bc3cd2c..35ab94d0 100644
+--- a/SP/code/game/g_main.c
++++ b/SP/code/game/g_main.c
+@@ -30,9 +30,13 @@ If you have questions concerning this license or the applicable additional terms
+ 
+ 
+ #include "g_local.h"
++#include "bg_cod.h"     // codmod: phase 2 tuning cvars
+ 
+ level_locals_t level;
+ 
++// codmod: qagame's copy of the cod_* cvars; filled in by BG_CodRegisterCvars/BG_CodUpdateCvars
++static vmCvar_t codCvars[BG_COD_MAX_CVARS];
++
+ typedef struct {
+ 	vmCvar_t    *vmCvar;
+ 	char        *cvarName;
+@@ -1007,6 +1011,9 @@ void G_RegisterCvars( void ) {
+ 	bg_pmove_gameskill_integer = g_gameskill.integer;
+ 	// done
+ 
++	// codmod: register the cod_* tuning cvars (bg_cod.c is the single source of truth)
++	BG_CodRegisterCvars( codCvars, BG_COD_MAX_CVARS );
++
+ 	level.warmupModificationCount = g_warmup.modificationCount;
+ }
+ 
+@@ -1080,6 +1087,10 @@ void G_UpdateCvars( void ) {
+ 	if ( remapped ) {
+ 		G_RemapTeamShaders();
+ 	}
++
++	// codmod: re-apply every frame so cvar changes and savegame loads take effect at once
++	// (docs/architecture.md section 7)
++	BG_CodUpdateCvars( codCvars, BG_COD_MAX_CVARS );
+ }
+ 
+ 
+-- 
+2.56.0
+

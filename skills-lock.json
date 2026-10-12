@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "memory-bank": {
+      "source": "illescasDaniel/memory-bank",
+      "sourceType": "github",
+      "skillPath": "skills/memory-bank/SKILL.md",
+      "computedHash": "e765e58ce96ef2f5781d5f8791b38236e92026d9db8f5921651994a6be5edc0c"
+    }
+  }
+}

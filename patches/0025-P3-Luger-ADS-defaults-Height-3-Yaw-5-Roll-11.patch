@@ -1,0 +1,85 @@
+From 8e8f32faf7f2ed7b5d66663f6262231129155b50 Mon Sep 17 00:00:00 2001
+From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
+Date: Thu, 8 Oct 2026 19:50:02 +0200
+Subject: [PATCH 25/64] P3: Luger ADS defaults Height 3 / Yaw -5 / Roll 11
+
+Apply angle bias before sight centering so yaw/roll stay on-axis.
+
+Co-authored-by: Cursor <cursoragent@cursor.com>
+---
+ SP/code/cgame/cg_cod.c | 16 +++++++++-------
+ SP/code/game/bg_cod.c  | 10 +++++-----
+ 2 files changed, 14 insertions(+), 12 deletions(-)
+
+diff --git a/SP/code/cgame/cg_cod.c b/SP/code/cgame/cg_cod.c
+index f35caef4..db7f8151 100644
+--- a/SP/code/cgame/cg_cod.c
++++ b/SP/code/cgame/cg_cod.c
+@@ -153,7 +153,7 @@ void CG_CodApplyIronSightAds( vec3_t handOrigin, vec3_t angles, int weaponNum, f
+ 	sightDist   = bg_cod.adsSightDist   + ads->sightDist;
+ 
+ 	// codmod: too small = looking inside the mesh; too large = floating mid-screen arms.
+-	// Pistol sweet spot from in-game tuning is Dist 18 / Height 4.
++	// Pistol sweet spot from in-game tuning is Dist 18 / Height 3 / Yaw -5 / Roll 11.
+ 	if ( sightDist < 8.0f ) {
+ 		sightDist = 8.0f;
+ 	}
+@@ -204,7 +204,13 @@ void CG_CodApplyIronSightAds( vec3_t handOrigin, vec3_t angles, int weaponNum, f
+ 		// Level the gun to the view (kills idle/bob roll that reads as a crooked ADS).
+ 		alignedAngles[ROLL] += AngleDelta( cg.refdefViewAngles[ROLL], alignedAngles[ROLL] );
+ 
+-		// Pass 2: at the straightened orientation, put the rear sight on the optical axis.
++		// Mesh hold bias BEFORE sight centering -- applying yaw/roll after translate left the
++		// sights off-axis and kept ADS looking diagonal vs CoD.
++		alignedAngles[PITCH] += bg_cod.adsPitch + ads->pitch;
++		alignedAngles[YAW]   += bg_cod.adsYaw   + ads->yaw;
++		alignedAngles[ROLL]  += bg_cod.adsRoll  + ads->roll;
++
++		// Pass 2: at the biased orientation, put the rear sight on the optical axis.
+ 		VectorCopy( alignedOrigin, hand.origin );
+ 		AnglesToAxis( alignedAngles, hand.axis );
+ 		if ( CG_CodResolveFlashTag( &hand, &gun, flashOrigin, flashFwd ) ) {
+@@ -227,14 +233,10 @@ void CG_CodApplyIronSightAds( vec3_t handOrigin, vec3_t angles, int weaponNum, f
+ 		angles[i] += AngleDelta( alignedAngles[i], angles[i] ) * e;
+ 	}
+ 
+-	// Fine bias after auto-align: global cod_adsPitch/Yaw/Roll (mesh vs tag mismatch) plus
+-	// per-weapon table / live tune. Yaw -7 ≈ clockwise ~7° from above (Luger default).
++	// Position-only fine bias (table / live tune). Angle bias is already in alignedAngles.
+ 	VectorMA( handOrigin, ads->fwd   * e, cg.refdef.viewaxis[0], handOrigin );
+ 	VectorMA( handOrigin, ads->right * e, cg.refdef.viewaxis[1], handOrigin );
+ 	VectorMA( handOrigin, ads->up    * e, cg.refdef.viewaxis[2], handOrigin );
+-	angles[PITCH] += ( bg_cod.adsPitch + ads->pitch ) * e;
+-	angles[YAW]   += ( bg_cod.adsYaw   + ads->yaw )   * e;
+-	angles[ROLL]  += ( bg_cod.adsRoll  + ads->roll )  * e;
+ }
+ 
+ /*
+diff --git a/SP/code/game/bg_cod.c b/SP/code/game/bg_cod.c
+index a38916c1..3f0dc070 100644
+--- a/SP/code/game/bg_cod.c
++++ b/SP/code/game/bg_cod.c
+@@ -67,15 +67,15 @@ const codCvarDef_t bg_codCvars[] = {
+ 	// it doesn't fill the screen from the hip. Used as a fine bias on top of tag_flash align.
+ 	{ "cod_adsGunFovComp",      "2",    0,            CODOFS( adsGunFovComp ),      0 },
+ 	// codmod: CoD-style iron-sight auto-align defaults (cgame). Per-weapon table can override.
+-	// Tuned in-game on the starting pistol (Luger): Dist 18 / Height 4.
+-	{ "cod_adsSightHeight",     "4",    0,            CODOFS( adsSightHeight ),     0 },
++	// Tuned in-game on the starting pistol (Luger): Dist 18 / Height 3 / Yaw -5 / Roll 11.
++	{ "cod_adsSightHeight",     "3",    0,            CODOFS( adsSightHeight ),     0 },
+ 	{ "cod_adsBarrelBack",      "10",   0,            CODOFS( adsBarrelBack ),      0 },
+ 	{ "cod_adsSightDist",       "18",   0,            CODOFS( adsSightDist ),       0 },
+ 	// codmod: RTCW viewmodels are built for hip-fire; tag_flash "straight" can still look
+-	// diagonally held. Global angle bias after auto-align (Luger: ~7° clockwise from above).
++	// diagonally held. Applied before sight centering (Luger in-game tune).
+ 	{ "cod_adsPitch",           "0",    0,            CODOFS( adsPitch ),           0 },
+-	{ "cod_adsYaw",             "-7",   0,            CODOFS( adsYaw ),             0 },
+-	{ "cod_adsRoll",            "0",    0,            CODOFS( adsRoll ),            0 },
++	{ "cod_adsYaw",             "-5",   0,            CODOFS( adsYaw ),             0 },
++	{ "cod_adsRoll",            "11",   0,            CODOFS( adsRoll ),            0 },
+ 	{ "cod_scopeSwitchTime",    "0",    0,            CODOFS( scopeSwitchTime ),    0 },
+ 
+ 	// codmod: Phase 3.5 alignment tooling -- see docs/phase-3-ads.md "Alignment tooling".
+-- 
+2.56.0
+

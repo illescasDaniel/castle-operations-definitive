@@ -1,0 +1,579 @@
+From 03a1ab1776b6866b43b8dbf07d1af43ac07434f0 Mon Sep 17 00:00:00 2001
+From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
+Date: Fri, 9 Oct 2026 13:44:56 +0200
+Subject: [PATCH 50/64] Flashlight: rend2 eye-origin spot cones
+ (AddSpotLightToScene).
+
+Replace the point-dlight chain (and wall-impact blob) with dual spot
+lights from the view origin; GLSL applies cone attenuation under
+r_dlightMode 1. REF_API 9 + CG_R_ADDSPOTLIGHTTOSCENE.
+---
+ SP/code/cgame/cg_cod.c              | 93 +++++++----------------------
+ SP/code/cgame/cg_local.h            |  2 +
+ SP/code/cgame/cg_public.h           |  4 +-
+ SP/code/cgame/cg_syscalls.asm       |  2 +
+ SP/code/cgame/cg_syscalls.c         |  6 ++
+ SP/code/client/cl_cgame.c           |  5 ++
+ SP/code/rend2/glsl/dlight_vp.glsl   | 18 ++++++
+ SP/code/rend2/glsl/lightall_fp.glsl | 16 +++++
+ SP/code/rend2/glsl/lightall_vp.glsl |  9 +++
+ SP/code/rend2/tr_glsl.c             |  2 +
+ SP/code/rend2/tr_init.c             |  1 +
+ SP/code/rend2/tr_light.c            |  9 +++
+ SP/code/rend2/tr_local.h            |  9 +++
+ SP/code/rend2/tr_scene.c            | 44 ++++++++++++++
+ SP/code/rend2/tr_shade.c            | 18 ++++++
+ SP/code/renderer/tr_init.c          |  1 +
+ SP/code/renderer/tr_local.h         |  2 +
+ SP/code/renderer/tr_public.h        |  5 +-
+ SP/code/renderer/tr_scene.c         | 14 +++++
+ 19 files changed, 185 insertions(+), 75 deletions(-)
+
+diff --git a/SP/code/cgame/cg_cod.c b/SP/code/cgame/cg_cod.c
+index d08bb6d6..3db34344 100644
+--- a/SP/code/cgame/cg_cod.c
++++ b/SP/code/cgame/cg_cod.c
+@@ -847,10 +847,8 @@ void CG_ToggleFlashlight_f( void ) {
+ }
+ 
+ void CG_CodAddFlashlight( void ) {
+-	vec3_t start, dir, end, lightPos;
+-	trace_t tr;
+-	float intensity, range, minDist, hitDist, closeScale, t, falloff, radius;
+-	int i;
++	vec3_t start, dir;
++	float intensity, radius;
+ 
+ 	if ( !cg.codFlashlightOn ) {
+ 		return;
+@@ -869,83 +867,32 @@ void CG_CodAddFlashlight( void ) {
+ 	if ( intensity < 1.0f ) {
+ 		intensity = 500.0f;
+ 	}
+-	range = intensity * 2.0f;
+-	if ( range < 448.0f ) {
+-		range = 448.0f;
++	// Beam reach (dlight radius). Intensity cvar doubles as a range scale.
++	radius = intensity * 2.2f;
++	if ( radius < 512.0f ) {
++		radius = 512.0f;
+ 	}
+-	if ( range > 1600.0f ) {
+-		range = 1600.0f;
++	if ( radius > 1800.0f ) {
++		radius = 1800.0f;
+ 	}
+ 
+-	// cod_flashlightMinDist: hit distance where dlights reach full strength.
+-	// Linear ramp 55% at contact → 100% at minDist (no hard floor that masked tuning).
+-	minDist = bg_cod.flashlightMinDist;
+-	if ( minDist < 48.0f ) {
+-		minDist = 48.0f;
+-	}
+-	if ( minDist > 768.0f ) {
+-		minDist = 768.0f;
+-	}
++	// MinDist kept for menu/tuning compatibility; spots don't need the old close-wall curve.
++	(void)bg_cod.flashlightMinDist;
+ 
++	// Origin slightly forward of the eye so the gun mesh / near plane don't bathe the world.
+ 	VectorCopy( cg.refdef.vieworg, start );
+-	VectorMA( start, 12.0f, cg.refdef.viewaxis[0], start );
++	VectorMA( start, 10.0f, cg.refdef.viewaxis[0], start );
+ 	VectorCopy( cg.refdef.viewaxis[0], dir );
+ 
+-	VectorMA( start, range, dir, end );
+-	CG_Trace( &tr, start, NULL, NULL, end, cg.snap->ps.clientNum, MASK_SHOT );
+-	hitDist = range * tr.fraction;
+-
+-	t = hitDist / minDist;
+-	if ( t > 1.0f ) {
+-		t = 1.0f;
+-	} else if ( t < 0.0f ) {
+-		t = 0.0f;
+-	}
+-	closeScale = 0.55f + 0.45f * t;
+-
+-	// Lighting only — no CG_Spotlight cone/core overlay (HUD icon shows on-state).
+-	// REF_FORCE_DLIGHT: wolfconfig often has r_dynamiclight 0.
+-
+-	VectorMA( start, 16.0f, dir, lightPos );
+-	if ( hitDist > 20.0f ) {
+-		trap_R_AddLightToScene( lightPos, intensity * 0.14f * closeScale,
++	// Eye-origin spot cones (rend2). No impact point-light on the aimed wall — that was the
++	// "each wall texture gets individually bright" look. REF_FORCE_DLIGHT: wolfconfig often
++	// has r_dynamiclight 0.
++	trap_R_AddSpotLightToScene( start, radius * 0.55f,
+ 								bg_cod.flashlightR, bg_cod.flashlightG, bg_cod.flashlightB,
+-								REF_FORCE_DLIGHT );
+-	}
+-
+-	if ( hitDist > 72.0f ) {
+-		for ( i = 1; i <= 3; i++ ) {
+-			t = ( (float)i / 3.0f ) * tr.fraction;
+-			if ( t < 0.12f ) {
+-				continue;
+-			}
+-			falloff = 1.0f - t * 0.55f;
+-			radius = intensity * 0.22f * falloff * closeScale;
+-			if ( radius < 28.0f ) {
+-				continue;
+-			}
+-			VectorMA( start, range * t, dir, lightPos );
+-			trap_R_AddLightToScene( lightPos, radius,
+-									bg_cod.flashlightR, bg_cod.flashlightG, bg_cod.flashlightB,
+-									REF_FORCE_DLIGHT );
+-		}
+-	}
+-
+-	// Always light the aimed surface (close walls included).
+-	if ( tr.fraction < 1.0f ) {
+-		VectorMA( start, hitDist - 6.0f, dir, lightPos );
+-		if ( hitDist < 12.0f ) {
+-			VectorMA( start, hitDist * 0.5f, dir, lightPos );
+-		}
+-		trap_R_AddLightToScene( lightPos, intensity * 0.42f * closeScale,
+-								bg_cod.flashlightR, bg_cod.flashlightG, bg_cod.flashlightB,
+-								REF_FORCE_DLIGHT );
+-	} else {
+-		VectorMA( start, range * 0.55f, dir, lightPos );
+-		trap_R_AddLightToScene( lightPos, intensity * 0.2f,
+-								bg_cod.flashlightR, bg_cod.flashlightG, bg_cod.flashlightB,
+-								REF_FORCE_DLIGHT );
+-	}
++								dir, 16.0f, REF_FORCE_DLIGHT );
++	trap_R_AddSpotLightToScene( start, radius,
++								bg_cod.flashlightR * 0.65f, bg_cod.flashlightG * 0.65f, bg_cod.flashlightB * 0.65f,
++								dir, 28.0f, REF_FORCE_DLIGHT );
+ }
+ 
+ /*
+diff --git a/SP/code/cgame/cg_local.h b/SP/code/cgame/cg_local.h
+index 76eb0325..bceb4aaa 100644
+--- a/SP/code/cgame/cg_local.h
++++ b/SP/code/cgame/cg_local.h
+@@ -2440,6 +2440,8 @@ void        trap_R_AddPolysToScene( qhandle_t hShader, int numVerts, const polyV
+ void        trap_RB_ZombieFXAddNewHit( int entityNum, const vec3_t hitPos, const vec3_t hitDir );
+ // done.
+ void        trap_R_AddLightToScene( const vec3_t org, float intensity, float r, float g, float b, int overdraw );
++void        trap_R_AddSpotLightToScene( const vec3_t org, float intensity, float r, float g, float b,
++										const vec3_t dir, float coneAngleDeg, int overdraw ); // codmod
+ void	    trap_R_AddAdditiveLightToScene( const vec3_t org, float intensity, float r, float g, float b );
+ void        trap_R_AddCoronaToScene( const vec3_t org, float r, float g, float b, float scale, int id, int flags );  //----(SA)	modified
+ void        trap_R_RenderScene( const refdef_t *fd );
+diff --git a/SP/code/cgame/cg_public.h b/SP/code/cgame/cg_public.h
+index 02e18c0a..0ab2bca4 100644
+--- a/SP/code/cgame/cg_public.h
++++ b/SP/code/cgame/cg_public.h
+@@ -219,7 +219,9 @@ typedef enum {
+ 	CG_GETMODELINFO,
+ 
+ 	// New in IORTCW
+-	CG_ALLOC = 900
++	CG_ALLOC = 900,
++	// codmod: directional spotlight (rend2 cone; opengl1 falls back to point)
++	CG_R_ADDSPOTLIGHTTOSCENE = 901
+ 
+ } cgameImport_t;
+ 
+diff --git a/SP/code/cgame/cg_syscalls.asm b/SP/code/cgame/cg_syscalls.asm
+index c27b88e4..2b312bc8 100644
+--- a/SP/code/cgame/cg_syscalls.asm
++++ b/SP/code/cgame/cg_syscalls.asm
+@@ -129,4 +129,6 @@ equ trap_GetModelInfo			-126
+ 
+ ; New in iortcw
+ equ trap_Alloc					-901
++; codmod
++equ trap_R_AddSpotLightToScene			-902
+ 
+diff --git a/SP/code/cgame/cg_syscalls.c b/SP/code/cgame/cg_syscalls.c
+index 40b7c39c..e041ec66 100644
+--- a/SP/code/cgame/cg_syscalls.c
++++ b/SP/code/cgame/cg_syscalls.c
+@@ -320,6 +320,12 @@ void    trap_R_AddLightToScene( const vec3_t org, float intensity, float r, floa
+ 	syscall( CG_R_ADDLIGHTTOSCENE, org, PASSFLOAT( intensity ), PASSFLOAT( r ), PASSFLOAT( g ), PASSFLOAT( b ), overdraw );
+ }
+ 
++void    trap_R_AddSpotLightToScene( const vec3_t org, float intensity, float r, float g, float b,
++									const vec3_t dir, float coneAngleDeg, int overdraw ) {
++	syscall( CG_R_ADDSPOTLIGHTTOSCENE, org, PASSFLOAT( intensity ), PASSFLOAT( r ), PASSFLOAT( g ), PASSFLOAT( b ),
++			 dir, PASSFLOAT( coneAngleDeg ), overdraw );
++}
++
+ //----(SA)
+ void    trap_R_AddCoronaToScene( const vec3_t org, float r, float g, float b, float scale, int id, int flags ) {
+ 	syscall( CG_R_ADDCORONATOSCENE, org, PASSFLOAT( r ), PASSFLOAT( g ), PASSFLOAT( b ), PASSFLOAT( scale ), id, flags );
+diff --git a/SP/code/client/cl_cgame.c b/SP/code/client/cl_cgame.c
+index 36dcfa58..d87f37f8 100644
+--- a/SP/code/client/cl_cgame.c
++++ b/SP/code/client/cl_cgame.c
+@@ -846,6 +846,11 @@ intptr_t CL_CgameSystemCalls( intptr_t *args ) {
+ 	case CG_ALLOC:
+ 		return VM_Alloc( args[1] );
+ 
++	// codmod: directional spotlight
++	case CG_R_ADDSPOTLIGHTTOSCENE:
++		re.AddSpotLightToScene( VMA( 1 ), VMF( 2 ), VMF( 3 ), VMF( 4 ), VMF( 5 ), VMA( 6 ), VMF( 7 ), args[8] );
++		return 0;
++
+ 	default:
+ 		Com_Error( ERR_DROP, "Bad cgame system trap: %ld", (long int) args[0] );
+ 	}
+diff --git a/SP/code/rend2/glsl/dlight_vp.glsl b/SP/code/rend2/glsl/dlight_vp.glsl
+index c326bd78..0915a9d4 100644
+--- a/SP/code/rend2/glsl/dlight_vp.glsl
++++ b/SP/code/rend2/glsl/dlight_vp.glsl
+@@ -3,6 +3,7 @@ attribute vec4 attr_TexCoord0;
+ attribute vec3 attr_Normal;
+ 
+ uniform vec4   u_DlightInfo;
++uniform vec4   u_LightSpot; // codmod: xyz dir (local), w = cos(outer); w < -1.5 = point
+ 
+ #if defined(USE_DEFORM_VERTEXES)
+ uniform int    u_DeformGen;
+@@ -87,6 +88,23 @@ void main()
+ 	var_Tex1 = dist.xy * u_DlightInfo.a + vec2(0.5);
+ 	float dlightmod = step(0.0, dot(dist, normal));
+ 	dlightmod *= clamp(2.0 * (1.0 - abs(dist.z) * u_DlightInfo.a), 0.0, 1.0);
++
++	// codmod: clip classic projective dlights to the spotlight cone
++	if (u_LightSpot.w > -1.5)
++	{
++		vec3 lightToFrag = -dist;
++		float len2 = dot(lightToFrag, lightToFrag);
++		if (len2 > 0.0001)
++		{
++			float cd = dot(normalize(u_LightSpot.xyz), lightToFrag * inversesqrt(len2));
++			float inner = mix(u_LightSpot.w, 1.0, 0.35);
++			dlightmod *= smoothstep(u_LightSpot.w, inner, cd);
++		}
++		else
++		{
++			dlightmod = 0.0;
++		}
++	}
+ 	
+ 	var_Color = u_Color * dlightmod;
+ }
+diff --git a/SP/code/rend2/glsl/lightall_fp.glsl b/SP/code/rend2/glsl/lightall_fp.glsl
+index 28b59eb7..7a15cd99 100644
+--- a/SP/code/rend2/glsl/lightall_fp.glsl
++++ b/SP/code/rend2/glsl/lightall_fp.glsl
+@@ -225,6 +225,21 @@ float CalcLightAttenuation(float point, float normDist)
+ 	return attenuation;
+ }
+ 
++#if defined(USE_LIGHT_VECTOR)
++// codmod: spotlight cone. lightToFrag is normalized direction from light → fragment.
++// u_LightSpot.w < -1.5 → omnidirectional (disabled).
++uniform vec4 u_LightSpot;
++
++float CalcSpotAttenuation(vec3 lightToFrag)
++{
++	if (u_LightSpot.w < -1.5)
++		return 1.0;
++	float cd = dot(normalize(u_LightSpot.xyz), lightToFrag);
++	float inner = mix(u_LightSpot.w, 1.0, 0.35);
++	return smoothstep(u_LightSpot.w, inner, cd);
++}
++#endif
++
+ #if defined(USE_BOX_CUBEMAP_PARALLAX)
+ vec4 hitCube(vec3 ray, vec3 pos, vec3 invSize, float lod, samplerCube tex)
+ {
+@@ -322,6 +337,7 @@ void main()
+ 
+   #if defined(USE_LIGHT_VECTOR)
+ 	attenuation  = CalcLightAttenuation(float(var_LightDir.w > 0.0), var_LightDir.w / sqrLightDist);
++	attenuation *= CalcSpotAttenuation(-L);
+   #else
+ 	attenuation  = 1.0;
+   #endif
+diff --git a/SP/code/rend2/glsl/lightall_vp.glsl b/SP/code/rend2/glsl/lightall_vp.glsl
+index fb867a86..2823b7ee 100644
+--- a/SP/code/rend2/glsl/lightall_vp.glsl
++++ b/SP/code/rend2/glsl/lightall_vp.glsl
+@@ -64,6 +64,7 @@ uniform mat4 u_BoneMatrix[MAX_GLSL_BONES];
+ #if defined(USE_LIGHT_VECTOR)
+ uniform vec4   u_LightOrigin;
+ uniform float  u_LightRadius;
++uniform vec4   u_LightSpot; // codmod: xyz dir, w = cos(outer); w < -1.5 = point
+ uniform vec3   u_DirectedLight;
+ uniform vec3   u_AmbientLight;
+ #endif
+@@ -247,6 +248,14 @@ void main()
+ 	float sqrLightDist = dot(L, L);
+ 	float NL = clamp(dot(normalize(normal), L) / sqrt(sqrLightDist), 0.0, 1.0);
+ 	float attenuation = CalcLightAttenuation(u_LightOrigin.w, u_LightRadius * u_LightRadius / sqrLightDist);
++	// codmod spotlight
++	if (u_LightSpot.w > -1.5)
++	{
++		vec3 lightToFrag = -L / sqrt(sqrLightDist);
++		float cd = dot(normalize(u_LightSpot.xyz), lightToFrag);
++		float inner = mix(u_LightSpot.w, 1.0, 0.35);
++		attenuation *= smoothstep(u_LightSpot.w, inner, cd);
++	}
+ 
+ 	var_Color.rgb *= u_DirectedLight * (attenuation * NL) + u_AmbientLight;
+   #else
+diff --git a/SP/code/rend2/tr_glsl.c b/SP/code/rend2/tr_glsl.c
+index 135b6ce6..d18005ba 100644
+--- a/SP/code/rend2/tr_glsl.c
++++ b/SP/code/rend2/tr_glsl.c
+@@ -160,6 +160,8 @@ static uniformInfo_t uniformsInfo[] =
+ 	{ "u_FireRiseDir", GLSL_VEC3 },
+ 	{ "u_ZFadeLowest", GLSL_FLOAT },
+ 	{ "u_ZFadeHighest", GLSL_FLOAT },
++
++	{ "u_LightSpot", GLSL_VEC4 },
+ };
+ 
+ typedef enum
+diff --git a/SP/code/rend2/tr_init.c b/SP/code/rend2/tr_init.c
+index 23332c3f..8d4c64d7 100644
+--- a/SP/code/rend2/tr_init.c
++++ b/SP/code/rend2/tr_init.c
+@@ -1823,6 +1823,7 @@ refexport_t *GetRefAPI( int apiVersion, refimport_t *rimp ) {
+ 	re.AddPolysToScene  = RE_AddPolysToScene;
+ 	// done.
+ 	re.AddLightToScene  = RE_AddLightToScene;
++	re.AddSpotLightToScene = RE_AddSpotLightToScene; // codmod
+ //----(SA)
+ 	re.AddCoronaToScene = RE_AddCoronaToScene;
+ 	re.SetFog           = R_SetFog;
+diff --git a/SP/code/rend2/tr_light.c b/SP/code/rend2/tr_light.c
+index 8a4a8d6c..1551c931 100644
+--- a/SP/code/rend2/tr_light.c
++++ b/SP/code/rend2/tr_light.c
+@@ -55,6 +55,15 @@ void R_TransformDlights( int count, dlight_t *dl, orientationr_t *or ) {
+ 		dl->transformed[0] = DotProduct( temp, or->axis[0] );
+ 		dl->transformed[1] = DotProduct( temp, or->axis[1] );
+ 		dl->transformed[2] = DotProduct( temp, or->axis[2] );
++
++		// codmod: spot direction into local space (for ProjectDlightTexture)
++		if ( dl->spotCosOuter > -1.5f ) {
++			dl->transformedDir[0] = DotProduct( dl->dir, or->axis[0] );
++			dl->transformedDir[1] = DotProduct( dl->dir, or->axis[1] );
++			dl->transformedDir[2] = DotProduct( dl->dir, or->axis[2] );
++		} else {
++			VectorClear( dl->transformedDir );
++		}
+ 	}
+ }
+ 
+diff --git a/SP/code/rend2/tr_local.h b/SP/code/rend2/tr_local.h
+index c5b531e7..5db0cce6 100644
+--- a/SP/code/rend2/tr_local.h
++++ b/SP/code/rend2/tr_local.h
+@@ -568,6 +568,11 @@ typedef struct dlight_s {
+ 
+ 	qboolean forced;	//----(SA) use this dlight when r_dynamiclight is either 1 or 2 (rather than just 1) for "important" gameplay lights (alarm lights, etc)
+ 	//done
++
++	// codmod: spotlight cone (world-space). spotCosOuter <= -1.5 → omnidirectional point light.
++	vec3_t	dir;
++	vec3_t	transformedDir;
++	float	spotCosOuter;
+ } dlight_t;
+ 
+ typedef struct corona_s {
+@@ -802,6 +807,8 @@ typedef enum
+ 	UNIFORM_ZFADELOWEST,
+ 	UNIFORM_ZFADEHIGHEST,
+ 
++	UNIFORM_LIGHTSPOT, // xyz = world/local spot dir, w = cos(outer half-angle); w < -1.5 = point
++
+ 	UNIFORM_COUNT
+ } uniform_t;
+ 
+@@ -2535,6 +2542,8 @@ void RE_AddPolysToScene( qhandle_t hShader, int numVerts, const polyVert_t *vert
+ // Ridah
+ void RE_AddLightToScene( const vec3_t org, float intensity, float r, float g, float b, int overdraw );
+ // done.
++void RE_AddSpotLightToScene( const vec3_t org, float intensity, float r, float g, float b,
++							 const vec3_t dir, float coneAngleDeg, int overdraw ); // codmod
+ //----(SA)
+ void RE_AddCoronaToScene( const vec3_t org, float r, float g, float b, float scale, int id, int flags );
+ //----(SA)
+diff --git a/SP/code/rend2/tr_scene.c b/SP/code/rend2/tr_scene.c
+index 3e49c1c5..5ba59c6b 100644
+--- a/SP/code/rend2/tr_scene.c
++++ b/SP/code/rend2/tr_scene.c
+@@ -366,6 +366,9 @@ void RE_AddLightToScene( const vec3_t org, float intensity, float r, float g, fl
+ 	dl->color[2] = b;
+ 	dl->dlshader = NULL;
+ 	dl->overdraw = 0;
++	VectorClear( dl->dir );
++	VectorClear( dl->transformedDir );
++	dl->spotCosOuter = -2.0f; // omnidirectional
+ 
+ 	if ( overdraw == 10 ) { // sorry, hijacking 10 for a quick hack (SA)
+ 		dl->dlshader = R_GetShaderByHandle( RE_RegisterShader( "negdlightshader" ) );
+@@ -377,6 +380,47 @@ void RE_AddLightToScene( const vec3_t org, float intensity, float r, float g, fl
+ }
+ // done.
+ 
++/*
++=====================
++RE_AddSpotLightToScene
++
++codmod: directional cone light. coneAngleDeg is the outer half-angle.
++Falls back to a point light if the direction is degenerate.
++=====================
++*/
++void RE_AddSpotLightToScene( const vec3_t org, float intensity, float r, float g, float b,
++							 const vec3_t dir, float coneAngleDeg, int overdraw ) {
++	dlight_t *dl;
++	vec3_t ndir;
++	float cosOuter;
++	int idx;
++
++	if ( !dir || VectorLengthSquared( dir ) < 0.0001f ) {
++		RE_AddLightToScene( org, intensity, r, g, b, overdraw );
++		return;
++	}
++
++	idx = r_numdlights;
++	RE_AddLightToScene( org, intensity, r, g, b, overdraw );
++	if ( r_numdlights == idx ) {
++		return; // light was rejected
++	}
++
++	dl = &backEndData->dlights[r_numdlights - 1];
++	VectorNormalize2( dir, ndir );
++	VectorCopy( ndir, dl->dir );
++	VectorCopy( ndir, dl->transformedDir );
++
++	if ( coneAngleDeg < 1.0f ) {
++		coneAngleDeg = 1.0f;
++	}
++	if ( coneAngleDeg > 89.0f ) {
++		coneAngleDeg = 89.0f;
++	}
++	cosOuter = (float)cos( (double)DEG2RAD( coneAngleDeg ) );
++	dl->spotCosOuter = cosOuter;
++}
++
+ 
+ /*
+ ==============
+diff --git a/SP/code/rend2/tr_shade.c b/SP/code/rend2/tr_shade.c
+index 2080a150..44efd767 100644
+--- a/SP/code/rend2/tr_shade.c
++++ b/SP/code/rend2/tr_shade.c
+@@ -440,6 +440,13 @@ static void ProjectDlightTexture( void ) {
+ 		vector[2] = origin[2];
+ 		vector[3] = scale;
+ 		GLSL_SetUniformVec4(sp, UNIFORM_DLIGHTINFO, vector);
++
++		// codmod: spot cone (local space after R_TransformDlights)
++		vector[0] = dl->transformedDir[0];
++		vector[1] = dl->transformedDir[1];
++		vector[2] = dl->transformedDir[2];
++		vector[3] = dl->spotCosOuter;
++		GLSL_SetUniformVec4(sp, UNIFORM_LIGHTSPOT, vector);
+ 	  
+ 		GL_BindToTMU( tr.dlightImage, TB_COLORMAP );
+ 
+@@ -873,6 +880,13 @@ static void ForwardDlight( void ) {
+ 
+ 		GLSL_SetUniformFloat(sp, UNIFORM_LIGHTRADIUS, radius);
+ 
++		// codmod: spot cone in world space (ForwardDlight uses world-space positions)
++		vector[0] = dl->dir[0];
++		vector[1] = dl->dir[1];
++		vector[2] = dl->dir[2];
++		vector[3] = dl->spotCosOuter;
++		GLSL_SetUniformVec4(sp, UNIFORM_LIGHTSPOT, vector);
++
+ 		GLSL_SetUniformVec4(sp, UNIFORM_NORMALSCALE, pStage->normalScale);
+ 		GLSL_SetUniformVec4(sp, UNIFORM_SPECULARSCALE, pStage->specularScale);
+ 		
+@@ -1454,6 +1468,10 @@ static void RB_IterateStagesGeneric( shaderCommands_t *input )
+ 			GLSL_SetUniformVec3(sp, UNIFORM_MODELLIGHTDIR, backEnd.currentEntity->modelLightDir);
+ 
+ 			GLSL_SetUniformFloat(sp, UNIFORM_LIGHTRADIUS, 0.0f);
++
++			// codmod: not a spotlight
++			VectorSet4( vec, 0.0f, 0.0f, 0.0f, -2.0f );
++			GLSL_SetUniformVec4( sp, UNIFORM_LIGHTSPOT, vec );
+ 		}
+ 
+ 		if (pStage->alphaGen == AGEN_PORTAL)
+diff --git a/SP/code/renderer/tr_init.c b/SP/code/renderer/tr_init.c
+index 9a6db68e..77515484 100644
+--- a/SP/code/renderer/tr_init.c
++++ b/SP/code/renderer/tr_init.c
+@@ -1616,6 +1616,7 @@ refexport_t *GetRefAPI( int apiVersion, refimport_t *rimp ) {
+ 	re.AddPolysToScene  = RE_AddPolysToScene;
+ 	// done.
+ 	re.AddLightToScene  = RE_AddLightToScene;
++	re.AddSpotLightToScene = RE_AddSpotLightToScene; // codmod
+ //----(SA)
+ 	re.AddCoronaToScene = RE_AddCoronaToScene;
+ 	re.SetFog           = R_SetFog;
+diff --git a/SP/code/renderer/tr_local.h b/SP/code/renderer/tr_local.h
+index f1ce04e2..0879697f 100644
+--- a/SP/code/renderer/tr_local.h
++++ b/SP/code/renderer/tr_local.h
+@@ -1660,6 +1660,8 @@ void RE_AddPolysToScene( qhandle_t hShader, int numVerts, const polyVert_t *vert
+ // Ridah
+ void RE_AddLightToScene( const vec3_t org, float intensity, float r, float g, float b, int overdraw );
+ // done.
++void RE_AddSpotLightToScene( const vec3_t org, float intensity, float r, float g, float b,
++							 const vec3_t dir, float coneAngleDeg, int overdraw ); // codmod
+ //----(SA)
+ void RE_AddCoronaToScene( const vec3_t org, float r, float g, float b, float scale, int id, int flags );
+ //----(SA)
+diff --git a/SP/code/renderer/tr_public.h b/SP/code/renderer/tr_public.h
+index f233b0f3..6230da7b 100644
+--- a/SP/code/renderer/tr_public.h
++++ b/SP/code/renderer/tr_public.h
+@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
+ 
+ #include "tr_types.h"
+ 
+-#define REF_API_VERSION     8
++#define REF_API_VERSION     9
+ 
+ //
+ // these are the functions exported by the refresh module
+@@ -78,6 +78,9 @@ typedef struct {
+ 	void ( *AddPolysToScene )( qhandle_t hShader, int numVerts, const polyVert_t *verts, int numPolys );
+ 	// done.
+ 	void ( *AddLightToScene )( const vec3_t org, float intensity, float r, float g, float b, int overdraw );
++	// codmod: directional spotlight (coneAngleDeg = half-angle). Point lights use AddLightToScene.
++	void ( *AddSpotLightToScene )( const vec3_t org, float intensity, float r, float g, float b,
++								   const vec3_t dir, float coneAngleDeg, int overdraw );
+ //----(SA)
+ 	void ( *AddCoronaToScene )( const vec3_t org, float r, float g, float b, float scale, int id, int flags );
+ 	void ( *SetFog )( int fogvar, int var1, int var2, float r, float g, float b, float density );
+diff --git a/SP/code/renderer/tr_scene.c b/SP/code/renderer/tr_scene.c
+index 43af1d3f..18c0baa8 100644
+--- a/SP/code/renderer/tr_scene.c
++++ b/SP/code/renderer/tr_scene.c
+@@ -368,6 +368,20 @@ void RE_AddLightToScene( const vec3_t org, float intensity, float r, float g, fl
+ }
+ // done.
+ 
++/*
++=====================
++RE_AddSpotLightToScene
++
++codmod: opengl1 has no cone lighting — fall back to a point dlight.
++=====================
++*/
++void RE_AddSpotLightToScene( const vec3_t org, float intensity, float r, float g, float b,
++							 const vec3_t dir, float coneAngleDeg, int overdraw ) {
++	(void)dir;
++	(void)coneAngleDeg;
++	RE_AddLightToScene( org, intensity, r, g, b, overdraw );
++}
++
+ 
+ /*
+ ==============
+-- 
+2.56.0
+

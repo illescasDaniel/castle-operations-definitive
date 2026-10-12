@@ -1,0 +1,176 @@
+From 1cb2466f0148372bcd429714664c07b8e6193758 Mon Sep 17 00:00:00 2001
+From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
+Date: Mon, 12 Oct 2026 16:28:04 +0200
+Subject: [PATCH 63/64] Kick: cod_kickDamage (default 50); +quickkick pad
+ command (R3 tap quickknife, hold kick).
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+---
+ SP/code/cgame/cg_cod.c         | 36 ++++++++++++++++++++++++++++++++++
+ SP/code/cgame/cg_cod_menu.c    |  1 +
+ SP/code/cgame/cg_consolecmds.c |  2 ++
+ SP/code/cgame/cg_local.h       |  6 ++++++
+ SP/code/cgame/cg_view.c        |  1 +
+ SP/code/game/bg_cod.c          |  1 +
+ SP/code/game/bg_cod.h          |  1 +
+ SP/code/game/g_cmds.c          |  5 +++++
+ 8 files changed, 53 insertions(+)
+
+diff --git a/SP/code/cgame/cg_cod.c b/SP/code/cgame/cg_cod.c
+index 143d1912..9f0f3618 100644
+--- a/SP/code/cgame/cg_cod.c
++++ b/SP/code/cgame/cg_cod.c
+@@ -1464,6 +1464,42 @@ void CG_QuickKnife_f( void ) {
+ 	CG_FinishWeaponChange( cur, WP_KNIFE );
+ }
+ 
++// CoD: tap R3 = quick knife; hold = kick (slower, hits harder). Kick is pulsed, not held.
++#define COD_QUICKKICK_HOLD_MS 250
++#define COD_QUICKKICK_PULSE_MS 120
++
++void CG_QuickKickDown_f( void ) {
++	cg.codQkickDown = qtrue;
++	cg.codQkickStart = cg.time;
++	cg.codQkickState = 0;
++}
++
++void CG_QuickKickUp_f( void ) {
++	if ( !cg.codQkickDown ) {
++		return;
++	}
++	cg.codQkickDown = qfalse;
++	if ( cg.codQkickState == 1 ) {
++		trap_SendConsoleCommand( "-kick\n" );
++	} else if ( cg.codQkickState == 0 ) {
++		CG_QuickKnife_f();  // tap
++	}
++	cg.codQkickState = 0;
++}
++
++void CG_CodUpdateQuickKick( void ) {
++	if ( !cg.codQkickDown ) {
++		return;
++	}
++	if ( cg.codQkickState == 0 && cg.time - cg.codQkickStart >= COD_QUICKKICK_HOLD_MS ) {
++		trap_SendConsoleCommand( "+kick\n" );
++		cg.codQkickState = 1;
++	} else if ( cg.codQkickState == 1 && cg.time - cg.codQkickStart >= COD_QUICKKICK_HOLD_MS + COD_QUICKKICK_PULSE_MS ) {
++		trap_SendConsoleCommand( "-kick\n" );
++		cg.codQkickState = 2;
++	}
++}
++
+ /*
+ ================
+ CG_CodUpdateQuickKnife
+diff --git a/SP/code/cgame/cg_cod_menu.c b/SP/code/cgame/cg_cod_menu.c
+index 01b6302f..15f4d9b4 100644
+--- a/SP/code/cgame/cg_cod_menu.c
++++ b/SP/code/cgame/cg_cod_menu.c
+@@ -294,6 +294,7 @@ static const codMenuItem_t cg_codMenuItems[] = {
+ 	{ COD_MI_BOOL,  "cod_semiAutoClick",      "cod_semiAutoClick",      1,    1,    NULL },
+ 	{ COD_MI_BOOL,  "cod_quickKnifeEnable",   "cod_quickKnifeEnable",   1,    1,    NULL },
+ 	{ COD_MI_FLOAT, "cod_quickKnifeTimeout",  "cod_quickKnifeTimeout",  50,   200,  NULL },
++	{ COD_MI_FLOAT, "cod_kickDamage",         "cod_kickDamage",         5,    25,   NULL },
+ 	{ COD_MI_FLOAT, "cod_knifeSwitchTime",    "cod_knifeSwitchTime",    5,    25,   NULL },
+ 
+ 	{ COD_MI_SECTION, "CROUCH / DUCK", NULL, 0, 0, NULL },
+diff --git a/SP/code/cgame/cg_consolecmds.c b/SP/code/cgame/cg_consolecmds.c
+index 7d9ac50b..f6bf2465 100644
+--- a/SP/code/cgame/cg_consolecmds.c
++++ b/SP/code/cgame/cg_consolecmds.c
+@@ -432,6 +432,8 @@ static consoleCommand_t commands[] = {
+ 	{ "-reloaduse", CG_ReloadUseUp_f },
+ 	{ "toggleflashlight", CG_ToggleFlashlight_f }, // codmod: phase 5d flashlight (bind l)
+ 	{ "cod_resetbinds", CG_CodResetBinds_f }, // codmod: phase 5d full bind reset
++	{ "+quickkick", CG_QuickKickDown_f }, // codmod: pad R3 tap quickknife / hold kick
++	{ "-quickkick", CG_QuickKickUp_f },
+ 	{ "quickknife", CG_QuickKnife_f }, // codmod: phase 5.5 CoD-style quick knife (bind v)
+ 	{ "cod_adsTuneLoad", CG_CodAdsTuneLoad_f },   // codmod: phase 3.5 alignment tooling
+ 	{ "cod_adsTuneDump", CG_CodAdsTuneDump_f },   // codmod: phase 3.5 alignment tooling
+diff --git a/SP/code/cgame/cg_local.h b/SP/code/cgame/cg_local.h
+index 6f76f942..a94f897f 100644
+--- a/SP/code/cgame/cg_local.h
++++ b/SP/code/cgame/cg_local.h
+@@ -819,6 +819,9 @@ typedef struct {
+ 	int codProneMovingTime;              // codmod: phase 6b — cg.time of last PRONE_MOVING edge
+ 	qboolean codProneWasMoving;          // codmod: previous frame's COD_SF_PRONE_MOVING
+ 
++	qboolean codQkickDown;               // codmod: +quickkick held (pad R3)
++	int      codQkickStart;              // codmod: cg.time at press
++	int      codQkickState;              // 0 idle/pending, 1 kick sent, 2 kick released
+ 	int codQkPrev;                       // codmod: phase 5.5 — weapon to restore after quickknife
+ 	int codQkState;                      // codmod: 0 idle, 1 switching, 2 swinging, 3 returning
+ 	int codQkStartTime;                  // codmod: cg.time when quickknife started
+@@ -2286,6 +2289,9 @@ void CG_CodUpdateCrouchProne( void );  // codmod: hold-crouch → prone
+ void CG_CodUpdateReloadUse( void );    // codmod: tap reload / hold use
+ void CG_CodAddFlashlight( void );      // codmod: phase 5d view dlight
+ void CG_CodDrawFlashlightHudIcon( float weapX, float weapY, float weapW, float weapH ); // codmod: HUD on-indicator
++void CG_QuickKickDown_f( void );      // codmod: pad R3 tap quickknife / hold kick
++void CG_QuickKickUp_f( void );
++void CG_CodUpdateQuickKick( void );
+ void CG_QuickKnife_f( void );          // codmod: phase 5.5 CoD-style quick knife
+ float CG_CodAdsFrac( void );           // codmod: phase 3.5, raw 0..1, forced to 1 by cod_adsLock
+ float CG_CodSprintFrac( void );        // codmod: phase 4, 0..1 visual sprint lower (eased)
+diff --git a/SP/code/cgame/cg_view.c b/SP/code/cgame/cg_view.c
+index c40942a8..56e3374d 100644
+--- a/SP/code/cgame/cg_view.c
++++ b/SP/code/cgame/cg_view.c
+@@ -1637,6 +1637,7 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
+ 
+ 	// codmod: CoD-style quick knife state machine (phase 5.5)
+ 	CG_CodUpdateQuickKnife();
++	CG_CodUpdateQuickKick();
+ 
+ 	// codmod: toggle crouch auto-stand on jump (phase 5d)
+ 	CG_CodUpdateToggleCrouch();
+diff --git a/SP/code/game/bg_cod.c b/SP/code/game/bg_cod.c
+index ec2c14fa..c040a1e6 100644
+--- a/SP/code/game/bg_cod.c
++++ b/SP/code/game/bg_cod.c
+@@ -141,6 +141,7 @@ const codCvarDef_t bg_codCvars[] = {
+ 
+ 	{ "cod_quickKnifeEnable",   "1",    0,            CODOFS( quickKnifeEnable ),   1 },
+ 	{ "cod_quickKnifeTimeout",  "900",  0,            CODOFS( quickKnifeTimeout ),  0 },
++	{ "cod_kickDamage",         "50",   0,            CODOFS( kickDamage ),         0 },
+ 	// codmod: snappy knife pull (was 250+250). 75 keeps anim readable but CoD-connected.
+ 	{ "cod_knifeSwitchTime",    "75",   0,            CODOFS( knifeSwitchTime ),    0 },
+ 
+diff --git a/SP/code/game/bg_cod.h b/SP/code/game/bg_cod.h
+index 791a6786..9d3b9518 100644
+--- a/SP/code/game/bg_cod.h
++++ b/SP/code/game/bg_cod.h
+@@ -110,6 +110,7 @@ typedef struct {
+ 
+ 	int quickKnifeEnable;      // cgame quickknife command (phase 5.5)
+ 	float quickKnifeTimeout;   // ms failsafe to return to previous weapon
++	float kickDamage;          // +kick damage (vanilla 15); slower than the knife so it hits harder
+ 	float knifeSwitchTime;     // ms drop/raise when switching to/from knife (0 = vanilla 250)
+ 
+ 	// codmod: Phase 5b vitals — health regen, stamina finish, HUD bars
+diff --git a/SP/code/game/g_cmds.c b/SP/code/game/g_cmds.c
+index eca02a0e..59355e3b 100644
+--- a/SP/code/game/g_cmds.c
++++ b/SP/code/game/g_cmds.c
+@@ -27,6 +27,7 @@ If you have questions concerning this license or the applicable additional terms
+ */
+ 
+ #include "g_local.h"
++#include "bg_cod.h"     // codmod: kick damage
+ 
+ /*
+ ==================
+@@ -1693,6 +1694,10 @@ int Cmd_WolfKick_f( gentity_t *ent ) {
+ 
+ 	int damage = 15;
+ 
++	if ( !ent->aiCharacter && bg_cod.enable && bg_cod.kickDamage > 0 ) {
++		damage = (int)bg_cod.kickDamage;
++	}
++
+ 	if ( ent->client->ps.leanf ) {
+ 		return 0;   // no kick when leaning
+ 
+-- 
+2.56.0
+

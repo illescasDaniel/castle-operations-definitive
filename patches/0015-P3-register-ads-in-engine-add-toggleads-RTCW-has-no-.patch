@@ -1,0 +1,97 @@
+From 1ae1a0acc6051ad3c489a9bee78db7c8bd781059 Mon Sep 17 00:00:00 2001
+From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
+Date: Thu, 8 Oct 2026 17:53:39 +0200
+Subject: [PATCH 15/64] P3: register +ads in engine; add toggleads (RTCW has no
+ alias)
+
+ioRTCW SP has no console alias command, so cfg alias +ads failed at
+runtime. Wire +ads/-ads to the same handlers as +wbutton6, and add a
+cgame toggleads for sticky aim.
+
+Co-authored-by: Cursor <cursoragent@cursor.com>
+---
+ SP/code/cgame/cg_cod.c         | 20 ++++++++++++++++++++
+ SP/code/cgame/cg_consolecmds.c |  1 +
+ SP/code/cgame/cg_local.h       |  1 +
+ SP/code/client/cl_input.c      |  6 ++++++
+ 4 files changed, 28 insertions(+)
+
+diff --git a/SP/code/cgame/cg_cod.c b/SP/code/cgame/cg_cod.c
+index c090f1dc..fd44e9bf 100644
+--- a/SP/code/cgame/cg_cod.c
++++ b/SP/code/cgame/cg_cod.c
+@@ -405,3 +405,23 @@ void CG_CodDump_f( void ) {
+ 		CG_Printf( "seta %s \"%s\"\n", bg_codCvars[i].name, value );
+ 	}
+ }
++
++/*
++================
++CG_ToggleAds_f
++
++codmod: sticky ADS toggle (phase 3.1). ioRTCW SP has no console `alias`/`vstr` toggle
++trick, so this command alternates +ads / -ads via the console. Bind with
++`bind MOUSE2 toggleads` instead of the default hold bind.
++================
++*/
++void CG_ToggleAds_f( void ) {
++	static qboolean held;
++
++	held = !held;
++	if ( held ) {
++		trap_SendConsoleCommand( "+ads\n" );
++	} else {
++		trap_SendConsoleCommand( "-ads\n" );
++	}
++}
+diff --git a/SP/code/cgame/cg_consolecmds.c b/SP/code/cgame/cg_consolecmds.c
+index dd173ded..37fd928f 100644
+--- a/SP/code/cgame/cg_consolecmds.c
++++ b/SP/code/cgame/cg_consolecmds.c
+@@ -424,6 +424,7 @@ static consoleCommand_t commands[] = {
+ 	// -NERVE - SMF
+ 
+ 	{ "cod_dump", CG_CodDump_f },   // codmod: phase 2.0, see cg_cod.c
++	{ "toggleads", CG_ToggleAds_f }, // codmod: phase 3.1 sticky ADS toggle
+ 	{ "cod_adsTuneLoad", CG_CodAdsTuneLoad_f }, // codmod: phase 3.5 alignment tooling
+ 	{ "cod_adsTuneDump", CG_CodAdsTuneDump_f }, // codmod: phase 3.5 alignment tooling
+ };
+diff --git a/SP/code/cgame/cg_local.h b/SP/code/cgame/cg_local.h
+index 50da17e2..9594a424 100644
+--- a/SP/code/cgame/cg_local.h
++++ b/SP/code/cgame/cg_local.h
+@@ -2217,6 +2217,7 @@ void CG_DrawTourneyScoreboard( void );
+ //
+ void CG_CodDrawDebugHud( void );
+ void CG_CodDump_f( void );
++void CG_ToggleAds_f( void );           // codmod: phase 3.1 sticky ADS toggle
+ float CG_CodAdsFrac( void );           // codmod: phase 3.5, raw 0..1, forced to 1 by cod_adsLock
+ void CG_CodUpdateAdsTune( void );      // codmod: phase 3.5 alignment tooling
+ void CG_CodAdsTuneLoad_f( void );      // codmod: phase 3.5 alignment tooling
+diff --git a/SP/code/client/cl_input.c b/SP/code/client/cl_input.c
+index 116e0deb..bd2d7c99 100644
+--- a/SP/code/client/cl_input.c
++++ b/SP/code/client/cl_input.c
+@@ -1074,6 +1074,10 @@ void CL_InitInput( void ) {
+ 	Cmd_AddCommand( "-wbutton6", IN_Wbutton6Up );
+ 	Cmd_AddCommand( "+wbutton7", IN_Wbutton7Down );   //
+ 	Cmd_AddCommand( "-wbutton7", IN_Wbutton7Up );
++	// codmod: +ads is a named alias for +wbutton6 (WBUTTON_COD_ADS). ioRTCW SP has no
++	// console `alias` command, so we register these here instead of using cfg aliases.
++	Cmd_AddCommand( "+ads", IN_Wbutton6Down );
++	Cmd_AddCommand( "-ads", IN_Wbutton6Up );
+ //----(SA) end
+ 
+ 	Cmd_AddCommand( "+mlook", IN_MLookDown );
+@@ -1164,6 +1168,8 @@ void CL_ShutdownInput(void)
+ 	Cmd_RemoveCommand("-wbutton6");
+ 	Cmd_RemoveCommand("+wbutton7");
+ 	Cmd_RemoveCommand("-wbutton7");
++	Cmd_RemoveCommand("+ads");   // codmod
++	Cmd_RemoveCommand("-ads");   // codmod
+ 
+ 	Cmd_RemoveCommand("+mlook");
+ 	Cmd_RemoveCommand("-mlook");
+-- 
+2.56.0
+

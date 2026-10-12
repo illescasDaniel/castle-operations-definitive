@@ -1,0 +1,786 @@
+From a0a6dba9fbb87126a1ae5c09eb7ee264de5f850d Mon Sep 17 00:00:00 2001
+From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
+Date: Fri, 9 Oct 2026 14:47:43 +0200
+Subject: [PATCH 51/64] P6b: CoD-style prone on CTRL (tier A gameplay).
+
+Adds prone stance via networked STAT_COD_* (crawl, transitions, ADS/fire rules),
+packs WBUTTON_EXTRA7 in CL_CmdButtons, and locks crawl at cod_proneScale 0.55.
+---
+ SP/code/cgame/cg_cod.c         |  15 ++
+ SP/code/cgame/cg_draw.c        |  14 ++
+ SP/code/cgame/cg_local.h       |   3 +
+ SP/code/cgame/cg_playerstate.c |  17 ++
+ SP/code/cgame/cg_view.c        |  11 +-
+ SP/code/cgame/cg_weapons.c     |  45 ++++++
+ SP/code/client/cl_input.c      |   7 +-
+ SP/code/game/bg_cod.c          |  34 ++++
+ SP/code/game/bg_cod.h          |  27 +++-
+ SP/code/game/bg_pmove.c        | 276 ++++++++++++++++++++++++++++++++-
+ SP/code/game/bg_public.h       |  10 +-
+ SP/code/game/g_cmds.c          |   5 +-
+ SP/code/game/g_combat.c        |   9 ++
+ SP/code/game/g_weapon.c        |  12 ++
+ 14 files changed, 474 insertions(+), 11 deletions(-)
+
+diff --git a/SP/code/cgame/cg_cod.c b/SP/code/cgame/cg_cod.c
+index 3db34344..c0c5e66e 100644
+--- a/SP/code/cgame/cg_cod.c
++++ b/SP/code/cgame/cg_cod.c
+@@ -617,6 +617,12 @@ static const char *CG_CodStateName( void ) {
+ 	if ( ps->pm_flags & PMF_COD_SLIDING ) {
+ 		return "SLIDE";
+ 	}
++	if ( ps->stats[STAT_COD_FLAGS] & COD_SF_PRONE ) {
++		if ( ps->stats[STAT_COD_FLAGS] & COD_SF_PRONE_MOVING ) {
++			return "CRAWL";
++		}
++		return "PRONE";
++	}
+ 	if ( ps->pm_flags & PMF_DUCKED ) {
+ 		return "CROUCH";
+ 	}
+@@ -742,6 +748,15 @@ void CG_CodDrawDebugHud( void ) {
+ 		y += SMALLCHAR_HEIGHT;
+ 	}
+ 
++	// codmod: prone stance timer (phase 6b)
++	if ( ps->stats[STAT_COD_FLAGS] & COD_SF_PRONE
++		 || ps->stats[STAT_COD_STANCE] != 0 ) {
++		Com_sprintf( line, sizeof( line ), "stance %d  viewh %d",
++					 ps->stats[STAT_COD_STANCE], ps->viewheight );
++		CG_DrawSmallStringColor( 4, y, line, color );
++		y += SMALLCHAR_HEIGHT;
++	}
++
+ 	if ( bg_cod.debugHud >= 2 ) {
+ 		Com_sprintf( line, sizeof( line ), "ai spd %.1f u/s", CG_CodNearestAISpeed() );
+ 		CG_DrawSmallStringColor( 4, y, line, color );
+diff --git a/SP/code/cgame/cg_draw.c b/SP/code/cgame/cg_draw.c
+index 1fe299f5..7ed0210b 100644
+--- a/SP/code/cgame/cg_draw.c
++++ b/SP/code/cgame/cg_draw.c
+@@ -2470,6 +2470,13 @@ static void CG_DrawCrosshair( void ) {
+ 		return;
+ 	}
+ 
++	// codmod: hide crosshair while prone-crawling (fire blocked) (phase 6b)
++	if ( bg_cod.enable && bg_cod.proneEnable
++		 && ( cg.snap->ps.stats[STAT_COD_FLAGS] & COD_SF_PRONE_MOVING )
++		 && !bg_cod.proneCrawlFire ) {
++		return;
++	}
++
+ 	// no crosshair when looking at exits
+ 	if ( cg.snap->ps.serverCursorHint >= HINT_EXIT && cg.snap->ps.serverCursorHint <= HINT_NOEXIT_FAR ) {
+ 		return;
+@@ -2687,6 +2694,13 @@ static void CG_DrawCrosshair3D( void ) {
+ 		return;
+ 	}
+ 
++	// codmod: hide crosshair while prone-crawling (phase 6b)
++	if ( bg_cod.enable && bg_cod.proneEnable
++		 && ( cg.snap->ps.stats[STAT_COD_FLAGS] & COD_SF_PRONE_MOVING )
++		 && !bg_cod.proneCrawlFire ) {
++		return;
++	}
++
+ 	// no crosshair when looking at exits
+ 	if ( cg.snap->ps.serverCursorHint >= HINT_EXIT && cg.snap->ps.serverCursorHint <= HINT_NOEXIT_FAR ) {
+ 		return;
+diff --git a/SP/code/cgame/cg_local.h b/SP/code/cgame/cg_local.h
+index bceb4aaa..ae514a15 100644
+--- a/SP/code/cgame/cg_local.h
++++ b/SP/code/cgame/cg_local.h
+@@ -815,6 +815,9 @@ typedef struct {
+ 
+ 	int codSlideStartTime;               // codmod: phase 6 — cg.time when PMF_COD_SLIDING rose
+ 
++	int codProneMovingTime;              // codmod: phase 6b — cg.time of last PRONE_MOVING edge
++	qboolean codProneWasMoving;          // codmod: previous frame's COD_SF_PRONE_MOVING
++
+ 	int codQkPrev;                       // codmod: phase 5.5 — weapon to restore after quickknife
+ 	int codQkState;                      // codmod: 0 idle, 1 switching, 2 swinging, 3 returning
+ 	int codQkStartTime;                  // codmod: cg.time when quickknife started
+diff --git a/SP/code/cgame/cg_playerstate.c b/SP/code/cgame/cg_playerstate.c
+index c387d962..6107d3ed 100644
+--- a/SP/code/cgame/cg_playerstate.c
++++ b/SP/code/cgame/cg_playerstate.c
+@@ -553,6 +553,23 @@ void CG_TransitionPlayerState( playerState_t *ps, playerState_t *ops ) {
+ 	if ( ps->viewheight != ops->viewheight ) {
+ 		cg.duckChange = ps->viewheight - ops->viewheight;
+ 		cg.duckTime = cg.time;
++		// codmod: prone transitions use proneDown/UpTime; crouch keeps duckTime (phase 6b)
++		if ( bg_cod.enable && bg_cod.proneEnable
++			 && ( ops->viewheight == (int)bg_cod.proneViewHeight
++				  || ps->viewheight == (int)bg_cod.proneViewHeight ) ) {
++			if ( ps->viewheight < ops->viewheight ) {
++				cg.codDuckDuration = (int)bg_cod.proneDownTime;
++			} else {
++				cg.codDuckDuration = (int)bg_cod.proneUpTime;
++			}
++		} else if ( bg_cod.enable ) {
++			cg.codDuckDuration = (int)bg_cod.duckTime;
++		} else {
++			cg.codDuckDuration = DUCK_TIME;
++		}
++		if ( cg.codDuckDuration < 1 ) {
++			cg.codDuckDuration = 1;
++		}
+ 	}
+ }
+ 
+diff --git a/SP/code/cgame/cg_view.c b/SP/code/cgame/cg_view.c
+index e237012c..eb0b335c 100644
+--- a/SP/code/cgame/cg_view.c
++++ b/SP/code/cgame/cg_view.c
+@@ -651,13 +651,14 @@ static void CG_OffsetFirstPersonView( void ) {
+ 	origin[2] += cg.predictedPlayerState.viewheight;
+ 
+ 	// smooth out duck height changes
+-	// codmod: cod_duckTime/cod_duckEase (phase 2.2), ~30% faster than vanilla by default,
+-	// with an optional ease-out curve. cg.codDuckDuration is stashed so phase 4b (prone)
+-	// can reuse this same curve with a different duration.
++	// codmod: cod_duckTime/cod_duckEase (phase 2.2); prone uses proneDown/UpTime set in
++	// CG_TransitionPlayerState when viewheight crosses proneViewHeight (phase 6b).
+ 	if ( bg_cod.enable ) {
+-		cg.codDuckDuration = (int)bg_cod.duckTime;
+ 		if ( cg.codDuckDuration < 1 ) {
+-			cg.codDuckDuration = 1;
++			cg.codDuckDuration = (int)bg_cod.duckTime;
++			if ( cg.codDuckDuration < 1 ) {
++				cg.codDuckDuration = 1;
++			}
+ 		}
+ 
+ 		timeDelta = cg.time - cg.duckTime;
+diff --git a/SP/code/cgame/cg_weapons.c b/SP/code/cgame/cg_weapons.c
+index 3df62d40..3e69051c 100644
+--- a/SP/code/cgame/cg_weapons.c
++++ b/SP/code/cgame/cg_weapons.c
+@@ -1878,6 +1878,51 @@ static void CG_CalculateWeaponPosition( vec3_t origin, vec3_t angles ) {
+ 		}
+ 	}
+ 
++	// codmod: prone crawl gun tilt + transition dip (phase 6b)
++	if ( bg_cod.enable && bg_cod.proneEnable ) {
++		playerState_t *ps = &cg.predictedPlayerState;
++		qboolean moving = ( ps->stats[STAT_COD_FLAGS] & COD_SF_PRONE_MOVING ) ? qtrue : qfalse;
++		float gunTime = bg_cod.proneGunTime;
++		float crawlE = 0.0f;
++		float transE = 0.0f;
++
++		if ( moving != cg.codProneWasMoving ) {
++			cg.codProneMovingTime = cg.time;
++			cg.codProneWasMoving = moving;
++		}
++		if ( gunTime < 1.0f ) {
++			gunTime = 1.0f;
++		}
++		crawlE = (float)( cg.time - cg.codProneMovingTime ) / gunTime;
++		if ( crawlE < 0.0f ) {
++			crawlE = 0.0f;
++		} else if ( crawlE > 1.0f ) {
++			crawlE = 1.0f;
++		}
++		crawlE = BG_CodSmoothstep( crawlE );
++		if ( !moving ) {
++			crawlE = 1.0f - crawlE;
++		}
++		if ( crawlE > 0.0f ) {
++			angles[PITCH] += bg_cod.proneGunPitch * crawlE;
++			angles[YAW] += bg_cod.proneGunYaw * crawlE;
++			origin[2] -= bg_cod.proneGunDrop * crawlE;
++		}
++
++		if ( ps->stats[STAT_COD_STANCE] > 0 ) {
++			float dur = ( ps->stats[STAT_COD_FLAGS] & COD_SF_PRONE )
++						? bg_cod.proneDownTime : bg_cod.proneUpTime;
++			if ( dur < 1.0f ) {
++				dur = 1.0f;
++			}
++			transE = (float)ps->stats[STAT_COD_STANCE] / dur;
++			if ( transE > 1.0f ) {
++				transE = 1.0f;
++			}
++			origin[2] -= bg_cod.proneGunDip * transE;
++		}
++	}
++
+ 	// RF, subtract the kickAngles
+ 	VectorMA( angles, -1.0, cg.kickAngles, angles );
+ 
+diff --git a/SP/code/client/cl_input.c b/SP/code/client/cl_input.c
+index bd2d7c99..a4572446 100644
+--- a/SP/code/client/cl_input.c
++++ b/SP/code/client/cl_input.c
+@@ -586,7 +586,9 @@ void CL_CmdButtons( usercmd_t *cmd ) {
+ 		kb[KB_BUTTONS0 + i].wasPressed = qfalse;
+ 	}
+ 
+-	for ( i = 0 ; i < 7 ; i++ ) {
++	// codmod: was i < 7, which never packed KB_WBUTTONS7 → WBUTTON_EXTRA7 (bit 128).
++	// ADS uses wbutton6 (bit 64); prone uses wbutton7 — both need the full 0..7 range.
++	for ( i = 0 ; i < 8 ; i++ ) {
+ 		if ( kb[KB_WBUTTONS0 + i].active || kb[KB_WBUTTONS0 + i].wasPressed ) {
+ 			cmd->wbuttons |= 1 << i;
+ 		}
+@@ -1078,6 +1080,9 @@ void CL_InitInput( void ) {
+ 	// console `alias` command, so we register these here instead of using cfg aliases.
+ 	Cmd_AddCommand( "+ads", IN_Wbutton6Down );
+ 	Cmd_AddCommand( "-ads", IN_Wbutton6Up );
++	// codmod: +prone → +wbutton7 (WBUTTON_COD_PRONE, phase 6b)
++	Cmd_AddCommand( "+prone", IN_Wbutton7Down );
++	Cmd_AddCommand( "-prone", IN_Wbutton7Up );
+ //----(SA) end
+ 
+ 	Cmd_AddCommand( "+mlook", IN_MLookDown );
+diff --git a/SP/code/game/bg_cod.c b/SP/code/game/bg_cod.c
+index cf98c1e8..334e84bd 100644
+--- a/SP/code/game/bg_cod.c
++++ b/SP/code/game/bg_cod.c
+@@ -210,6 +210,30 @@ const codCvarDef_t bg_codCvars[] = {
+ 	{ "cod_slideRoll",          "4",    0,            CODOFS( slideRoll ),          0 },
+ 	{ "cod_slideFovKick",       "0.05", 0,            CODOFS( slideFovKick ),       0 },
+ 
++	// codmod: Phase 6b prone (docs/phase-6b-prone.md + reference-values.md)
++	{ "cod_proneEnable",        "1",    0,            CODOFS( proneEnable ),        1 },
++	// was 0.15 (CoD4 → 30 u/s); playtest locked 0.55 → 110 u/s (crouch is 130)
++	{ "cod_proneScale",         "0.55", 0,            CODOFS( proneScale ),         0 },
++	{ "cod_proneViewHeight",    "-8",   0,            CODOFS( proneViewHeight ),    0 },
++	{ "cod_proneMaxsZ",         "16",   0,            CODOFS( proneMaxsZ ),         0 },
++	{ "cod_proneDownTime",      "350",  0,            CODOFS( proneDownTime ),      0 },
++	{ "cod_proneUpTime",        "350",  0,            CODOFS( proneUpTime ),        0 },
++	{ "cod_proneCooldown",      "400",  0,            CODOFS( proneCooldown ),      0 },
++	{ "cod_pronePitchUp",       "40",   0,            CODOFS( pronePitchUp ),       0 },
++	{ "cod_pronePitchDown",     "40",   0,            CODOFS( pronePitchDown ),     0 },
++	{ "cod_proneCrawlFire",     "0",    0,            CODOFS( proneCrawlFire ),     1 },
++	{ "cod_proneCrawlADS",      "0",    0,            CODOFS( proneCrawlADS ),      1 },
++	{ "cod_proneSpreadScale",   "0.5",  0,            CODOFS( proneSpreadScale ),   0 },
++	{ "cod_proneBob",           "0.2",  0,            CODOFS( proneBob ),           0 },
++	{ "cod_pronePanzer",        "0",    0,            CODOFS( pronePanzer ),        1 },
++	{ "cod_proneLegs",          "0",    0,            CODOFS( proneLegs ),          1 },
++	{ "cod_slideToProne",       "0",    0,            CODOFS( slideToProne ),       1 },
++	{ "cod_proneGunPitch",      "25",   0,            CODOFS( proneGunPitch ),      0 },
++	{ "cod_proneGunYaw",        "15",   0,            CODOFS( proneGunYaw ),        0 },
++	{ "cod_proneGunDrop",       "4",    0,            CODOFS( proneGunDrop ),       0 },
++	{ "cod_proneGunTime",       "200",  0,            CODOFS( proneGunTime ),       0 },
++	{ "cod_proneGunDip",        "6",    0,            CODOFS( proneGunDip ),        0 },
++
+ 	{ "cod_debugHud",           "0",    CVAR_ARCHIVE, CODOFS( debugHud ),           1 },
+ 	// codmod: /cod_menu overlay size (cgame). Archived like cod_debugHud — UI preference.
+ 	{ "cod_menuScale",          "0.7",  CVAR_ARCHIVE, CODOFS( menuScale ),          0 },
+@@ -446,6 +470,16 @@ qboolean BG_CodCanADS( const playerState_t *ps ) {
+ 		return qfalse;
+ 	}
+ 
++	// codmod: no ADS during prone transitions; crawling blocked unless cod_proneCrawlADS (6b)
++	if ( bg_cod.proneEnable ) {
++		if ( ps->stats[STAT_COD_STANCE] > 0 ) {
++			return qfalse;
++		}
++		if ( ( ps->stats[STAT_COD_FLAGS] & COD_SF_PRONE_MOVING ) && !bg_cod.proneCrawlADS ) {
++			return qfalse;
++		}
++	}
++
+ 	return qtrue;
+ }
+ 
+diff --git a/SP/code/game/bg_cod.h b/SP/code/game/bg_cod.h
+index 6eb8fc49..41aa13ce 100644
+--- a/SP/code/game/bg_cod.h
++++ b/SP/code/game/bg_cod.h
+@@ -176,6 +176,29 @@ typedef struct {
+ 	float slideRoll;           // degrees view roll × slide frac (cgame)
+ 	float slideFovKick;        // FOV *= 1 + kick × frac (cgame)
+ 
++	// codmod: Phase 6b prone (docs/phase-6b-prone.md)
++	int proneEnable;           // master: CTRL prone stance
++	float proneScale;          // × runSpeed while prone (crawl)
++	float proneViewHeight;     // eye height while prone (ET −8)
++	float proneMaxsZ;          // bbox top while prone (ET 16)
++	float proneDownTime;       // ms camera ease + move/fire lock going down
++	float proneUpTime;         // ms going up
++	float proneCooldown;       // ms after a transition before next toggle
++	float pronePitchUp;        // degrees look-up clamp while prone
++	float pronePitchDown;      // degrees look-down clamp while prone
++	int proneCrawlFire;        // 1 = allow fire while crawling
++	int proneCrawlADS;         // 1 = allow ADS while crawling
++	float proneSpreadScale;    // × aim spread while still and prone
++	float proneBob;            // × crouch bobmove while prone
++	int pronePanzer;           // 1 = allow panzer while prone
++	int proneLegs;             // 1 = ET legs/head boxes (unused in tier A)
++	int slideToProne;          // 1 = +prone ends slide into prone
++	float proneGunPitch;       // degrees crawl gun tilt (cgame)
++	float proneGunYaw;         // degrees
++	float proneGunDrop;        // u drop while crawling
++	float proneGunTime;        // ms ease into/out of crawl pose
++	float proneGunDip;         // u viewmodel dip × transition fraction
++
+ 	int debugHud;    // 0 off, 1 HUD, 2 HUD + nearest AI speed
+ 	float menuScale; // /cod_menu text+panel scale (0.5..1.0); cgame UI preference
+ } codTuning_t;
+@@ -218,8 +241,8 @@ extern const int bg_numCodCvars;
+ 
+ // codmod: g_main.c / cg_main.c each keep a static vmCvar_t[BG_COD_MAX_CVARS] and pass it in.
+ // Bump this if bg_codCvars ever grows past it -- BG_CodRegisterCvars() clamps defensively.
+-// (phase 3–6 + E9; leave headroom for prone.)
+-#define BG_COD_MAX_CVARS 160
++// (phase 3–6b + E9; leave headroom for extras.)
++#define BG_COD_MAX_CVARS 192
+ 
+ void BG_CodRegisterCvars( vmCvar_t *cvars, int maxCvars );
+ void BG_CodUpdateCvars( vmCvar_t *cvars, int maxCvars );
+diff --git a/SP/code/game/bg_pmove.c b/SP/code/game/bg_pmove.c
+index 54186133..cc0f3bb5 100644
+--- a/SP/code/game/bg_pmove.c
++++ b/SP/code/game/bg_pmove.c
+@@ -609,6 +609,11 @@ static qboolean PM_CheckJump( void ) {
+ 		return qfalse;      // don't allow jump until all buttons are up
+ 	}
+ 
++	// codmod: no jump while prone (phase 6b); exit already consumed the press
++	if ( !pm->ps->aiChar && ( pm->ps->stats[STAT_COD_FLAGS] & COD_SF_PRONE ) ) {
++		return qfalse;
++	}
++
+ 	if ( pm->cmd.upmove < 10 ) {
+ 		// not holding jump
+ 		return qfalse;
+@@ -1097,7 +1102,13 @@ static void PM_WalkMove( void ) {
+ 			wishspeed = pm->ps->speed * pm_duckScale;
+ 		}
+ 		*/
+-		if ( wishspeed > pm->ps->speed * pm->ps->crouchSpeedScale ) {
++		// codmod: prone crawl speed (phase 6b) — replace crouch clamp while prone
++		if ( !pm->ps->aiChar && bg_cod.enable && bg_cod.proneEnable
++			 && ( pm->ps->stats[STAT_COD_FLAGS] & COD_SF_PRONE ) ) {
++			if ( wishspeed > pm->ps->speed * bg_cod.proneScale ) {
++				wishspeed = pm->ps->speed * bg_cod.proneScale;
++			}
++		} else if ( wishspeed > pm->ps->speed * pm->ps->crouchSpeedScale ) {
+ 			wishspeed = pm->ps->speed * pm->ps->crouchSpeedScale;
+ 		}
+ 	}
+@@ -1738,6 +1749,15 @@ static void PM_CheckDuck( void ) {
+ 		return;
+ 	}
+ 
++	// codmod: prone owns bbox/viewheight (phase 6b). PM_CodCheckProne already set them.
++	if ( !pm->ps->aiChar && bg_cod.enable && bg_cod.proneEnable
++		 && ( pm->ps->stats[STAT_COD_FLAGS] & COD_SF_PRONE ) ) {
++		pm->ps->pm_flags |= PMF_DUCKED;
++		pm->maxs[2] = bg_cod.proneMaxsZ;
++		pm->ps->viewheight = (int)bg_cod.proneViewHeight;
++		return;
++	}
++
+ 	// codmod: force crouch bbox/view while sliding even if crouch is released (phase 6)
+ 	if ( pm->ps->pm_flags & PMF_COD_SLIDING ) {
+ 		pm->ps->pm_flags |= PMF_DUCKED;
+@@ -1862,6 +1882,11 @@ static void PM_Footsteps( void ) {
+ 
+ 	if ( pm->ps->pm_flags & PMF_DUCKED ) {
+ 		bobmove = 0.5;  // ducked characters bob much faster
++		// codmod: slower bob, still no footsteps while prone (phase 6b; crouch anims until tier B)
++		if ( !pm->ps->aiChar && bg_cod.enable && bg_cod.proneEnable
++			 && ( pm->ps->stats[STAT_COD_FLAGS] & COD_SF_PRONE ) ) {
++			bobmove *= bg_cod.proneBob;
++		}
+ 		if ( pm->ps->pm_flags & PMF_BACKWARDS_RUN ) {
+ 			animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_WALKCRBK, qtrue );
+ 		} else {
+@@ -3308,6 +3333,16 @@ static void PM_Weapon( void ) {
+ 		return;
+ 	}
+ 
++	// codmod: no fire during prone transitions, or while crawling unless allowed (phase 6b)
++	if ( !pm->ps->aiChar && bg_cod.enable && bg_cod.proneEnable ) {
++		if ( pm->ps->stats[STAT_COD_STANCE] > 0 ) {
++			return;
++		}
++		if ( ( pm->ps->stats[STAT_COD_FLAGS] & COD_SF_PRONE_MOVING ) && !bg_cod.proneCrawlFire ) {
++			return;
++		}
++	}
++
+ 	// player is underwater - no fire
+ 	if ( pm->waterlevel == 3 ) {
+ 		if ( pm->ps->weapon != WP_KNIFE &&
+@@ -3830,6 +3865,220 @@ static void PM_CodEndSlide( void ) {
+ 	}
+ }
+ 
++/*
++================
++PM_CodClearProne
++
++codmod: drop all prone bits + stance timer (phase 6b).
++================
++*/
++static void PM_CodClearProne( void ) {
++	pm->ps->stats[STAT_COD_FLAGS] &= ~( COD_SF_PRONE | COD_SF_PRONE_MOVING );
++	pm->ps->stats[STAT_COD_STANCE] = 0;
++}
++
++/*
++================
++PM_CodCheckProne
++
++codmod: CoD4/ET-style prone stance (phase 6b, docs/phase-6b-prone.md). Port of ET
++PM_CheckProne ideas onto networked STAT_COD_* (no eFlags / pmoveExt). Player only.
++Call before PM_CheckDuck so the prone bbox wins.
++================
++*/
++static void PM_CodCheckProne( void ) {
++	int flags;
++	int stance;
++	qboolean pressed, crouchPressed, jumpPressed;
++	qboolean wantExit, forcedExit;
++	qboolean isProne;
++	trace_t trace;
++	float hspeed;
++	float standMaxZ, crouchMaxZ, proneMaxZ;
++	int downTime, upTime, cooldown;
++
++	flags = pm->ps->stats[STAT_COD_FLAGS];
++
++	if ( pm->ps->aiChar || !( bg_cod.enable && bg_cod.proneEnable ) ) {
++		if ( flags & ( COD_SF_PRONE | COD_SF_PRONE_MOVING | COD_SF_PRONE_HELD | COD_SF_CROUCH_HELD ) ) {
++			pm->ps->stats[STAT_COD_FLAGS] &= ~( COD_SF_PRONE | COD_SF_PRONE_MOVING
++												| COD_SF_PRONE_HELD | COD_SF_CROUCH_HELD );
++		}
++		if ( pm->ps->stats[STAT_COD_STANCE] ) {
++			pm->ps->stats[STAT_COD_STANCE] = 0;
++		}
++		return;
++	}
++
++	if ( pm->ps->pm_type == PM_DEAD ) {
++		PM_CodClearProne();
++		pm->ps->stats[STAT_COD_FLAGS] &= ~( COD_SF_PRONE_HELD | COD_SF_CROUCH_HELD );
++		return;
++	}
++
++	downTime = (int)bg_cod.proneDownTime;
++	upTime = (int)bg_cod.proneUpTime;
++	cooldown = (int)bg_cod.proneCooldown;
++	if ( downTime < 1 ) {
++		downTime = 1;
++	}
++	if ( upTime < 1 ) {
++		upTime = 1;
++	}
++	if ( cooldown < 0 ) {
++		cooldown = 0;
++	}
++
++	// timer tick: >0 transition ms left; <0 cooldown counting up to 0
++	stance = pm->ps->stats[STAT_COD_STANCE];
++	if ( stance > 0 ) {
++		stance -= pml.msec;
++		if ( stance <= 0 ) {
++			stance = -cooldown;
++		}
++	} else if ( stance < 0 ) {
++		stance += pml.msec;
++		if ( stance > 0 ) {
++			stance = 0;
++		}
++	}
++	pm->ps->stats[STAT_COD_STANCE] = stance;
++
++	pressed = ( ( pm->cmd.wbuttons & WBUTTON_COD_PRONE ) && !( flags & COD_SF_PRONE_HELD ) ) ? qtrue : qfalse;
++	crouchPressed = ( pm->cmd.upmove < 0 && !( flags & COD_SF_CROUCH_HELD ) ) ? qtrue : qfalse;
++	jumpPressed = ( pm->cmd.upmove > 0 && !( pm->ps->pm_flags & PMF_JUMP_HELD ) ) ? qtrue : qfalse;
++
++	if ( pm->cmd.wbuttons & WBUTTON_COD_PRONE ) {
++		flags |= COD_SF_PRONE_HELD;
++	} else {
++		flags &= ~COD_SF_PRONE_HELD;
++	}
++	if ( pm->cmd.upmove < 0 ) {
++		flags |= COD_SF_CROUCH_HELD;
++	} else {
++		flags &= ~COD_SF_CROUCH_HELD;
++	}
++
++	isProne = ( flags & COD_SF_PRONE ) ? qtrue : qfalse;
++	standMaxZ = pm->ps->maxs[2];
++	crouchMaxZ = pm->ps->crouchMaxZ;
++	proneMaxZ = bg_cod.proneMaxsZ;
++
++	forcedExit = qfalse;
++	if ( isProne ) {
++		if ( pm->ps->groundEntityNum == ENTITYNUM_NONE
++			 || pm->waterlevel >= 2
++			 || ( pm->ps->pm_flags & PMF_LADDER )
++			 || pml.ladder
++			 || pm->ps->pm_type != PM_NORMAL
++			 || ( pm->ps->eFlags & EF_VIEWING_CAMERA )
++			 || ( pm->ps->eFlags & EF_MG42_ACTIVE ) ) {
++			forcedExit = qtrue;
++		}
++	}
++
++	wantExit = qfalse;
++	if ( isProne && stance == 0 && ( pressed || jumpPressed || crouchPressed ) ) {
++		wantExit = qtrue;
++	}
++
++	// enter
++	if ( !isProne && pressed && stance == 0 ) {
++		qboolean canEnter = qtrue;
++
++		if ( pm->ps->groundEntityNum == ENTITYNUM_NONE
++			 || pm->waterlevel >= 2
++			 || ( pm->ps->pm_flags & PMF_LADDER )
++			 || ( pm->ps->eFlags & EF_MG42_ACTIVE )
++			 || ( pm->ps->eFlags & EF_VIEWING_CAMERA ) ) {
++			canEnter = qfalse;
++		}
++		if ( pm->ps->pm_flags & PMF_COD_SLIDING ) {
++			if ( bg_cod.slideToProne ) {
++				PM_CodEndSlide();
++			} else {
++				canEnter = qfalse;
++			}
++		}
++
++		if ( canEnter ) {
++			pm->maxs[2] = proneMaxZ;
++			pm->trace( &trace, pm->ps->origin, pm->mins, pm->maxs, pm->ps->origin, pm->ps->clientNum, pm->tracemask );
++			if ( !trace.allsolid ) {
++				flags |= COD_SF_PRONE;
++				flags &= ~( COD_SF_SPRINTING | COD_SF_PRONE_MOVING );
++				pm->ps->stats[STAT_COD_STANCE] = downTime;
++				pm->ps->stats[STAT_COD_ADS] = 0;
++				pm->ps->leanf = 0;
++				pm->ps->velocity[0] = 0;
++				pm->ps->velocity[1] = 0;
++				pm->ps->pm_flags |= PMF_DUCKED;
++				isProne = qtrue;
++				stance = downTime;
++			}
++			pm->maxs[2] = standMaxZ; // CheckDuck / prone apply below will set real maxs
++		}
++	}
++
++	// exit
++	if ( isProne && ( wantExit || forcedExit ) ) {
++		qboolean standOk = qfalse;
++		qboolean crouchOk = qfalse;
++		int exitTime;
++
++		pm->maxs[2] = standMaxZ;
++		pm->trace( &trace, pm->ps->origin, pm->mins, pm->maxs, pm->ps->origin, pm->ps->clientNum, pm->tracemask );
++		standOk = !trace.allsolid ? qtrue : qfalse;
++
++		pm->maxs[2] = crouchMaxZ;
++		pm->trace( &trace, pm->ps->origin, pm->mins, pm->maxs, pm->ps->origin, pm->ps->clientNum, pm->tracemask );
++		crouchOk = !trace.allsolid ? qtrue : qfalse;
++
++		if ( standOk || crouchOk ) {
++			flags &= ~( COD_SF_PRONE | COD_SF_PRONE_MOVING );
++			exitTime = forcedExit ? 0 : upTime;
++			pm->ps->stats[STAT_COD_STANCE] = exitTime;
++			stance = exitTime;
++			isProne = qfalse;
++
++			if ( standOk && pm->cmd.upmove >= 0 ) {
++				pm->ps->pm_flags &= ~PMF_DUCKED;
++			} else {
++				pm->ps->pm_flags |= PMF_DUCKED;
++			}
++
++			// consume jump so PM_CheckJump does not also launch this frame
++			if ( jumpPressed ) {
++				pm->cmd.upmove = 0;
++			}
++		}
++		// else stay prone — nothing fits
++	}
++
++	// while prone: crawl hysteresis + force ducked bbox
++	if ( isProne ) {
++		hspeed = sqrt( pm->ps->velocity[0] * pm->ps->velocity[0]
++					   + pm->ps->velocity[1] * pm->ps->velocity[1] );
++		if ( ( pm->cmd.forwardmove || pm->cmd.rightmove ) && hspeed > 40.0f ) {
++			flags |= COD_SF_PRONE_MOVING;
++		} else if ( !( pm->cmd.forwardmove || pm->cmd.rightmove ) && hspeed < 20.0f ) {
++			flags &= ~COD_SF_PRONE_MOVING;
++		}
++
++		pm->ps->pm_flags |= PMF_DUCKED;
++		pm->maxs[2] = proneMaxZ;
++		pm->ps->viewheight = (int)bg_cod.proneViewHeight;
++	}
++
++	// lock movement during transitions
++	if ( pm->ps->stats[STAT_COD_STANCE] > 0 ) {
++		pm->cmd.forwardmove = 0;
++		pm->cmd.rightmove = 0;
++	}
++
++	pm->ps->stats[STAT_COD_FLAGS] = flags;
++}
++
+ /*
+ ================
+ PM_CodCheckSlideStart
+@@ -4143,6 +4392,8 @@ static void PM_CodUpdateSprint( void ) {
+ 				 && ( bg_cod.sprintForwardOnly ? ( pm->cmd.forwardmove > 0 ) : moving )
+ 				 && !( pm->ps->pm_flags & PMF_DUCKED )
+ 				 && !( pm->ps->pm_flags & PMF_COD_SLIDING )
++				 && !( pm->ps->stats[STAT_COD_FLAGS] & COD_SF_PRONE )
++				 && pm->ps->stats[STAT_COD_STANCE] <= 0
+ 				 && pm->waterlevel < 2
+ 				 && !( pm->cmd.buttons & BUTTON_WALKING )
+ 				 && !( pm->cmd.wbuttons & WBUTTON_COD_ADS )
+@@ -4211,6 +4462,10 @@ void PM_UpdateLean( playerState_t *ps, usercmd_t *cmd, pmove_t *tpm ) {
+ 	if ( ps->pm_flags & PMF_COD_SLIDING ) {
+ 		leaning = 0;
+ 	}
++	// codmod: no lean while prone (phase 6b)
++	if ( ps->stats[STAT_COD_FLAGS] & COD_SF_PRONE ) {
++		leaning = 0;
++	}
+ 	// codmod: cod_leanAllowFire lets the player keep leaning while firing (phase 2.3.2)
+ 	if ( ( ps->eFlags & EF_FIRING ) && !( codLean && bg_cod.leanAllowFire ) ) { // ...firing
+ 		leaning = 0;
+@@ -4329,6 +4584,21 @@ void PM_UpdateViewAngles( playerState_t *ps, usercmd_t *cmd, void( trace ) ( tra
+ 		ps->viewangles[i] = SHORT2ANGLE( temp );
+ 	}
+ 
++	// codmod: clamp pitch while prone (phase 6b). ET ±40°; no yaw limit in tier A.
++	if ( !ps->aiChar && bg_cod.enable && bg_cod.proneEnable
++		 && ( ps->stats[STAT_COD_FLAGS] & COD_SF_PRONE ) ) {
++		float pitch = ps->viewangles[PITCH];
++		float up = bg_cod.pronePitchUp;
++		float down = bg_cod.pronePitchDown;
++
++		if ( pitch > down ) {
++			pitch = down;
++		} else if ( pitch < -up ) {
++			pitch = -up;
++		}
++		ps->viewangles[PITCH] = pitch;
++		ps->delta_angles[PITCH] = ANGLE2SHORT( pitch ) - cmd->angles[PITCH];
++	}
+ 
+ 	tpm.trace = trace;
+ //	tpm.trace (&trace, start, tmins, tmaxs, end, ps->clientNum, MASK_PLAYERSOLID);
+@@ -4853,6 +5123,7 @@ void PmoveSingle( pmove_t *pmove ) {
+ 	}
+ 
+ 	if ( ( pm->ps->pm_type == PM_SPECTATOR ) || ( pm->ps->pm_flags & PMF_LIMBO ) ) { // JPW NERVE for limbo mode chase
++		PM_CodCheckProne();
+ 		PM_CheckDuck();
+ 		PM_FlyMove();
+ 		PM_DropTimers();
+@@ -4877,6 +5148,9 @@ void PmoveSingle( pmove_t *pmove ) {
+ 	PM_SetWaterLevel();
+ 	pml.previous_waterlevel = pmove->waterlevel;
+ 
++	// codmod: prone before duck so prone bbox/viewheight win (phase 6b)
++	PM_CodCheckProne();
++
+ 	// set mins, maxs, and viewheight
+ 	PM_CheckDuck();
+ 
+diff --git a/SP/code/game/bg_public.h b/SP/code/game/bg_public.h
+index fc84a77b..53c5bd28 100644
+--- a/SP/code/game/bg_public.h
++++ b/SP/code/game/bg_public.h
+@@ -356,13 +356,21 @@ typedef enum {
+ typedef char bg_cod_statIndexRangeCheck_t[ ( STAT_COD_STAM_DELAY < MAX_STATS ) ? 1 : -1 ];
+ 
+ // codmod: ps->stats[STAT_COD_FLAGS] bits (phase 2+)
+-#define COD_SF_SPRINTING 1
++#define COD_SF_SPRINTING    1
++#define COD_SF_PRONE        2   // phase 6b: prone stance (bbox + viewheight)
++#define COD_SF_PRONE_MOVING 4   // phase 6b: crawling (gun tilt / fire block)
++#define COD_SF_PRONE_HELD   8   // phase 6b: last-frame +prone latch (edge detect)
++#define COD_SF_CROUCH_HELD  16  // phase 6b: last-frame crouch latch (edge detect)
+ 
+ // codmod: ADS input (phase 3.1). WBUTTON_EXTRA6 (q_shared.h) has no other users at
+ // ioRTCW 438e7d4 (verified with grep) -- bound to "+wbutton6" (client/cl_input.c) and
+ // aliased to "+ads"/"-ads" in mod/codmod/codmod.cfg, bound to MOUSE2 in codmod_binds.cfg.
+ #define WBUTTON_COD_ADS WBUTTON_EXTRA6
+ 
++// codmod: prone input (phase 6b). WBUTTON_EXTRA7 (+wbutton7) — engine +prone/-prone
++// aliases in cl_input.c; bound to CTRL in codmod_binds.cfg.
++#define WBUTTON_COD_PRONE WBUTTON_EXTRA7
++
+ 
+ // player_state->persistant[] indexes
+ // these fields are the only part of player_state that isn't
+diff --git a/SP/code/game/g_cmds.c b/SP/code/game/g_cmds.c
+index 5048abca..eca02a0e 100644
+--- a/SP/code/game/g_cmds.c
++++ b/SP/code/game/g_cmds.c
+@@ -1575,7 +1575,10 @@ void Cmd_Activate_f( gentity_t *ent ) {
+ 		} else if ( ( Q_stricmp( traceEnt->classname, "misc_mg42" ) == 0 ) /*&& activatetime > oldactivatetime + 1000*/ && traceEnt->active == qfalse )         {
+ 			if ( !ent->active && traceEnt->takedamage ) {  // not a dead gun
+ 				// RF, dont allow activating MG42 if crouching
+-				if ( !( ent->client->ps.pm_flags & PMF_DUCKED ) && !infront( traceEnt, ent ) ) {
++				// codmod: also block while prone (PMF_DUCKED is set, but keep explicit) (phase 6b)
++				if ( !( ent->client->ps.pm_flags & PMF_DUCKED )
++					 && !( ent->client->ps.stats[STAT_COD_FLAGS] & COD_SF_PRONE )
++					 && !infront( traceEnt, ent ) ) {
+ 					gclient_t   *cl;
+ 					cl = &level.clients[ ent->s.clientNum ];
+ 
+diff --git a/SP/code/game/g_combat.c b/SP/code/game/g_combat.c
+index ff920bcb..639cd955 100644
+--- a/SP/code/game/g_combat.c
++++ b/SP/code/game/g_combat.c
+@@ -721,6 +721,15 @@ qboolean IsHeadShot( gentity_t *targ, gentity_t *attacker, vec3_t dir, vec3_t po
+ 		if ( ( targ->r.svFlags & SVF_CASTAI ) && trap_GetTag( targ->s.number, "tag_head", &or ) ) {
+ 			VectorCopy( or.origin, head->r.currentOrigin );
+ 			VectorMA( head->r.currentOrigin, 6, or.axis[2], head->r.currentOrigin );    // tag is at base of neck
++		} else if ( !targ->aiCharacter && bg_cod.enable && bg_cod.proneEnable
++					&& ( targ->client->ps.stats[STAT_COD_FLAGS] & COD_SF_PRONE ) ) {
++			// codmod: prone head box (phase 6b) — eye-ish height pushed forward along yaw
++			vec3_t forward;
++			head->r.currentOrigin[2] += bg_cod.proneViewHeight + 4.0f;
++			AngleVectors( targ->client->ps.viewangles, forward, NULL, NULL );
++			forward[2] = 0;
++			VectorNormalize( forward );
++			VectorMA( head->r.currentOrigin, 16.0f, forward, head->r.currentOrigin );
+ 		} else if ( targ->client->ps.pm_flags & PMF_DUCKED ) { // closer fake offset for 'head' box when crouching
+ 			head->r.currentOrigin[2] += targ->client->ps.crouchViewHeight + 8; // JPW NERVE 16 is kludge to get head height to match up
+ 		}
+diff --git a/SP/code/game/g_weapon.c b/SP/code/game/g_weapon.c
+index 7baaa89c..21f539c9 100644
+--- a/SP/code/game/g_weapon.c
++++ b/SP/code/game/g_weapon.c
+@@ -1733,6 +1733,13 @@ void FireWeapon( gentity_t *ent ) {
+ 		aimSpreadScale = BG_CodFireSpreadScale( aimSpreadScale, ent->s.weapon, adsFrac );
+ 	}
+ 
++	// codmod: tighter spread while still and prone (phase 6b); stacks with ADS
++	if ( !ent->aiCharacter && bg_cod.enable && bg_cod.proneEnable
++		 && ( ent->client->ps.stats[STAT_COD_FLAGS] & COD_SF_PRONE )
++		 && !( ent->client->ps.stats[STAT_COD_FLAGS] & COD_SF_PRONE_MOVING ) ) {
++		aimSpreadScale *= bg_cod.proneSpreadScale;
++	}
++
+ 	// fire the specific weapon
+ 	switch ( ent->s.weapon ) {
+ 	case WP_KNIFE:
+@@ -1815,6 +1822,11 @@ void FireWeapon( gentity_t *ent ) {
+ 		Bullet_Fire( ent, THOMPSON_SPREAD * aimSpreadScale, THOMPSON_DAMAGE );
+ 		break;
+ 	case WP_PANZERFAUST:
++		// codmod: block panzer while prone unless cod_pronePanzer (phase 6b)
++		if ( !ent->aiCharacter && bg_cod.enable && bg_cod.proneEnable && !bg_cod.pronePanzer
++			 && ( ent->client->ps.stats[STAT_COD_FLAGS] & COD_SF_PRONE ) ) {
++			break;
++		}
+ 		ent->client->ps.classWeaponTime = level.time; // JPW NERVE
+ 		Weapon_RocketLauncher_Fire( ent, aimSpreadScale );
+ 		break;
+-- 
+2.56.0
+

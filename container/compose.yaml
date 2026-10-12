@@ -1,0 +1,10 @@
+services:
+  builder:
+    build: { context: ., dockerfile: Containerfile }
+    image: localhost/rtcw-cod-builder:latest
+    userns_mode: keep-id          # files created in the bind mount stay owned by the user
+    volumes:
+      - ..:/src:Z
+    working_dir: /src/iortcw/SP
+    entrypoint: ["make"]
+    command: ["-j8", "release", "BUILD_DIR=build-container"]

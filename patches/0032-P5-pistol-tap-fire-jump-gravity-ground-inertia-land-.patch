@@ -1,0 +1,376 @@
+From 3a6ab3b51c3ff5a5d7b34c43485ab49a130ec01d Mon Sep 17 00:00:00 2001
+From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
+Date: Thu, 8 Oct 2026 23:12:50 +0200
+Subject: [PATCH 32/64] P5: pistol tap-fire, jump/gravity, ground inertia, land
+ slow
+
+Player-only: SP pistols use releasedFire early-clear and
+cod_pistolNextShot 120; jumpVelocity 250; accel/friction 8;
+STAT_COD_LAND landing slowdown. AI keeps vanilla intervals/physics.
+---
+ SP/code/cgame/cg_cod.c      |  7 ++++
+ SP/code/cgame/cg_cod_menu.c | 18 ++++++++
+ SP/code/game/bg_cod.c       | 27 ++++++++++++
+ SP/code/game/bg_cod.h       | 23 +++++++++-
+ SP/code/game/bg_pmove.c     | 84 +++++++++++++++++++++++++++++++++++--
+ SP/code/game/bg_public.h    |  9 ++--
+ SP/code/game/g_active.c     |  2 +
+ 7 files changed, 160 insertions(+), 10 deletions(-)
+
+diff --git a/SP/code/cgame/cg_cod.c b/SP/code/cgame/cg_cod.c
+index 7f44fc51..73e0033e 100644
+--- a/SP/code/cgame/cg_cod.c
++++ b/SP/code/cgame/cg_cod.c
+@@ -672,6 +672,13 @@ void CG_CodDrawDebugHud( void ) {
+ 	CG_DrawSmallStringColor( 4, y, line, color );
+ 	y += SMALLCHAR_HEIGHT;
+ 
++	// codmod: landing slowdown timer (phase 5)
++	if ( ps->stats[STAT_COD_LAND] > 0 ) {
++		Com_sprintf( line, sizeof( line ), "landSlow %d ms", ps->stats[STAT_COD_LAND] );
++		CG_DrawSmallStringColor( 4, y, line, color );
++		y += SMALLCHAR_HEIGHT;
++	}
++
+ 	if ( bg_cod.debugHud >= 2 ) {
+ 		Com_sprintf( line, sizeof( line ), "ai spd %.1f u/s", CG_CodNearestAISpeed() );
+ 		CG_DrawSmallStringColor( 4, y, line, color );
+diff --git a/SP/code/cgame/cg_cod_menu.c b/SP/code/cgame/cg_cod_menu.c
+index 9a6da4ae..8492583d 100644
+--- a/SP/code/cgame/cg_cod_menu.c
++++ b/SP/code/cgame/cg_cod_menu.c
+@@ -171,6 +171,7 @@ static const codMenuItem_t cg_codMenuItems[] = {
+ 	{ COD_MI_BOOL,  "cod_leanEnable",         "cod_leanEnable",         1, 1, NULL },
+ 	{ COD_MI_BOOL,  "cod_adsEnable",          "cod_adsEnable",          1, 1, NULL },
+ 	{ COD_MI_BOOL,  "cod_gaitEnable",         "cod_gaitEnable",         1, 1, NULL },
++	{ COD_MI_BOOL,  "cod_weaponEnable",       "cod_weaponEnable",       1, 1, NULL },
+ 
+ 	{ COD_MI_SECTION, "MOVEMENT SPEEDS", NULL, 0, 0, NULL },
+ 	{ COD_MI_FLOAT, "cod_runSpeed",           "cod_runSpeed",           5,    25,   NULL },
+@@ -203,6 +204,23 @@ static const codMenuItem_t cg_codMenuItems[] = {
+ 	{ COD_MI_FLOAT, "cod_sprintRunRoll",      "cod_sprintRunRoll",      0.05f, 0.25f, NULL },
+ 	{ COD_MI_FLOAT, "cod_sprintFovScale",     "cod_sprintFovScale",     0.01f, 0.05f, NULL },
+ 
++	{ COD_MI_SECTION, "FEEL (jump / inertia / land)", NULL, 0, 0, NULL },
++	{ COD_MI_FLOAT, "cod_jumpVelocity",       "cod_jumpVelocity",       5,    25,   NULL },
++	{ COD_MI_FLOAT, "cod_gravity",            "cod_gravity",            10,   50,   NULL },
++	{ COD_MI_FLOAT, "cod_accelerate",         "cod_accelerate",         0.25f, 1,   NULL },
++	{ COD_MI_FLOAT, "cod_friction",           "cod_friction",           0.25f, 1,   NULL },
++	{ COD_MI_FLOAT, "cod_stopspeed",          "cod_stopspeed",          5,    25,   NULL },
++	{ COD_MI_BOOL,  "cod_landSlowEnable",     "cod_landSlowEnable",     1,    1,    NULL },
++	{ COD_MI_FLOAT, "cod_landSlowTime",       "cod_landSlowTime",       25,   100,  NULL },
++	{ COD_MI_FLOAT, "cod_landSlowScale",      "cod_landSlowScale",      0.05f, 0.25f, NULL },
++
++	{ COD_MI_SECTION, "WEAPON FIRE", NULL, 0, 0, NULL },
++	{ COD_MI_BOOL,  "cod_pistolTapFire",      "cod_pistolTapFire",      1,    1,    NULL },
++	{ COD_MI_FLOAT, "cod_pistolTapThreshold", "cod_pistolTapThreshold", 10,   50,   NULL },
++	{ COD_MI_FLOAT, "cod_pistolNextShot",     "cod_pistolNextShot",     10,   50,   NULL },
++	{ COD_MI_FLOAT, "cod_pistolFireDelay",    "cod_pistolFireDelay",    10,   50,   NULL },
++	{ COD_MI_FLOAT, "cod_autoFireScale",      "cod_autoFireScale",      0.05f, 0.25f, NULL },
++
+ 	{ COD_MI_SECTION, "CROUCH / DUCK", NULL, 0, 0, NULL },
+ 	{ COD_MI_FLOAT, "cod_duckTime",           "cod_duckTime",           5,    25,   NULL },
+ 	{ COD_MI_BOOL,  "cod_duckEase",           "cod_duckEase",           1,    1,    NULL },
+diff --git a/SP/code/game/bg_cod.c b/SP/code/game/bg_cod.c
+index 05a6fd2a..a66ee122 100644
+--- a/SP/code/game/bg_cod.c
++++ b/SP/code/game/bg_cod.c
+@@ -114,6 +114,22 @@ const codCvarDef_t bg_codCvars[] = {
+ 	{ "cod_sprintRunRoll",      "1.5",  0,            CODOFS( sprintRunRoll ),      0 },
+ 	{ "cod_sprintFovScale",     "1.03", 0,            CODOFS( sprintFovScale ),     0 },
+ 
++	// codmod: Phase 5 feel — pistol click-fire + jump/gravity/inertia/land (docs/phase-5-feel.md)
++	{ "cod_weaponEnable",       "1",    0,            CODOFS( weaponEnable ),       1 },
++	{ "cod_pistolTapFire",      "1",    0,            CODOFS( pistolTapFire ),      1 },
++	{ "cod_pistolTapThreshold", "150",  0,            CODOFS( pistolTapThreshold ), 0 },
++	{ "cod_pistolNextShot",     "120",  0,            CODOFS( pistolNextShot ),     0 },
++	{ "cod_pistolFireDelay",    "0",    0,            CODOFS( pistolFireDelay ),    0 },
++	{ "cod_autoFireScale",      "1",    0,            CODOFS( autoFireScale ),      0 },
++	{ "cod_jumpVelocity",       "250",  0,            CODOFS( jumpVelocity ),       0 },
++	{ "cod_gravity",            "800",  0,            CODOFS( gravity ),            0 },
++	{ "cod_accelerate",         "8",    0,            CODOFS( accelerate ),         0 },
++	{ "cod_friction",           "8",    0,            CODOFS( friction ),           0 },
++	{ "cod_stopspeed",          "100",  0,            CODOFS( stopspeed ),          0 },
++	{ "cod_landSlowEnable",     "1",    0,            CODOFS( landSlowEnable ),     1 },
++	{ "cod_landSlowTime",       "350",  0,            CODOFS( landSlowTime ),       0 },
++	{ "cod_landSlowScale",      "0.55", 0,            CODOFS( landSlowScale ),      0 },
++
+ 	{ "cod_debugHud",           "0",    CVAR_ARCHIVE, CODOFS( debugHud ),           1 },
+ 	// codmod: /cod_menu overlay size (cgame). Archived like cod_debugHud — UI preference.
+ 	{ "cod_menuScale",          "0.7",  CVAR_ARCHIVE, CODOFS( menuScale ),          0 },
+@@ -207,6 +223,17 @@ const codWeaponTuning_t bg_codWeapons[WP_NUM_WEAPONS] = {
+ 	[WP_FG42SCOPE]      = { qfalse, 0.5f, 0,     0,   0, 0 },
+ };
+ 
++/*
++================
++BG_CodIsPistol
++
++codmod: weapons that get SP tap-fire / pistol interval overrides (phase 5).
++================
++*/
++qboolean BG_CodIsPistol( int weapon ) {
++	return ( weapon == WP_LUGER || weapon == WP_COLT || weapon == WP_SILENCER ) ? qtrue : qfalse;
++}
++
+ /*
+ ================
+ BG_CodCanADS
+diff --git a/SP/code/game/bg_cod.h b/SP/code/game/bg_cod.h
+index 887e989f..9ea2af4f 100644
+--- a/SP/code/game/bg_cod.h
++++ b/SP/code/game/bg_cod.h
+@@ -87,10 +87,29 @@ typedef struct {
+ 	float sprintRunRoll;       // x cg_runroll contribution while sprinting
+ 	float sprintFovScale;      // FOV scale at full sprint (1 = none)
+ 
++	// codmod: Phase 5 movement weight + fire responsiveness (docs/phase-5-feel.md)
++	int weaponEnable;          // master for pistol tap-fire / fire-interval overrides
++	int pistolTapFire;         // SP releasedFire early-clear for Luger/Colt/Silencer
++	float pistolTapThreshold;  // ms: clear weaponTime when <= this after release
++	float pistolNextShot;      // ms min between pistol shots (0 = ammoTable)
++	float pistolFireDelay;     // ms first-shot delay override for pistols
++	float autoFireScale;       // scale nextShotTime for SMGs/FG42 (1 = vanilla)
++	float jumpVelocity;        // u/s vertical jump for player (vanilla JUMP_VELOCITY 270)
++	float gravity;             // player ps.gravity (vanilla 800)
++	float accelerate;          // player ground accelerate (vanilla pm_accelerate 10)
++	float friction;            // player ground friction (vanilla pm_friction 6)
++	float stopspeed;           // player friction control floor (vanilla 100)
++	int landSlowEnable;        // brief wishspeed scale after landing
++	float landSlowTime;        // ms
++	float landSlowScale;       // × wishspeed while land timer active
++
+ 	int debugHud;    // 0 off, 1 HUD, 2 HUD + nearest AI speed
+ 	float menuScale; // /cod_menu text+panel scale (0.5..1.0); cgame UI preference
+ } codTuning_t;
+ 
++// codmod: Luger / Colt / Silencer — SP pistol tap-fire set (phase 5).
++qboolean BG_CodIsPistol( int weapon );
++
+ // codmod: generic smoothstep ease, 0..1 in, 0..1 out (phase 3.5+). GCC doesn't warn about
+ // unused "static inline" functions, so qagame linking this header unused is fine.
+ static ID_INLINE float BG_CodSmoothstep( float x ) {
+@@ -120,8 +139,8 @@ extern const int bg_numCodCvars;
+ 
+ // codmod: g_main.c / cg_main.c each keep a static vmCvar_t[BG_COD_MAX_CVARS] and pass it in.
+ // Bump this if bg_codCvars ever grows past it -- BG_CodRegisterCvars() clamps defensively.
+-// (phase 3 ADS + phase 4 gait cvars; leave headroom for slide/prone.)
+-#define BG_COD_MAX_CVARS 80
++// (phase 3–5 cvars; leave headroom for slide/prone.)
++#define BG_COD_MAX_CVARS 96
+ 
+ void BG_CodRegisterCvars( vmCvar_t *cvars, int maxCvars );
+ void BG_CodUpdateCvars( vmCvar_t *cvars, int maxCvars );
+diff --git a/SP/code/game/bg_pmove.c b/SP/code/game/bg_pmove.c
+index 717f0016..e04f286c 100644
+--- a/SP/code/game/bg_pmove.c
++++ b/SP/code/game/bg_pmove.c
+@@ -272,8 +272,17 @@ static void PM_Friction( void ) {
+ 		if ( pml.walking && !( pml.groundTrace.surfaceFlags & SURF_SLICK ) ) {
+ 			// if getting knocked back, no friction
+ 			if ( !( pm->ps->pm_flags & PMF_TIME_KNOCKBACK ) ) {
+-				control = speed < pm_stopspeed ? pm_stopspeed : speed;
+-				drop += control * pm_friction * pml.frametime;
++				// codmod: player-only ground friction/stopspeed (phase 5 / E17). Do not
++				// mutate file-scope pm_* — AI shares this module in the same process.
++				float friction = pm_friction;
++				float stopspeed = pm_stopspeed;
++
++				if ( !pm->ps->aiChar && bg_cod.enable && bg_cod.moveEnable ) {
++					friction = bg_cod.friction;
++					stopspeed = bg_cod.stopspeed;
++				}
++				control = speed < stopspeed ? stopspeed : speed;
++				drop += control * friction * pml.frametime;
+ 			}
+ 		}
+ 	}
+@@ -584,7 +593,12 @@ static qboolean PM_CheckJump( void ) {
+ 	pm->ps->pm_flags |= PMF_JUMP_HELD;
+ 
+ 	pm->ps->groundEntityNum = ENTITYNUM_NONE;
+-	pm->ps->velocity[2] = JUMP_VELOCITY;
++	// codmod: player jump velocity (phase 5 / E7). AI keeps JUMP_VELOCITY 270.
++	if ( !pm->ps->aiChar && bg_cod.enable && bg_cod.moveEnable ) {
++		pm->ps->velocity[2] = bg_cod.jumpVelocity;
++	} else {
++		pm->ps->velocity[2] = JUMP_VELOCITY;
++	}
+ 	PM_AddEvent( EV_JUMP );
+ 
+ 	if ( pm->cmd.forwardmove >= 0 ) {
+@@ -1077,10 +1091,19 @@ static void PM_WalkMove( void ) {
+ 		accelerate = pm_airaccelerate;
+ 	} else if ( ( pm->ps->stats[STAT_HEALTH] <= 0 ) && pm->ps->aiChar && ( pml.groundTrace.surfaceFlags & SURF_MONSTERSLICK ) )    {
+ 		accelerate = pm_airaccelerate;
++	} else if ( !pm->ps->aiChar && bg_cod.enable && bg_cod.moveEnable ) {
++		// codmod: player-only ground accelerate (phase 5 / E17)
++		accelerate = bg_cod.accelerate;
+ 	} else {
+ 		accelerate = pm_accelerate;
+ 	}
+ 
++	// codmod: landing slowdown (phase 5 / E6) — scale wishspeed while STAT_COD_LAND > 0
++	if ( !pm->ps->aiChar && bg_cod.enable && bg_cod.moveEnable && bg_cod.landSlowEnable
++		 && pm->ps->stats[STAT_COD_LAND] > 0 ) {
++		wishspeed *= bg_cod.landSlowScale;
++	}
++
+ 	PM_Accelerate( wishdir, wishspeed, accelerate );
+ 
+ 	//Com_Printf("velocity = %1.1f %1.1f %1.1f\n", pm->ps->velocity[0], pm->ps->velocity[1], pm->ps->velocity[2]);
+@@ -1388,6 +1411,12 @@ static void PM_CrashLand( void ) {
+ 	// start footstep cycle over
+ 	pm->ps->bobCycle = 0;
+ 	pm->ps->footstepCount = 0;
++
++	// codmod: landing slowdown (phase 5 / E6). Any non-trivial land (delta >= 1 already
++	// required above). Player only; timer is networked in STAT_COD_LAND.
++	if ( !pm->ps->aiChar && bg_cod.enable && bg_cod.moveEnable && bg_cod.landSlowEnable ) {
++		pm->ps->stats[STAT_COD_LAND] = (int)bg_cod.landSlowTime;
++	}
+ }
+ 
+ 
+@@ -3081,6 +3110,21 @@ static void PM_Weapon( void ) {
+ 	}
+ // jpw
+ 
++	// codmod: SP pistol tap-fire (phase 5). Vanilla SP left the older tap-fire block
++	// commented out; MP-only path above does not run in single player. Player only —
++	// AI keeps the ammoTable 400 ms interval.
++	if ( !pm->ps->aiChar && bg_cod.enable && bg_cod.weaponEnable && bg_cod.pistolTapFire
++		 && BG_CodIsPistol( pm->ps->weapon ) ) {
++		if ( pm->ps->releasedFire ) {
++			if ( pm->ps->weaponTime <= (int)bg_cod.pistolTapThreshold
++				 && ( pm->cmd.buttons & BUTTON_ATTACK ) ) {
++				pm->ps->weaponTime = 0;
++			}
++		} else if ( !( pm->cmd.buttons & BUTTON_ATTACK ) && ( pm->ps->weaponTime >= 50 ) ) {
++			pm->ps->releasedFire = qtrue;
++		}
++	}
++
+ }
+ 
+ 	// check for weapon change
+@@ -3240,7 +3284,13 @@ static void PM_Weapon( void ) {
+ 			// NERVE's panzerfaust spinup
+ //			if (pm->ps->weapon == WP_PANZERFAUST)
+ //				PM_AddEvent( EV_SPINUP );
+-			pm->ps->weaponDelay = ammoTable[pm->ps->weapon].fireDelayTime;
++			// codmod: snappy pistol first-shot delay (phase 5)
++			if ( !pm->ps->aiChar && bg_cod.enable && bg_cod.weaponEnable
++				 && BG_CodIsPistol( pm->ps->weapon ) ) {
++				pm->ps->weaponDelay = (int)bg_cod.pistolFireDelay;
++			} else {
++				pm->ps->weaponDelay = ammoTable[pm->ps->weapon].fireDelayTime;
++			}
+ 		} else {
+ 			BG_AnimScriptEvent( pm->ps, ANIM_ET_FIREWEAPON, qfalse, qtrue );
+ 		}
+@@ -3443,10 +3493,17 @@ static void PM_Weapon( void ) {
+ 		break;
+ 	case WP_LUGER:
+ 		addTime = ammoTable[pm->ps->weapon].nextShotTime;
++		// codmod: pistol min interval (phase 5); default 120 vs ammoTable 400
++		if ( !pm->ps->aiChar && bg_cod.enable && bg_cod.weaponEnable && bg_cod.pistolNextShot > 0 ) {
++			addTime = (int)bg_cod.pistolNextShot;
++		}
+ 		aimSpreadScaleAdd = 35;
+ 		break;
+ 	case WP_COLT:
+ 		addTime = ammoTable[pm->ps->weapon].nextShotTime;
++		if ( !pm->ps->aiChar && bg_cod.enable && bg_cod.weaponEnable && bg_cod.pistolNextShot > 0 ) {
++			addTime = (int)bg_cod.pistolNextShot;
++		}
+ 		aimSpreadScaleAdd = 20;
+ 		break;
+ //----(SA)	added
+@@ -3512,14 +3569,25 @@ static void PM_Weapon( void ) {
+ 	case WP_MP40:
+ 	case WP_THOMPSON:
+ 		addTime = ammoTable[pm->ps->weapon].nextShotTime;
++		if ( !pm->ps->aiChar && bg_cod.enable && bg_cod.weaponEnable && bg_cod.autoFireScale > 0
++			 && bg_cod.autoFireScale != 1.0f ) {
++			addTime = (int)( addTime * bg_cod.autoFireScale );
++		}
+ 		aimSpreadScaleAdd = 15 + rand() % 10;       // (SA) new values for DM
+ 		break;
+ 	case WP_STEN:
+ 		addTime = ammoTable[pm->ps->weapon].nextShotTime;
++		if ( !pm->ps->aiChar && bg_cod.enable && bg_cod.weaponEnable && bg_cod.autoFireScale > 0
++			 && bg_cod.autoFireScale != 1.0f ) {
++			addTime = (int)( addTime * bg_cod.autoFireScale );
++		}
+ 		aimSpreadScaleAdd = 15 + rand() % 10;       // (SA) new values for DM
+ 		break;
+ 	case WP_SILENCER:
+ 		addTime = ammoTable[pm->ps->weapon].nextShotTime;
++		if ( !pm->ps->aiChar && bg_cod.enable && bg_cod.weaponEnable && bg_cod.pistolNextShot > 0 ) {
++			addTime = (int)bg_cod.pistolNextShot;
++		}
+ 		aimSpreadScaleAdd = 35;
+ 		break;
+ 	case WP_VENOM:
+@@ -4470,6 +4538,14 @@ void PmoveSingle( pmove_t *pmove ) {
+ 	// PM_Sprint all agree this frame (phase 2.1.c)
+ 	PM_CodUpdateSprint();
+ 
++	// codmod: tick landing slowdown timer (phase 5 / E6)
++	if ( !pm->ps->aiChar && pm->ps->stats[STAT_COD_LAND] > 0 ) {
++		pm->ps->stats[STAT_COD_LAND] -= pml.msec;
++		if ( pm->ps->stats[STAT_COD_LAND] < 0 ) {
++			pm->ps->stats[STAT_COD_LAND] = 0;
++		}
++	}
++
+ 	if ( pm->ps->powerups[PW_FLIGHT] ) {
+ 		// flight powerup doesn't allow jump and has different friction
+ 		PM_FlyMove();
+diff --git a/SP/code/game/bg_public.h b/SP/code/game/bg_public.h
+index ad1c7800..7e09059d 100644
+--- a/SP/code/game/bg_public.h
++++ b/SP/code/game/bg_public.h
+@@ -342,15 +342,16 @@ typedef enum {
+ 	// plain ints here, but msg.c only delta-encodes 16 bits of change per entry, so treat
+ 	// these as shorts (-32768..32767). See docs/architecture.md section 3.
+ 	STAT_COD_ADS = 8,        // phase 3: ADS fraction * 1000
+-	STAT_COD_SLIDE,          // phase 4: >0 slide ms left, <0 cooldown ms
++	STAT_COD_SLIDE,          // phase 6: >0 slide ms left, <0 cooldown ms
+ 	STAT_COD_FLAGS,          // bitfield, see COD_SF_*
+-	STAT_COD_SLIDE_SPEED,    // phase 4: start speed of the current slide, u/s
+-	STAT_COD_STANCE          // phase 4b: >0 prone transition ms left, <0 prone cooldown ms
++	STAT_COD_SLIDE_SPEED,    // phase 6: start speed of the current slide, u/s
++	STAT_COD_STANCE,         // phase 6b: >0 prone transition ms left, <0 prone cooldown ms
++	STAT_COD_LAND            // phase 5: >0 landing slowdown ms left
+ } statIndex_t;
+ 
+ // codmod: compile-time check that STAT_COD_* stay inside ps->stats[MAX_STATS] (q_shared.h).
+ // A negative array size here is a compile error, which is the point.
+-typedef char bg_cod_statIndexRangeCheck_t[ ( STAT_COD_STANCE < MAX_STATS ) ? 1 : -1 ];
++typedef char bg_cod_statIndexRangeCheck_t[ ( STAT_COD_LAND < MAX_STATS ) ? 1 : -1 ];
+ 
+ // codmod: ps->stats[STAT_COD_FLAGS] bits (phase 2+)
+ #define COD_SF_SPRINTING 1
+diff --git a/SP/code/game/g_active.c b/SP/code/game/g_active.c
+index 57f20117..9a53219d 100644
+--- a/SP/code/game/g_active.c
++++ b/SP/code/game/g_active.c
+@@ -1006,11 +1006,13 @@ void ClientThink_real( gentity_t *ent ) {
+ 	// see ai_cast_think.c/ai_cast_characters.c for the one deliberate AI exception). Re-applied
+ 	// every frame (not just in ClientSpawn) so cvar changes and savegame loads take effect at
+ 	// once -- see docs/architecture.md section 7. Never change g_speed itself. (phase 2.1.a)
++	// Player gravity override is phase 5 (cod_gravity); never change g_gravity itself.
+ 	if ( !client->ps.aiChar && bg_cod.enable && bg_cod.moveEnable ) {
+ 		client->ps.speed            = bg_cod.runSpeed;
+ 		client->ps.runSpeedScale    = 1.0f;
+ 		client->ps.sprintSpeedScale = bg_cod.sprintScale;
+ 		client->ps.crouchSpeedScale = bg_cod.crouchScale;
++		client->ps.gravity          = bg_cod.gravity;
+ 	} else if ( !client->ps.aiChar ) {
+ 		// restore vanilla values (from ClientSpawn) so cod_enable 0 is a true A/B comparison
+ 		client->ps.runSpeedScale    = 0.8f;
+-- 
+2.56.0
+

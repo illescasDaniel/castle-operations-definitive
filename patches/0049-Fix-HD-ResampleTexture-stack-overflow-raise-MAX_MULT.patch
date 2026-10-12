@@ -1,0 +1,90 @@
+From 9063865bd343e18f2ec7114f4686bd79cacee5b5 Mon Sep 17 00:00:00 2001
+From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
+Date: Fri, 9 Oct 2026 13:44:56 +0200
+Subject: [PATCH 49/64] Fix HD ResampleTexture stack overflow; raise
+ MAX_MULTI_CVARS.
+
+Allocate p1/p2 by outwidth so 2048+ TGAs no longer smash the stack, and
+give the r_mode multi list headroom past 32 entries.
+---
+ SP/code/rend2/tr_image.c    | 9 ++++++++-
+ SP/code/renderer/tr_image.c | 9 ++++++++-
+ SP/code/ui/ui_shared.h      | 4 +++-
+ 3 files changed, 19 insertions(+), 3 deletions(-)
+
+diff --git a/SP/code/rend2/tr_image.c b/SP/code/rend2/tr_image.c
+index d5dd01fe..400f4a55 100644
+--- a/SP/code/rend2/tr_image.c
++++ b/SP/code/rend2/tr_image.c
+@@ -340,9 +340,13 @@ static void ResampleTexture( byte *in, int inwidth, int inheight, byte *out,
+ 	int		i, j;
+ 	byte	*inrow, *inrow2;
+ 	int		frac, fracstep;
+-	int		p1[2048], p2[2048];
++	int		*p1, *p2;
+ 	byte	*pix1, *pix2, *pix3, *pix4;
+ 
++	// codmod: was p1[2048]/p2[2048] — allocate so HD/4K textures cannot overflow.
++	p1 = ri.Hunk_AllocateTempMemory( outwidth * sizeof( int ) );
++	p2 = ri.Hunk_AllocateTempMemory( outwidth * sizeof( int ) );
++
+ 	fracstep = inwidth*0x10000/outwidth;
+ 
+ 	frac = fracstep>>2;
+@@ -370,6 +374,9 @@ static void ResampleTexture( byte *in, int inwidth, int inheight, byte *out,
+ 			*out++ = (pix1[3] + pix2[3] + pix3[3] + pix4[3])>>2;
+ 		}
+ 	}
++
++	ri.Hunk_FreeTempMemory( p2 );
++	ri.Hunk_FreeTempMemory( p1 );
+ }
+ 
+ static void RGBAtoYCoCgA(const byte *in, byte *out, int width, int height)
+diff --git a/SP/code/renderer/tr_image.c b/SP/code/renderer/tr_image.c
+index a651a5d4..c689b8f9 100644
+--- a/SP/code/renderer/tr_image.c
++++ b/SP/code/renderer/tr_image.c
+@@ -332,9 +332,13 @@ static void ResampleTexture( unsigned *in, int inwidth, int inheight, unsigned *
+ 	int i, j;
+ 	unsigned    *inrow, *inrow2;
+ 	unsigned frac, fracstep;
+-	unsigned p1[1024], p2[1024];
++	unsigned    *p1, *p2;
+ 	byte        *pix1, *pix2, *pix3, *pix4;
+ 
++	// codmod: was p1[1024]/p2[1024] — HD textures (2048+) overflowed and SIGSEGV'd in ResampleTexture.
++	p1 = ri.Hunk_AllocateTempMemory( outwidth * sizeof( unsigned ) );
++	p2 = ri.Hunk_AllocateTempMemory( outwidth * sizeof( unsigned ) );
++
+ 	fracstep = inwidth * 0x10000 / outwidth;
+ 
+ 	frac = fracstep >> 2;
+@@ -362,6 +366,9 @@ static void ResampleTexture( unsigned *in, int inwidth, int inheight, unsigned *
+ 			( ( byte * )( out + j ) )[3] = ( pix1[3] + pix2[3] + pix3[3] + pix4[3] ) >> 2;
+ 		}
+ 	}
++
++	ri.Hunk_FreeTempMemory( p2 );
++	ri.Hunk_FreeTempMemory( p1 );
+ }
+ 
+ /*
+diff --git a/SP/code/ui/ui_shared.h b/SP/code/ui/ui_shared.h
+index b93857bb..638c70ec 100644
+--- a/SP/code/ui/ui_shared.h
++++ b/SP/code/ui/ui_shared.h
+@@ -206,7 +206,9 @@ typedef struct editFieldDef_s {
+ 	int paintOffset;                //
+ } editFieldDef_t;
+ 
+-#define MAX_MULTI_CVARS 32
++// Was 32 — r_mode list (30 modes + Automatic + Custom) filled it exactly and
++// clipped anything we add (e.g. more high-DPI modes). Headroom for E14.
++#define MAX_MULTI_CVARS 48
+ 
+ typedef struct multiDef_s {
+ 	const char *cvarList[MAX_MULTI_CVARS];
+-- 
+2.56.0
+

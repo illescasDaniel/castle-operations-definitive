@@ -1,0 +1,519 @@
+#codmod-delta v2 base=ui/ingame_controls.menu sha256=012cb5b0b443e10d28bfc8d0c0d564a1b45f0f923660fe05a936c7040fbc6150
+#src ui/clipboard.menu sha256=1234b5cb59f380ca39fb2c56cbcd82ad2d67d0f1c691aab2a3e49e0d428ba6a0
+#src ui/controls.menu sha256=988fa4ecc3b5152f3291a3c83b427fd971bd8bb5b8b1ab42cf81e8d6b29f724d
+#src ui/credit.menu sha256=81fe8de5ee0a324483378209b9a9f3f64697f1cce563d1dad60bfdc5eee77b1e
+#src ui/error.menu sha256=d8082e15dc125112689b431f799d17958025389efe435cb8f64a39e68cf4223c
+#src ui/ingame.menu sha256=02281aafbe5025fbfa438f36fc128e9a0e83d2690c2d6fe7dc6ce3b5e1a75cdc
+#src ui/ingame_help.menu sha256=a407b7894fd7a5ad4d382342725d5254ba36be2f3a7b7513e6a91d1da3edbe30
+#src ui/notebook.menu sha256=7bc854e3ffa6fb56f4036ec3158fc6c0192156d47fd9dc37bbd30240e410c55f
+#src ui/play.menu sha256=a588d0fc5985e36554b5ebf2c516b65fe26a837c207c634a9ab2f2e658c1ccb5
+@@ 3 4
++\\ MOUSE & KEYBOARD MENU (codmod CoD-style fullscreen) \\
+@@ 5 18
++menuDef
++{
++	name "ingame_controls_kb"
+=ui/ingame_controls.menu 46 47
++	fullscreen 1
+=ui/ingame.menu 27 29
++	style 0
++	border 0
+=ui/controls.menu 14 15
++	onOpen { hide grpControls ; show look ; uiScript loadControls }
++
++	onEsc {
++		close ingame_controls_kb ; open ingame_controls
++		}
++
++////////// CHROME /////////////////////////////////////////////////////////
+=ui/ingame_controls.menu 21 23
++	name backdrop
+=ui/controls.menu 1421 1422
+=ui/ingame_controls.menu 26 27
++	backcolor 0 0 0 .65
+=ui/ingame_controls.menu 31 35
+=ui/ingame_controls.menu 22 23
++	name BLACKGRAD
+=ui/notebook.menu 27 28
++	rect 0 -4 640 132
++	background "BLACKGRAD"
+=ui/ingame_controls.menu 31 35
+=ui/ingame_controls.menu 22 23
++	name BLACKGRAD2
+=ui/notebook.menu 27 28
++	rect 0 420 640 -128
++	background "BLACKGRAD"
+=ui/ingame_controls.menu 31 35
+=ui/ingame_controls.menu 22 23
++	name FLAME
+=ui/notebook.menu 27 28
++	rect 210 20 220 67
++	background "fLAME"
+=ui/ingame_controls.menu 31 35
+=ui/ingame_controls.menu 22 23
++	name WOLFFLAMELOGO
+=ui/notebook.menu 27 28
++	rect 200 -5 240 120
++	background "WOLFFLAMELOGO"
+=ui/ingame_controls.menu 31 35
+=ui/ingame_controls.menu 22 23
++	name gold_line_l
+=ui/notebook.menu 27 28
++	rect 0 76 226 10
++	background "gold_line"
+=ui/ingame_controls.menu 31 35
+=ui/ingame_controls.menu 22 23
++	name gold_line_r
+=ui/notebook.menu 27 28
++	rect 414 76 230 10
++	background "gold_line"
+=ui/ingame_controls.menu 31 35
+=ui/ingame_controls.menu 22 23
++	name content_panel
++	rect 220 120 380 300
+=ui/ingame_controls.menu 26 27
+=ui/ingame_controls.menu 30 31
+=ui/ingame_controls.menu 27 28
++	bordercolor .5 .5 .5 .35
+=ui/ingame_controls.menu 31 35
+=ui/ingame_controls.menu 22 23
++	name back
++	text "BACK"
+=ui/controls.menu 105 106
+=ui/play.menu 196 198
++	textscale .30
++	style 0
++	rect 40 420 180 22
+=ui/credit.menu 1504 1505
+=ui/credit.menu 1548 1549
++	textaligny 18
+=ui/credit.menu 1508 1509
+=ui/ingame_controls.menu 31 32
++	action { play "sound/misc/kcaction.wav" ;
++	close ingame_controls_kb ; open ingame_controls }
++}
+@@ 20 20
++	
+@@ 21 21
++	
++
++////////// SECTION TABS (codmod CoD-style) /////////////////////////////////
+@@ 23 31
+=ui/ingame_controls.menu 68 69
++	text "LOOK"
+=ui/controls.menu 105 106
+=ui/play.menu 196 198
++	textscale .30
++	style 0
++	rect 40 140 180 22
+=ui/credit.menu 1504 1505
+=ui/credit.menu 1548 1549
++	textaligny 18
+=ui/credit.menu 1508 1509
+@@ 32 33
++	action { play "sound/misc/kcaction.wav" ;
+=ui/controls.menu 116 117
+=ui/ingame_controls.menu 1084 1087
+=ui/ingame_controls.menu 284 285
++	text "MOVE"
+=ui/controls.menu 105 106
+=ui/play.menu 196 198
++	textscale .30
++	style 0
++	rect 40 170 180 22
+=ui/credit.menu 1504 1505
+=ui/credit.menu 1548 1549
++	textaligny 18
+=ui/credit.menu 1508 1509
+=ui/ingame_controls.menu 31 32
++	action { play "sound/misc/kcaction.wav" ;
+=ui/controls.menu 321 322
+=ui/ingame_controls.menu 1084 1087
+=ui/ingame_controls.menu 569 570
++	text "SHOOT"
+=ui/controls.menu 105 106
+=ui/play.menu 196 198
++	textscale .30
++	style 0
++	rect 40 200 180 22
+=ui/credit.menu 1504 1505
+=ui/credit.menu 1548 1549
++	textaligny 18
+=ui/credit.menu 1508 1509
+=ui/ingame_controls.menu 31 32
++	action { play "sound/misc/kcaction.wav" ;
+=ui/controls.menu 616 617
+=ui/ingame_controls.menu 1084 1087
+=ui/ingame_controls.menu 949 950
++	text "MISC"
+=ui/controls.menu 105 106
+=ui/play.menu 196 198
++	textscale .30
++	style 0
++	rect 40 230 180 22
+=ui/credit.menu 1504 1505
+=ui/credit.menu 1548 1549
++	textaligny 18
+=ui/credit.menu 1508 1509
+=ui/ingame_controls.menu 31 32
++	action { play "sound/misc/kcaction.wav" ;
+=ui/controls.menu 1113 1114
+@@ 38 39
++	// Bottom hint strip (empty space under the value panel)
++	rect 40 455 560 20
+@@ 40 41
+@@ 42 46
++	textscale .20
+@@ 47 48
+=ui/ingame_controls.menu 32 33
+@@ 50 67
+@@ 68 87
+@@ 92 93
++		rect 240 140 320 14 
+@@ 94 95
++		textalignx 160 
+@@ 105 106
+=ui/ingame_controls.menu 22 23
+@@ 111 112
++		rect 240 155 320 14 
+@@ 113 114
++		textalignx 160 
+@@ 124 125
+=ui/ingame_controls.menu 22 23
+@@ 130 131
++		rect 240 170 320 14
+@@ 132 133
+=ui/error.menu 217 218
+@@ 142 143
++
+@@ 149 150
++		rect 240 185 320 14
+@@ 151 152
+=ui/error.menu 217 218
+@@ 168 169
++		rect 240 200 320 14
+@@ 170 171
+=ui/error.menu 217 218
+@@ 181 183
+@@ 189 190
++		rect 240 215 320 14
+@@ 191 192
+=ui/error.menu 217 218
+@@ 202 204
+@@ 210 211
++		rect 240 230 320 14
+@@ 212 213
+=ui/error.menu 217 218
+@@ 223 225
+@@ 231 232
++		rect 240 245 320 14
+@@ 233 234
+=ui/error.menu 217 218
+@@ 244 251
+=ui/ingame_controls.menu 22 23
+@@ 255 256
++	rect 240 270 320 14
+@@ 264 265
+=ui/ingame_controls.menu 22 23
+@@ 271 272
++	rect 240 285 320 14
+@@ 273 274
+=ui/ingame_help.menu 59 60
+@@ 282 282
+=ui/ingame_controls.menu 225 229
+=ui/ingame_controls.menu 1129 1131
++	rect 240 300 320 14
+=ui/ingame_controls.menu 93 94
++		textalignx 160 
+=ui/ingame_controls.menu 1134 1144
+@@ 284 301
+=ui/ingame_controls.menu 226 229
+=ui/ingame_controls.menu 1149 1151
++	rect 240 315 320 14
+=ui/ingame_controls.menu 93 94
++		textalignx 160 
+=ui/ingame_controls.menu 1154 1162
+@@ 303 303
+=ui/ingame_controls.menu 143 146
++	type ITEM_TYPE_EDITFIELD
+=ui/ingame_controls.menu 1207 1208
++	cvar "sensitivity"
++	maxChars 8
++	maxPaintChars 8
++	rect 240 330 320 14
+=ui/ingame_controls.menu 256 257
+=ui/ingame_help.menu 59 60
+=ui/ingame_controls.menu 45 46
+=ui/ingame_controls.menu 71 72
+=ui/ingame_controls.menu 277 279
+=ui/ingame_controls.menu 29 30
+=ui/ingame_controls.menu 46 47
+=ui/ingame_controls.menu 1218 1221
+@@ 304 305
+=ui/ingame_controls.menu 22 23
+@@ 310 311
++		rect 240 140 320 14
+@@ 312 313
++		textalignx 160 
+@@ 322 323
+=ui/ingame_controls.menu 21 23
+@@ 328 329
++		rect 240 155 320 14
+@@ 330 331
++		textalignx 160 
+@@ 339 340
+=ui/ingame_controls.menu 22 23
+@@ 345 346
++		rect 240 170 320 14
+@@ 347 348
++		textalignx 160 
+@@ 356 357
+=ui/ingame_controls.menu 22 23
+@@ 362 363
++		rect 240 185 320 14
+@@ 364 365
+=ui/error.menu 217 218
+@@ 375 376
+=ui/ingame_controls.menu 22 23
+@@ 381 382
++		rect 240 200 320 14
+@@ 383 384
+=ui/error.menu 217 218
+@@ 393 395
+=ui/ingame_controls.menu 21 23
+@@ 400 401
++		rect 240 215 320 14
+@@ 402 403
+=ui/error.menu 217 218
+@@ 413 414
+=ui/ingame_controls.menu 22 23
+@@ 419 420
++		rect 240 230 320 14
+@@ 421 422
+=ui/error.menu 217 218
+@@ 438 439
++		rect 240 245 320 14
+@@ 440 441
+=ui/error.menu 217 218
+@@ 457 458
++		rect 240 260 320 14
+@@ 459 460
+=ui/error.menu 217 218
+@@ 470 473
+=ui/ingame_controls.menu 22 23
+@@ 478 479
++		rect 240 275 320 14
+@@ 480 481
+=ui/error.menu 217 218
+@@ 491 492
+=ui/ingame_controls.menu 22 23
+@@ 497 498
++		rect 240 290 320 14
+@@ 499 500
+=ui/error.menu 217 218
+@@ 510 511
+=ui/ingame_controls.menu 22 23
+@@ 516 517
++		rect 240 305 320 14
+@@ 518 519
+=ui/error.menu 217 218
+@@ 529 530
+=ui/ingame_controls.menu 22 23
+@@ 535 536
++		rect 240 320 320 14
+@@ 537 557
+=ui/error.menu 217 218
+@@ 567 567
+=ui/ingame_controls.menu 22 23
+=ui/ingame_controls.menu 549 554
++		rect 240 335 320 14
+=ui/ingame_controls.menu 93 94
+=ui/error.menu 217 218
+=ui/ingame_controls.menu 403 412
+@@ 569 589
+@@ 594 595
++		rect 240 140 320 14
+@@ 596 597
++		textalignx 160 
+@@ 607 608
+=ui/ingame_controls.menu 22 23
+@@ 613 614
++		rect 240 155 320 14
+@@ 615 616
++		textalignx 160 
+@@ 626 627
+=ui/ingame_controls.menu 22 23
+@@ 632 633
++		rect 240 170 320 14
+@@ 634 635
++		textalignx 160 
+@@ 645 646
+=ui/ingame_controls.menu 22 23
+@@ 651 652
++		rect 240 185 320 14
+@@ 653 654
++		textalignx 160 
+@@ 664 665
+=ui/ingame_controls.menu 22 23
+@@ 670 671
++		rect 240 200 320 14
+@@ 672 673
++		textalignx 160 
+@@ 683 684
+=ui/ingame_controls.menu 22 23
+@@ 689 690
++		rect 240 215 320 14
+@@ 691 692
++		textalignx 160 
+@@ 702 722
+=ui/ingame_controls.menu 22 23
+@@ 727 728
++		rect 240 230 320 14
+@@ 729 767
++		textalignx 160 
+@@ 777 778
+=ui/ingame_controls.menu 22 23
+=ui/ingame_controls.menu 741 747
++		rect 240 245 320 14
+=ui/ingame_controls.menu 93 94
++		textalignx 160 
+=ui/ingame_controls.menu 750 758
+=ui/ingame_controls.menu 22 23
+@@ 781 784
+=ui/ingame_controls.menu 762 764
++		rect 240 260 320 14
+@@ 785 786
++		textalignx 160 
+@@ 796 797
+=ui/ingame_controls.menu 22 23
+@@ 800 803
+=ui/ingame_controls.menu 781 783
++		rect 240 275 320 14
+@@ 804 805
++		textalignx 160 
+@@ 815 816
+=ui/ingame_controls.menu 22 23
+=ui/ingame_controls.menu 797 802
++		rect 240 290 320 14
+=ui/ingame_controls.menu 93 94
++		textalignx 160 
+=ui/ingame_controls.menu 616 626
+=ui/ingame_controls.menu 22 23
+@@ 821 822
++		rect 240 305 320 14
+@@ 823 824
++		textalignx 160 
+@@ 834 835
+=ui/ingame_controls.menu 22 23
+@@ 840 841
++			rect 240 320 320 14
+@@ 842 862
++		textalignx 160 
+@@ 872 873
+=ui/ingame_controls.menu 22 23
+@@ 876 879
+=ui/ingame_controls.menu 857 859
++		rect 240 335 320 14
+@@ 880 881
++		textalignx 160 
+@@ 890 891
+=ui/ingame_controls.menu 21 23
+@@ 894 897
+=ui/ingame_controls.menu 876 878
++		rect 240 350 320 14
+@@ 898 899
++		textalignx 160 
+@@ 908 909
+=ui/ingame_controls.menu 21 23
+=ui/ingame_controls.menu 891 896
++		rect 240 365 320 14
+=ui/ingame_controls.menu 93 94
++		textalignx 160 
+=ui/ingame_controls.menu 616 626
+=ui/ingame_controls.menu 22 23
+@@ 914 915
++		rect 240 380 320 14
+@@ 916 917
++		textalignx 160 
+@@ 927 928
+=ui/ingame_controls.menu 22 23
+@@ 933 934
++		rect 240 395 320 14
+@@ 935 936
++		textalignx 160 
+@@ 946 948
+@@ 949 970
+@@ 975 976
++		rect 240 140 320 14
+@@ 977 978
++		textalignx 160 
+@@ 988 989
+=ui/ingame_controls.menu 22 23
+@@ 994 995
++		rect 240 155 320 14
+@@ 996 997
++		textalignx 160 
+@@ 1007 1009
+=ui/ingame_controls.menu 22 23
+@@ 1014 1015
++		rect 240 170 320 14
+@@ 1016 1017
++		textalignx 160 
+@@ 1027 1030
+=ui/ingame_controls.menu 22 23
+@@ 1035 1036
++		rect 240 185 320 14
+@@ 1037 1038
++		textalignx 160 
+@@ 1048 1049
+=ui/ingame_controls.menu 22 23
+@@ 1054 1055
++		rect 240 200 320 14
+@@ 1056 1057
++		textalignx 160 
+@@ 1073 1074
++	rect 240 215 320 14
+@@ 1075 1076
++	textalignx 160 
+@@ 1092 1093
++	rect 240 230 320 14
+@@ 1094 1095
++	textalignx 160 
+@@ 1111 1112
++	rect 240 245 320 14
+@@ 1113 1114
++		textalignx 160 
+@@ 1123 1124
+@@ 1126 1166
+@@ 1171 1172
++		rect 240 260 320 14
+@@ 1173 1193
++		textalignx 160 
+@@ 1204 1220
+=ui/ingame_controls.menu 1185 1190
++		rect 240 275 320 14
+=ui/ingame_controls.menu 93 94
++		textalignx 160 
+=ui/ingame_controls.menu 1193 1204
+=ui/controls.menu 1388 1389
++	rect 40 455 560 20
++	text "Click to toggle Yes or No"
+=ui/ingame_controls.menu 41 42
++	textscale .20
+=ui/credit.menu 1504 1505
+=ui/credit.menu 1548 1549
+=ui/ingame_controls.menu 76 77
+=ui/clipboard.menu 30 32
+@@ 1222 1224
+@@ 1225 1228
+=ui/controls.menu 1402 1403
++	rect 40 455 560 20
++	text "Enter a value, or use the field to adjust"
+@@ 1229 1233
++	textscale .20
+=ui/credit.menu 1504 1505
+=ui/credit.menu 1548 1549
+=ui/ingame_controls.menu 76 77
+@@ 1234 1253
+=ui/ingame_controls.menu 32 34
+@@ 1256 1257

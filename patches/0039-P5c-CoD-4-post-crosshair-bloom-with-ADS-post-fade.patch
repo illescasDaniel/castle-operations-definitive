@@ -1,0 +1,338 @@
+From 3d40dd934d6962f87d7f708e171e60ab0e5ae591 Mon Sep 17 00:00:00 2001
+From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
+Date: Fri, 9 Oct 2026 00:17:16 +0200
+Subject: [PATCH 39/64] P5c: CoD 4-post crosshair bloom with ADS post fade.
+
+Gap opens with fire spread and move speed; crouch tightens; sprint fades
+posts. ADS fades the posts while cod_adsCrosshair 1 keeps the center dot.
+---
+ SP/code/cgame/cg_cod.c      | 170 ++++++++++++++++++++++++++++++++++++
+ SP/code/cgame/cg_cod_menu.c |  12 +++
+ SP/code/cgame/cg_draw.c     |  37 ++++----
+ SP/code/cgame/cg_local.h    |   1 +
+ SP/code/game/bg_cod.c       |  13 +++
+ SP/code/game/bg_cod.h       |  12 +++
+ 6 files changed, 230 insertions(+), 15 deletions(-)
+
+diff --git a/SP/code/cgame/cg_cod.c b/SP/code/cgame/cg_cod.c
+index 17aadab8..208aeb38 100644
+--- a/SP/code/cgame/cg_cod.c
++++ b/SP/code/cgame/cg_cod.c
+@@ -1064,3 +1064,173 @@ void CG_CodDrawLowHealthBlood( void ) {
+ 		CG_FillRect( -10, -10, 650, 490, col );
+ 	}
+ }
++
++/*
++================
++CG_CodDrawCrosshairBar
++
++codmod: one post (or outline) for the CoD 4-post reticle. Coords are 640×480 virtual.
++================
++*/
++static void CG_CodDrawCrosshairBar( float x, float y, float w, float h, const vec4_t color ) {
++	if ( w < 0.5f || h < 0.5f || color[3] <= 0.01f ) {
++		return;
++	}
++	CG_FillRect( x, y, w, h, color );
++}
++
++/*
++================
++CG_CodDrawCrosshair
++
++codmod: CoD-style 4-post hip reticle (phase 5c follow-up).
++- Gap blooms with aimSpreadScale (fire) + horizontal speed (walk/sprint).
++- Crouch tightens the gap; sprint expands and fades the posts.
++- ADS fades the posts out; center dot stays while cod_adsCrosshair 1 (interim until
++  every weapon's iron sights are tuned — then mode 2 hides the dot too).
++================
++*/
++void CG_CodDrawCrosshair( const vec4_t hcolor ) {
++	float cx, cy;
++	float gap, len, th, halfTh;
++	float spreadT, speed, sprintMax, moveT, sprintF, ads, crouchMul;
++	float postAlpha, dotAlpha;
++	vec4_t postColor, outlineColor, dotColor;
++	vec3_t vel;
++	playerState_t *ps;
++	qboolean drawPosts;
++	qboolean drawDot;
++
++	if ( !cg.snap ) {
++		return;
++	}
++
++	ps = &cg.predictedPlayerState;
++	ads = ( bg_cod.enable && bg_cod.adsEnable ) ? CG_CodAdsFrac() : 0.0f;
++	ads = BG_CodSmoothstep( ads );
++
++	// adsCrosshair 2: hide everything once mostly ADS (same gate as the interim path).
++	if ( bg_cod.adsCrosshair >= 2 && ads > 0.5f ) {
++		return;
++	}
++
++	spreadT = (float)cg.snap->ps.aimSpreadScale / 255.0f;
++	if ( spreadT < 0.0f ) {
++		spreadT = 0.0f;
++	} else if ( spreadT > 1.0f ) {
++		spreadT = 1.0f;
++	}
++
++	VectorCopy( ps->velocity, vel );
++	vel[2] = 0.0f;
++	speed = VectorLength( vel );
++	sprintMax = bg_cod.runSpeed * bg_cod.sprintScale;
++	if ( sprintMax < 1.0f ) {
++		sprintMax = 1.0f;
++	}
++	moveT = speed / sprintMax;
++	if ( moveT < 0.0f ) {
++		moveT = 0.0f;
++	} else if ( moveT > 1.0f ) {
++		moveT = 1.0f;
++	}
++
++	sprintF = CG_CodSprintFrac();
++	crouchMul = 1.0f;
++	if ( ps->eFlags & EF_CROUCHING ) {
++		crouchMul = bg_cod.crosshairCrouchScale;
++		if ( crouchMul < 0.1f ) {
++			crouchMul = 0.1f;
++		} else if ( crouchMul > 1.0f ) {
++			crouchMul = 1.0f;
++		}
++	}
++
++	gap = bg_cod.crosshairGap
++		+ bg_cod.crosshairBloom * spreadT
++		+ bg_cod.crosshairMoveBloom * moveT
++		+ bg_cod.crosshairMoveBloom * 0.35f * sprintF;
++	gap *= crouchMul;
++	// ADS contracts the gap as posts fade (reads as accuracy tightening).
++	if ( bg_cod.adsCrosshair > 0 ) {
++		gap *= 1.0f - 0.65f * ads;
++	}
++	if ( gap < 0.0f ) {
++		gap = 0.0f;
++	}
++
++	len = bg_cod.crosshairLength;
++	th = bg_cod.crosshairWidth;
++	if ( len < 1.0f ) {
++		len = 1.0f;
++	}
++	if ( th < 1.0f ) {
++		th = 1.0f;
++	}
++	halfTh = th * 0.5f;
++
++	cx = 320.0f + (float)cg_crosshairX.integer;
++	cy = 240.0f + (float)cg_crosshairY.integer;
++
++	postAlpha = hcolor[3];
++	if ( bg_cod.adsCrosshair > 0 ) {
++		postAlpha *= ( 1.0f - ads );
++	}
++	postAlpha *= 1.0f - ( 1.0f - bg_cod.crosshairSprintAlpha ) * sprintF;
++	if ( postAlpha < 0.0f ) {
++		postAlpha = 0.0f;
++	} else if ( postAlpha > 1.0f ) {
++		postAlpha = 1.0f;
++	}
++
++	dotAlpha = hcolor[3];
++	// Mode 2 fades the dot with ADS; mode 1 keeps it (interim iron-sight aid).
++	if ( bg_cod.adsCrosshair >= 2 ) {
++		dotAlpha *= ( 1.0f - ads );
++	}
++	if ( dotAlpha < 0.0f ) {
++		dotAlpha = 0.0f;
++	} else if ( dotAlpha > 1.0f ) {
++		dotAlpha = 1.0f;
++	}
++
++	drawPosts = ( postAlpha > 0.01f ) ? qtrue : qfalse;
++	drawDot = qfalse;
++	if ( bg_cod.crosshairDot && dotAlpha > 0.01f ) {
++		drawDot = qtrue;
++	}
++	// Even with hip dot off, keep the interim ADS center dot.
++	if ( !drawDot && bg_cod.adsCrosshair == 1 && ads > 0.05f && dotAlpha > 0.01f ) {
++		drawDot = qtrue;
++	}
++
++	VectorCopy( hcolor, postColor );
++	postColor[3] = postAlpha;
++	VectorCopy( hcolor, dotColor );
++	dotColor[3] = dotAlpha;
++
++	if ( drawPosts ) {
++		if ( bg_cod.crosshairOutline ) {
++			VectorSet( outlineColor, 0.0f, 0.0f, 0.0f );
++			outlineColor[3] = postAlpha * 0.85f;
++			// top / bottom / left / right — 1px larger behind
++			CG_CodDrawCrosshairBar( cx - halfTh - 1.0f, cy - gap - len - 1.0f, th + 2.0f, len + 2.0f, outlineColor );
++			CG_CodDrawCrosshairBar( cx - halfTh - 1.0f, cy + gap - 1.0f,       th + 2.0f, len + 2.0f, outlineColor );
++			CG_CodDrawCrosshairBar( cx - gap - len - 1.0f, cy - halfTh - 1.0f, len + 2.0f, th + 2.0f, outlineColor );
++			CG_CodDrawCrosshairBar( cx + gap - 1.0f,       cy - halfTh - 1.0f, len + 2.0f, th + 2.0f, outlineColor );
++		}
++		CG_CodDrawCrosshairBar( cx - halfTh, cy - gap - len, th, len, postColor );
++		CG_CodDrawCrosshairBar( cx - halfTh, cy + gap,       th, len, postColor );
++		CG_CodDrawCrosshairBar( cx - gap - len, cy - halfTh, len, th, postColor );
++		CG_CodDrawCrosshairBar( cx + gap,       cy - halfTh, len, th, postColor );
++	}
++
++	if ( drawDot ) {
++		if ( bg_cod.crosshairOutline ) {
++			VectorSet( outlineColor, 0.0f, 0.0f, 0.0f );
++			outlineColor[3] = dotAlpha * 0.85f;
++			CG_CodDrawCrosshairBar( cx - 2.0f, cy - 2.0f, 4.0f, 4.0f, outlineColor );
++		}
++		CG_CodDrawCrosshairBar( cx - 1.0f, cy - 1.0f, 2.0f, 2.0f, dotColor );
++	}
++}
+diff --git a/SP/code/cgame/cg_cod_menu.c b/SP/code/cgame/cg_cod_menu.c
+index f1c11a99..66bfe683 100644
+--- a/SP/code/cgame/cg_cod_menu.c
++++ b/SP/code/cgame/cg_cod_menu.c
+@@ -209,6 +209,18 @@ static const codMenuItem_t cg_codMenuItems[] = {
+ 	{ COD_MI_FLOAT, "cod_hudLowHealthStart",  "cod_hudLowHealthStart",  0.05f, 0.1f, NULL },
+ 	{ COD_MI_FLOAT, "cod_hudLowHealthMaxAlpha","cod_hudLowHealthMaxAlpha",0.05f,0.1f, NULL },
+ 
++	{ COD_MI_SECTION, "CROSSHAIR", NULL, 0, 0, NULL },
++	{ COD_MI_BOOL,  "cod_crosshairStyle",     "cod_crosshairStyle",     1,     1,    NULL },
++	{ COD_MI_FLOAT, "cod_crosshairGap",       "cod_crosshairGap",       0.5f,  1,    NULL },
++	{ COD_MI_FLOAT, "cod_crosshairLength",    "cod_crosshairLength",    0.5f,  2,    NULL },
++	{ COD_MI_FLOAT, "cod_crosshairWidth",     "cod_crosshairWidth",     0.25f, 1,    NULL },
++	{ COD_MI_BOOL,  "cod_crosshairDot",       "cod_crosshairDot",       1,     1,    NULL },
++	{ COD_MI_FLOAT, "cod_crosshairBloom",     "cod_crosshairBloom",     1,     4,    NULL },
++	{ COD_MI_FLOAT, "cod_crosshairMoveBloom", "cod_crosshairMoveBloom", 1,     4,    NULL },
++	{ COD_MI_FLOAT, "cod_crosshairCrouchScale","cod_crosshairCrouchScale",0.05f,0.1f, NULL },
++	{ COD_MI_FLOAT, "cod_crosshairSprintAlpha","cod_crosshairSprintAlpha",0.05f,0.1f, NULL },
++	{ COD_MI_BOOL,  "cod_crosshairOutline",   "cod_crosshairOutline",   1,     1,    NULL },
++
+ 	{ COD_MI_SECTION, "GAIT / SPRINT GUN", NULL, 0, 0, NULL },
+ 	{ COD_MI_FLOAT, "cod_sprintRaiseTime",    "cod_sprintRaiseTime",    10,   50,   NULL },
+ 	{ COD_MI_FLOAT, "cod_sprintGunPitch",     "cod_sprintGunPitch",     0.5f, 2,    NULL },
+diff --git a/SP/code/cgame/cg_draw.c b/SP/code/cgame/cg_draw.c
+index 204a0009..b6a1bc38 100644
+--- a/SP/code/cgame/cg_draw.c
++++ b/SP/code/cgame/cg_draw.c
+@@ -2480,32 +2480,39 @@ static void CG_DrawCrosshair( void ) {
+ 		return;
+ 	}
+ 
++	// set color based on health
++	if ( cg_crosshairHealth.integer ) {
++		if ( bg_cod.enable && bg_cod.hudEnable && bg_cod.hudHealthCrosshair ) {
++			CG_CodColorForHealth( hcolor );
++		} else {
++			CG_ColorForHealth( hcolor );
++		}
++	}
++	hcolor[3] = cg_crosshairAlpha.value;
++
++	// codmod: CoD 4-post bloom reticle (phase 5c follow-up). Handles ADS post-fade +
++	// interim center dot (cod_adsCrosshair 1). Style 0 falls through to vanilla shader.
++	if ( bg_cod.enable && bg_cod.crosshairStyle ) {
++		if ( friendInSights ) {
++			hcolor[0] = 0.2f;
++			hcolor[1] = 0.9f;
++			hcolor[2] = 0.2f;
++		}
++		CG_CodDrawCrosshair( hcolor );
++		return;
++	}
++
+ 	// codmod: while ADS, replace the hip crosshair with a center dot (phase 3.7 interim).
+ 	// cod_adsCrosshair 1 = dot (default until all weapons are tuned); 2 = hide completely.
+ 	if ( bg_cod.enable && bg_cod.adsEnable && bg_cod.adsCrosshair > 0 && CG_CodAdsFrac() > 0.5f ) {
+ 		if ( bg_cod.adsCrosshair >= 2 ) {
+ 			return;
+ 		}
+-		if ( cg_crosshairHealth.integer ) {
+-			// codmod: phase 5c — tint by health/maxHealth (white→red), not vanilla ~100HP ramp
+-			if ( bg_cod.hudEnable && bg_cod.hudHealthCrosshair ) {
+-				CG_CodColorForHealth( hcolor );
+-			} else {
+-				CG_ColorForHealth( hcolor );
+-			}
+-		}
+-		hcolor[3] = cg_crosshairAlpha.value;
+ 		CG_FillRect( 319, 239, 2, 2, hcolor );
+ 		return;
+ 	}
+ 
+-	// set color based on health
+ 	if ( cg_crosshairHealth.integer ) {
+-		if ( bg_cod.enable && bg_cod.hudEnable && bg_cod.hudHealthCrosshair ) {
+-			CG_CodColorForHealth( hcolor );
+-		} else {
+-			CG_ColorForHealth( hcolor );
+-		}
+ 		trap_R_SetColor( hcolor );
+ 	} else {
+ 		trap_R_SetColor( NULL );
+diff --git a/SP/code/cgame/cg_local.h b/SP/code/cgame/cg_local.h
+index 58719961..20069195 100644
+--- a/SP/code/cgame/cg_local.h
++++ b/SP/code/cgame/cg_local.h
+@@ -2253,6 +2253,7 @@ void CG_CodUpdateQuickKnife( void );   // codmod: phase 5.5
+ void CG_CodThreatColor( float t, vec4_t out ); // codmod: phase 5c white→red ramp
+ void CG_CodColorForHealth( vec4_t hcolor );    // codmod: phase 5c by health/maxHealth
+ void CG_CodDrawLowHealthBlood( void );         // codmod: phase 5c persistent vignette
++void CG_CodDrawCrosshair( const vec4_t hcolor ); // codmod: CoD 4-post bloom reticle
+ 
+ //
+ // cg_consolecmds.c
+diff --git a/SP/code/game/bg_cod.c b/SP/code/game/bg_cod.c
+index 9fd6bf23..241d3f6e 100644
+--- a/SP/code/game/bg_cod.c
++++ b/SP/code/game/bg_cod.c
+@@ -159,6 +159,19 @@ const codCvarDef_t bg_codCvars[] = {
+ 	{ "cod_hudLowHealthStart",  "0.4",  0,            CODOFS( hudLowHealthStart ),  0 },
+ 	{ "cod_hudLowHealthMaxAlpha","0.55",0,            CODOFS( hudLowHealthMaxAlpha ), 0 },
+ 
++	// codmod: CoD 4-post reticle — gap blooms with fire spread + move speed; ADS fades posts
++	// (center dot kept while cod_adsCrosshair 1 until per-weapon ADS tune).
++	{ "cod_crosshairStyle",     "1",    0,            CODOFS( crosshairStyle ),     1 },
++	{ "cod_crosshairGap",       "4",    0,            CODOFS( crosshairGap ),       0 },
++	{ "cod_crosshairLength",    "8",    0,            CODOFS( crosshairLength ),    0 },
++	{ "cod_crosshairWidth",     "2",    0,            CODOFS( crosshairWidth ),     0 },
++	{ "cod_crosshairDot",       "1",    0,            CODOFS( crosshairDot ),       1 },
++	{ "cod_crosshairBloom",     "16",   0,            CODOFS( crosshairBloom ),     0 },
++	{ "cod_crosshairMoveBloom", "14",   0,            CODOFS( crosshairMoveBloom ), 0 },
++	{ "cod_crosshairCrouchScale","0.55",0,            CODOFS( crosshairCrouchScale ), 0 },
++	{ "cod_crosshairSprintAlpha","0.35",0,            CODOFS( crosshairSprintAlpha ), 0 },
++	{ "cod_crosshairOutline",   "1",    0,            CODOFS( crosshairOutline ),   1 },
++
+ 	{ "cod_debugHud",           "0",    CVAR_ARCHIVE, CODOFS( debugHud ),           1 },
+ 	// codmod: /cod_menu overlay size (cgame). Archived like cod_debugHud — UI preference.
+ 	{ "cod_menuScale",          "0.7",  CVAR_ARCHIVE, CODOFS( menuScale ),          0 },
+diff --git a/SP/code/game/bg_cod.h b/SP/code/game/bg_cod.h
+index 1f355bd3..05ac9269 100644
+--- a/SP/code/game/bg_cod.h
++++ b/SP/code/game/bg_cod.h
+@@ -129,6 +129,18 @@ typedef struct {
+ 	float hudLowHealthStart;   // health/max at which blood starts
+ 	float hudLowHealthMaxAlpha;// blood overlay alpha near death
+ 
++	// codmod: CoD 4-post dynamic crosshair (phase 5c follow-up)
++	int crosshairStyle;        // 1 = CoD posts+bloom; 0 = vanilla shader
++	float crosshairGap;        // base half-gap (640 coords)
++	float crosshairLength;     // post length
++	float crosshairWidth;      // post thickness
++	int crosshairDot;          // 1 = hip-fire center dot
++	float crosshairBloom;      // extra gap from aimSpreadScale (0..1)
++	float crosshairMoveBloom;  // extra gap at full sprint speed
++	float crosshairCrouchScale;// gap multiplier while crouching
++	float crosshairSprintAlpha;// post alpha at full sprint (dot stays)
++	int crosshairOutline;      // 1 = 1px black outline for contrast
++
+ 	int debugHud;    // 0 off, 1 HUD, 2 HUD + nearest AI speed
+ 	float menuScale; // /cod_menu text+panel scale (0.5..1.0); cgame UI preference
+ } codTuning_t;
+-- 
+2.56.0
+

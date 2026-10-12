@@ -1,0 +1,460 @@
+From 3b3662339d4dabf409da09ea3f4c57d28e56f3c4 Mon Sep 17 00:00:00 2001
+From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
+Date: Thu, 8 Oct 2026 22:56:05 +0200
+Subject: [PATCH 30/64] =?UTF-8?q?P4:=20gait=20presentation=20=E2=80=94=20s?=
+ =?UTF-8?q?print=20gun-lower,=20bob,=20fire=20cancels=20sprint?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Sell walk/jog/sprint in first person without new viewmodel anims:
+attack clears COD_SF_SPRINTING same frame so the shot fires; procedural
+gun-lower raises visually only; gait-scaled bob rates/amps and sprint
+camera/FOV weight behind cod_gaitEnable.
+
+Co-authored-by: Cursor <cursoragent@cursor.com>
+---
+ SP/code/cgame/cg_cod.c      | 96 ++++++++++++++++++++++++++++++++++++-
+ SP/code/cgame/cg_cod_menu.c | 17 +++++++
+ SP/code/cgame/cg_local.h    |  7 ++-
+ SP/code/cgame/cg_view.c     | 61 ++++++++++++++++-------
+ SP/code/cgame/cg_weapons.c  | 15 ++++++
+ SP/code/game/bg_cod.c       | 18 +++++++
+ SP/code/game/bg_cod.h       | 21 +++++++-
+ SP/code/game/bg_pmove.c     | 18 ++++++-
+ 8 files changed, 231 insertions(+), 22 deletions(-)
+
+diff --git a/SP/code/cgame/cg_cod.c b/SP/code/cgame/cg_cod.c
+index 34c8e917..7f44fc51 100644
+--- a/SP/code/cgame/cg_cod.c
++++ b/SP/code/cgame/cg_cod.c
+@@ -45,6 +45,95 @@ float CG_CodAdsFrac( void ) {
+ 	return cg.predictedPlayerState.stats[STAT_COD_ADS] / 1000.0f;
+ }
+ 
++/*
++================
++CG_CodSprintFrac
++
++codmod: eased 0..1 sprint gun-lower fraction (phase 4.1). Visual only — firing is gated in
++pmove by clearing COD_SF_SPRINTING on BUTTON_ATTACK, not by this value. Raises/lowers over
++cod_sprintRaiseTime. Suppressed while ADS so iron sights don't fight the sprint pose.
++================
++*/
++float CG_CodSprintFrac( void ) {
++	float target;
++	float raiseMs;
++	float dt;
++	int now;
++
++	if ( !( bg_cod.enable && bg_cod.gaitEnable ) ) {
++		cg.codSprintFrac = 0.0f;
++		cg.codSprintFracTime = cg.time;
++		return 0.0f;
++	}
++
++	if ( CG_CodAdsFrac() > 0.01f ) {
++		target = 0.0f;
++	} else if ( cg.predictedPlayerState.stats[STAT_COD_FLAGS] & COD_SF_SPRINTING ) {
++		target = 1.0f;
++	} else {
++		target = 0.0f;
++	}
++
++	raiseMs = bg_cod.sprintRaiseTime;
++	if ( raiseMs < 1.0f ) {
++		raiseMs = 1.0f;
++	}
++
++	now = cg.time;
++	if ( cg.codSprintFracTime <= 0 || now < cg.codSprintFracTime ) {
++		cg.codSprintFracTime = now;
++	}
++	dt = (float)( now - cg.codSprintFracTime ) / raiseMs;
++	cg.codSprintFracTime = now;
++	if ( dt < 0.0f ) {
++		dt = 0.0f;
++	} else if ( dt > 1.0f ) {
++		dt = 1.0f;
++	}
++
++	if ( cg.codSprintFrac < target ) {
++		cg.codSprintFrac += dt;
++		if ( cg.codSprintFrac > target ) {
++			cg.codSprintFrac = target;
++		}
++	} else if ( cg.codSprintFrac > target ) {
++		cg.codSprintFrac -= dt;
++		if ( cg.codSprintFrac < target ) {
++			cg.codSprintFrac = target;
++		}
++	}
++
++	return cg.codSprintFrac;
++}
++
++/*
++================
++CG_CodGaitBobAmp
++
++codmod: walk / jog / sprint bob amplitude multiplier for weapon and camera (phase 4.2).
++================
++*/
++float CG_CodGaitBobAmp( void ) {
++	usercmd_t cmd;
++	int cmdNum;
++
++	if ( !( bg_cod.enable && bg_cod.gaitEnable ) ) {
++		return 1.0f;
++	}
++
++	if ( cg.predictedPlayerState.stats[STAT_COD_FLAGS] & COD_SF_SPRINTING ) {
++		return bg_cod.bobSprintAmp;
++	}
++
++	cmdNum = trap_GetCurrentCmdNumber();
++	trap_GetUserCmd( cmdNum, &cmd );
++	if ( cmd.buttons & BUTTON_WALKING ) {
++		return bg_cod.bobWalkAmp;
++	}
++
++	return bg_cod.bobRunAmp;
++}
++
+ /*
+ ================
+ CG_CodResolveFlashTag
+@@ -465,7 +554,7 @@ void CG_CodUpdateScopeHold( void ) {
+ CG_CodStateName
+ 
+ codmod: picks the debug HUD state label. Priority matches the order in architecture.md
+-section 6 (RUN|WALK|SPRINT|CROUCH|AIR); PRONE/CRAWL/SLIDE are added in phases 4/4b.
++section 6 (RUN|WALK|SPRINT|CROUCH|AIR); PRONE/CRAWL/SLIDE are added in phases 5/5b.
+ ================
+ */
+ static const char *CG_CodStateName( void ) {
+@@ -578,6 +667,11 @@ void CG_CodDrawDebugHud( void ) {
+ 	CG_DrawSmallStringColor( 4, y, line, color );
+ 	y += SMALLCHAR_HEIGHT;
+ 
++	// codmod: visual sprint gun-lower fraction + gait bob amp (phase 4)
++	Com_sprintf( line, sizeof( line ), "sprint %.2f  bobAmp %.2f", CG_CodSprintFrac(), CG_CodGaitBobAmp() );
++	CG_DrawSmallStringColor( 4, y, line, color );
++	y += SMALLCHAR_HEIGHT;
++
+ 	if ( bg_cod.debugHud >= 2 ) {
+ 		Com_sprintf( line, sizeof( line ), "ai spd %.1f u/s", CG_CodNearestAISpeed() );
+ 		CG_DrawSmallStringColor( 4, y, line, color );
+diff --git a/SP/code/cgame/cg_cod_menu.c b/SP/code/cgame/cg_cod_menu.c
+index 4069b732..9a6da4ae 100644
+--- a/SP/code/cgame/cg_cod_menu.c
++++ b/SP/code/cgame/cg_cod_menu.c
+@@ -170,6 +170,7 @@ static const codMenuItem_t cg_codMenuItems[] = {
+ 	{ COD_MI_BOOL,  "cod_moveEnable",         "cod_moveEnable",         1, 1, NULL },
+ 	{ COD_MI_BOOL,  "cod_leanEnable",         "cod_leanEnable",         1, 1, NULL },
+ 	{ COD_MI_BOOL,  "cod_adsEnable",          "cod_adsEnable",          1, 1, NULL },
++	{ COD_MI_BOOL,  "cod_gaitEnable",         "cod_gaitEnable",         1, 1, NULL },
+ 
+ 	{ COD_MI_SECTION, "MOVEMENT SPEEDS", NULL, 0, 0, NULL },
+ 	{ COD_MI_FLOAT, "cod_runSpeed",           "cod_runSpeed",           5,    25,   NULL },
+@@ -186,6 +187,22 @@ static const codMenuItem_t cg_codMenuItems[] = {
+ 	{ COD_MI_BOOL,  "cod_sprintForwardOnly",  "cod_sprintForwardOnly",  1,     1,    NULL },
+ 	{ COD_MI_FLOAT, "cod_sprintJumpCost",     "cod_sprintJumpCost",     100,   500,  NULL },
+ 
++	{ COD_MI_SECTION, "GAIT / SPRINT GUN", NULL, 0, 0, NULL },
++	{ COD_MI_FLOAT, "cod_sprintRaiseTime",    "cod_sprintRaiseTime",    10,   50,   NULL },
++	{ COD_MI_FLOAT, "cod_sprintGunPitch",     "cod_sprintGunPitch",     0.5f, 2,    NULL },
++	{ COD_MI_FLOAT, "cod_sprintGunRoll",      "cod_sprintGunRoll",      0.5f, 2,    NULL },
++	{ COD_MI_FLOAT, "cod_sprintGunFwd",       "cod_sprintGunFwd",       0.25f, 1,   NULL },
++	{ COD_MI_FLOAT, "cod_sprintGunUp",        "cod_sprintGunUp",        0.25f, 1,   NULL },
++	{ COD_MI_FLOAT, "cod_bobWalkRate",        "cod_bobWalkRate",        0.02f, 0.05f, NULL },
++	{ COD_MI_FLOAT, "cod_bobRunRate",         "cod_bobRunRate",         0.02f, 0.05f, NULL },
++	{ COD_MI_FLOAT, "cod_bobSprintRate",      "cod_bobSprintRate",      0.02f, 0.05f, NULL },
++	{ COD_MI_FLOAT, "cod_bobWalkAmp",         "cod_bobWalkAmp",         0.05f, 0.25f, NULL },
++	{ COD_MI_FLOAT, "cod_bobRunAmp",          "cod_bobRunAmp",          0.05f, 0.25f, NULL },
++	{ COD_MI_FLOAT, "cod_bobSprintAmp",       "cod_bobSprintAmp",       0.05f, 0.25f, NULL },
++	{ COD_MI_FLOAT, "cod_sprintRunPitch",     "cod_sprintRunPitch",     0.05f, 0.25f, NULL },
++	{ COD_MI_FLOAT, "cod_sprintRunRoll",      "cod_sprintRunRoll",      0.05f, 0.25f, NULL },
++	{ COD_MI_FLOAT, "cod_sprintFovScale",     "cod_sprintFovScale",     0.01f, 0.05f, NULL },
++
+ 	{ COD_MI_SECTION, "CROUCH / DUCK", NULL, 0, 0, NULL },
+ 	{ COD_MI_FLOAT, "cod_duckTime",           "cod_duckTime",           5,    25,   NULL },
+ 	{ COD_MI_BOOL,  "cod_duckEase",           "cod_duckEase",           1,    1,    NULL },
+diff --git a/SP/code/cgame/cg_local.h b/SP/code/cgame/cg_local.h
+index 4f3d78d8..23fa086f 100644
+--- a/SP/code/cgame/cg_local.h
++++ b/SP/code/cgame/cg_local.h
+@@ -802,7 +802,7 @@ typedef struct {
+ 	float duckChange;                   // for duck viewheight smoothing
+ 	int duckTime;
+ 	int codDuckDuration;                 // codmod: ms for the current duck transition (phase 2.2);
+-										  // kept separate from cod_duckTime so phase 4b (prone) can
++										  // kept separate from cod_duckTime so phase 5b (prone) can
+ 										  // set a different duration without touching this code again
+ 
+ 	qboolean codScopeByAds;              // codmod: phase 3.8 -- true while the current scope
+@@ -810,6 +810,9 @@ typedef struct {
+ 										  // by holding ADS, not by the `weapalt` key. Only ADS
+ 										  // (CG_CodUpdateScopeHold, cg_cod.c) un-scopes in that case.
+ 
++	float codSprintFrac;                 // codmod: phase 4 — 0..1 visual sprint gun-lower fraction
++	int codSprintFracTime;               // codmod: cg.time of last CG_CodSprintFrac update
++
+ 	float landChange;                   // for landing hard
+ 	int landTime;
+ 
+@@ -2232,6 +2235,8 @@ void CG_CodMenu_f( void );
+ void CG_CodMenuDump_f( void );
+ void CG_ToggleAds_f( void );           // codmod: phase 3.1 sticky ADS toggle
+ float CG_CodAdsFrac( void );           // codmod: phase 3.5, raw 0..1, forced to 1 by cod_adsLock
++float CG_CodSprintFrac( void );        // codmod: phase 4, 0..1 visual sprint lower (eased)
++float CG_CodGaitBobAmp( void );        // codmod: phase 4, walk/jog/sprint bob amplitude scale
+ void CG_CodUpdateAdsTune( void );      // codmod: phase 3.5 alignment tooling
+ void CG_CodAdsTuneLoad_f( void );      // codmod: phase 3.5 alignment tooling
+ void CG_CodAdsTuneDump_f( void );      // codmod: phase 3.5 alignment tooling
+diff --git a/SP/code/cgame/cg_view.c b/SP/code/cgame/cg_view.c
+index 25454bbb..fcd87ed2 100644
+--- a/SP/code/cgame/cg_view.c
++++ b/SP/code/cgame/cg_view.c
+@@ -594,30 +594,48 @@ static void CG_OffsetFirstPersonView( void ) {
+ 	// add angles based on velocity
+ 	VectorCopy( cg.predictedPlayerState.velocity, predictedVelocity );
+ 
+-	delta = DotProduct( predictedVelocity, cg.refdef.viewaxis[0] );
+-	angles[PITCH] += delta * cg_runpitch.value;
++	{
++		// codmod: stronger runpitch/runroll while sprinting (phase 4.3), lerped with visual
++		// sprint fraction so the weight eases with the gun raise/lower.
++		float runPitch = cg_runpitch.value;
++		float runRoll = cg_runroll.value;
++		float sprintE = BG_CodSmoothstep( CG_CodSprintFrac() );
++
++		if ( sprintE > 0.0f && bg_cod.enable && bg_cod.gaitEnable ) {
++			runPitch *= 1.0f + ( bg_cod.sprintRunPitch - 1.0f ) * sprintE;
++			runRoll *= 1.0f + ( bg_cod.sprintRunRoll - 1.0f ) * sprintE;
++		}
+ 
+-	delta = DotProduct( predictedVelocity, cg.refdef.viewaxis[1] );
+-	angles[ROLL] -= delta * cg_runroll.value;
++		delta = DotProduct( predictedVelocity, cg.refdef.viewaxis[0] );
++		angles[PITCH] += delta * runPitch;
++
++		delta = DotProduct( predictedVelocity, cg.refdef.viewaxis[1] );
++		angles[ROLL] -= delta * runRoll;
++	}
+ 
+ 	// add angles based on bob
+ 
+ 	// make sure the bob is visible even at low speeds
+ 	speed = cg.xyspeed > 200 ? cg.xyspeed : 200;
+ 
+-	delta = cg.bobfracsin * cg_bobpitch.value * speed;
+-	if ( cg.predictedPlayerState.pm_flags & PMF_DUCKED ) {
+-		delta *= 3;     // crouching
+-	}
+-	angles[PITCH] += delta;
+-	delta = cg.bobfracsin * cg_bobroll.value * speed;
+-	if ( cg.predictedPlayerState.pm_flags & PMF_DUCKED ) {
+-		delta *= 3;     // crouching accentuates roll
+-	}
+-	if ( cg.bobcycle & 1 ) {
+-		delta = -delta;
++	{
++		// codmod: gait bob amplitude (phase 4.2)
++		float gaitAmp = CG_CodGaitBobAmp();
++
++		delta = cg.bobfracsin * cg_bobpitch.value * speed * gaitAmp;
++		if ( cg.predictedPlayerState.pm_flags & PMF_DUCKED ) {
++			delta *= 3;     // crouching
++		}
++		angles[PITCH] += delta;
++		delta = cg.bobfracsin * cg_bobroll.value * speed * gaitAmp;
++		if ( cg.predictedPlayerState.pm_flags & PMF_DUCKED ) {
++			delta *= 3;     // crouching accentuates roll
++		}
++		if ( cg.bobcycle & 1 ) {
++			delta = -delta;
++		}
++		angles[ROLL] += delta;
+ 	}
+-	angles[ROLL] += delta;
+ 
+ //===================================
+ 
+@@ -658,7 +676,8 @@ static void CG_OffsetFirstPersonView( void ) {
+ 	}
+ 
+ 	// add bob height
+-	bob = cg.bobfracsin * cg.xyspeed * cg_bobup.value;
++	// codmod: gait amp (phase 4.2)
++	bob = cg.bobfracsin * cg.xyspeed * cg_bobup.value * CG_CodGaitBobAmp();
+ 	if ( bob > 6 ) {
+ 		bob = 6;
+ 	}
+@@ -914,6 +933,14 @@ static int CG_CalcFov( void ) {
+ 				fov_x *= 1.0f + ( fovScale - 1.0f ) * e;
+ 			}
+ 		}
++
++		// codmod: subtle sprint FOV punch (phase 4.3). Skipped while ADS/binoc/scope own fov.
++		if ( !cg.zoomedBinoc && !cg.zoomval && bg_cod.enable && bg_cod.gaitEnable ) {
++			float sprintE = BG_CodSmoothstep( CG_CodSprintFrac() );
++			if ( sprintE > 0.0f && CG_CodAdsFrac() <= 0.01f ) {
++				fov_x *= 1.0f + ( bg_cod.sprintFovScale - 1.0f ) * sprintE;
++			}
++		}
+ 	}
+ 
+ 	// DHM - Nerve :: zoom in for Limbo or Spectator
+diff --git a/SP/code/cgame/cg_weapons.c b/SP/code/cgame/cg_weapons.c
+index 2a08f793..d61dec9a 100644
+--- a/SP/code/cgame/cg_weapons.c
++++ b/SP/code/cgame/cg_weapons.c
+@@ -1714,6 +1714,9 @@ static void CG_CalculateWeaponPosition( vec3_t origin, vec3_t angles ) {
+ 	int delta;
+ 	float fracsin, leanscale;
+ 	float bobScale;    // codmod: phase 3.5, see below -- 1 outside ADS, down to 1-adsBobScale at full ADS
++	float gaitAmp;     // codmod: phase 4.2 walk/jog/sprint bob amp
++	float sprintE;     // codmod: phase 4.1 visual sprint gun-lower 0..1
++	vec3_t forward, up;
+ 
+ 	VectorCopy( cg.refdef.vieworg, origin );
+ 	VectorCopy( cg.refdefViewAngles, angles );
+@@ -1725,6 +1728,8 @@ static void CG_CalculateWeaponPosition( vec3_t origin, vec3_t angles ) {
+ 		float e = BG_CodSmoothstep( CG_CodAdsFrac() );
+ 		bobScale = 1.0f - e * bg_cod.adsBobScale;
+ 	}
++	gaitAmp = CG_CodGaitBobAmp();
++	bobScale *= gaitAmp;
+ 
+ 	// adjust 'lean' into weapon
+ 	if ( cg.predictedPlayerState.leanf != 0 ) {
+@@ -1840,6 +1845,16 @@ static void CG_CalculateWeaponPosition( vec3_t origin, vec3_t angles ) {
+ 	angles[YAW] += bobScale * scale * fracsin * 0.01;
+ 	angles[PITCH] += bobScale * scale * fracsin * 0.01;
+ 
++	// codmod: procedural sprint gun-lower (phase 4.1). Visual only — fire is not gated here.
++	sprintE = BG_CodSmoothstep( CG_CodSprintFrac() );
++	if ( sprintE > 0.0f ) {
++		angles[PITCH] += bg_cod.sprintGunPitch * sprintE;
++		angles[ROLL] += bg_cod.sprintGunRoll * sprintE;
++		AngleVectors( angles, forward, NULL, up );
++		VectorMA( origin, bg_cod.sprintGunFwd * sprintE, forward, origin );
++		VectorMA( origin, bg_cod.sprintGunUp * sprintE, up, origin );
++	}
++
+ 	// RF, subtract the kickAngles
+ 	VectorMA( angles, -1.0, cg.kickAngles, angles );
+ 
+diff --git a/SP/code/game/bg_cod.c b/SP/code/game/bg_cod.c
+index 3138ed7b..85e39ccf 100644
+--- a/SP/code/game/bg_cod.c
++++ b/SP/code/game/bg_cod.c
+@@ -94,6 +94,24 @@ const codCvarDef_t bg_codCvars[] = {
+ 	{ "cod_adsTuneRoll",        "0",    0,            CODOFS( adsTuneRoll ),        0 },
+ 	{ "cod_adsTuneFov",         "0.8",  0,            CODOFS( adsTuneFov ),         0 },
+ 
++	// codmod: Phase 4 gait presentation (docs/phase-4-gait.md). Fire cancels sprint same
++	// frame (pmove); gun-lower raise time is visual-only and must not gate firing.
++	{ "cod_gaitEnable",         "1",    0,            CODOFS( gaitEnable ),         1 },
++	{ "cod_sprintRaiseTime",    "180",  0,            CODOFS( sprintRaiseTime ),    0 },
++	{ "cod_sprintGunPitch",     "14",   0,            CODOFS( sprintGunPitch ),     0 },
++	{ "cod_sprintGunRoll",      "-8",   0,            CODOFS( sprintGunRoll ),      0 },
++	{ "cod_sprintGunFwd",       "-2",   0,            CODOFS( sprintGunFwd ),       0 },
++	{ "cod_sprintGunUp",        "-3",   0,            CODOFS( sprintGunUp ),        0 },
++	{ "cod_bobWalkRate",        "0.28", 0,            CODOFS( bobWalkRate ),        0 },
++	{ "cod_bobRunRate",         "0.4",  0,            CODOFS( bobRunRate ),         0 },
++	{ "cod_bobSprintRate",      "0.5",  0,            CODOFS( bobSprintRate ),      0 },
++	{ "cod_bobWalkAmp",         "0.65", 0,            CODOFS( bobWalkAmp ),         0 },
++	{ "cod_bobRunAmp",          "1",    0,            CODOFS( bobRunAmp ),          0 },
++	{ "cod_bobSprintAmp",       "1.35", 0,            CODOFS( bobSprintAmp ),       0 },
++	{ "cod_sprintRunPitch",     "1.75", 0,            CODOFS( sprintRunPitch ),     0 },
++	{ "cod_sprintRunRoll",      "1.5",  0,            CODOFS( sprintRunRoll ),      0 },
++	{ "cod_sprintFovScale",     "1.03", 0,            CODOFS( sprintFovScale ),     0 },
++
+ 	{ "cod_debugHud",           "0",    CVAR_ARCHIVE, CODOFS( debugHud ),           1 },
+ 	// codmod: /cod_menu overlay size (cgame). Archived like cod_debugHud — UI preference.
+ 	{ "cod_menuScale",          "0.7",  CVAR_ARCHIVE, CODOFS( menuScale ),          0 },
+diff --git a/SP/code/game/bg_cod.h b/SP/code/game/bg_cod.h
+index deadfff3..887e989f 100644
+--- a/SP/code/game/bg_cod.h
++++ b/SP/code/game/bg_cod.h
+@@ -70,6 +70,23 @@ typedef struct {
+ 	float adsTunePitch, adsTuneYaw, adsTuneRoll;    // degrees, cgame-only fine bias
+ 	float adsTuneFov;                               // fovScale preview while tuning, cgame-only
+ 
++	// codmod: Phase 4 gait / FP movement presentation (docs/phase-4-gait.md)
++	int gaitEnable;            // master for gun-lower, gait bob, sprint camera
++	float sprintRaiseTime;     // ms, visual gun raise after sprint ends (does not gate fire)
++	float sprintGunPitch;      // degrees, viewmodel pitch at full sprint lower
++	float sprintGunRoll;       // degrees
++	float sprintGunFwd;        // u along view forward (neg = toward camera)
++	float sprintGunUp;         // u
++	float bobWalkRate;         // pmove bobmove while walking
++	float bobRunRate;          // pmove bobmove while jogging
++	float bobSprintRate;       // pmove bobmove while sprinting
++	float bobWalkAmp;          // cgame weapon/camera bob multiplier while walking
++	float bobRunAmp;           // while jogging
++	float bobSprintAmp;        // while sprinting
++	float sprintRunPitch;      // x cg_runpitch contribution while sprinting
++	float sprintRunRoll;       // x cg_runroll contribution while sprinting
++	float sprintFovScale;      // FOV scale at full sprint (1 = none)
++
+ 	int debugHud;    // 0 off, 1 HUD, 2 HUD + nearest AI speed
+ 	float menuScale; // /cod_menu text+panel scale (0.5..1.0); cgame UI preference
+ } codTuning_t;
+@@ -103,8 +120,8 @@ extern const int bg_numCodCvars;
+ 
+ // codmod: g_main.c / cg_main.c each keep a static vmCvar_t[BG_COD_MAX_CVARS] and pass it in.
+ // Bump this if bg_codCvars ever grows past it -- BG_CodRegisterCvars() clamps defensively.
+-// (phase 3 ADS + alignment tooling cvars pushed this past 32; rounded up for phases 4/4b too.)
+-#define BG_COD_MAX_CVARS 64
++// (phase 3 ADS + phase 4 gait cvars; leave headroom for slide/prone.)
++#define BG_COD_MAX_CVARS 80
+ 
+ void BG_CodRegisterCvars( vmCvar_t *cvars, int maxCvars );
+ void BG_CodUpdateCvars( vmCvar_t *cvars, int maxCvars );
+diff --git a/SP/code/game/bg_pmove.c b/SP/code/game/bg_pmove.c
+index dc128e9b..717f0016 100644
+--- a/SP/code/game/bg_pmove.c
++++ b/SP/code/game/bg_pmove.c
+@@ -1882,6 +1882,19 @@ static void PM_Footsteps( void ) {
+ 	// check for footstep / splash sounds
+ 	animGap = BG_AnimGetFootstepGap( pm->ps, pm->xyspeed );
+ 
++	// codmod: gait-scaled bob frequency for the player (phase 4.2). Crouch keeps vanilla
++	// bobmove; walk/jog/sprint use cod_bob*Rate. Sprint is no longer identical to jog.
++	if ( !pm->ps->aiChar && bg_cod.enable && bg_cod.gaitEnable
++		 && !( pm->ps->pm_flags & PMF_DUCKED ) ) {
++		if ( pm->cmd.buttons & BUTTON_WALKING ) {
++			bobmove = bg_cod.bobWalkRate;
++		} else if ( pm->ps->stats[STAT_COD_FLAGS] & COD_SF_SPRINTING ) {
++			bobmove = bg_cod.bobSprintRate;
++		} else {
++			bobmove = bg_cod.bobRunRate;
++		}
++	}
++
+ 	// new method
+ 	if ( animGap > 0 ) {
+ 
+@@ -3719,12 +3732,15 @@ static void PM_CodUpdateSprint( void ) {
+ 
+ 	moving = ( pm->cmd.forwardmove || pm->cmd.rightmove ) ? qtrue : qfalse;
+ 
++	// codmod: ADS blocks sprint (phase 3.3). Attack cancels sprint the same frame so
++	// PM_Weapon (later in PmoveSingle) still sees BUTTON_ATTACK and fires (phase 4.1).
+ 	wantSprint = ( pm->cmd.buttons & BUTTON_SPRINT )
+ 				 && ( bg_cod.sprintForwardOnly ? ( pm->cmd.forwardmove > 0 ) : moving )
+ 				 && !( pm->ps->pm_flags & PMF_DUCKED )
+ 				 && pm->waterlevel < 2
+ 				 && !( pm->cmd.buttons & BUTTON_WALKING )
+-				 && !( pm->cmd.wbuttons & WBUTTON_COD_ADS ); // codmod: ADS blocks/cancels sprint (phase 3.3)
++				 && !( pm->cmd.wbuttons & WBUTTON_COD_ADS )
++				 && !( pm->cmd.buttons & BUTTON_ATTACK );
+ 
+ 	wasSprinting = ( pm->ps->stats[STAT_COD_FLAGS] & COD_SF_SPRINTING ) ? qtrue : qfalse;
+ 	minSprintTime = bg_cod.sprintMinTime * 1000.0f;    // seconds -> stamina units (0..20000 range)
+-- 
+2.56.0
+

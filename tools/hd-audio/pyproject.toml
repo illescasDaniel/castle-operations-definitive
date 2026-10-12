@@ -1,0 +1,39 @@
+[project]
+name = "hd-audio"
+version = "0.1.0"
+description = "Local AI remaster pipeline for RTCW SP audio (run against owned Steam pk3s)."
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+	"numpy>=1.23.0,<1.24",
+	"rich>=13.7",
+	"soundfile>=0.12",
+	"scipy>=1.10,<1.12",
+	"noisereduce>=3.0",
+	"setuptools>=69,<81",
+	"torch==2.1.2",
+	"torchaudio==2.1.2",
+	"audiosr==0.0.7",
+]
+
+[project.scripts]
+hd-audio = "hd_audio.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/hd_audio"]
+
+[tool.uv]
+package = true
+
+[[tool.uv.index]]
+name = "pytorch-cu121"
+url = "https://download.pytorch.org/whl/cu121"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu121" }
+torchaudio = { index = "pytorch-cu121" }

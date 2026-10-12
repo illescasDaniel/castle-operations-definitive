@@ -1,0 +1,96 @@
+From e728cefc6383252fa48f849a7d0625fd99cae26e Mon Sep 17 00:00:00 2001
+From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
+Date: Thu, 8 Oct 2026 17:14:38 +0200
+Subject: [PATCH 03/64] P2: crouch transitions -
+ cod_duckTime/duckEase/duckGunDip (2.2)
+
+- cgame/cg_view.c CG_OffsetFirstPersonView: duck viewheight smoothing uses
+  cod_duckTime (70ms default, ~30% faster than vanilla's DUCK_TIME 100) with
+  an optional ease-out quad curve (cod_duckEase). Duration is stashed in the
+  new cg.codDuckDuration field so phase 4b (prone) can reuse this curve with
+  a different duration. Vanilla DUCK_TIME path is unchanged when cod_enable 0.
+- cgame/cg_weapons.c CG_CalculateWeaponPosition: optional small viewmodel dip
+  following the same curve, behind cod_duckGunDip (default 1).
+
+Co-authored-by: Cursor <cursoragent@cursor.com>
+---
+ SP/code/cgame/cg_view.c    | 37 ++++++++++++++++++++++++++++++-------
+ SP/code/cgame/cg_weapons.c | 14 ++++++++++++++
+ 2 files changed, 44 insertions(+), 7 deletions(-)
+
+diff --git a/SP/code/cgame/cg_view.c b/SP/code/cgame/cg_view.c
+index 02448b9b..b0dd2df3 100644
+--- a/SP/code/cgame/cg_view.c
++++ b/SP/code/cgame/cg_view.c
+@@ -625,13 +625,36 @@ static void CG_OffsetFirstPersonView( void ) {
+ 	origin[2] += cg.predictedPlayerState.viewheight;
+ 
+ 	// smooth out duck height changes
+-	timeDelta = cg.time - cg.duckTime;
+-	if ( timeDelta < 0 ) { // Ridah
+-		cg.duckTime = cg.time - DUCK_TIME;
+-	}
+-	if ( timeDelta < DUCK_TIME ) {
+-		cg.refdef.vieworg[2] -= cg.duckChange
+-								* ( DUCK_TIME - timeDelta ) / DUCK_TIME;
++	// codmod: cod_duckTime/cod_duckEase (phase 2.2), ~30% faster than vanilla by default,
++	// with an optional ease-out curve. cg.codDuckDuration is stashed so phase 4b (prone)
++	// can reuse this same curve with a different duration.
++	if ( bg_cod.enable ) {
++		cg.codDuckDuration = (int)bg_cod.duckTime;
++		if ( cg.codDuckDuration < 1 ) {
++			cg.codDuckDuration = 1;
++		}
++
++		timeDelta = cg.time - cg.duckTime;
++		if ( timeDelta < 0 ) { // Ridah
++			cg.duckTime = cg.time - cg.codDuckDuration;
++			timeDelta = cg.codDuckDuration;
++		}
++		if ( timeDelta < cg.codDuckDuration ) {
++			f = (float)timeDelta / (float)cg.codDuckDuration;      // 0..1
++			if ( bg_cod.duckEase ) {
++				f = 1.0f - ( 1.0f - f ) * ( 1.0f - f );    // ease-out quad
++			}
++			cg.refdef.vieworg[2] -= cg.duckChange * ( 1.0f - f );
++		}
++	} else {
++		timeDelta = cg.time - cg.duckTime;
++		if ( timeDelta < 0 ) { // Ridah
++			cg.duckTime = cg.time - DUCK_TIME;
++		}
++		if ( timeDelta < DUCK_TIME ) {
++			cg.refdef.vieworg[2] -= cg.duckChange
++									* ( DUCK_TIME - timeDelta ) / DUCK_TIME;
++		}
+ 	}
+ 
+ 	// add bob height
+diff --git a/SP/code/cgame/cg_weapons.c b/SP/code/cgame/cg_weapons.c
+index 6d3d500c..7bdc9947 100644
+--- a/SP/code/cgame/cg_weapons.c
++++ b/SP/code/cgame/cg_weapons.c
+@@ -1784,6 +1784,20 @@ static void CG_CalculateWeaponPosition( vec3_t origin, vec3_t angles ) {
+ 					 ( LAND_DEFLECT_TIME + LAND_RETURN_TIME - delta ) / LAND_RETURN_TIME;
+ 	}
+ 
++	// codmod: small viewmodel dip on crouch transitions, same curve as the camera duck
++	// smoothing in cg_view.c (phase 2.2, optional, cod_duckGunDip). cg.codDuckDuration is
++	// set by CG_OffsetFirstPersonView earlier this frame.
++	if ( bg_cod.enable && bg_cod.duckGunDip && cg.codDuckDuration > 0 ) {
++		int duckDelta = cg.time - cg.duckTime;
++		if ( duckDelta >= 0 && duckDelta < cg.codDuckDuration ) {
++			float duckF = (float)duckDelta / (float)cg.codDuckDuration;
++			if ( bg_cod.duckEase ) {
++				duckF = 1.0f - ( 1.0f - duckF ) * ( 1.0f - duckF );
++			}
++			origin[2] -= cg.duckChange * 0.1f * ( 1.0f - duckF );
++		}
++	}
++
+ #if 0
+ 	// drop the weapon when stair climbing
+ 	delta = cg.time - cg.stepTime;
+-- 
+2.56.0
+

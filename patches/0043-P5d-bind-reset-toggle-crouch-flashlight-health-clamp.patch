@@ -1,0 +1,325 @@
+From f369aefb801751ba15f41b4873a96536a6efbd81 Mon Sep 17 00:00:00 2001
+From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
+Date: Fri, 9 Oct 2026 10:33:15 +0200
+Subject: [PATCH 43/64] P5d: bind reset, toggle crouch, flashlight, health
+ clamp, reload anim.
+
+Full codmod bind reset path, sticky crouch on C with jump auto-stand,
+client flashlight on L, packs hard-capped at cod_maxHealth, and reload
+always restarts WEAP_RELOAD1 (clears attack weapAnimTimer).
+
+Co-authored-by: Cursor <cursoragent@cursor.com>
+---
+ SP/code/cgame/cg_cod.c         | 78 ++++++++++++++++++++++++++++++++++
+ SP/code/cgame/cg_cod_menu.c    |  7 +++
+ SP/code/cgame/cg_consolecmds.c |  3 ++
+ SP/code/cgame/cg_local.h       |  8 ++++
+ SP/code/cgame/cg_view.c        |  5 +++
+ SP/code/cgame/cg_weapons.c     |  7 ++-
+ SP/code/game/bg_cod.c          |  7 +++
+ SP/code/game/bg_cod.h          |  7 +++
+ SP/code/game/bg_pmove.c        | 10 ++++-
+ SP/code/game/g_items.c         |  6 +++
+ SP/code/ui/ui_main.c           | 10 +++++
+ 11 files changed, 145 insertions(+), 3 deletions(-)
+
+diff --git a/SP/code/cgame/cg_cod.c b/SP/code/cgame/cg_cod.c
+index 0fb1faa1..b39cad96 100644
+--- a/SP/code/cgame/cg_cod.c
++++ b/SP/code/cgame/cg_cod.c
+@@ -4,6 +4,7 @@
+ // section 6. Extended in later phases (ADS, slide, prone).
+ 
+ #include "cg_local.h"
++#include "../client/keycodes.h" // codmod: K_SPACE for toggle-crouch auto-stand (phase 5d)
+ 
+ // codmod: Phase 3.5 per-weapon iron-sight ADS. Primary pose is computed every frame from
+ // tag_flash (see CG_CodApplyIronSightAds) so the rear sight sits on the screen center like
+@@ -726,6 +727,83 @@ void CG_ToggleAds_f( void ) {
+ 	}
+ }
+ 
++/*
++================
++CG_ToggleCrouch_f / CG_CodUpdateToggleCrouch
++
++codmod: sticky crouch toggle (phase 5d). Alternates +movedown/-movedown. Jump
++(SPACE) auto-stands so upmove is not cancelled (jump and crouch share one axis).
++================
++*/
++void CG_ToggleCrouch_f( void ) {
++	cg.codCrouchHeld = !cg.codCrouchHeld;
++	if ( cg.codCrouchHeld ) {
++		trap_SendConsoleCommand( "+movedown\n" );
++	} else {
++		trap_SendConsoleCommand( "-movedown\n" );
++	}
++}
++
++void CG_CodUpdateToggleCrouch( void ) {
++	if ( !cg.codCrouchHeld ) {
++		return;
++	}
++	// Default jump is SPACE; clear sticky crouch so jump works.
++	if ( trap_Key_IsDown( K_SPACE ) ) {
++		cg.codCrouchHeld = qfalse;
++		trap_SendConsoleCommand( "-movedown\n" );
++	}
++}
++
++/*
++================
++CG_ToggleFlashlight_f / CG_CodAddFlashlight
++
++codmod: client-local view flashlight (phase 5d). RTCW SP has no player lamp.
++================
++*/
++void CG_ToggleFlashlight_f( void ) {
++	if ( !( bg_cod.enable && bg_cod.flashlightEnable ) ) {
++		cg.codFlashlightOn = qfalse;
++		return;
++	}
++	cg.codFlashlightOn = !cg.codFlashlightOn;
++}
++
++void CG_CodAddFlashlight( void ) {
++	vec3_t origin;
++
++	if ( !cg.codFlashlightOn ) {
++		return;
++	}
++	if ( !( bg_cod.enable && bg_cod.flashlightEnable ) ) {
++		return;
++	}
++	if ( !cg.snap || cg.renderingThirdPerson ) {
++		return;
++	}
++	if ( cg.snap->ps.pm_type == PM_INTERMISSION || cg.snap->ps.stats[STAT_HEALTH] <= 0 ) {
++		return;
++	}
++
++	// Slightly forward of the eye so the light is not buried in the head hull.
++	VectorMA( cg.refdef.vieworg, 16.0f, cg.refdef.viewaxis[0], origin );
++	trap_R_AddLightToScene( origin, bg_cod.flashlightIntensity,
++							bg_cod.flashlightR, bg_cod.flashlightG, bg_cod.flashlightB, 0 );
++}
++
++/*
++================
++CG_CodResetBinds_f
++
++codmod: console helper for a full bind reset (phase 5d). Same as execing
++codmod_binds.cfg (unbindall → default.cfg → codmod deltas).
++================
++*/
++void CG_CodResetBinds_f( void ) {
++	trap_SendConsoleCommand( "exec codmod_binds.cfg\n" );
++}
++
+ // codmod: quickknife state machine (phase 5.5). Values match cg.codQkState.
+ #define COD_QK_IDLE       0
+ #define COD_QK_SWITCHING  1
+diff --git a/SP/code/cgame/cg_cod_menu.c b/SP/code/cgame/cg_cod_menu.c
+index 44e93dc7..4f5326db 100644
+--- a/SP/code/cgame/cg_cod_menu.c
++++ b/SP/code/cgame/cg_cod_menu.c
+@@ -229,6 +229,13 @@ static const codMenuItem_t cg_codMenuItems[] = {
+ 	{ COD_MI_FLOAT, "cod_hitMarkerWidth",     "cod_hitMarkerWidth",     0.25f, 1,    NULL },
+ 	{ COD_MI_BOOL,  "cod_hitMarkerSound",     "cod_hitMarkerSound",     1,     1,    NULL },
+ 
++	{ COD_MI_SECTION, "FLASHLIGHT", NULL, 0, 0, NULL },
++	{ COD_MI_BOOL,  "cod_flashlightEnable",   "cod_flashlightEnable",   1,     1,    NULL },
++	{ COD_MI_FLOAT, "cod_flashlightIntensity","cod_flashlightIntensity",25,    50,   NULL },
++	{ COD_MI_FLOAT, "cod_flashlightR",        "cod_flashlightR",        0.05f, 0.1f, NULL },
++	{ COD_MI_FLOAT, "cod_flashlightG",        "cod_flashlightG",        0.05f, 0.1f, NULL },
++	{ COD_MI_FLOAT, "cod_flashlightB",        "cod_flashlightB",        0.05f, 0.1f, NULL },
++
+ 	{ COD_MI_SECTION, "GAIT / SPRINT GUN", NULL, 0, 0, NULL },
+ 	{ COD_MI_FLOAT, "cod_sprintRaiseTime",    "cod_sprintRaiseTime",    10,   50,   NULL },
+ 	{ COD_MI_FLOAT, "cod_sprintGunPitch",     "cod_sprintGunPitch",     0.5f, 2,    NULL },
+diff --git a/SP/code/cgame/cg_consolecmds.c b/SP/code/cgame/cg_consolecmds.c
+index fcfb13b9..8bb16ab9 100644
+--- a/SP/code/cgame/cg_consolecmds.c
++++ b/SP/code/cgame/cg_consolecmds.c
+@@ -425,6 +425,9 @@ static consoleCommand_t commands[] = {
+ 
+ 	{ "cod_dump", CG_CodDump_f },   // codmod: phase 2.0, see cg_cod.c
+ 	{ "toggleads", CG_ToggleAds_f }, // codmod: phase 3.1 sticky ADS toggle
++	{ "togglecrouch", CG_ToggleCrouch_f }, // codmod: phase 5d sticky crouch (bind c)
++	{ "toggleflashlight", CG_ToggleFlashlight_f }, // codmod: phase 5d flashlight (bind l)
++	{ "cod_resetbinds", CG_CodResetBinds_f }, // codmod: phase 5d full bind reset
+ 	{ "quickknife", CG_QuickKnife_f }, // codmod: phase 5.5 CoD-style quick knife (bind v)
+ 	{ "cod_adsTuneLoad", CG_CodAdsTuneLoad_f }, // codmod: phase 3.5 alignment tooling
+ 	{ "cod_adsTuneDump", CG_CodAdsTuneDump_f }, // codmod: phase 3.5 alignment tooling
+diff --git a/SP/code/cgame/cg_local.h b/SP/code/cgame/cg_local.h
+index ed8cc212..ad7bb958 100644
+--- a/SP/code/cgame/cg_local.h
++++ b/SP/code/cgame/cg_local.h
+@@ -820,6 +820,9 @@ typedef struct {
+ 	qboolean codQkSawFire;               // codmod: saw WEAPON_FIRING / weaponTime during swing
+ 	qboolean codQkStayOnKnife;           // codmod: started already on knife — no switchback
+ 
++	qboolean codCrouchHeld;              // codmod: phase 5d — sticky togglecrouch state
++	qboolean codFlashlightOn;            // codmod: phase 5d — client-local flashlight
++
+ 	float landChange;                   // for landing hard
+ 	int landTime;
+ 
+@@ -2248,6 +2251,11 @@ void CG_CodDrawDebugMenu( void );   // codmod: sectioned tune menu (cg_cod_menu.
+ void CG_CodMenu_f( void );
+ void CG_CodMenuDump_f( void );
+ void CG_ToggleAds_f( void );           // codmod: phase 3.1 sticky ADS toggle
++void CG_ToggleCrouch_f( void );        // codmod: phase 5d sticky crouch
++void CG_ToggleFlashlight_f( void );    // codmod: phase 5d flashlight
++void CG_CodResetBinds_f( void );       // codmod: phase 5d full bind reset
++void CG_CodUpdateToggleCrouch( void ); // codmod: phase 5d auto-stand on jump
++void CG_CodAddFlashlight( void );      // codmod: phase 5d view dlight
+ void CG_QuickKnife_f( void );          // codmod: phase 5.5 CoD-style quick knife
+ float CG_CodAdsFrac( void );           // codmod: phase 3.5, raw 0..1, forced to 1 by cod_adsLock
+ float CG_CodSprintFrac( void );        // codmod: phase 4, 0..1 visual sprint lower (eased)
+diff --git a/SP/code/cgame/cg_view.c b/SP/code/cgame/cg_view.c
+index fcc499d4..e5fe372b 100644
+--- a/SP/code/cgame/cg_view.c
++++ b/SP/code/cgame/cg_view.c
+@@ -1613,6 +1613,9 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
+ 	// codmod: CoD-style quick knife state machine (phase 5.5)
+ 	CG_CodUpdateQuickKnife();
+ 
++	// codmod: toggle crouch auto-stand on jump (phase 5d)
++	CG_CodUpdateToggleCrouch();
++
+ 	if ( cg.weaponSelect == WP_FG42SCOPE || cg.weaponSelect == WP_SNOOPERSCOPE || cg.weaponSelect == WP_SNIPERRIFLE ) {
+ 		float spd;
+ 		spd = VectorLength( cg.snap->ps.velocity );
+@@ -1699,6 +1702,8 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
+ 		DEBUGTIME
+ 	}
+ 
++	// codmod: player flashlight dlight (phase 5d), after vieworg is set
++	CG_CodAddFlashlight();
+ 
+ 	CG_AddViewWeapon( &cg.predictedPlayerState );
+ 
+diff --git a/SP/code/cgame/cg_weapons.c b/SP/code/cgame/cg_weapons.c
+index ee1f137e..c22d1ab1 100644
+--- a/SP/code/cgame/cg_weapons.c
++++ b/SP/code/cgame/cg_weapons.c
+@@ -1615,7 +1615,12 @@ static void CG_RunWeapLerpFrame( clientInfo_t *ci, weaponInfo_t *wi, lerpFrame_t
+ 			 animId == WEAP_ALTSWITCHTO ||
+ 			 animId == WEAP_ATTACK1 ||
+ 			 animId == WEAP_ATTACK2 ||
+-			 animId == WEAP_ATTACK_LASTSHOT ) {
++			 animId == WEAP_ATTACK_LASTSHOT ||
++			 animId == WEAP_RELOAD1 ||
++			 animId == WEAP_RELOAD2 ||
++			 animId == WEAP_RELOAD3 ) {
++			// codmod: also clear on reload (phase 5d) so auto-reload after fire
++			// does not blend from a held attack pose into a silent skip.
+ 			CG_ClearWeapLerpFrame( wi, lf, newAnimation );
+ 		} else {
+ 			CG_SetWeapLerpFrameAnimation( wi, lf, newAnimation );
+diff --git a/SP/code/game/bg_cod.c b/SP/code/game/bg_cod.c
+index 2795231d..70df19d3 100644
+--- a/SP/code/game/bg_cod.c
++++ b/SP/code/game/bg_cod.c
+@@ -185,6 +185,13 @@ const codCvarDef_t bg_codCvars[] = {
+ 	{ "cod_hitMarkerWidth",     "2",    0,            CODOFS( hitMarkerWidth ),     0 },
+ 	{ "cod_hitMarkerSound",     "1",    0,            CODOFS( hitMarkerSound ),     1 },
+ 
++	// codmod: phase 5d flashlight (client-local view dlight)
++	{ "cod_flashlightEnable",   "1",    0,            CODOFS( flashlightEnable ),   1 },
++	{ "cod_flashlightIntensity","350",  0,            CODOFS( flashlightIntensity ), 0 },
++	{ "cod_flashlightR",        "1",    0,            CODOFS( flashlightR ),        0 },
++	{ "cod_flashlightG",        "0.95", 0,            CODOFS( flashlightG ),        0 },
++	{ "cod_flashlightB",        "0.85", 0,            CODOFS( flashlightB ),        0 },
++
+ 	{ "cod_debugHud",           "0",    CVAR_ARCHIVE, CODOFS( debugHud ),           1 },
+ 	// codmod: /cod_menu overlay size (cgame). Archived like cod_debugHud — UI preference.
+ 	{ "cod_menuScale",          "0.7",  CVAR_ARCHIVE, CODOFS( menuScale ),          0 },
+diff --git a/SP/code/game/bg_cod.h b/SP/code/game/bg_cod.h
+index e7a35f7b..56e7c8c2 100644
+--- a/SP/code/game/bg_cod.h
++++ b/SP/code/game/bg_cod.h
+@@ -152,6 +152,13 @@ typedef struct {
+ 	float hitMarkerWidth;      // tick thickness
+ 	int hitMarkerSound;        // 1 = play body/headshot ticks
+ 
++	// codmod: player flashlight (phase 5d) — client-local dlight
++	int flashlightEnable;      // master for toggleflashlight + draw
++	float flashlightIntensity; // trap_R_AddLightToScene radius-ish intensity
++	float flashlightR;
++	float flashlightG;
++	float flashlightB;
++
+ 	int debugHud;    // 0 off, 1 HUD, 2 HUD + nearest AI speed
+ 	float menuScale; // /cod_menu text+panel scale (0.5..1.0); cgame UI preference
+ } codTuning_t;
+diff --git a/SP/code/game/bg_pmove.c b/SP/code/game/bg_pmove.c
+index b4a80e3f..8f2b06b2 100644
+--- a/SP/code/game/bg_pmove.c
++++ b/SP/code/game/bg_pmove.c
+@@ -159,7 +159,10 @@ static void PM_StartWeaponAnim( int anim ) {
+ 	// low-priority anims (IDLE via PM_ContinueWeaponAnim) so a quick
+ 	// click-release can't replace ATTACK with IDLE in the same predict batch
+ 	// — that was the random "gun doesn't recoil" on hip pistol taps.
+-	if ( !isAttack && pm->ps->weapAnimTimer > 0 ) {
++	// Reload is also high-priority (phase 5d): empty-clip auto-reload must
++	// not be suppressed while the attack lock is still ticking.
++	if ( !isAttack && anim != WEAP_RELOAD1 && anim != WEAP_RELOAD2 && anim != WEAP_RELOAD3
++		 && pm->ps->weapAnimTimer > 0 ) {
+ 		return;
+ 	}
+ 
+@@ -2143,7 +2146,10 @@ static void PM_BeginWeaponReload( int weapon ) {
+ 	}
+ 
+ 
+-	PM_ContinueWeaponAnim( WEAP_RELOAD1 );
++	// codmod: always restart FP reload anim (phase 5d). Clear attack weapAnimTimer
++	// so StartWeaponAnim is not blocked; Start (not Continue) forces a fresh anim.
++	pm->ps->weapAnimTimer = 0;
++	PM_StartWeaponAnim( WEAP_RELOAD1 );
+ 
+ 
+ 	// okay to reload while overheating without tacking the reload time onto the end of the
+diff --git a/SP/code/game/g_items.c b/SP/code/game/g_items.c
+index cacef2d1..ef1596fa 100644
+--- a/SP/code/game/g_items.c
++++ b/SP/code/game/g_items.c
+@@ -525,6 +525,12 @@ int Pickup_Health( gentity_t *ent, gentity_t *other ) {
+ 		max = other->client->ps.stats[STAT_MAX_HEALTH] * 2;
+ 	}
+ 
++	// codmod: player never overheals past cod_maxHealth (phase 5d). AI keep vanilla 2×.
++	if ( other->client && !other->client->ps.aiChar && !other->aiCharacter
++		 && bg_cod.enable && bg_cod.vitalsEnable && bg_cod.maxHealth > 0 ) {
++		max = other->client->ps.stats[STAT_MAX_HEALTH];
++	}
++
+ 	if ( ent->count ) {
+ 		quantity = ent->count;
+ 	} else {
+diff --git a/SP/code/ui/ui_main.c b/SP/code/ui/ui_main.c
+index 7a17ee4d..d803c9d8 100644
+--- a/SP/code/ui/ui_main.c
++++ b/SP/code/ui/ui_main.c
+@@ -4677,6 +4677,16 @@ static void UI_RunMenuScript( char **args ) {
+ 			trap_Cmd_ExecuteText( EXEC_NOW, "exec language.cfg\n" );       // NERVE - SMF
+ 			trap_Cmd_ExecuteText( EXEC_NOW, "setRecommended\n" );     // NERVE - SMF
+ 			Controls_SetDefaults();
++			// codmod: re-apply full codmod bind reset (ADS, quickknife, toggle crouch,
++			// flashlight, unbind CTRL) so menu Defaults is not vanilla-only (phase 5d).
++			{
++				char fsGame[MAX_QPATH];
++
++				trap_Cvar_VariableStringBuffer( "fs_game", fsGame, sizeof( fsGame ) );
++				if ( !Q_stricmp( fsGame, "codmod" ) ) {
++					trap_Cmd_ExecuteText( EXEC_NOW, "exec codmod_binds.cfg\n" );
++				}
++			}
+ #ifdef CINEMATICS_INTRO
+ 			trap_Cvar_Set( "com_introPlayed", "1" );
+ #endif
+-- 
+2.56.0
+

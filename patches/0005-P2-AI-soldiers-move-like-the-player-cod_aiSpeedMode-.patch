@@ -1,0 +1,152 @@
+From 859058966ffe324614c2dc7682622f3ded1c9234 Mon Sep 17 00:00:00 2001
+From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
+Date: Thu, 8 Oct 2026 17:15:27 +0200
+Subject: [PATCH 05/64] P2: AI soldiers move like the player - cod_aiSpeedMode
+ (2.4)
+
+User request: "what if soldiers could walk and run too as me?"
+
+- game/ai_cast.h: AICast_CodApplySpeedMode(cast_state_t *cs, int aiCharacter)
+  prototype.
+- game/ai_cast_think.c: AICast_CodIsHumanType() (SOLDIER/AMERICAN/ELITEGUARD/
+  BLACKGUARD/VENOM/PARTISAN/CIVILIAN/FROGMAN/STIMSOLDIER1-3 only -- never
+  zombies, lopers, super/proto soldiers, Helga or Heinrich) and
+  AICast_CodApplySpeedMode(), called right after the per-think
+  WALKING_SPEED/RUNNING_SPEED/CROUCHING_SPEED are re-read from the current
+  anim (~L652): mode 1 (default) matches the player's cod_runSpeed/
+  walkScale/crouchScale; mode 2 scales the anim-derived values by
+  cod_aiSpeedScale; mode 0 is vanilla.
+- game/ai_cast_characters.c: same call at spawn time (AICast_CheckLevelAttributes-
+  adjacent crouch-speed-scale setup, ~L1464) so AI never run a frame of
+  un-matched starting speeds.
+
+Server-only (ai_*.c), never touches bg_pmove.c or AI behaviour/navigation, so
+cod_aiSpeedMode 0 is a true vanilla A/B and this is the one deliberate AI
+change in the mod (architecture.md section 3).
+
+Co-authored-by: Cursor <cursoragent@cursor.com>
+---
+ SP/code/game/ai_cast.h            |  1 +
+ SP/code/game/ai_cast_characters.c |  4 ++
+ SP/code/game/ai_cast_think.c      | 64 +++++++++++++++++++++++++++++++
+ 3 files changed, 69 insertions(+)
+
+diff --git a/SP/code/game/ai_cast.h b/SP/code/game/ai_cast.h
+index a64a6411..1151f9b9 100644
+--- a/SP/code/game/ai_cast.h
++++ b/SP/code/game/ai_cast.h
+@@ -727,6 +727,7 @@ qboolean AICast_GetAvoid( cast_state_t *cs, bot_goal_t *goal, vec3_t outpos, qbo
+ void AICast_QueryThink( cast_state_t *cs );
+ void AICast_DeadClipWalls( cast_state_t *cs );
+ void AICast_IdleReload( cast_state_t *cs );
++void AICast_CodApplySpeedMode( cast_state_t *cs, int aiCharacter );   // codmod: phase 2.4
+ //
+ // ai_cast_script.c
+ qboolean AICast_ScriptRun( cast_state_t *cs, qboolean force );
+diff --git a/SP/code/game/ai_cast_characters.c b/SP/code/game/ai_cast_characters.c
+index 71c58229..a002e2ac 100644
+--- a/SP/code/game/ai_cast_characters.c
++++ b/SP/code/game/ai_cast_characters.c
+@@ -1460,6 +1460,10 @@ void AIChar_spawn( gentity_t *ent ) {
+ 	cs->castScriptStatus.castScriptEventIndex = -1;
+ 	cs->castScriptStatus.scriptAttackEnt = -1;
+ 	//
++	// codmod: cod_aiSpeedMode -- apply at spawn time too, so AI never run a frame of their
++	// un-matched starting speeds before AICast_Think's first update (phase 2.4)
++	AICast_CodApplySpeedMode( cs, ent->aiCharacter );
++	//
+ 	// set crouch move speed
+ 	ent->client->ps.crouchSpeedScale = cs->attributes[CROUCHING_SPEED] / cs->attributes[RUNNING_SPEED];
+ 	//
+diff --git a/SP/code/game/ai_cast_think.c b/SP/code/game/ai_cast_think.c
+index 24376c15..f4979589 100644
+--- a/SP/code/game/ai_cast_think.c
++++ b/SP/code/game/ai_cast_think.c
+@@ -45,6 +45,7 @@ If you have questions concerning this license or the applicable additional terms
+ #include "../botlib/botai.h"          //bot ai interface
+ 
+ #include "ai_cast.h"
++#include "bg_cod.h"     // codmod: phase 2.4, cod_aiSpeedMode
+ 
+ /*
+ The lowest level of Cast AI thinking.
+@@ -422,6 +423,65 @@ void AICast_UpdateInput( cast_state_t *cs, int time ) {
+ 	g_entities[cs->bs->entitynum].client->ps.aiState = cs->aiState;
+ }
+ 
++/*
++============
++AICast_CodIsHumanType
++
++codmod: phase 2.4 -- human characters only. Never zombies, lopers, super/proto soldiers,
++or Helga/Heinrich, whose speeds are part of their boss/monster design (phase doc 2.4).
++============
++*/
++static qboolean AICast_CodIsHumanType( int aiCharacter ) {
++	switch ( aiCharacter ) {
++	case AICHAR_SOLDIER:
++	case AICHAR_AMERICAN:
++	case AICHAR_ELITEGUARD:
++	case AICHAR_BLACKGUARD:
++	case AICHAR_VENOM:
++	case AICHAR_PARTISAN:
++	case AICHAR_CIVILIAN:
++	case AICHAR_FROGMAN:
++	case AICHAR_STIMSOLDIER1:
++	case AICHAR_STIMSOLDIER2:
++	case AICHAR_STIMSOLDIER3:
++		return qtrue;
++	default:
++		return qfalse;
++	}
++}
++
++/*
++============
++AICast_CodApplySpeedMode
++
++codmod: phase 2.4, "soldiers move like the player" (user request). Called right after
++cs->attributes[WALKING_SPEED/RUNNING_SPEED/CROUCHING_SPEED] are set from the current anim
++(ai_cast_think.c) or from the character's starting attributes (ai_cast_characters.c).
++Server-only; never touches bg_pmove.c, so prediction and AI navigation are untouched.
++cod_aiSpeedMode 0 is a true vanilla A/B.
++============
++*/
++void AICast_CodApplySpeedMode( cast_state_t *cs, int aiCharacter ) {
++	if ( !bg_cod.enable || bg_cod.aiSpeedMode == 0 ) {
++		return;     // vanilla
++	}
++	if ( !AICast_CodIsHumanType( aiCharacter ) ) {
++		return;     // never touch zombies, lopers, bosses, etc.
++	}
++
++	if ( bg_cod.aiSpeedMode == 1 ) {
++		// match the player's CoD4 speeds
++		cs->attributes[RUNNING_SPEED]   = bg_cod.runSpeed;
++		cs->attributes[WALKING_SPEED]   = bg_cod.runSpeed * bg_cod.walkScale;
++		cs->attributes[CROUCHING_SPEED] = bg_cod.runSpeed * bg_cod.crouchScale;
++	} else if ( bg_cod.aiSpeedMode == 2 ) {
++		// scale whatever the anims (or starting attributes) gave us
++		cs->attributes[WALKING_SPEED]   *= bg_cod.aiSpeedScale;
++		cs->attributes[RUNNING_SPEED]   *= bg_cod.aiSpeedScale;
++		cs->attributes[CROUCHING_SPEED] *= bg_cod.aiSpeedScale;
++	}
++}
++
+ /*
+ ============
+ AICast_Think
+@@ -648,6 +708,10 @@ void AICast_Think( int client, float thinktime ) {
+ 		anim = BG_GetAnimationForIndex( cs->entityNum, animIndex );
+ 		cs->attributes[RUNNING_SPEED] = anim->moveSpeed;
+ 	}
++	// codmod: cod_aiSpeedMode -- "soldiers move like the player" (phase 2.4). Server-only,
++	// human AI types only, never touches bg_pmove.c or AI behaviour. See
++	// docs/architecture.md section 3 for why this is the one deliberate AI exception.
++	AICast_CodApplySpeedMode( cs, ent->aiCharacter );
+ 	// update crouch speed scale
+ 	ent->client->ps.crouchSpeedScale = cs->attributes[CROUCHING_SPEED] / cs->attributes[RUNNING_SPEED];
+ 	//
+-- 
+2.56.0
+

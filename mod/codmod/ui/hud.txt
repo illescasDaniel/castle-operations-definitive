@@ -1,0 +1,4 @@
+// codmod hud menu defs (phase 5b)
+{
+	loadMenu { "ui/hud.menu" }
+}

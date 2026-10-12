@@ -1,0 +1,159 @@
+#codmod-delta v2 base=ui/options.menu sha256=b33b7f4a1186399f52986fa9e56f200bf8c2e516433cb394645186569a035c1b
+#src ui/cdkey.menu sha256=96745cb143d3a0d91da1fe5f1b7ac2db26addce0ec675e919ea7ed0050b33bda
+#src ui/clipboard.menu sha256=1234b5cb59f380ca39fb2c56cbcd82ad2d67d0f1c691aab2a3e49e0d428ba6a0
+#src ui/controls.menu sha256=988fa4ecc3b5152f3291a3c83b427fd971bd8bb5b8b1ab42cf81e8d6b29f724d
+#src ui/credit.menu sha256=81fe8de5ee0a324483378209b9a9f3f64697f1cce563d1dad60bfdc5eee77b1e
+#src ui/error.menu sha256=d8082e15dc125112689b431f799d17958025389efe435cb8f64a39e68cf4223c
+#src ui/ingame_controls.menu sha256=012cb5b0b443e10d28bfc8d0c0d564a1b45f0f923660fe05a936c7040fbc6150
+#src ui/notebook.menu sha256=7bc854e3ffa6fb56f4036ec3158fc6c0192156d47fd9dc37bbd30240e410c55f
+#src ui/play.menu sha256=a588d0fc5985e36554b5ebf2c516b65fe26a837c207c634a9ab2f2e658c1ccb5
+@@ 3 4
++\\ INGAME GAME (codmod â FOV / HUD / hints; no vanilla crosshair size) \\
+@@ 6 7
++	name "ingame_game"
+@@ 8 10
++	fullscreen 1
+=ui/controls.menu 1421 1422
+@@ 11 16
++	style 0
++	border 0
+=ui/error.menu 15 16
++	onEsc { close ingame_game ; open ingame_settings }
+@@ 17 17
++////////// CHROME /////////////////////////////////////////////////////////
+@@ 18 24
+=ui/options.menu 55 56
++	name backdrop
+=ui/controls.menu 1421 1422
+@@ 25 29
++	backcolor 0 0 0 .65
+@@ 31 54
++}
+@@ 56 69
++	name BLACKGRAD
+=ui/notebook.menu 27 28
++	rect 0 -4 640 132
++	background "BLACKGRAD"
+=ui/options.menu 29 30
+@@ 71 84
+@@ 85 85
+=ui/options.menu 55 56
++	name BLACKGRAD2
+=ui/notebook.menu 27 28
++	rect 0 420 640 -128
++	background "BLACKGRAD"
+=ui/ingame_controls.menu 31 34
+@@ 86 86
+=ui/options.menu 55 56
++	name FLAME
+=ui/notebook.menu 27 28
++	rect 210 20 220 67
++	background "fLAME"
+=ui/ingame_controls.menu 31 34
+@@ 87 87
+=ui/options.menu 55 56
++	name WOLFFLAMELOGO
+=ui/notebook.menu 27 28
++	rect 200 -5 240 120
++	background "WOLFFLAMELOGO"
+=ui/ingame_controls.menu 31 34
+@@ 88 88
+=ui/options.menu 55 56
++	name gold_line_l
+=ui/notebook.menu 27 28
++	rect 0 76 226 10
++	background "gold_line"
+=ui/ingame_controls.menu 31 35
+=ui/options.menu 55 56
++	name gold_line_r
+=ui/notebook.menu 27 28
++	rect 414 76 230 10
++	background "gold_line"
+=ui/ingame_controls.menu 31 35
+=ui/options.menu 55 56
++	name content_panel
++	rect 220 110 380 320
+=ui/options.menu 24 25
+=ui/options.menu 28 29
+=ui/options.menu 12 13
++	bordercolor .5 .5 .5 .35
+=ui/ingame_controls.menu 31 35
+=ui/options.menu 55 56
++	name back
++	text "BACK"
+=ui/controls.menu 105 106
+=ui/play.menu 196 198
++	textscale .30
++	style 0
++	rect 40 420 180 22
+=ui/credit.menu 1504 1505
+=ui/credit.menu 1548 1549
++	textaligny 18
+=ui/options.menu 67 68
+=ui/options.menu 29 30
++	action { play "sound/misc/kcaction.wav" ;
++	close ingame_game ; open ingame_settings }
+=ui/clipboard.menu 89 92
++	name game_label
++	text "GAME"
+=ui/play.menu 195 198
++	textscale .30
++	style 0
++	rect 40 140 180 22
+=ui/credit.menu 1504 1505
+=ui/credit.menu 1548 1549
++	textaligny 18
+=ui/options.menu 67 68
+=ui/ingame_controls.menu 31 35
++////////// VALUES /////////////////////////////////////////////////////////
+@@ 90 97
++		name game
+=ui/options.menu 261 262
+=ui/options.menu 336 339
+@@ 98 99
++		rect 240 140 320 14
+=ui/error.menu 217 218
+@@ 104 176
+=ui/options.menu 81 82
+@@ 179 185
++		name game
+=ui/cdkey.menu 276 277
++		text "Field of View:"
++		cvar "cg_fov"
++		maxChars 4
++		maxPaintChars 4
++		rect 240 160 320 14
+@@ 186 207
+=ui/error.menu 217 218
+@@ 215 217
+@@ 218 224
++		name game
+=ui/cdkey.menu 276 277
+=ui/options.menu 397 398
++		cvar "cg_hudAlpha"
++		maxChars 6
++		maxPaintChars 6
++		rect 240 185 320 14
+@@ 225 226
+=ui/error.menu 217 218
+@@ 231 233
+=ui/options.menu 212 214
+@@ 235 246
+=ui/options.menu 461 463
++		name game
+=ui/cdkey.menu 276 277
+=ui/options.menu 467 468
++		cvar "r_gamma"
++		maxChars 6
++		maxPaintChars 6
++		rect 240 210 320 14
+@@ 247 248
+=ui/error.menu 217 218
+@@ 249 250
+=ui/options.menu 100 101
+@@ 253 254
+=ui/options.menu 81 82
+@@ 255 571
+@@ 574 574
++}
++

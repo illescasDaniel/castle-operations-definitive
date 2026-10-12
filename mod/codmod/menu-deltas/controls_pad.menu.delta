@@ -1,0 +1,195 @@
+#codmod-delta v2 base=ui/play.menu sha256=a588d0fc5985e36554b5ebf2c516b65fe26a837c207c634a9ab2f2e658c1ccb5
+#src ui/clipboard.menu sha256=1234b5cb59f380ca39fb2c56cbcd82ad2d67d0f1c691aab2a3e49e0d428ba6a0
+#src ui/controls.menu sha256=988fa4ecc3b5152f3291a3c83b427fd971bd8bb5b8b1ab42cf81e8d6b29f724d
+#src ui/error.menu sha256=d8082e15dc125112689b431f799d17958025389efe435cb8f64a39e68cf4223c
+#src ui/ingame.menu sha256=02281aafbe5025fbfa438f36fc128e9a0e83d2690c2d6fe7dc6ce3b5e1a75cdc
+#src ui/ingame_controls.menu sha256=012cb5b0b443e10d28bfc8d0c0d564a1b45f0f923660fe05a936c7040fbc6150
+#src ui/ingame_help.menu sha256=a407b7894fd7a5ad4d382342725d5254ba36be2f3a7b7513e6a91d1da3edbe30
+#src ui/load.menu sha256=bae9e6f84b8912f5c0b093c13701171591047af887fdac23989af21cc1fbf48a
+#src ui/notebook.menu sha256=7bc854e3ffa6fb56f4036ec3158fc6c0192156d47fd9dc37bbd30240e410c55f
+@@ 3 4
++\\ CONTROLLER OPTIONS (codmod) \\
+@@ 5 21
++menuDef
++{
++	name "controls_pad_menu"
+=ui/play.menu 387 388
++	fullscreen 1
+=ui/ingame.menu 27 29
++	style 0
++	border 0
+=ui/load.menu 21 22
+=ui/controls.menu 16 18
++		}
+@@ 22 22
++	onEsc {
++		close controls_pad_menu ; open control_menu
++		}
+@@ 23 42
++////////// CHROME //////////////////////////////////////////////////////////
+@@ 44 53
++	name menu_select
+=ui/notebook.menu 27 28
+=ui/controls.menu 1421 1422
++	background "menu_select"
+@@ 54 77
+@@ 80 83
+@@ 84 89
++	name BLACKGRAD
+=ui/notebook.menu 27 28
++	rect 0 -4 640 132
++	background "BLACKGRAD"
+=ui/play.menu 53 54
+@@ 92 92
+=ui/play.menu 25 26
++	name BLACKGRAD2
+=ui/notebook.menu 27 28
++	rect 0 420 640 -128
++	background "BLACKGRAD"
+=ui/ingame_controls.menu 31 34
+@@ 94 99
++	name FLAME
+=ui/notebook.menu 27 28
++	rect 210 20 220 67
++	background "fLAME"
+=ui/play.menu 53 54
+@@ 100 102
++}
+@@ 104 111
++	name WOLFFLAMELOGO
+=ui/notebook.menu 27 28
++	rect 200 -5 240 120
++	background "WOLFFLAMELOGO"
+=ui/ingame_controls.menu 31 34
+@@ 113 121
++	name gold_line_l
+=ui/notebook.menu 27 28
++	rect 0 76 226 10
++	background "gold_line"
+=ui/ingame_controls.menu 31 34
+@@ 123 130
++	name gold_line_r
+=ui/notebook.menu 27 28
++	rect 414 76 230 10
++	background "gold_line"
+=ui/ingame_controls.menu 31 34
+@@ 132 139
++	name content_panel
++	rect 220 120 380 300
+=ui/play.menu 244 245
+=ui/error.menu 44 45
+=ui/play.menu 49 50
++	bordercolor .5 .5 .5 .35
+=ui/ingame_controls.menu 31 34
+@@ 141 148
++	name back
++	text "BACK"
+=ui/play.menu 366 367
+=ui/play.menu 196 198
++	textscale .30
++	style 0
++	rect 40 420 180 22
+=ui/play.menu 342 343
+=ui/play.menu 381 382
++	textaligny 18
+=ui/play.menu 346 347
+=ui/play.menu 53 54
++	action { play "sound/misc/kcaction.wav" ;
++	close controls_pad_menu ; open control_menu }
++}
+@@ 150 196
++	name title
++	text "CONTROLLER"
+=ui/controls.menu 1037 1038
+@@ 198 205
++	textscale .30
++	rect 40 140 180 22
+=ui/play.menu 342 343
++	textaligny 18
+=ui/controls.menu 1391 1392
+=ui/play.menu 53 54
+@@ 206 207
++}
+@@ 208 232
++////////// SETTINGS ////////////////////////////////////////////////////////
+@@ 234 244
++	type ITEM_TYPE_EDITFIELD
++	text "Look X Sensitivity:  "
++	cvar "cod_padSensX"
++	maxChars 8
++	maxPaintChars 8
++	rect 240 150 320 14
+=ui/controls.menu 1040 1041
+=ui/ingame_help.menu 59 60
+=ui/controls.menu 1042 1043
+=ui/play.menu 193 194
+@@ 246 255
+=ui/controls.menu 113 115
+=ui/ingame_controls.menu 1218 1221
+@@ 257 267
++	type ITEM_TYPE_EDITFIELD
++	text "Look Y Sensitivity:  "
++	cvar "cod_padSensY"
++	maxChars 8
++	maxPaintChars 8
++	rect 240 170 320 14
+=ui/controls.menu 1040 1041
+=ui/ingame_help.menu 59 60
+=ui/controls.menu 1042 1043
+=ui/play.menu 193 194
+@@ 269 278
+=ui/controls.menu 113 115
+=ui/ingame_controls.menu 1218 1221
+@@ 280 290
+=ui/ingame_controls.menu 228 229
++	text "Auto-Aim:  "
++	cvar "cod_padAutoAim"
++	rect 240 200 320 14
+=ui/controls.menu 1040 1041
+=ui/ingame_help.menu 59 60
+=ui/controls.menu 1042 1043
+=ui/play.menu 193 194
+@@ 292 309
+=ui/controls.menu 113 115
+=ui/ingame_controls.menu 1141 1144
+@@ 311 333
++	name hint
++	text "Tap X / Square to reload; hold to interact. Stick snap/smoothing/friction (LOS) always on. Auto-Aim snaps only while ADS."
+=ui/controls.menu 1037 1038
+=ui/play.menu 196 197
+=ui/clipboard.menu 41 42
++	rect 240 230 340 50
+=ui/play.menu 342 343
++	forecolor .7 .7 .7 .9
+=ui/ingame_controls.menu 31 34
+@@ 335 338
+=ui/controls.menu 1402 1403
++	text "Click to edit value"
+=ui/controls.menu 1037 1038
+@@ 339 342
++	textscale .20
++	rect 40 448 560 16
+@@ 343 351
++	forecolor .8 .8 .8 .8
+=ui/clipboard.menu 30 32
++}
+@@ 353 356
+=ui/controls.menu 1388 1389
++	text "Click to toggle"
+=ui/controls.menu 1037 1038
+@@ 357 360
++	textscale .20
++	rect 40 448 560 16
+@@ 361 373
++	forecolor .8 .8 .8 .8
+=ui/clipboard.menu 30 32
++}
+@@ 375 393
++	name fadebox
+=ui/controls.menu 1421 1422
+=ui/play.menu 244 245
++	background "ui/assets/fadebox.tga"
+=ui/controls.menu 1420 1421
+=ui/ingame_controls.menu 31 34
+@@ 395 395
++}

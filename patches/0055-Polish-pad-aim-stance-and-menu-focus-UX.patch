@@ -1,0 +1,1227 @@
+From 69a813d2a406e5ce845c6eaa7f8ec81027eb0c67 Mon Sep 17 00:00:00 2001
+From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
+Date: Sun, 11 Oct 2026 12:29:29 +0200
+Subject: [PATCH 55/64] Polish pad aim, stance, and menu focus UX.
+
+Always-on stick filters with LOS friction, ADS-only auto-aim snap,
++reloaduse/+crouchprone, crouch/prone jump stands without hopping,
+and pad-only padded focus outlines with first-item autofocus.
+---
+ SP/code/cgame/cg_cod.c         | 370 ++++++++++++++++++++++++++++++++-
+ SP/code/cgame/cg_cod_menu.c    |   3 +
+ SP/code/cgame/cg_consolecmds.c |   4 +
+ SP/code/cgame/cg_local.h       |  21 +-
+ SP/code/cgame/cg_main.c        |   6 +-
+ SP/code/cgame/cg_newdraw.c     |  12 +-
+ SP/code/cgame/cg_view.c        |   7 +
+ SP/code/client/cl_input.c      |  41 ++++
+ SP/code/game/bg_cod.c          |  13 +-
+ SP/code/game/bg_cod.h          |   5 +
+ SP/code/game/bg_pmove.c        |  32 ++-
+ SP/code/sdl/sdl_input.c        | 299 ++++++++++++++++++++------
+ SP/code/ui/ui_main.c           |   7 +-
+ SP/code/ui/ui_shared.c         |  65 ++++++
+ 14 files changed, 792 insertions(+), 93 deletions(-)
+
+diff --git a/SP/code/cgame/cg_cod.c b/SP/code/cgame/cg_cod.c
+index 7beead4c..143d1912 100644
+--- a/SP/code/cgame/cg_cod.c
++++ b/SP/code/cgame/cg_cod.c
+@@ -1097,6 +1097,118 @@ void CG_ToggleCrouch_f( void ) {
+ 	}
+ }
+ 
++// CoD hold time: tap crouch, hold ~0.4s → prone (pad Circle/B via +crouchprone).
++#define COD_CROUCH_HOLD_PRONE_MS 400
++
++static void CG_CodPulseProne( void ) {
++	cg.codPronePulse = 2;
++}
++
++void CG_CrouchProneDown_f( void ) {
++	playerState_t *ps;
++
++	cg.codCrouchProneDown = qtrue;
++	cg.codCrouchProneStart = cg.time;
++	cg.codCrouchProneWentProne = qfalse;
++	cg.codCrouchProneExitProne = qfalse;
++	cg.codCrouchProneWasCrouched = qfalse;
++
++	if ( !bg_cod.enable ) {
++		CG_ToggleCrouch_f();
++		return;
++	}
++
++	ps = &cg.predictedPlayerState;
++	if ( bg_cod.proneEnable && ( ps->stats[STAT_COD_FLAGS] & COD_SF_PRONE ) ) {
++		CG_CodPulseProne();
++		cg.codCrouchProneExitProne = qtrue;
++		return;
++	}
++
++	// Remember stance at press. Do NOT crouch yet — tap crouches on release;
++	// hold goes straight to prone (no crouch-then-prone).
++	cg.codCrouchProneWasCrouched = cg.codCrouchHeld;
++}
++
++void CG_CrouchProneUp_f( void ) {
++	if ( !cg.codCrouchProneDown ) {
++		return;
++	}
++	cg.codCrouchProneDown = qfalse;
++
++	if ( cg.codCrouchProneExitProne || cg.codCrouchProneWentProne ) {
++		return;
++	}
++
++	// Tap: toggle crouch (stand→crouch or crouch→stand).
++	if ( cg.codCrouchProneWasCrouched && cg.codCrouchHeld ) {
++		cg.codCrouchHeld = qfalse;
++		trap_SendConsoleCommand( "-movedown\n" );
++	} else if ( !cg.codCrouchProneWasCrouched && !cg.codCrouchHeld ) {
++		cg.codCrouchHeld = qtrue;
++		trap_SendConsoleCommand( "+movedown\n" );
++	}
++}
++
++void CG_CodUpdateCrouchProne( void ) {
++	playerState_t *ps;
++
++	if ( cg.codPronePulse > 0 ) {
++		if ( cg.codPronePulse == 2 ) {
++			trap_SendConsoleCommand( "+prone\n" );
++		} else if ( cg.codPronePulse == 1 ) {
++			trap_SendConsoleCommand( "-prone\n" );
++		}
++		cg.codPronePulse--;
++	}
++
++	if ( !cg.codCrouchProneDown || cg.codCrouchProneWentProne || cg.codCrouchProneExitProne ) {
++		return;
++	}
++	if ( !( bg_cod.enable && bg_cod.proneEnable ) ) {
++		return;
++	}
++	if ( cg.time - cg.codCrouchProneStart < COD_CROUCH_HOLD_PRONE_MS ) {
++		return;
++	}
++
++	ps = &cg.predictedPlayerState;
++	if ( ps->pm_flags & PMF_COD_SLIDING ) {
++		return;
++	}
++	if ( ps->stats[STAT_COD_FLAGS] & COD_SF_PRONE ) {
++		cg.codCrouchProneWentProne = qtrue;
++		return;
++	}
++	if ( ps->stats[STAT_COD_STANCE] > 0 ) {
++		return;
++	}
++	if ( ps->groundEntityNum == ENTITYNUM_NONE ) {
++		return;
++	}
++
++	// Hold from crouch: clear sticky crouch so prone owns the stance.
++	if ( cg.codCrouchHeld ) {
++		cg.codCrouchHeld = qfalse;
++		trap_SendConsoleCommand( "-movedown\n" );
++	}
++	CG_CodPulseProne();
++	cg.codCrouchProneWentProne = qtrue;
++}
++
++static qboolean CG_CodJumpKeyHeld( void ) {
++	int k;
++
++	if ( trap_Key_IsDown( K_SPACE ) || trap_Key_IsDown( K_PAD0_A ) ) {
++		return qtrue;
++	}
++	k = trap_Key_GetKey( "+moveup" );
++	if ( k >= 0 && trap_Key_IsDown( k ) ) {
++		return qtrue;
++	}
++	return qfalse;
++}
++
+ void CG_CodUpdateToggleCrouch( void ) {
+ 	static qboolean wasSliding;
+ 	qboolean sliding;
+@@ -1113,13 +1225,55 @@ void CG_CodUpdateToggleCrouch( void ) {
+ 	if ( !cg.codCrouchHeld ) {
+ 		return;
+ 	}
+-	// Default jump is SPACE; clear sticky crouch so jump works.
+-	if ( trap_Key_IsDown( K_SPACE ) ) {
++	// Jump (SPACE / pad A / +moveup) clears sticky crouch so the player stands (and can jump).
++	if ( CG_CodJumpKeyHeld() ) {
+ 		cg.codCrouchHeld = qfalse;
+ 		trap_SendConsoleCommand( "-movedown\n" );
+ 	}
+ }
+ 
++// CoD: tap Square/X = reload; hold = interact (+activate).
++#define COD_RELOAD_USE_HOLD_MS 250
++
++void CG_ReloadUseDown_f( void ) {
++	cg.codReloadUseDown = qtrue;
++	cg.codReloadUseStart = cg.time;
++	cg.codReloadUseActivated = qfalse;
++}
++
++void CG_ReloadUseUp_f( void ) {
++	if ( !cg.codReloadUseDown ) {
++		return;
++	}
++	cg.codReloadUseDown = qfalse;
++	if ( cg.codReloadUseActivated ) {
++		trap_SendConsoleCommand( "-activate\n" );
++		return;
++	}
++	// Tap → reload
++	cg.codReloadPulse = 2;
++}
++
++void CG_CodUpdateReloadUse( void ) {
++	if ( cg.codReloadPulse > 0 ) {
++		if ( cg.codReloadPulse == 2 ) {
++			trap_SendConsoleCommand( "+reload\n" );
++		} else if ( cg.codReloadPulse == 1 ) {
++			trap_SendConsoleCommand( "-reload\n" );
++		}
++		cg.codReloadPulse--;
++	}
++
++	if ( !cg.codReloadUseDown || cg.codReloadUseActivated ) {
++		return;
++	}
++	if ( cg.time - cg.codReloadUseStart < COD_RELOAD_USE_HOLD_MS ) {
++		return;
++	}
++	trap_SendConsoleCommand( "+activate\n" );
++	cg.codReloadUseActivated = qtrue;
++}
++
+ /*
+ ================
+ CG_ToggleFlashlight_f / CG_CodAddFlashlight
+@@ -1930,3 +2084,215 @@ void CG_CodDrawHitMarker( void ) {
+ 	CG_CodDrawHitMarkerDiag( cx - gap - len, cy + gap + len, cx - gap, cy + gap, th, color );
+ 	CG_CodDrawHitMarkerDiag( cx + gap + len, cy + gap + len, cx + gap, cy + gap, th, color );
+ }
++
++/*
++=================
++CG_CodPadAimAssist
++
++Controller-only. Always-on target friction when last input is pad (LOS required).
++Optional Auto-Aim (cod_padAutoAim) snaps onto the closest visible enemy while ADS
++only — hipfire never snaps/locks.
++
++Writes ROM cvars for CL_JoystickMove:
++  cod_padAimSlowYaw / SlowPitch — per-axis look multipliers (friction)
++  cod_padAimPullYaw / Pitch     — degrees this frame (magnetism / auto-aim)
++=================
++*/
++void CG_CodPadAimAssist( void ) {
++	char lastIn[16];
++	int i;
++	float bestScore;
++	float maxAng;
++	centity_t *best;
++	vec3_t viewOrg, viewAng, forward;
++	qboolean ads;
++	qboolean autoAds;
++	float slowYaw, slowPitch;
++	float pullYaw, pullPitch;
++
++	trap_Cvar_Set( "cod_padAimSlow", "1" );
++	trap_Cvar_Set( "cod_padAimSlowYaw", "1" );
++	trap_Cvar_Set( "cod_padAimSlowPitch", "1" );
++	trap_Cvar_Set( "cod_padAimPullYaw", "0" );
++	trap_Cvar_Set( "cod_padAimPullPitch", "0" );
++
++	if ( !bg_cod.enable || !cg.snap ) {
++		return;
++	}
++
++	trap_Cvar_VariableStringBuffer( "in_lastInput", lastIn, sizeof( lastIn ) );
++	if ( Q_stricmp( lastIn, "pad" ) ) {
++		return;
++	}
++
++	VectorCopy( cg.refdef.vieworg, viewOrg );
++	VectorCopy( cg.refdefViewAngles, viewAng );
++	AngleVectors( viewAng, forward, NULL, NULL );
++
++	ads = ( CG_CodAdsFrac() > 0.2f ) ? qtrue : qfalse;
++	autoAds = ( bg_cod.padAutoAim && ads ) ? qtrue : qfalse;
++	// Wider cone while Auto-Aim + ADS so the closest enemy can be acquired.
++	maxAng = autoAds ? 32.0f : 18.0f;
++
++	best = NULL;
++	bestScore = 9999.0f;
++
++	for ( i = 0; i < MAX_GENTITIES; i++ ) {
++		centity_t *cent = &cg_entities[i];
++		entityState_t *es;
++		vec3_t chest, dir, wantAng, delta;
++		trace_t tr;
++		float dist, yawErr, pitchErr, angErr, score;
++
++		if ( !cent->currentValid ) {
++			continue;
++		}
++		es = &cent->currentState;
++		if ( es->eType != ET_PLAYER ) {
++			continue;
++		}
++		if ( es->eFlags & EF_DEAD ) {
++			continue;
++		}
++		if ( es->number == cg.snap->ps.clientNum ) {
++			continue;
++		}
++		// Skip same-team (friendly AI / teammates). TEAM_FREE = no filter.
++		{
++			clientInfo_t *ci = &cgs.clientinfo[es->clientNum];
++			int myTeam = cgs.clientinfo[cg.snap->ps.clientNum].team;
++			if ( ci->infoValid && myTeam != TEAM_FREE && ci->team == myTeam ) {
++				continue;
++			}
++		}
++
++		VectorCopy( cent->lerpOrigin, chest );
++		chest[2] += 20.0f; // chest-ish above origin
++		VectorSubtract( chest, viewOrg, dir );
++		dist = VectorNormalize( dir );
++		if ( dist < 32.0f || dist > 1500.0f ) {
++			continue;
++		}
++		if ( DotProduct( dir, forward ) < ( autoAds ? 0.10f : 0.35f ) ) {
++			continue;
++		}
++
++		// No assist through walls — world solid must be clear to the chest.
++		CG_Trace( &tr, viewOrg, NULL, NULL, chest, cg.snap->ps.clientNum, MASK_SOLID );
++		if ( tr.fraction < 1.0f ) {
++			continue;
++		}
++
++		vectoangles( dir, wantAng );
++		AnglesSubtract( wantAng, viewAng, delta );
++		yawErr = fabs( AngleNormalize180( delta[YAW] ) );
++		pitchErr = fabs( AngleNormalize180( delta[PITCH] ) );
++		angErr = yawErr + pitchErr;
++		if ( angErr > maxAng ) {
++			continue;
++		}
++
++		// Auto-Aim + ADS: prefer closest visible enemy in the cone.
++		if ( autoAds ) {
++			score = dist + angErr * 2.0f;
++		} else {
++			score = angErr + dist * 0.01f;
++		}
++		if ( score < bestScore ) {
++			bestScore = score;
++			best = cent;
++		}
++	}
++
++	slowYaw = 1.0f;
++	slowPitch = 1.0f;
++	pullYaw = 0.0f;
++	pullPitch = 0.0f;
++
++	if ( best ) {
++		vec3_t chest, dir, wantAng, delta;
++		float dist, yawSigned, pitchSigned, yawErr, pitchErr, angErr, t, friction;
++		float frametime, magRate, magStep;
++
++		VectorCopy( best->lerpOrigin, chest );
++		chest[2] += 20.0f;
++		VectorSubtract( chest, viewOrg, dir );
++		dist = VectorNormalize( dir );
++		vectoangles( dir, wantAng );
++		AnglesSubtract( wantAng, viewAng, delta );
++		yawSigned = AngleNormalize180( delta[YAW] );
++		pitchSigned = AngleNormalize180( delta[PITCH] );
++		yawErr = fabs( yawSigned );
++		pitchErr = fabs( pitchSigned );
++		angErr = yawErr + pitchErr;
++
++		// Strength 0..1 from centered + close.
++		t = 1.0f - ( angErr / maxAng );
++		if ( t < 0.0f ) {
++			t = 0.0f;
++		}
++		if ( dist < 400.0f ) {
++			t += ( 1.0f - dist / 400.0f ) * 0.35f;
++		}
++		if ( t > 1.0f ) {
++			t = 1.0f;
++		}
++
++		// Target friction (always-on, LOS already required). Soft track — not a snap.
++		friction = t * ( ads ? 0.62f : 0.42f );
++		slowYaw = 1.0f - friction * 0.55f;
++		slowPitch = 1.0f - friction * 0.80f;
++		if ( yawErr > pitchErr + 2.0f ) {
++			slowPitch = 1.0f - friction * 0.92f;
++		} else if ( pitchErr > yawErr + 2.0f ) {
++			slowYaw = 1.0f - friction * 0.85f;
++		}
++		if ( slowYaw < 0.28f ) {
++			slowYaw = 0.28f;
++		}
++		if ( slowPitch < 0.22f ) {
++			slowPitch = 0.22f;
++		}
++
++		frametime = cg.frametime * 0.001f;
++		if ( frametime <= 0.0f ) {
++			frametime = 0.016f;
++		}
++
++		if ( autoAds && dist < 1200.0f ) {
++			// Console-style ADS snap onto closest visible enemy.
++			float rate, step;
++
++			rate = 1440.0f;
++			step = rate * frametime;
++			if ( yawErr > 0.02f ) {
++				pullYaw = ( yawErr <= step ) ? yawSigned : ( ( yawSigned > 0.0f ) ? step : -step );
++			}
++			if ( pitchErr > 0.02f ) {
++				pullPitch = ( pitchErr <= step ) ? pitchSigned : ( ( pitchSigned > 0.0f ) ? step : -step );
++			}
++		} else if ( !bg_cod.padAutoAim ) {
++			// Light magnetism only when Auto-Aim is off (never hipfire-lock with Auto-Aim on).
++			magRate = ( ads ? 45.0f : 28.0f ) * t;
++			magStep = magRate * frametime;
++			if ( yawErr > 0.08f ) {
++				pullYaw = ( yawSigned > 0.0f ) ? magStep : -magStep;
++				if ( fabs( pullYaw ) > yawErr ) {
++					pullYaw = yawSigned;
++				}
++			}
++			if ( pitchErr > 0.08f ) {
++				pullPitch = ( pitchSigned > 0.0f ) ? magStep : -magStep;
++				if ( fabs( pullPitch ) > pitchErr ) {
++					pullPitch = pitchSigned;
++				}
++			}
++		}
++	}
++
++	trap_Cvar_Set( "cod_padAimSlow", va( "%g", ( slowYaw < slowPitch ) ? slowYaw : slowPitch ) );
++	trap_Cvar_Set( "cod_padAimSlowYaw", va( "%g", slowYaw ) );
++	trap_Cvar_Set( "cod_padAimSlowPitch", va( "%g", slowPitch ) );
++	trap_Cvar_Set( "cod_padAimPullYaw", va( "%g", pullYaw ) );
++	trap_Cvar_Set( "cod_padAimPullPitch", va( "%g", pullPitch ) );
++}
+diff --git a/SP/code/cgame/cg_cod_menu.c b/SP/code/cgame/cg_cod_menu.c
+index 7dd5dde3..01b6302f 100644
+--- a/SP/code/cgame/cg_cod_menu.c
++++ b/SP/code/cgame/cg_cod_menu.c
+@@ -218,6 +218,9 @@ static const codMenuItem_t cg_codMenuItems[] = {
+ 	{ COD_MI_FLOAT, "cod_ammoScale",          "cod_ammoScale",          0.25f, 1,    NULL },
+ 	{ COD_MI_BOOL,  "cod_interactHint",       "cod_interactHint",       1,     1,    NULL },
+ 	{ COD_MI_BOOL,  "cod_padGlyphs",          "cod_padGlyphs",          1,     1,    NULL },
++	{ COD_MI_FLOAT, "cod_padSensX",           "cod_padSensX",           0.05f, 0.1f, NULL },
++	{ COD_MI_FLOAT, "cod_padSensY",           "cod_padSensY",           0.05f, 0.1f, NULL },
++	{ COD_MI_BOOL,  "cod_padAutoAim",         "cod_padAutoAim",         1,     1,    NULL },
+ 
+ 	{ COD_MI_SECTION, "HUD", NULL, 0, 0, NULL },
+ 	{ COD_MI_BOOL,  "cod_hudEnable",          "cod_hudEnable",          1,     1,    NULL },
+diff --git a/SP/code/cgame/cg_consolecmds.c b/SP/code/cgame/cg_consolecmds.c
+index 3f35e22d..7d9ac50b 100644
+--- a/SP/code/cgame/cg_consolecmds.c
++++ b/SP/code/cgame/cg_consolecmds.c
+@@ -426,6 +426,10 @@ static consoleCommand_t commands[] = {
+ 	{ "cod_dump", CG_CodDump_f },   // codmod: phase 2.0, see cg_cod.c
+ 	{ "toggleads", CG_ToggleAds_f }, // codmod: phase 3.1 sticky ADS toggle
+ 	{ "togglecrouch", CG_ToggleCrouch_f }, // codmod: phase 5d sticky crouch (bind c)
++	{ "+crouchprone", CG_CrouchProneDown_f }, // codmod: pad Circle/B tap crouch / hold prone
++	{ "-crouchprone", CG_CrouchProneUp_f },
++	{ "+reloaduse", CG_ReloadUseDown_f },     // codmod: pad Square/X tap reload / hold interact
++	{ "-reloaduse", CG_ReloadUseUp_f },
+ 	{ "toggleflashlight", CG_ToggleFlashlight_f }, // codmod: phase 5d flashlight (bind l)
+ 	{ "cod_resetbinds", CG_CodResetBinds_f }, // codmod: phase 5d full bind reset
+ 	{ "quickknife", CG_QuickKnife_f }, // codmod: phase 5.5 CoD-style quick knife (bind v)
+diff --git a/SP/code/cgame/cg_local.h b/SP/code/cgame/cg_local.h
+index 5712d21d..7ab33393 100644
+--- a/SP/code/cgame/cg_local.h
++++ b/SP/code/cgame/cg_local.h
+@@ -826,6 +826,16 @@ typedef struct {
+ 	qboolean codQkStayOnKnife;           // codmod: started already on knife — no switchback
+ 
+ 	qboolean codCrouchHeld;              // codmod: phase 5d — sticky togglecrouch state
++	qboolean codCrouchProneDown;         // codmod: +crouchprone held (pad Circle/B)
++	int      codCrouchProneStart;        // codmod: cg.time when +crouchprone went down
++	qboolean codCrouchProneWasCrouched;  // codmod: already crouched at press (tap = stand)
++	qboolean codCrouchProneWentProne;    // codmod: this hold already entered prone
++	qboolean codCrouchProneExitProne;    // codmod: this press exited prone
++	int      codPronePulse;              // codmod: 2=+prone, 1=-prone edge pulse
++	qboolean codReloadUseDown;           // codmod: +reloaduse held (pad Square/X)
++	int      codReloadUseStart;          // codmod: cg.time at press
++	qboolean codReloadUseActivated;      // codmod: hold crossed into +activate
++	int      codReloadPulse;             // codmod: 2=+reload, 1=-reload edge pulse
+ 	qboolean codFlashlightOn;            // codmod: phase 5d — client-local flashlight
+ 
+ 	float landChange;                   // for landing hard
+@@ -1504,8 +1514,8 @@ typedef struct {
+ 	qhandle_t sizeCursor;
+ 
+ 	// codmod: original copyright-free pad prompt glyphs (ui/glyphs in codmod_pad.pk3)
+-	qhandle_t padXboxDpadUp;
+-	qhandle_t padPsDpadUp;
++	qhandle_t padXboxX;      // interact (hold)
++	qhandle_t padPsSquare;   // interact (hold)
+ 
+ } cgMedia_t;
+ 
+@@ -2263,9 +2273,15 @@ void CG_CodMenuDump_f( void );
+ void CG_CodMenu_OnShutdown( void ); // codmod: restore stolen arrow binds
+ void CG_ToggleAds_f( void );           // codmod: phase 3.1 sticky ADS toggle
+ void CG_ToggleCrouch_f( void );        // codmod: phase 5d sticky crouch
++void CG_CrouchProneDown_f( void );     // codmod: pad tap crouch / hold prone
++void CG_CrouchProneUp_f( void );
++void CG_ReloadUseDown_f( void );       // codmod: pad tap reload / hold interact
++void CG_ReloadUseUp_f( void );
+ void CG_ToggleFlashlight_f( void );    // codmod: phase 5d flashlight
+ void CG_CodResetBinds_f( void );       // codmod: phase 5d full bind reset
+ void CG_CodUpdateToggleCrouch( void ); // codmod: phase 5d auto-stand on jump
++void CG_CodUpdateCrouchProne( void );  // codmod: hold-crouch → prone
++void CG_CodUpdateReloadUse( void );    // codmod: tap reload / hold use
+ void CG_CodAddFlashlight( void );      // codmod: phase 5d view dlight
+ void CG_CodDrawFlashlightHudIcon( float weapX, float weapY, float weapW, float weapH ); // codmod: HUD on-indicator
+ void CG_QuickKnife_f( void );          // codmod: phase 5.5 CoD-style quick knife
+@@ -2289,6 +2305,7 @@ void CG_CodDrawCrosshair( const vec4_t hcolor ); // codmod: CoD 4-post bloom ret
+ void CG_CodTriggerHitMarker( qboolean headshot );                  // codmod: E9
+ void CG_CodCheckHitMarker( playerState_t *ps, playerState_t *ops ); // codmod: E9
+ void CG_CodDrawHitMarker( void );                                  // codmod: E9
++void CG_CodPadAimAssist( void );                                   // codmod: pad aim slowdown + auto-aim
+ 
+ //
+ // cg_consolecmds.c
+diff --git a/SP/code/cgame/cg_main.c b/SP/code/cgame/cg_main.c
+index 4c27b1c0..0b0e0912 100644
+--- a/SP/code/cgame/cg_main.c
++++ b/SP/code/cgame/cg_main.c
+@@ -1525,9 +1525,9 @@ static void CG_RegisterGraphics( void ) {
+ 	cgs.media.sizeCursor = trap_R_RegisterShaderNoMip( "ui/assets/sizecursor.tga" );
+ 	cgs.media.selectCursor = trap_R_RegisterShaderNoMip( "ui/assets/selectcursor.tga" );
+ 
+-	// codmod: pad interact glyphs (Xbox-like / PlayStation-like, original art)
+-	cgs.media.padXboxDpadUp = trap_R_RegisterShaderNoMip( "ui/glyphs/pad_xbox_dpad_up" );
+-	cgs.media.padPsDpadUp = trap_R_RegisterShaderNoMip( "ui/glyphs/pad_ps_dpad_up" );
++	// codmod: pad interact glyphs — hold X / Square (CoD-style use)
++	cgs.media.padXboxX = trap_R_RegisterShaderNoMip( "ui/glyphs/pad_xbox_x" );
++	cgs.media.padPsSquare = trap_R_RegisterShaderNoMip( "ui/glyphs/pad_ps_square" );
+ 
+ 	CG_LoadingString( " - game media done" );
+ 
+diff --git a/SP/code/cgame/cg_newdraw.c b/SP/code/cgame/cg_newdraw.c
+index 24c45b17..a465851b 100644
+--- a/SP/code/cgame/cg_newdraw.c
++++ b/SP/code/cgame/cg_newdraw.c
+@@ -527,7 +527,7 @@ static void CG_DrawCursorhint( rectDef_t *rect ) {
+ 	trap_R_SetColor( NULL );
+ 
+ 	// codmod: label above the cursor-hint icon (phase 5b). Keyboard shows "Press F…";
+-	// pad last-input shows D-pad Up glyph (Xbox-like / PS-like) + "to interact".
++	// pad last-input shows hold X / Square glyph (CoD-style use) + "Hold … to interact".
+ 	// Breakable props are look-only (shoot to destroy) — short status, not a use prompt.
+ 	if ( bg_cod.enable && bg_cod.vitalsEnable && bg_cod.interactHint ) {
+ 		const char *hintText = NULL;
+@@ -570,10 +570,10 @@ static void CG_DrawCursorhint( rectDef_t *rect ) {
+ 				trap_Cvar_VariableStringBuffer( "in_gamepadFamily", family, sizeof( family ) );
+ 				if ( !Q_stricmp( lastIn, "pad" ) && Q_stricmp( family, "none" ) ) {
+ 					usePadGlyph = qtrue;
+-					if ( !Q_stricmp( family, "ps" ) && cgs.media.padPsDpadUp ) {
+-						padGlyph = cgs.media.padPsDpadUp;
+-					} else if ( cgs.media.padXboxDpadUp ) {
+-						padGlyph = cgs.media.padXboxDpadUp; // xbox + generic
++					if ( !Q_stricmp( family, "ps" ) && cgs.media.padPsSquare ) {
++						padGlyph = cgs.media.padPsSquare;
++					} else if ( cgs.media.padXboxX ) {
++						padGlyph = cgs.media.padXboxX; // xbox + generic
+ 					}
+ 					if ( !padGlyph ) {
+ 						usePadGlyph = qfalse;
+@@ -581,7 +581,7 @@ static void CG_DrawCursorhint( rectDef_t *rect ) {
+ 				}
+ 			}
+ 			if ( usePadGlyph ) {
+-				hintText = "to interact";
++				hintText = "Hold to interact";
+ 			} else {
+ 				hintText = "Press F to interact";
+ 			}
+diff --git a/SP/code/cgame/cg_view.c b/SP/code/cgame/cg_view.c
+index eb0b335c..876b4e2d 100644
+--- a/SP/code/cgame/cg_view.c
++++ b/SP/code/cgame/cg_view.c
+@@ -1632,6 +1632,10 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
+ 
+ 	// codmod: toggle crouch auto-stand on jump (phase 5d)
+ 	CG_CodUpdateToggleCrouch();
++	// codmod: pad hold Circle/B → prone
++	CG_CodUpdateCrouchProne();
++	// codmod: pad tap Square/X reload / hold interact
++	CG_CodUpdateReloadUse();
+ 
+ 	if ( cg.weaponSelect == WP_FG42SCOPE || cg.weaponSelect == WP_SNOOPERSCOPE || cg.weaponSelect == WP_SNIPERRIFLE ) {
+ 		float spd;
+@@ -1761,6 +1765,9 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
+ 	DEBUGTIME
+ 
+ 	// let the client system know what our weapon, holdable item and zoom settings are
++	// codmod: pad aim assist writes cod_padAimSlow / pull cvars for CL_JoystickMove.
++	CG_CodPadAimAssist();
++
+ 	trap_SetUserCmdValue( cg.weaponSelect, cg.holdableSelect, cg.zoomSensitivity, cg.cld );
+ 
+ 	// actually issue the rendering calls
+diff --git a/SP/code/client/cl_input.c b/SP/code/client/cl_input.c
+index a4572446..47909283 100644
+--- a/SP/code/client/cl_input.c
++++ b/SP/code/client/cl_input.c
+@@ -438,6 +438,8 @@ CL_JoystickMove
+ */
+ void CL_JoystickMove( usercmd_t *cmd ) {
+ 	float anglespeed;
++	float padSensX, padSensY, aimSlowYaw, aimSlowPitch, pullYaw, pullPitch;
++	qboolean looking;
+ 
+ 	float yaw     = j_yaw->value     * cl.joystickAxis[j_yaw_axis->integer];
+ 	float right   = j_side->value    * cl.joystickAxis[j_side_axis->integer];
+@@ -445,6 +447,33 @@ void CL_JoystickMove( usercmd_t *cmd ) {
+ 	float pitch   = j_pitch->value   * cl.joystickAxis[j_pitch_axis->integer];
+ 	float up      = j_up->value      * cl.joystickAxis[j_up_axis->integer];
+ 
++	// codmod: pad look scales (defaults: X half of engine, Y lower than X).
++	padSensX = Cvar_VariableValue( "cod_padSensX" );
++	padSensY = Cvar_VariableValue( "cod_padSensY" );
++	if ( padSensX <= 0.0f ) {
++		padSensX = 0.5f;
++	}
++	if ( padSensY <= 0.0f ) {
++		padSensY = 0.35f;
++	}
++	yaw *= padSensX;
++	pitch *= padSensY;
++
++	// Target friction (per-axis) + auto-aim pull from cgame (pad only).
++	aimSlowYaw = Cvar_VariableValue( "cod_padAimSlowYaw" );
++	aimSlowPitch = Cvar_VariableValue( "cod_padAimSlowPitch" );
++	if ( aimSlowYaw <= 0.0f || aimSlowYaw > 1.0f ) {
++		aimSlowYaw = Cvar_VariableValue( "cod_padAimSlow" );
++		if ( aimSlowYaw <= 0.0f || aimSlowYaw > 1.0f ) {
++			aimSlowYaw = 1.0f;
++		}
++	}
++	if ( aimSlowPitch <= 0.0f || aimSlowPitch > 1.0f ) {
++		aimSlowPitch = aimSlowYaw;
++	}
++	yaw *= aimSlowYaw;
++	pitch *= aimSlowPitch;
++
+ 	if ( !( kb[KB_SPEED].active ^ cl_run->integer ) ) {
+ 		cmd->buttons |= BUTTON_WALKING;
+ 	}
+@@ -471,6 +500,18 @@ void CL_JoystickMove( usercmd_t *cmd ) {
+ 	}
+ 
+ 	cmd->upmove = ClampChar( cmd->upmove + (int)up );
++
++	// Auto-aim angle pull (degrees this frame). Applied even if stick is centered
++	// so ADS near an enemy still tracks the chest.
++	pullYaw = Cvar_VariableValue( "cod_padAimPullYaw" );
++	pullPitch = Cvar_VariableValue( "cod_padAimPullPitch" );
++	looking = ( cl.joystickAxis[j_yaw_axis->integer] != 0
++				|| cl.joystickAxis[j_pitch_axis->integer] != 0
++				|| pullYaw != 0.0f || pullPitch != 0.0f );
++	if ( looking ) {
++		cl.viewangles[YAW] += pullYaw;
++		cl.viewangles[PITCH] += pullPitch;
++	}
+ }
+ 
+ /*
+diff --git a/SP/code/game/bg_cod.c b/SP/code/game/bg_cod.c
+index 08f1255e..ec2c14fa 100644
+--- a/SP/code/game/bg_cod.c
++++ b/SP/code/game/bg_cod.c
+@@ -40,7 +40,7 @@ const codCvarDef_t bg_codCvars[] = {
+ 	{ "cod_sprintForwardOnly",  "1",    0,            CODOFS( sprintForwardOnly ),  1 },
+ 	{ "cod_sprintJumpCost",     "2000", 0,            CODOFS( sprintJumpCost ),     0 },
+ 
+-	{ "cod_duckTime",           "70",   0,            CODOFS( duckTime ),           0 },
++	{ "cod_duckTime",           "160",  0,            CODOFS( duckTime ),           0 },
+ 	{ "cod_duckEase",           "1",    0,            CODOFS( duckEase ),           1 },
+ 	{ "cod_duckGunDip",         "1",    0,            CODOFS( duckGunDip ),         1 },
+ 
+@@ -159,6 +159,11 @@ const codCvarDef_t bg_codCvars[] = {
+ 	{ "cod_interactHint",       "1",    0,            CODOFS( interactHint ),       1 },
+ 	{ "cod_padGlyphs",          "1",    0,            CODOFS( padGlyphs ),          1 },
+ 
++	// Controller look: half of engine stick default on X; Y lower (typical FPS).
++	{ "cod_padSensX",           "0.5",  CVAR_ARCHIVE, CODOFS( padSensX ),           0 },
++	{ "cod_padSensY",           "0.35", CVAR_ARCHIVE, CODOFS( padSensY ),           0 },
++	{ "cod_padAutoAim",         "0",    CVAR_ARCHIVE, CODOFS( padAutoAim ),         1 },
++
+ 	// codmod: Phase 5c CoD HUD (docs/phase-5c-hud.md)
+ 	{ "cod_hudEnable",          "1",    0,            CODOFS( hudEnable ),          1 },
+ 	{ "cod_hudAmmoStyle",       "1",    0,            CODOFS( hudAmmoStyle ),       1 },
+@@ -219,9 +224,9 @@ const codCvarDef_t bg_codCvars[] = {
+ 	{ "cod_proneScale",         "0.55", 0,            CODOFS( proneScale ),         0 },
+ 	{ "cod_proneViewHeight",    "-8",   0,            CODOFS( proneViewHeight ),    0 },
+ 	{ "cod_proneMaxsZ",         "16",   0,            CODOFS( proneMaxsZ ),         0 },
+-	{ "cod_proneDownTime",      "350",  0,            CODOFS( proneDownTime ),      0 },
+-	{ "cod_proneUpTime",        "350",  0,            CODOFS( proneUpTime ),        0 },
+-	{ "cod_proneCooldown",      "400",  0,            CODOFS( proneCooldown ),      0 },
++	{ "cod_proneDownTime",      "250",  0,            CODOFS( proneDownTime ),      0 },
++	{ "cod_proneUpTime",        "250",  0,            CODOFS( proneUpTime ),        0 },
++	{ "cod_proneCooldown",      "100",  0,            CODOFS( proneCooldown ),      0 },
+ 	{ "cod_pronePitchUp",       "40",   0,            CODOFS( pronePitchUp ),       0 },
+ 	{ "cod_pronePitchDown",     "40",   0,            CODOFS( pronePitchDown ),     0 },
+ 	{ "cod_proneCrawlFire",     "0",    0,            CODOFS( proneCrawlFire ),     1 },
+diff --git a/SP/code/game/bg_cod.h b/SP/code/game/bg_cod.h
+index 16eceb35..791a6786 100644
+--- a/SP/code/game/bg_cod.h
++++ b/SP/code/game/bg_cod.h
+@@ -126,6 +126,11 @@ typedef struct {
+ 	int interactHint;          // cgame: "Press <key> to interact" next to cursor hint
+ 	int padGlyphs;             // cgame: draw pad button glyphs on interact hints
+ 
++	// codmod: controller look + aim assist (pad only)
++	float padSensX;            // stick look scale (1 = engine j_* default; 0.5 = half)
++	float padSensY;            // vertical scale (default lower than X)
++	int padAutoAim;            // 1 = stronger ADS chest pull (friction/magnetism always on for pads)
++
+ 	// codmod: Phase 5c CoD on-screen HUD (docs/phase-5c-hud.md)
+ 	int hudEnable;             // master: clip/reserve ammo, no bars, low-HP blood/crosshair
+ 	int hudAmmoStyle;          // 1 = clip/reserve string; 0 = vanilla split
+diff --git a/SP/code/game/bg_pmove.c b/SP/code/game/bg_pmove.c
+index cc0f3bb5..099c71a0 100644
+--- a/SP/code/game/bg_pmove.c
++++ b/SP/code/game/bg_pmove.c
+@@ -609,9 +609,17 @@ static qboolean PM_CheckJump( void ) {
+ 		return qfalse;      // don't allow jump until all buttons are up
+ 	}
+ 
+-	// codmod: no jump while prone (phase 6b); exit already consumed the press
+-	if ( !pm->ps->aiChar && ( pm->ps->stats[STAT_COD_FLAGS] & COD_SF_PRONE ) ) {
+-		return qfalse;
++	// codmod: no jump while prone or during prone stand-up/down (phase 6b).
++	// Jump-to-stand must not launch after the exit frame — hold JUMP_HELD until release.
++	if ( !pm->ps->aiChar && bg_cod.enable && bg_cod.proneEnable ) {
++		if ( ( pm->ps->stats[STAT_COD_FLAGS] & COD_SF_PRONE )
++			 || pm->ps->stats[STAT_COD_STANCE] > 0 ) {
++			if ( pm->cmd.upmove >= 10 ) {
++				pm->ps->pm_flags |= PMF_JUMP_HELD;
++				pm->cmd.upmove = 0;
++			}
++			return qfalse;
++		}
+ 	}
+ 
+ 	if ( pm->cmd.upmove < 10 ) {
+@@ -1771,6 +1779,14 @@ static void PM_CheckDuck( void ) {
+ 			pm->trace( &trace, pm->ps->origin, pm->mins, pm->maxs, pm->ps->origin, pm->ps->clientNum, pm->tracemask );
+ 			if ( !trace.allsolid ) {
+ 				pm->ps->pm_flags &= ~PMF_DUCKED;
++				// codmod: crouch → stand via jump must not also hop. Latch JUMP_HELD so
++				// CheckJump ignores this press until the jump key is released.
++				if ( !pm->ps->aiChar && bg_cod.enable ) {
++					pm->ps->pm_flags |= PMF_JUMP_HELD;
++					if ( pm->cmd.upmove > 0 ) {
++						pm->cmd.upmove = 0;
++					}
++				}
+ 			}
+ 		}
+ 	}
+@@ -3978,12 +3994,13 @@ static void PM_CodCheckProne( void ) {
+ 	}
+ 
+ 	wantExit = qfalse;
+-	if ( isProne && stance == 0 && ( pressed || jumpPressed || crouchPressed ) ) {
++	// Allow exit during cooldown (stance < 0) so taps aren't eaten after stand-up.
++	if ( isProne && stance <= 0 && ( pressed || jumpPressed || crouchPressed ) ) {
+ 		wantExit = qtrue;
+ 	}
+ 
+-	// enter
+-	if ( !isProne && pressed && stance == 0 ) {
++	// enter — allow during cooldown so re-prone isn't delayed after a quick stand
++	if ( !isProne && pressed && stance <= 0 ) {
+ 		qboolean canEnter = qtrue;
+ 
+ 		if ( pm->ps->groundEntityNum == ENTITYNUM_NONE
+@@ -4047,9 +4064,10 @@ static void PM_CodCheckProne( void ) {
+ 				pm->ps->pm_flags |= PMF_DUCKED;
+ 			}
+ 
+-			// consume jump so PM_CheckJump does not also launch this frame
++			// Consume jump until release so stand-up does not also launch.
+ 			if ( jumpPressed ) {
+ 				pm->cmd.upmove = 0;
++				pm->ps->pm_flags |= PMF_JUMP_HELD;
+ 			}
+ 		}
+ 		// else stay prone — nothing fits
+diff --git a/SP/code/sdl/sdl_input.c b/SP/code/sdl/sdl_input.c
+index 4ae773ee..8e2508d9 100644
+--- a/SP/code/sdl/sdl_input.c
++++ b/SP/code/sdl/sdl_input.c
+@@ -29,6 +29,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ #include <stdarg.h>
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <math.h>
++
++#ifndef M_PI
++#define M_PI 3.14159265358979323846
++#endif
+ 
+ #include "../client/client.h"
+ #include "../sys/sys_local.h"
+@@ -524,8 +529,157 @@ struct
+ 	unsigned int oldaxes;
+ 	int oldaaxes[MAX_JOYSTICK_AXIS];
+ 	unsigned int oldhats;
++	// codmod: filtered stick state (EMA). [0]=LX [1]=LY [2]=RX [3]=RY in -1..1
++	float filt[4];
++	qboolean filtInit;
+ } stick_state;
+ 
++// Axial snap half-angle (deg): look stick locks to pure H/V inside this band.
++#define COD_PAD_AXIAL_SNAP_DEG     12.0f
++// Cardinal snap half-angle (deg): move stick snaps to N/E/S/W inside this band.
++#define COD_PAD_CARDINAL_SNAP_DEG  22.0f
++// EMA blend toward new sample each frame (higher = snappier, lower = smoother).
++#define COD_PAD_SMOOTH_ALPHA       0.42f
++
++/*
++===============
++IN_CodApplyRadialDeadzone
++
++in: -1..1 stick; out: deadzone-shaped -1..1 (same shape as engine threshold ramp).
++===============
++*/
++static void IN_CodApplyRadialDeadzone( float *x, float *y, float threshold )
++{
++	float mag, f;
++
++	mag = (float)sqrt( (double)( ( *x ) * ( *x ) + ( *y ) * ( *y ) ) );
++	if ( mag < 1e-6f ) {
++		*x = 0.0f;
++		*y = 0.0f;
++		return;
++	}
++	if ( mag <= threshold ) {
++		*x = 0.0f;
++		*y = 0.0f;
++		return;
++	}
++	f = ( mag - threshold ) / ( 1.0f - threshold );
++	if ( f > 1.0f ) {
++		f = 1.0f;
++	}
++	*x = ( *x / mag ) * f;
++	*y = ( *y / mag ) * f;
++}
++
++/*
++===============
++IN_CodSmoothStick
++
++Exponential moving average on a stick pair.
++===============
++*/
++static void IN_CodSmoothStick( int filtIndex, float *x, float *y )
++{
++	float a = COD_PAD_SMOOTH_ALPHA;
++
++	if ( !stick_state.filtInit ) {
++		stick_state.filt[0] = stick_state.filt[1] = 0.0f;
++		stick_state.filt[2] = stick_state.filt[3] = 0.0f;
++		stick_state.filtInit = qtrue;
++	}
++	stick_state.filt[filtIndex]     = stick_state.filt[filtIndex] * ( 1.0f - a ) + ( *x ) * a;
++	stick_state.filt[filtIndex + 1] = stick_state.filt[filtIndex + 1] * ( 1.0f - a ) + ( *y ) * a;
++	*x = stick_state.filt[filtIndex];
++	*y = stick_state.filt[filtIndex + 1];
++}
++
++/*
++===============
++IN_CodAxialSnap
++
++Look-stick axial deadzones: near-horizontal zeros Y; near-vertical zeros X.
++===============
++*/
++static void IN_CodAxialSnap( float *x, float *y )
++{
++	float ax, ay, ang, snap;
++
++	ax = fabs( *x );
++	ay = fabs( *y );
++	if ( ax < 1e-5f && ay < 1e-5f ) {
++		return;
++	}
++	ang = (float)( atan2( (double)ay, (double)ax ) * ( 180.0 / M_PI ) ); // 0 = horizontal, 90 = vertical
++	snap = COD_PAD_AXIAL_SNAP_DEG;
++	if ( ang < snap ) {
++		*y = 0.0f; // lock to horizontal
++	} else if ( ang > ( 90.0f - snap ) ) {
++		*x = 0.0f; // lock to vertical
++	}
++}
++
++/*
++===============
++IN_CodCardinalSnap
++
++Move-stick cardinal locking: widen pure forward/back/strafe cones.
++===============
++*/
++static void IN_CodCardinalSnap( float *x, float *y )
++{
++	float mag, ang, snap, sector;
++
++	mag = (float)sqrt( (double)( ( *x ) * ( *x ) + ( *y ) * ( *y ) ) );
++	if ( mag < 1e-5f ) {
++		return;
++	}
++	// atan2(x, -y): 0 = forward (up on stick / -Y), 90 = right, etc.
++	ang = (float)( atan2( (double)( *x ), (double)( -( *y ) ) ) * ( 180.0 / M_PI ) );
++	snap = COD_PAD_CARDINAL_SNAP_DEG;
++	sector = ang;
++	if ( sector < 0.0f ) {
++		sector += 360.0f;
++	}
++	if ( sector < snap || sector > ( 360.0f - snap ) ) {
++		*x = 0.0f;
++		*y = -mag; // forward
++	} else if ( fabs( sector - 90.0f ) < snap ) {
++		*x = mag;
++		*y = 0.0f; // right
++	} else if ( fabs( sector - 180.0f ) < snap ) {
++		*x = 0.0f;
++		*y = mag; // back
++	} else if ( fabs( sector - 270.0f ) < snap ) {
++		*x = -mag;
++		*y = 0.0f; // left
++	}
++}
++
++/*
++===============
++IN_CodStickToAxisInt
++
++Convert filtered -1..1 stick axis to signed 0..32767 engine axis units.
++===============
++*/
++static int IN_CodStickToAxisInt( float v )
++{
++	int a;
++
++	if ( v > 1.0f ) {
++		v = 1.0f;
++	} else if ( v < -1.0f ) {
++		v = -1.0f;
++	}
++	a = (int)( v * 32767.0f );
++	if ( a > 32767 ) {
++		a = 32767;
++	} else if ( a < -32767 ) {
++		a = -32767;
++	}
++	return a;
++}
++
+ 
+ /*
+ ===============
+@@ -547,6 +701,7 @@ static void IN_InitJoystick( void )
+ 	stick = NULL;
+ 	gamepad = NULL;
+ 	memset(&stick_state, '\0', sizeof (stick_state));
++	stick_state.filtInit = qfalse;
+ 	Cvar_Get( "in_gamepadFamily", "none", CVAR_ROM );
+ 	Cvar_Set( "in_gamepadFamily", "none" );
+ 	Cvar_Get( "in_lastInput", "kb", CVAR_ROM );
+@@ -777,88 +932,96 @@ static void IN_GamepadMove( void )
+ 		}
+ 	}
+ 
+-	// check axes
+-	for (i = 0; i < SDL_CONTROLLER_AXIS_MAX; i++)
++	// --- codmod: read sticks, deadzone, smooth, cardinal/axial snap, then emit ---
+ 	{
+-		int axis = SDL_GameControllerGetAxis(gamepad, SDL_CONTROLLER_AXIS_LEFTX + i);
+-		int oldAxis = stick_state.oldaaxes[i];
+-
+-		// Smoothly ramp from dead zone to maximum value
+-		float f = ((float)abs(axis) / 32767.0f - in_joystickThreshold->value) / (1.0f - in_joystickThreshold->value);
+-
+-		if (f < 0.0f)
+-			f = 0.0f;
+-
+-		axis = (int)(32767 * ((axis < 0) ? -f : f));
++		float lx, ly, rx, ry;
++		float thr = in_joystickThreshold->value;
++		int axesOut[SDL_CONTROLLER_AXIS_MAX];
++
++		lx = SDL_GameControllerGetAxis( gamepad, SDL_CONTROLLER_AXIS_LEFTX ) / 32767.0f;
++		ly = SDL_GameControllerGetAxis( gamepad, SDL_CONTROLLER_AXIS_LEFTY ) / 32767.0f;
++		rx = SDL_GameControllerGetAxis( gamepad, SDL_CONTROLLER_AXIS_RIGHTX ) / 32767.0f;
++		ry = SDL_GameControllerGetAxis( gamepad, SDL_CONTROLLER_AXIS_RIGHTY ) / 32767.0f;
++
++		IN_CodApplyRadialDeadzone( &lx, &ly, thr );
++		IN_CodApplyRadialDeadzone( &rx, &ry, thr );
++		IN_CodSmoothStick( 0, &lx, &ly );
++		IN_CodSmoothStick( 2, &rx, &ry );
++		IN_CodCardinalSnap( &lx, &ly ); // movement
++		IN_CodAxialSnap( &rx, &ry );    // look
++
++		axesOut[SDL_CONTROLLER_AXIS_LEFTX] = IN_CodStickToAxisInt( lx );
++		axesOut[SDL_CONTROLLER_AXIS_LEFTY] = IN_CodStickToAxisInt( ly );
++		axesOut[SDL_CONTROLLER_AXIS_RIGHTX] = IN_CodStickToAxisInt( rx );
++		axesOut[SDL_CONTROLLER_AXIS_RIGHTY] = IN_CodStickToAxisInt( ry );
++
++		// Triggers: keep existing linear deadzone ramp (no snap/smooth).
++		for ( i = SDL_CONTROLLER_AXIS_TRIGGERLEFT; i < SDL_CONTROLLER_AXIS_MAX; i++ ) {
++			int raw = SDL_GameControllerGetAxis( gamepad, (SDL_GameControllerAxis)i );
++			float f = ( (float)abs( raw ) / 32767.0f - thr ) / ( 1.0f - thr );
++			if ( f < 0.0f ) {
++				f = 0.0f;
++			}
++			axesOut[i] = (int)( 32767 * ( ( raw < 0 ) ? -f : f ) );
++		}
+ 
+-		if (axis != oldAxis)
++		for ( i = 0; i < SDL_CONTROLLER_AXIS_MAX; i++ )
+ 		{
+-			const int negMap[SDL_CONTROLLER_AXIS_MAX] = { K_PAD0_LEFTSTICK_LEFT,  K_PAD0_LEFTSTICK_UP,   K_PAD0_RIGHTSTICK_LEFT,  K_PAD0_RIGHTSTICK_UP, 0, 0 };
+-			const int posMap[SDL_CONTROLLER_AXIS_MAX] = { K_PAD0_LEFTSTICK_RIGHT, K_PAD0_LEFTSTICK_DOWN, K_PAD0_RIGHTSTICK_RIGHT, K_PAD0_RIGHTSTICK_DOWN, K_PAD0_LEFTTRIGGER, K_PAD0_RIGHTTRIGGER };
++			int axis = axesOut[i];
++			int oldAxis = stick_state.oldaaxes[i];
+ 
+-			qboolean posAnalog = qfalse, negAnalog = qfalse;
+-			int negKey = negMap[i];
+-			int posKey = posMap[i];
+-
+-			if (in_joystickUseAnalog->integer)
++			if ( axis != oldAxis )
+ 			{
+-				int posAxis = 0, posSign = 0, negAxis = 0, negSign = 0;
++				const int negMap[SDL_CONTROLLER_AXIS_MAX] = { K_PAD0_LEFTSTICK_LEFT,  K_PAD0_LEFTSTICK_UP,   K_PAD0_RIGHTSTICK_LEFT,  K_PAD0_RIGHTSTICK_UP, 0, 0 };
++				const int posMap[SDL_CONTROLLER_AXIS_MAX] = { K_PAD0_LEFTSTICK_RIGHT, K_PAD0_LEFTSTICK_DOWN, K_PAD0_RIGHTSTICK_RIGHT, K_PAD0_RIGHTSTICK_DOWN, K_PAD0_LEFTTRIGGER, K_PAD0_RIGHTTRIGGER };
+ 
+-				// get axes and axes signs for keys if available
+-				posAnalog = KeyToAxisAndSign(posKey, &posAxis, &posSign);
+-				negAnalog = KeyToAxisAndSign(negKey, &negAxis, &negSign);
++				qboolean posAnalog = qfalse, negAnalog = qfalse;
++				int negKey = negMap[i];
++				int posKey = posMap[i];
+ 
+-				// positive to negative/neutral -> keyup if axis hasn't yet been set
+-				if (posAnalog && !translatedAxesSet[posAxis] && oldAxis > 0 && axis <= 0)
++				if ( in_joystickUseAnalog->integer )
+ 				{
+-					translatedAxes[posAxis] = 0;
+-					translatedAxesSet[posAxis] = qtrue;
+-				}
++					int posAxis = 0, posSign = 0, negAxis = 0, negSign = 0;
+ 
+-				// negative to positive/neutral -> keyup if axis hasn't yet been set
+-				if (negAnalog && !translatedAxesSet[negAxis] && oldAxis < 0 && axis >= 0)
+-				{
+-					translatedAxes[negAxis] = 0;
+-					translatedAxesSet[negAxis] = qtrue;
+-				}
++					posAnalog = KeyToAxisAndSign( posKey, &posAxis, &posSign );
++					negAnalog = KeyToAxisAndSign( negKey, &negAxis, &negSign );
+ 
+-				// negative/neutral to positive -> keydown
+-				if (posAnalog && axis > 0)
+-				{
+-					translatedAxes[posAxis] = axis * posSign;
+-					translatedAxesSet[posAxis] = qtrue;
++					if ( posAnalog && !translatedAxesSet[posAxis] && oldAxis > 0 && axis <= 0 )
++					{
++						translatedAxes[posAxis] = 0;
++						translatedAxesSet[posAxis] = qtrue;
++					}
++					if ( negAnalog && !translatedAxesSet[negAxis] && oldAxis < 0 && axis >= 0 )
++					{
++						translatedAxes[negAxis] = 0;
++						translatedAxesSet[negAxis] = qtrue;
++					}
++					if ( posAnalog && axis > 0 )
++					{
++						translatedAxes[posAxis] = axis * posSign;
++						translatedAxesSet[posAxis] = qtrue;
++					}
++					if ( negAnalog && axis < 0 )
++					{
++						translatedAxes[negAxis] = -axis * negSign;
++						translatedAxesSet[negAxis] = qtrue;
++					}
+ 				}
+ 
+-				// positive/neutral to negative -> keydown
+-				if (negAnalog && axis < 0)
+-				{
+-					translatedAxes[negAxis] = -axis * negSign;
+-					translatedAxesSet[negAxis] = qtrue;
++				if ( !posAnalog && posKey && oldAxis > 0 && axis <= 0 )
++					Com_QueueEvent( in_eventTime, SE_KEY, posKey, qfalse, 0, NULL );
++				if ( !negAnalog && negKey && oldAxis < 0 && axis >= 0 )
++					Com_QueueEvent( in_eventTime, SE_KEY, negKey, qfalse, 0, NULL );
++				if ( !posAnalog && posKey && oldAxis <= 0 && axis > 0 )
++					Com_QueueEvent( in_eventTime, SE_KEY, posKey, qtrue, 0, NULL );
++				if ( !negAnalog && negKey && oldAxis >= 0 && axis < 0 )
++					Com_QueueEvent( in_eventTime, SE_KEY, negKey, qtrue, 0, NULL );
++
++				if ( axis != 0 ) {
++					padActivity = qtrue;
+ 				}
++				stick_state.oldaaxes[i] = axis;
+ 			}
+-
+-			// keyups first so they get overridden by keydowns later
+-
+-			// positive to negative/neutral -> keyup
+-			if (!posAnalog && posKey && oldAxis > 0 && axis <= 0)
+-				Com_QueueEvent(in_eventTime, SE_KEY, posKey, qfalse, 0, NULL);
+-
+-			// negative to positive/neutral -> keyup
+-			if (!negAnalog && negKey && oldAxis < 0 && axis >= 0)
+-				Com_QueueEvent(in_eventTime, SE_KEY, negKey, qfalse, 0, NULL);
+-
+-			// negative/neutral to positive -> keydown
+-			if (!posAnalog && posKey && oldAxis <= 0 && axis > 0)
+-				Com_QueueEvent(in_eventTime, SE_KEY, posKey, qtrue, 0, NULL);
+-
+-			// positive/neutral to negative -> keydown
+-			if (!negAnalog && negKey && oldAxis >= 0 && axis < 0)
+-				Com_QueueEvent(in_eventTime, SE_KEY, negKey, qtrue, 0, NULL);
+-
+-			if ( axis != 0 ) {
+-				padActivity = qtrue;
+-			}
+-			stick_state.oldaaxes[i] = axis;
+ 		}
+ 	}
+ 
+diff --git a/SP/code/ui/ui_main.c b/SP/code/ui/ui_main.c
+index d803c9d8..2c444eee 100644
+--- a/SP/code/ui/ui_main.c
++++ b/SP/code/ui/ui_main.c
+@@ -6950,8 +6950,13 @@ void _UI_KeyEvent( int key, qboolean down ) {
+ 	if ( Menu_Count() > 0 ) {
+ 		menuDef_t *menu = Menu_GetFocused();
+ 		if ( menu ) {
+-			if ( key == K_ESCAPE && down && !Menus_AnyFullScreenVisible() ) {
++			// ESC or pad B/Circle: close non-fullscreen menus (pause) and unpause.
++			// Fullscreen pages (settings, controls, …) use their onEsc scripts instead.
++			if ( ( key == K_ESCAPE || key == K_PAD0_B ) && down && !Menus_AnyFullScreenVisible() ) {
+ 				Menus_CloseAll();
++				trap_Key_SetCatcher( trap_Key_GetCatcher() & ~KEYCATCH_UI );
++				trap_Key_ClearStates();
++				trap_Cvar_Set( "cl_paused", "0" );
+ 			} else {
+ 				Menu_HandleKey( menu, key, down );
+ 			}
+diff --git a/SP/code/ui/ui_shared.c b/SP/code/ui/ui_shared.c
+index 963d8a01..740011e7 100644
+--- a/SP/code/ui/ui_shared.c
++++ b/SP/code/ui/ui_shared.c
+@@ -3004,6 +3004,42 @@ void  Menus_Activate( menuDef_t *menu ) {
+ 		Item_RunScript( &item, menu->onOpen );
+ 	}
+ 
++	// codmod: auto-select the first focusable item so pad/keyboard nav has a start point.
++	{
++		int i;
++		qboolean focused = qfalse;
++
++		for ( i = 0; i < menu->itemCount; i++ ) {
++			if ( menu->items[i]->window.flags & WINDOW_HASFOCUS ) {
++				focused = qtrue;
++				break;
++			}
++		}
++		if ( !focused ) {
++			menu->cursorItem = -1;
++			for ( i = 0; i < menu->itemCount; i++ ) {
++				itemDef_t *it = menu->items[i];
++				if ( !it || ( it->window.flags & WINDOW_DECORATION ) ) {
++					continue;
++				}
++				if ( !( it->window.flags & WINDOW_VISIBLE ) ) {
++					continue;
++				}
++				if ( it->type == ITEM_TYPE_OWNERDRAW || it->type == ITEM_TYPE_MODEL
++					 || it->type == ITEM_TYPE_MENUMODEL ) {
++					continue;
++				}
++				// Skip pure labels (TEXT with no action).
++				if ( it->type == ITEM_TYPE_TEXT && !it->action ) {
++					continue;
++				}
++				if ( Item_SetFocus( it, it->window.rect.x + 1, it->window.rect.y + 1 ) ) {
++					break;
++				}
++			}
++		}
++	}
++
+ 	if ( menu->soundName && *menu->soundName ) {
+ //		DC->stopBackgroundTrack();					// you don't want to do this since it will reset s_rawend
+ 		DC->startBackgroundTrack( menu->soundName, menu->soundName, 0 );
+@@ -4593,6 +4629,35 @@ void Item_Paint( itemDef_t *item ) {
+ 	// paint the rect first..
+ 	Window_Paint( &item->window, parent->fadeAmount, parent->fadeClamp, parent->fadeCycle );
+ 
++	// codmod: pad-only focus outline (mouse/kb already have the cursor).
++	if ( ( item->window.flags & WINDOW_HASFOCUS )
++		 && !( item->window.flags & WINDOW_DECORATION )
++		 && item->type != ITEM_TYPE_OWNERDRAW
++		 && item->type != ITEM_TYPE_MODEL
++		 && item->type != ITEM_TYPE_MENUMODEL
++		 && DC->getCVarString ) {
++		char lastIn[16];
++
++		DC->getCVarString( "in_lastInput", lastIn, sizeof( lastIn ) );
++		if ( !Q_stricmp( lastIn, "pad" ) ) {
++			vec4_t outline;
++			const float pad = 3.0f;
++
++			Vector4Copy( parent->focusColor, outline );
++			if ( outline[3] < 0.35f ) {
++				outline[0] = 1.0f;
++				outline[1] = 0.75f;
++				outline[2] = 0.0f;
++				outline[3] = 1.0f;
++			} else {
++				outline[3] = 1.0f;
++			}
++			DC->drawRect( item->window.rect.x - pad, item->window.rect.y - pad,
++						  item->window.rect.w + pad * 2.0f,
++						  item->window.rect.h + pad * 2.0f, 1, outline );
++		}
++	}
++
+ 	if ( debugMode ) {
+ 		vec4_t color;
+ 		rectDef_t *r = Item_CorrectedTextRect( item );
+-- 
+2.56.0
+

@@ -1,0 +1,323 @@
+From d9672cb60c303e1ad53ef2fe56d07a5126274a77 Mon Sep 17 00:00:00 2001
+From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
+Date: Thu, 8 Oct 2026 18:36:06 +0200
+Subject: [PATCH 17/64] P3: CoD iron-sight ADS via tag_flash auto-align
+
+Place the rear sight (derived from tag_flash) on the screen center
+instead of nudging the hip gun. Matches CoD ADS without new models.
+
+Co-authored-by: Cursor <cursoragent@cursor.com>
+---
+ SP/code/cgame/cg_cod.c     | 163 ++++++++++++++++++++++++++++++-------
+ SP/code/cgame/cg_local.h   |  18 ++--
+ SP/code/cgame/cg_weapons.c |  22 +----
+ SP/code/game/bg_cod.c      |   8 +-
+ SP/code/game/bg_cod.h      |   9 +-
+ 5 files changed, 163 insertions(+), 57 deletions(-)
+
+diff --git a/SP/code/cgame/cg_cod.c b/SP/code/cgame/cg_cod.c
+index e45b3ef6..fc1bc02b 100644
+--- a/SP/code/cgame/cg_cod.c
++++ b/SP/code/cgame/cg_cod.c
+@@ -5,32 +5,25 @@
+ 
+ #include "cg_local.h"
+ 
+-// codmod: Phase 3.5 per-weapon ADS viewmodel offsets (fwd, right, up, pitch, yaw, roll).
+-// RTCW viewmodels were never authored for ADS -- the goal is a clear CoD-style raise to
+-// screen center (rear sight toward the crosshair), not a pixel-perfect sight picture.
+-// The first shipped guesses (~1-3 u) only nudged the gun and felt like "FOV zoom only";
+-// these are much more aggressive so ADS is obvious. Fine-tune in-game with:
+-//   cod_adsLock 1; cod_adsTune 1; cod_adsTuneLoad; set cod_adsTuneUp 8; ...; cod_adsTuneDump
+-// Not const: the tuning tool overwrites entries live while cod_adsTune is set.
++// codmod: Phase 3.5 per-weapon iron-sight ADS. Primary pose is computed every frame from
++// tag_flash (see CG_CodApplyIronSightAds) so the rear sight sits on the screen center like
++// CoD -- no new models required. Table fields:
++//   sightHeight / barrelBack / sightDist  -- geometry of the sight line (0 sightDist => cvar)
++//   fwd/right/up/pitch/yaw/roll           -- fine bias after auto-align (tune these live)
++// Not const: cod_adsTune overwrites the fine-bias fields while tuning.
+ codAdsView_t cg_codAdsView[WP_NUM_WEAPONS] = {
+-	// pistols: pull in, raise high, center from hip. Slight nose-down so the slide sits
+-	// nearer the screen midline.
+-	[WP_LUGER]          = { 8.0f, -7.5f, 7.0f, -2.0f, 0.0f, 0.0f },
+-	[WP_SILENCER]       = { 8.5f, -7.5f, 7.0f, -2.0f, 0.0f, 0.0f },
+-	[WP_COLT]           = { 8.0f, -7.5f, 7.0f, -2.0f, 0.0f, 0.0f },
+-
+-	// SMGs: same idea, a bit less raise (bulkier receivers)
+-	[WP_MP40]           = { 7.0f, -8.0f, 5.5f, -1.5f, 0.0f, 0.0f },
+-	[WP_THOMPSON]       = { 7.0f, -8.0f, 5.5f, -1.5f, 0.0f, 0.0f },
+-	[WP_STEN]           = { 6.5f, -7.5f, 5.5f, -1.5f, 0.0f, 0.0f },
+-
+-	// rifles (iron sights): longer guns need more forward pull
+-	[WP_MAUSER]         = { 9.0f, -5.0f, 5.0f, -1.0f, 0.0f, 0.0f },
+-	[WP_GARAND]         = { 9.0f, -5.0f, 5.0f, -1.0f, 0.0f, 0.0f },
+-	[WP_FG42]           = { 8.0f, -5.5f, 5.0f, -1.0f, 0.0f, 0.0f },
+-
+-	// scoped variants draw no viewmodel offset of their own -- the real scope (phase 3.8)
+-	// takes over the whole screen, so these stay zeroed.
++	//                          sightH  barrelB  sightD   fwd   right  up   pitch yaw roll
++	[WP_LUGER]          = { 1.5f,  10.0f,  9.0f,   0, 0, 0,  0, 0, 0 },
++	[WP_SILENCER]       = { 1.5f,  12.0f,  9.0f,   0, 0, 0,  0, 0, 0 },
++	[WP_COLT]           = { 1.5f,  10.0f,  9.0f,   0, 0, 0,  0, 0, 0 },
++
++	[WP_MP40]           = { 1.8f,  14.0f, 11.0f,   0, 0, 0,  0, 0, 0 },
++	[WP_THOMPSON]       = { 1.8f,  14.0f, 11.0f,   0, 0, 0,  0, 0, 0 },
++	[WP_STEN]           = { 1.6f,  13.0f, 11.0f,   0, 0, 0,  0, 0, 0 },
++
++	[WP_MAUSER]         = { 2.0f,  22.0f, 14.0f,   0, 0, 0,  0, 0, 0 },
++	[WP_GARAND]         = { 2.0f,  22.0f, 14.0f,   0, 0, 0,  0, 0, 0 },
++	[WP_FG42]           = { 1.8f,  18.0f, 13.0f,   0, 0, 0,  0, 0, 0 },
+ };
+ 
+ /*
+@@ -50,6 +43,112 @@ float CG_CodAdsFrac( void ) {
+ 	return cg.predictedPlayerState.stats[STAT_COD_ADS] / 1000.0f;
+ }
+ 
++/*
++================
++CG_CodApplyIronSightAds
++
++codmod: CoD-style iron-sight ADS without new models (phase 3.5).
++
++Builds the current first-person hand+gun transform, reads tag_flash (muzzle), estimates the
++rear-sight point (back along the bore by barrelBack, up by sightHeight), then translates
++(and lightly rotates) the hand so that rear sight lands on the view axis at sightDist --
++exactly the "eye behind the sights, front post in the notch" picture. Fine bias from
++cg_codAdsView and cod_adsGunFovComp is applied on top. Falls back to bias-only if tags
++are missing.
++================
++*/
++void CG_CodApplyIronSightAds( vec3_t handOrigin, vec3_t angles, int weaponNum, float e ) {
++	weaponInfo_t *weapon;
++	codAdsView_t *ads;
++	refEntity_t hand;
++	refEntity_t gun;
++	orientation_t flash;
++	vec3_t flashAxis[3];
++	vec3_t flashOrigin;
++	vec3_t sightPos;
++	vec3_t desired;
++	vec3_t delta;
++	vec3_t flashFwd;
++	vec3_t viewFwd;
++	vec3_t flashAngles, viewAngles;
++	float sightHeight, barrelBack, sightDist;
++	float fovScale, fovComp;
++	int i;
++
++	if ( e <= 0.0f || weaponNum <= WP_NONE || weaponNum >= WP_NUM_WEAPONS ) {
++		return;
++	}
++
++	weapon = &cg_weapons[weaponNum];
++	ads = &cg_codAdsView[weaponNum];
++
++	sightHeight = ( ads->sightHeight != 0.0f ) ? ads->sightHeight : bg_cod.adsSightHeight;
++	barrelBack  = ( ads->barrelBack  != 0.0f ) ? ads->barrelBack  : bg_cod.adsBarrelBack;
++	sightDist   = ( ads->sightDist   != 0.0f ) ? ads->sightDist   : bg_cod.adsSightDist;
++
++	fovScale = ( bg_cod.adsTune && weaponNum == cg.weaponSelect )
++			   ? bg_cod.adsTuneFov : BG_CodAdsFovScale( weaponNum );
++	fovComp = bg_cod.adsGunFovComp * ( 1.0f - fovScale );
++
++	// Build a throwaway hand entity at the current hip-fire pose so we can resolve tags.
++	memset( &hand, 0, sizeof( hand ) );
++	VectorCopy( handOrigin, hand.origin );
++	AnglesToAxis( angles, hand.axis );
++	hand.hModel = weapon->handsModel;
++	hand.frame = hand.oldframe = 0;
++	hand.backlerp = 0;
++
++	memset( &gun, 0, sizeof( gun ) );
++	gun.hModel = weapon->weaponModel[W_FP_MODEL];
++	gun.frame = gun.oldframe = 0;
++	gun.backlerp = 0;
++
++	if ( !hand.hModel || !gun.hModel ) {
++		// no models yet -- fall through to bias-only
++	} else {
++		CG_PositionEntityOnTag( &gun, &hand, "tag_weapon", 0, NULL );
++
++		if ( trap_R_LerpTag( &flash, &gun, "tag_flash", 0 ) >= 0 ) {
++			// flash origin in world space
++			VectorCopy( gun.origin, flashOrigin );
++			for ( i = 0; i < 3; i++ ) {
++				VectorMA( flashOrigin, flash.origin[i], gun.axis[i], flashOrigin );
++			}
++			// flash axes in world space (tag local * gun)
++			MatrixMultiply( flash.axis, gun.axis, flashAxis );
++
++			// Rear sight: back along the bore from the muzzle, then up off the bore axis.
++			// MD3 tag X (axis[0]) is forward for RTCW weapon flashes; axis[2] is up.
++			VectorCopy( flashAxis[0], flashFwd );
++			VectorMA( flashOrigin, -barrelBack, flashAxis[0], sightPos );
++			VectorMA( sightPos, sightHeight, flashAxis[2], sightPos );
++
++			// Desired: rear sight on the optical axis, a comfortable distance ahead.
++			VectorMA( cg.refdef.vieworg, sightDist + fovComp, cg.refdef.viewaxis[0], desired );
++
++			VectorSubtract( desired, sightPos, delta );
++			VectorMA( handOrigin, e, delta, handOrigin );
++
++			// Lightly rotate so the bore matches the view forward (hip guns often point a
++			// few degrees off). Re-derive flash forward after the translation would be more
++			// accurate, but one pass is enough -- the gun already inherits viewangles.
++			VectorCopy( cg.refdef.viewaxis[0], viewFwd );
++			vectoangles( flashFwd, flashAngles );
++			vectoangles( viewFwd, viewAngles );
++			angles[PITCH] += AngleDelta( viewAngles[PITCH], flashAngles[PITCH] ) * e;
++			angles[YAW]   += AngleDelta( viewAngles[YAW],   flashAngles[YAW] )   * e;
++		}
++	}
++
++	// Fine bias (table / live tune) -- small corrections after auto-align.
++	VectorMA( handOrigin, ads->fwd   * e, cg.refdef.viewaxis[0], handOrigin );
++	VectorMA( handOrigin, ads->right * e, cg.refdef.viewaxis[1], handOrigin );
++	VectorMA( handOrigin, ads->up    * e, cg.refdef.viewaxis[2], handOrigin );
++	angles[PITCH] += ads->pitch * e;
++	angles[YAW]   += ads->yaw   * e;
++	angles[ROLL]  += ads->roll  * e;
++}
++
+ /*
+ ================
+ CG_CodUpdateAdsTune
+@@ -155,11 +254,17 @@ void CG_CodAdsTuneDump_f( void ) {
+ 	name = CG_CodWeaponName( weapon );
+ 
+ 	if ( name ) {
+-		CG_Printf( "[%s] = { %gf, %gf, %gf, %gf, %gf, %gf },\n",
+-				   name, ads->fwd, ads->right, ads->up, ads->pitch, ads->yaw, ads->roll );
++		CG_Printf( "[%s] = { %gf, %gf, %gf,  %gf, %gf, %gf,  %gf, %gf, %gf },\n",
++				   name,
++				   ads->sightHeight, ads->barrelBack, ads->sightDist,
++				   ads->fwd, ads->right, ads->up,
++				   ads->pitch, ads->yaw, ads->roll );
+ 	} else {
+-		CG_Printf( "[%d] = { %gf, %gf, %gf, %gf, %gf, %gf },\n",
+-				   weapon, ads->fwd, ads->right, ads->up, ads->pitch, ads->yaw, ads->roll );
++		CG_Printf( "[%d] = { %gf, %gf, %gf,  %gf, %gf, %gf,  %gf, %gf, %gf },\n",
++				   weapon,
++				   ads->sightHeight, ads->barrelBack, ads->sightDist,
++				   ads->fwd, ads->right, ads->up,
++				   ads->pitch, ads->yaw, ads->roll );
+ 	}
+ }
+ 
+diff --git a/SP/code/cgame/cg_local.h b/SP/code/cgame/cg_local.h
+index 9594a424..c4e1133f 100644
+--- a/SP/code/cgame/cg_local.h
++++ b/SP/code/cgame/cg_local.h
+@@ -43,16 +43,24 @@ If you have questions concerning this license or the applicable additional terms
+ #include "../game/bg_cod.h"    // codmod: phase 2 tuning (bg_cod.c is built into cgame too)
+ #include "cg_public.h"
+ 
+-// codmod: per-weapon viewmodel "sight" offset while ADS (phase 3.5). Cgame-only (unlike
+-// bg_cod.h's codWeaponTuning_t, this never needs to match qagame) and NOT const -- the
+-// alignment tooling (cod_adsTune, cg_cod.c) overwrites entries live while tuning.
++// codmod: per-weapon iron-sight ADS alignment (phase 3.5). Cgame-only and NOT const --
++// the alignment tooling (cod_adsTune, cg_cod.c) overwrites the fine-bias fields live.
++// Primary pose comes from tag_flash auto-align (CoD-style: rear sight on screen center);
++// the six bias fields are small manual corrections on top.
+ typedef struct {
+-	float fwd, right, up;      // u, along cg.refdef.viewaxis[0..2]
+-	float pitch, yaw, roll;    // degrees, added to the viewmodel angles
++	float sightHeight;         // u above the bore (tag_flash up) to the rear sight
++	float barrelBack;          // u back from tag_flash along the bore to the rear sight
++	float sightDist;           // u ahead of the camera for the rear sight when ADS; 0 => cvar
++	float fwd, right, up;      // fine bias along cg.refdef.viewaxis[0..2]
++	float pitch, yaw, roll;    // fine bias degrees
+ } codAdsView_t;
+ 
+ extern codAdsView_t cg_codAdsView[WP_NUM_WEAPONS];
+ 
++// codmod: apply CoD-style iron-sight ADS to the first-person hand origin/angles.
++// e is the smoothstepped ADS fraction 0..1. Uses tag_flash on the viewmodel.
++void CG_CodApplyIronSightAds( vec3_t handOrigin, vec3_t angles, int weaponNum, float e );
++
+ 
+ #define POWERUP_BLINKS      5
+ 
+diff --git a/SP/code/cgame/cg_weapons.c b/SP/code/cgame/cg_weapons.c
+index ff695ff9..e8983db9 100644
+--- a/SP/code/cgame/cg_weapons.c
++++ b/SP/code/cgame/cg_weapons.c
+@@ -3068,28 +3068,14 @@ void CG_AddViewWeapon( playerState_t *ps ) {
+ 		VectorMA( hand.origin, ( gunoff[1] + fovOffset[1] ), cg.refdef.viewaxis[1], hand.origin );
+ 		VectorMA( hand.origin, ( gunoff[2] + fovOffset[2] ), cg.refdef.viewaxis[2], hand.origin );
+ 
+-		// codmod: ADS viewmodel offset (phase 3.5). e ramps 0..1 with STAT_COD_ADS,
+-		// smoothstepped so the raise/lower doesn't feel linear; cod_adsLock pins e to 1 for
+-		// the alignment tooling (CG_CodAdsFrac, cg_cod.c). Added after the fov offset so
+-		// FOV-induced gun drop/push and ADS centering stack cleanly. cod_adsGunFovComp
+-		// pushes the gun forward in proportion to the FOV zoom, since the viewmodel is
+-		// drawn in the main scene (RF_DEPTHHACK) and gets magnified by it too.
++		// codmod: CoD-style iron-sight ADS (phase 3.5). Aligns tag_flash-derived rear sight
++		// to the screen center -- see CG_CodApplyIronSightAds in cg_cod.c. Not a simple
++		// "nudge the gun"; this is what makes ADS look like aiming through the sights.
+ 		if ( bg_cod.enable && bg_cod.adsEnable && ps->weapon > WP_NONE && ps->weapon < WP_NUM_WEAPONS ) {
+ 			float e = BG_CodSmoothstep( CG_CodAdsFrac() );
+ 
+ 			if ( e > 0.0f ) {
+-				codAdsView_t *ads = &cg_codAdsView[ps->weapon];
+-				float fovScale = ( bg_cod.adsTune && ps->weapon == cg.weaponSelect )
+-								  ? bg_cod.adsTuneFov : BG_CodAdsFovScale( ps->weapon );
+-				float fovComp = bg_cod.adsGunFovComp * ( 1.0f - fovScale ) * e;
+-
+-				VectorMA( hand.origin, ( ads->fwd + fovComp ) * e, cg.refdef.viewaxis[0], hand.origin );
+-				VectorMA( hand.origin, ads->right * e, cg.refdef.viewaxis[1], hand.origin );
+-				VectorMA( hand.origin, ads->up * e, cg.refdef.viewaxis[2], hand.origin );
+-
+-				angles[PITCH] += ads->pitch * e;
+-				angles[YAW]   += ads->yaw * e;
+-				angles[ROLL]  += ads->roll * e;
++				CG_CodApplyIronSightAds( hand.origin, angles, ps->weapon, e );
+ 			}
+ 		}
+ 
+diff --git a/SP/code/game/bg_cod.c b/SP/code/game/bg_cod.c
+index 6e685407..4c97a52b 100644
+--- a/SP/code/game/bg_cod.c
++++ b/SP/code/game/bg_cod.c
+@@ -64,8 +64,12 @@ const codCvarDef_t bg_codCvars[] = {
+ 	{ "cod_adsSensScale",       "1",    0,            CODOFS( adsSensScale ),       0 },
+ 	{ "cod_adsBobScale",        "0.85", 0,            CODOFS( adsBobScale ),        0 },
+ 	// codmod: FOV zoom magnifies the RF_DEPTHHACK viewmodel; push it forward while ADS so
+-	// it doesn't fill the screen from the hip. 6 u at fovScale 0.8 → +1.2 u of fwd.
+-	{ "cod_adsGunFovComp",      "6",    0,            CODOFS( adsGunFovComp ),      0 },
++	// it doesn't fill the screen from the hip. Used as a fine bias on top of tag_flash align.
++	{ "cod_adsGunFovComp",      "2",    0,            CODOFS( adsGunFovComp ),      0 },
++	// codmod: CoD-style iron-sight auto-align defaults (cgame). Per-weapon table can override.
++	{ "cod_adsSightHeight",     "1.4",  0,            CODOFS( adsSightHeight ),     0 },
++	{ "cod_adsBarrelBack",      "11",   0,            CODOFS( adsBarrelBack ),      0 },
++	{ "cod_adsSightDist",       "10",   0,            CODOFS( adsSightDist ),       0 },
+ 	{ "cod_scopeSwitchTime",    "0",    0,            CODOFS( scopeSwitchTime ),    0 },
+ 
+ 	// codmod: Phase 3.5 alignment tooling -- see docs/phase-3-ads.md "Alignment tooling".
+diff --git a/SP/code/game/bg_cod.h b/SP/code/game/bg_cod.h
+index 2418fffa..d086cdbc 100644
+--- a/SP/code/game/bg_cod.h
++++ b/SP/code/game/bg_cod.h
+@@ -54,12 +54,15 @@ typedef struct {
+ 	float adsSensScale;     // extra multiplier on top of the FOV-derived sensitivity scale
+ 	float adsBobScale;      // viewmodel bob/land-dip/idle-drift are scaled by 1 - e*adsBobScale
+ 	float adsGunFovComp;    // pushes the viewmodel forward in proportion to the FOV zoom (cgame)
++	float adsSightHeight;   // default u above tag_flash bore to the rear sight (cgame auto-align)
++	float adsBarrelBack;    // default u from tag_flash back to the rear sight along the bore
++	float adsSightDist;     // default u ahead of the camera for the rear sight when fully ADS
+ 	float scopeSwitchTime;  // ms, rifle<->scope weapon-change time when >0 (phase 3.8); 0 = vanilla 250ms
+ 
+ 	int adsLock;      // debug: cgame treats ADS as fully in, visual only (alignment tooling)
+-	int adsTune;      // debug: live-overwrite cg_codAdsView[current weapon] from the Tune* cvars below
+-	float adsTuneFwd, adsTuneRight, adsTuneUp;      // u, cgame-only
+-	float adsTunePitch, adsTuneYaw, adsTuneRoll;    // degrees, cgame-only
++	int adsTune;      // debug: live-overwrite cg_codAdsView fine-bias from the Tune* cvars below
++	float adsTuneFwd, adsTuneRight, adsTuneUp;      // u, cgame-only fine bias
++	float adsTunePitch, adsTuneYaw, adsTuneRoll;    // degrees, cgame-only fine bias
+ 	float adsTuneFov;                               // fovScale preview while tuning, cgame-only
+ 
+ 	int debugHud;    // 0 off, 1 HUD, 2 HUD + nearest AI speed
+-- 
+2.56.0
+

@@ -1,0 +1,78 @@
+#codmod-delta v2 base=ui/ingame_leave.menu sha256=93cfaf3b1818159e61be21b5bfbafd31388fd738fd0c992720542be37eb661fc
+#src ui/ingame_player.menu sha256=df21847e0c423290071f14a69192438bc6bc4e9cd9aeb4e3c9787bad7645a0ad
+#src ui/system.menu sha256=fe28a0c578e2569bc374f20ba969f3711deef4bf2b219904d1b743cf78698acb
+@@ 10 10
++	popup
+@@ 15 16
++	onOpen { show grpMenu ; hide leaveConfirm ; hide quitConfirm ; hide restartConfirm ; setfocus leave_main }
+@@ 50 51
++	name leave_title
+@@ 62 62
+=ui/ingame_leave.menu 31 32
+@@ 65 67
++	 name leave_main
++	 text "MAIN MENU"
++	 type 1
+@@ 68 73
++	 rect 40 50 180 22
++	 textalign 0
++	 textalignx 0
++	 textaligny 18
++	 textscale .30
+@@ 77 78
++       action { hide grpMenu ; show leaveConfirm ; setfocus leave_yes }
+@@ 80 82
+@@ 83 84
++      	name leave_quit
+@@ 86 92
++      	text "QUIT"
++		rect 40 80 180 22
+=ui/system.menu 561 563
+=ui/ingame_player.menu 154 155
++		textscale .30
+@@ 96 97
++      	action { hide grpMenu ; show quitConfirm ; setfocus quit_yes }
+@@ 106 107
++	group leaveConfirm
+@@ 121 122
++	group leaveConfirm
+@@ 136 137
++	name leave_yes
++	group leaveConfirm
+@@ 138 139
+@@ 156 157
++	name leave_no
++	group leaveConfirm
+@@ 158 159
+@@ 169 170
++	action { hide leaveConfirm ; show grpMenu ; setfocus leave_main }
+@@ 178 179
++	group restartConfirm
+@@ 193 194
++	group restartConfirm
+@@ 209 210
++	name restart_yes
++	group restartConfirm
+@@ 211 212
+@@ 229 230
++	name restart_no
++	group restartConfirm
+@@ 231 232
+@@ 242 243
++	action { hide restartConfirm ; show grpMenu ; setfocus leave_main }
+@@ 250 251
++	group quitConfirm
+@@ 265 266
++	group quitConfirm
+@@ 280 281
++	name quit_yes
++	group quitConfirm
+@@ 282 283
+@@ 299 300
++	name quit_no
++	group quitConfirm
+@@ 301 302
+@@ 310 311
++	action { hide quitConfirm ; show grpMenu ; setfocus leave_main }
+@@ 320 320
++

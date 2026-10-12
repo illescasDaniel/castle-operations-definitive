@@ -1,0 +1,168 @@
+#codmod-delta v2 base=ui/ingame.menu sha256=02281aafbe5025fbfa438f36fc128e9a0e83d2690c2d6fe7dc6ce3b5e1a75cdc
+#src ui/cdkey.menu sha256=96745cb143d3a0d91da1fe5f1b7ac2db26addce0ec675e919ea7ed0050b33bda
+#src ui/clipboard.menu sha256=1234b5cb59f380ca39fb2c56cbcd82ad2d67d0f1c691aab2a3e49e0d428ba6a0
+#src ui/controls.menu sha256=988fa4ecc3b5152f3291a3c83b427fd971bd8bb5b8b1ab42cf81e8d6b29f724d
+#src ui/credit.menu sha256=81fe8de5ee0a324483378209b9a9f3f64697f1cce563d1dad60bfdc5eee77b1e
+#src ui/ingame_controls.menu sha256=012cb5b0b443e10d28bfc8d0c0d564a1b45f0f923660fe05a936c7040fbc6150
+#src ui/multiplayer_pop.menu sha256=6362c2d44016cc48669ca7d8e7f9e9603a9678c426d5f2580ea2e2eb778e15c4
+#src ui/notebook.menu sha256=7bc854e3ffa6fb56f4036ec3158fc6c0192156d47fd9dc37bbd30240e410c55f
+@@ 1 1
++
+@@ 2 21
++\\ INGAME SETTINGS HUB (codmod) â CONTROLS / GRAPHICS / SOUND / GAME \\
+@@ 23 24
++	name "ingame_settings"
+@@ 25 27
++	fullscreen 1
+@@ 30 30
++	style 0
++	border 0
++
++	onOpen { setfocus controls }
++	onEsc { close ingame_settings ; open ingame }
+@@ 32 40
++	name backdrop
+=ui/ingame.menu 27 28
+=ui/controls.menu 106 107
++	backcolor 0 0 0 .65
+@@ 42 43
+@@ 45 105
+=ui/ingame.menu 31 32
++	name BLACKGRAD
+=ui/notebook.menu 27 28
++	rect 0 -4 640 132
++	background "BLACKGRAD"
+=ui/ingame_controls.menu 31 34
+@@ 107 120
++	name BLACKGRAD2
+=ui/notebook.menu 27 28
++	rect 0 420 640 -128
++	background "BLACKGRAD"
+@@ 121 125
+=ui/clipboard.menu 126 128
+@@ 127 130
++	name FLAME
+=ui/notebook.menu 27 28
++	rect 210 20 220 67
++	background "fLAME"
+=ui/ingame_controls.menu 31 35
+=ui/ingame.menu 31 32
++	name WOLFFLAMELOGO
+=ui/notebook.menu 27 28
++	rect 200 -5 240 120
++	background "WOLFFLAMELOGO"
+=ui/ingame_controls.menu 31 35
+=ui/ingame.menu 31 32
++	name gold_line
+=ui/notebook.menu 27 28
++	rect 0 76 226 10
++	background "gold_line"
+=ui/ingame_controls.menu 31 35
+=ui/ingame.menu 31 32
++	name gold_line
+=ui/notebook.menu 27 28
++	rect 414 76 230 10
++	background "gold_line"
+=ui/ingame_controls.menu 31 35
+=ui/ingame.menu 31 32
++	name title
++	text "SETTINGS"
+=ui/controls.menu 1037 1038
+@@ 131 133
++	rect 40 110 200 20
+@@ 134 140
+=ui/credit.menu 1504 1505
+=ui/multiplayer_pop.menu 73 74
+=ui/credit.menu 782 783
++	forecolor .7 .7 .7 .9
+@@ 141 147
+=ui/clipboard.menu 126 128
+@@ 153 155
+=ui/controls.menu 106 107
++	rect 40 150 180 22
+@@ 156 164
+=ui/credit.menu 1504 1505
+=ui/credit.menu 1548 1549
++	textaligny 18
++	textscale .30
+=ui/cdkey.menu 53 54
+=ui/ingame.menu 201 202
+=ui/ingame.menu 40 41
++	action { close ingame_settings ; open ingame_controls }
+@@ 165 167
++	mouseExit { setitemcolor controls backcolor .4 .4 .4 .6 }
++}
+@@ 170 171
++	text "GRAPHICS"
+@@ 173 175
+=ui/controls.menu 106 107
++	rect 40 180 180 22
+@@ 176 184
+=ui/credit.menu 1504 1505
+=ui/credit.menu 1548 1549
++	textaligny 18
++	textscale .30
+=ui/cdkey.menu 53 54
+=ui/ingame.menu 201 202
+=ui/ingame.menu 40 41
++	action { close ingame_settings ; open ingame_options }
+@@ 185 187
++	mouseExit { setitemcolor options backcolor .4 .4 .4 .6 }
++}
+@@ 189 191
++	name sound
++	text "SOUND"
+@@ 193 195
+=ui/controls.menu 106 107
++	rect 40 210 180 22
+@@ 196 201
+=ui/credit.menu 1504 1505
+=ui/credit.menu 1548 1549
++	textaligny 18
++	textscale .30
+=ui/cdkey.menu 53 54
+@@ 202 207
+=ui/ingame.menu 40 41
++	action { close ingame_settings ; open ingame_sound }
++	mouseEnter { setitemcolor sound backcolor .15 .1 .1 .7 }
++	mouseExit { setitemcolor sound backcolor .4 .4 .4 .6 }
++}
+@@ 209 211
++	name game
++	text "GAME"
+@@ 213 213
+=ui/controls.menu 106 107
++	rect 40 240 180 22
+=ui/ingame.menu 113 114
+=ui/credit.menu 1504 1505
+=ui/credit.menu 1548 1549
++	textaligny 18
++	textscale .30
+=ui/cdkey.menu 53 54
+=ui/ingame.menu 201 202
+=ui/ingame.menu 40 41
++	action { close ingame_settings ; open ingame_game }
++	mouseEnter { setitemcolor game backcolor .15 .1 .1 .7 }
++	mouseExit { setitemcolor game backcolor .4 .4 .4 .6 }
++}
+@@ 214 215
+=ui/ingame.menu 31 32
++	name back
++	text "BACK"
+=ui/ingame.menu 109 111
+=ui/controls.menu 106 107
++	rect 40 290 180 22
+@@ 216 246
+=ui/credit.menu 1504 1505
+=ui/credit.menu 1548 1549
++	textaligny 18
++	textscale .30
+=ui/cdkey.menu 53 54
+=ui/ingame.menu 201 202
+=ui/ingame.menu 40 41
++	action { close ingame_settings ; open ingame }
++	mouseEnter { setitemcolor back backcolor .15 .1 .1 .7 }
++	mouseExit { setitemcolor back backcolor .4 .4 .4 .6 }
+@@ 249 249
++}
++

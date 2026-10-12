@@ -1,0 +1,259 @@
+#codmod-delta v2 base=ui/setup.menu sha256=4f53b1b18c372134948cd75574a4e9883752e98d7a1210d2b42d271ccb2b5c9c
+#src ui/controls.menu sha256=988fa4ecc3b5152f3291a3c83b427fd971bd8bb5b8b1ab42cf81e8d6b29f724d
+#src ui/multiplayer_pop.menu sha256=6362c2d44016cc48669ca7d8e7f9e9603a9678c426d5f2580ea2e2eb778e15c4
+@@ 19 20
++		hide grpmessage ;
++		setfocus controls }
+@@ 150 150
++////////// OPTIONS HUB (codmod CoD-style vertical) //////////////////////////
++
+@@ 156 157
++	rect 40 140 180 22
+@@ 159 162
++	textscale .30
+=ui/setup.menu 399 400
++	textaligny 18
+@@ 167 168
++	close options_menu ;
++	close sound_menu ;
++	close game_menu ;
+@@ 171 171
++	close setup_menu ;
+@@ 175 181
+@@ 183 185
+=ui/setup.menu 213 214
++      text "GRAPHICS"
+@@ 188 189
++	rect 40 170 180 22
+@@ 191 194
++	textscale .30
+=ui/setup.menu 399 400
++	textaligny 18
+@@ 199 200
++	close options_menu ;
++	close sound_menu ;
++	close game_menu ;
+@@ 202 206
+=ui/setup.menu 232 233
++	close setup_menu ;
+=ui/setup.menu 233 236
+@@ 208 212
+@@ 213 215
++      name soundoptions
++      text "SOUND"
+@@ 218 219
++	rect 40 200 180 22
+@@ 221 224
++	textscale .30
+=ui/setup.menu 399 400
++	textaligny 18
+@@ 229 230
++	close options_menu ;
++	close sound_menu ;
++	close game_menu ;
+@@ 233 236
++	close setup_menu ;
++	open sound_menu }	
++	mouseenter { show message_soundoptions }
++	mouseexit { hide message_soundoptions }
+@@ 238 240
+=ui/setup.menu 65 66
++      name gameplayoptions
++      text "GAME"
+=ui/setup.menu 153 156
++	rect 40 230 180 22
+=ui/setup.menu 157 159
++	textscale .30
+=ui/setup.menu 399 400
++	textaligny 18
+=ui/setup.menu 162 167
++	close options_menu ;
++	close sound_menu ;
++	close game_menu ;
+=ui/setup.menu 230 233
++	close setup_menu ;
++	open game_menu }	
++	mouseenter { show message_gameplayoptions }
++	mouseexit { hide message_gameplayoptions }
++	}
+@@ 247 248
++	rect 40 260 180 22
+@@ 250 253
++	textscale .30
+=ui/setup.menu 399 400
++	textaligny 18
+@@ 258 259
++	close options_menu ;
++	close sound_menu ;
++	close game_menu ;
+@@ 262 262
++	close setup_menu ;
+@@ 266 269
+@@ 272 273
++      text "RESET SETTINGS"
+@@ 276 277
++	rect 40 290 180 22
+@@ 279 282
++	textscale .30
+=ui/setup.menu 399 400
++	textaligny 18
+@@ 289 290
++	close options_menu ;
++	close sound_menu ;
++	close game_menu ;
+@@ 354 355
++	close options_menu ;
++	close sound_menu ;
++	close game_menu ;
+@@ 382 383
++	close options_menu ;
++	close sound_menu ;
++	close game_menu ;
+@@ 395 397
++	style 0
++	// Bottom hint strip - right of BACK, full remaining width
++	rect 90 452 530 22
+@@ 398 399
+=ui/setup.menu 157 158
+@@ 400 402
+=ui/multiplayer_pop.menu 73 74
++	textscale .20
+@@ 411 414
++	style 0
++	// Bottom hint strip - right of BACK, full remaining width
++	rect 90 452 530 22
+@@ 415 415
+=ui/setup.menu 157 158
+@@ 416 418
+=ui/multiplayer_pop.menu 73 74
++	textscale .20
+@@ 427 430
++	style 0
++	// Bottom hint strip - right of BACK, full remaining width
++	rect 90 452 530 22
+@@ 431 431
+=ui/setup.menu 157 158
+@@ 432 434
+=ui/multiplayer_pop.menu 73 74
++	textscale .20
+@@ 443 446
++	style 0
++	// Bottom hint strip - right of BACK, full remaining width
++	rect 90 452 530 22
+@@ 447 447
+=ui/setup.menu 157 158
+@@ 448 450
+=ui/multiplayer_pop.menu 73 74
++	textscale .20
+@@ 459 462
++	style 0
++	// Bottom hint strip - right of BACK, full remaining width
++	rect 90 452 530 22
+@@ 463 463
+=ui/setup.menu 157 158
+@@ 464 466
+=ui/multiplayer_pop.menu 73 74
++	textscale .20
+@@ 475 478
++	style 0
++	// Bottom hint strip - right of BACK, full remaining width
++	rect 90 452 530 22
+@@ 479 479
+=ui/setup.menu 157 158
+@@ 480 482
+=ui/multiplayer_pop.menu 73 74
++	textscale .20
+@@ 491 494
++	style 0
++	// Bottom hint strip - right of BACK, full remaining width
++	rect 90 452 530 22
+@@ 495 495
+=ui/setup.menu 157 158
+@@ 496 498
+=ui/multiplayer_pop.menu 73 74
++	textscale .20
+@@ 506 509
++	style 0
++	// Bottom hint strip - right of BACK, full remaining width
++	rect 90 452 530 22
+@@ 510 510
+=ui/setup.menu 157 158
+@@ 511 513
+=ui/multiplayer_pop.menu 73 74
++	textscale .20
+@@ 514 529
+@@ 536 539
++	style 0
++	// Bottom hint strip - right of BACK, full remaining width
++	rect 90 452 530 22
+@@ 540 540
+=ui/setup.menu 157 158
+@@ 541 544
+=ui/multiplayer_pop.menu 73 74
++	textscale .20
++	text "Display, quality, and visual effects"
+@@ 550 550
++	name message_soundoptions
+=ui/setup.menu 394 395
++	style 0
++	rect 90 452 530 22
+=ui/setup.menu 397 398
+=ui/setup.menu 157 158
+=ui/setup.menu 399 400
+=ui/multiplayer_pop.menu 73 74
++	textscale .20
++	text "Effects and music volume"
+=ui/controls.menu 1044 1046
+=ui/setup.menu 405 409
++	name message_gameplayoptions
+=ui/setup.menu 394 395
++	style 0
++	rect 90 452 530 22
+=ui/setup.menu 397 398
+=ui/setup.menu 157 158
+=ui/setup.menu 399 400
+=ui/multiplayer_pop.menu 73 74
++	textscale .20
++	text "FOV, HUD, and cursor hints"
+=ui/controls.menu 1044 1046
+=ui/setup.menu 405 409
++	name message_modsoptions
+=ui/setup.menu 394 395
++	style 0
++	// Bottom hint strip - right of BACK, full remaining width
++	rect 90 452 530 22
+=ui/setup.menu 397 398
+=ui/setup.menu 157 158
+=ui/setup.menu 399 400
+=ui/multiplayer_pop.menu 73 74
++	textscale .20
++	text "Select to manage installed mods"
+=ui/controls.menu 1044 1046
+=ui/setup.menu 580 585
+@@ 552 555
++	style 0
++	// Bottom hint strip - right of BACK, full remaining width
++	rect 90 452 530 22
+@@ 556 556
+=ui/setup.menu 157 158
+@@ 557 559
+=ui/multiplayer_pop.menu 73 74
++	textscale .20
+@@ 569 572
++	style 0
++	// Bottom hint strip - right of BACK, full remaining width
++	rect 90 452 530 22
+@@ 573 573
+=ui/setup.menu 157 158
+@@ 574 576
+=ui/multiplayer_pop.menu 73 74
++	textscale .20
+@@ 587 590
++	style 0
++	// Bottom hint strip - right of BACK, full remaining width
++	rect 90 452 530 22
+@@ 591 591
+=ui/setup.menu 157 158
+@@ 592 594
+=ui/multiplayer_pop.menu 73 74
++	textscale .20

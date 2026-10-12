@@ -1,0 +1,123 @@
+#codmod-delta v2 base=ui/main.menu sha256=71f8bce2eb58a8ec26a46a11554e9a0f369222d49cd45cbb17810ce5e3ba0ae9
+#src ui/bookp.menu sha256=dc708a0c6d09dddca120d7664d2a905c5cb7269128447fa81956bdc9051dc994
+#src ui/cdkey.menu sha256=96745cb143d3a0d91da1fe5f1b7ac2db26addce0ec675e919ea7ed0050b33bda
+#src ui/ingame_player.menu sha256=df21847e0c423290071f14a69192438bc6bc4e9cd9aeb4e3c9787bad7645a0ad
+@@ 38 38
++		setfocus singleplayer ;
+@@ 171 172
++		name BLACKGRAD2					// bottom bar â hidden for vertical list
+@@ 175 176
+=ui/bookp.menu 111 112
+@@ 212 213
++		name WOLFICON					// bottom icon â hidden for vertical list
+@@ 216 217
+=ui/bookp.menu 111 112
+@@ 221 222
++		name gold_line					// bottom gold_line â hidden for vertical list
+@@ 225 226
+=ui/bookp.menu 111 112
+@@ 230 231
++		name gold_line					// bottom gold_line â hidden for vertical list
+@@ 234 235
+=ui/bookp.menu 111 112
+@@ 258 262
++////////// MAIN LIST (codmod CoD-style vertical) //////////////////////////
+@@ 264 266
++		name singleplayer
++		text "SINGLEPLAYER"
+@@ 267 268
+=ui/cdkey.menu 31 32
+@@ 269 270
++		rect 40 180 180 22
+@@ 271 274
++		textscale .30
+=ui/main.menu 295 296
+=ui/ingame_player.menu 154 155
+@@ 275 275
++		backcolor .4 .4 .4 .35
+@@ 277 281
++		mouseEnter { fadein message_accept ; setitemcolor singleplayer backcolor .15 .1 .1 .7 }
++		mouseExit { setitemcolor singleplayer backcolor .4 .4 .4 .35 }
++		action { play "sound/misc/zap.wav" ;
++		close main ;
++		open singleplayer_menu }
+@@ 283 285
+=ui/main.menu 44 45
++		name playselection
++		text "MULTIPLAYER"
++		type 1
+=ui/cdkey.menu 31 32
+=ui/main.menu 268 269
++		rect 40 210 180 22
+=ui/main.menu 270 271
++		textscale .30
+=ui/main.menu 295 296
+=ui/ingame_player.menu 154 155
+=ui/main.menu 346 348
++		backcolor .4 .4 .4 .35
+=ui/main.menu 51 52
++		mouseEnter { fadein message_accept ; setitemcolor playselection backcolor .15 .1 .1 .7 }
++		mouseExit { setitemcolor playselection backcolor .4 .4 .4 .35 }
+=ui/main.menu 351 353
++		}
+@@ 287 289
+=ui/main.menu 313 314
++		text "SETTINGS"
+@@ 290 291
+=ui/cdkey.menu 31 32
+@@ 292 293
++		rect 40 240 180 22
+@@ 294 295
++		textscale .30
+@@ 296 299
+=ui/ingame_player.menu 154 155
+=ui/main.menu 274 275
++		backcolor .4 .4 .4 .35
+=ui/main.menu 51 52
+@@ 300 304
++		mouseEnter { fadein message_accept ; setitemcolor options backcolor .15 .1 .1 .7 }
++		mouseExit { setitemcolor options backcolor .4 .4 .4 .35 }
++		action {play "sound/misc/zap.wav" ;
++		close main ;
++		open setup_menu
++		}
++		}
+@@ 305 315
+=ui/main.menu 44 45
++		name credits
++		text "CREDITS"
+@@ 316 317
+=ui/cdkey.menu 31 32
+@@ 318 319
++		rect 40 270 180 22
+@@ 320 344
++		textscale .30
+@@ 345 368
+=ui/ingame_player.menu 154 155
+@@ 370 374
++		backcolor .4 .4 .4 .35
+=ui/main.menu 51 52
++		mouseEnter { fadein message_accept ; setitemcolor credits backcolor .15 .1 .1 .7 }
++		mouseExit { setitemcolor credits backcolor .4 .4 .4 .35 }
++		action { close main; open credit }
++		}
+@@ 375 381
+=ui/main.menu 44 45
+@@ 384 385
+=ui/cdkey.menu 31 32
+@@ 386 387
++		rect 40 300 180 22
+@@ 388 389
++		textscale .30
+@@ 390 391
+=ui/ingame_player.menu 154 155
+@@ 393 396
++		backcolor .4 .4 .4 .35
+=ui/main.menu 51 52
++		mouseEnter { fadein message_accept ; setitemcolor quit backcolor .15 .1 .1 .7 }
++		mouseExit { setitemcolor quit backcolor .4 .4 .4 .35 }
+@@ 398 400
++		}
+@@ 430 430
++}
++

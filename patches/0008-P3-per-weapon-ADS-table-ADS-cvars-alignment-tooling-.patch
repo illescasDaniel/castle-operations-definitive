@@ -1,0 +1,264 @@
+From b052a1d37117254548175b2bfcbff5b616d58b9c Mon Sep 17 00:00:00 2001
+From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
+Date: Thu, 8 Oct 2026 17:36:50 +0200
+Subject: [PATCH 08/64] P3: per-weapon ADS table + ADS cvars + alignment
+ tooling cvars (3.2)
+
+Co-authored-by: Cursor <cursoragent@cursor.com>
+---
+ SP/code/game/bg_cod.c | 149 ++++++++++++++++++++++++++++++++++++++++++
+ SP/code/game/bg_cod.h |  62 +++++++++++++++++-
+ 2 files changed, 210 insertions(+), 1 deletion(-)
+
+diff --git a/SP/code/game/bg_cod.c b/SP/code/game/bg_cod.c
+index 0809c545..abdd5fd0 100644
+--- a/SP/code/game/bg_cod.c
++++ b/SP/code/game/bg_cod.c
+@@ -53,6 +53,31 @@ const codCvarDef_t bg_codCvars[] = {
+ 	{ "cod_aiSpeedMode",        "1",    0,            CODOFS( aiSpeedMode ),        1 },
+ 	{ "cod_aiSpeedScale",       "1",    0,            CODOFS( aiSpeedScale ),       0 },
+ 
++	// codmod: Phase 3 ADS cvars (docs/reference-values.md + docs/phase-3-ads.md). Per-weapon
++	// table entries (bg_codWeapons below) override these when non-zero.
++	{ "cod_adsEnable",          "1",    0,            CODOFS( adsEnable ),          1 },
++	{ "cod_adsMoveScale",       "0.55", 0,            CODOFS( adsMoveScale ),       0 },
++	{ "cod_adsFovScale",        "0.8",  0,            CODOFS( adsFovScale ),        0 },
++	{ "cod_adsTimeIn",          "220",  0,            CODOFS( adsTimeIn ),          0 },
++	{ "cod_adsTimeOut",         "180",  0,            CODOFS( adsTimeOut ),         0 },
++	{ "cod_adsSpreadScale",     "0.35", 0,            CODOFS( adsSpreadScale ),     0 },
++	{ "cod_adsSensScale",       "1",    0,            CODOFS( adsSensScale ),       0 },
++	{ "cod_adsBobScale",        "0.85", 0,            CODOFS( adsBobScale ),        0 },
++	{ "cod_adsGunFovComp",      "0",    0,            CODOFS( adsGunFovComp ),      0 },
++	{ "cod_scopeSwitchTime",    "0",    0,            CODOFS( scopeSwitchTime ),    0 },
++
++	// codmod: Phase 3.5 alignment tooling -- see docs/phase-3-ads.md "Alignment tooling".
++	// Dev-only, so these stay un-archived like the rest of the tunables.
++	{ "cod_adsLock",            "0",    0,            CODOFS( adsLock ),            1 },
++	{ "cod_adsTune",            "0",    0,            CODOFS( adsTune ),            1 },
++	{ "cod_adsTuneFwd",         "0",    0,            CODOFS( adsTuneFwd ),         0 },
++	{ "cod_adsTuneRight",       "0",    0,            CODOFS( adsTuneRight ),       0 },
++	{ "cod_adsTuneUp",          "0",    0,            CODOFS( adsTuneUp ),          0 },
++	{ "cod_adsTunePitch",       "0",    0,            CODOFS( adsTunePitch ),       0 },
++	{ "cod_adsTuneYaw",         "0",    0,            CODOFS( adsTuneYaw ),         0 },
++	{ "cod_adsTuneRoll",        "0",    0,            CODOFS( adsTuneRoll ),        0 },
++	{ "cod_adsTuneFov",         "0.8",  0,            CODOFS( adsTuneFov ),         0 },
++
+ 	{ "cod_debugHud",           "0",    CVAR_ARCHIVE, CODOFS( debugHud ),           1 },
+ };
+ 
+@@ -112,3 +137,127 @@ void BG_CodUpdateCvars( vmCvar_t *cvars, int maxCvars ) {
+ 		}
+ 	}
+ }
++
++// codmod: Phase 3.2 per-weapon ADS table. A field of 0 means "use the cod_ads* cvar
++// default" (BG_CodAdsMoveScale() etc. below resolve that). Eligibility list from
++// docs/phase-3-ads.md section 3.2:
++//   Yes (iron-sight ADS): pistols, SMGs, Mauser/Garand/FG42 unscoped.
++//   Scope instead of ADS: the three secondary-fire scope weapons (phase 3.8) -- not
++//     canADS, but still get the rifle moveScale while in use (3.8.8).
++//   No: knife, grenades, dynamite, akimbo, flamethrower, tesla, venom, panzerfaust,
++//     monster/MP-only weapons -- left zero-initialized (canADS qfalse, all scales 0).
++const codWeaponTuning_t bg_codWeapons[WP_NUM_WEAPONS] = {
++	// pistols: fast up, light zoom, modest move penalty
++	[WP_LUGER]          = { qtrue,  0.7f, 0.85f, 150, 0, 0 },
++	[WP_SILENCER]       = { qtrue,  0.7f, 0.85f, 150, 0, 0 },
++	[WP_COLT]           = { qtrue,  0.7f, 0.85f, 150, 0, 0 },
++
++	// SMGs
++	[WP_MP40]           = { qtrue,  0.6f, 0.82f, 200, 0, 0 },
++	[WP_THOMPSON]       = { qtrue,  0.6f, 0.82f, 200, 0, 0 },
++	[WP_STEN]           = { qtrue,  0.6f, 0.82f, 200, 0, 0 },
++
++	// rifles (iron sights -- scoped alt weapons use the table entry below instead)
++	[WP_MAUSER]         = { qtrue,  0.5f, 0.75f, 260, 0, 0 },
++	[WP_GARAND]         = { qtrue,  0.5f, 0.75f, 260, 0, 0 },
++	[WP_FG42]           = { qtrue,  0.5f, 0.75f, 260, 0, 0 },
++
++	// scoped variants: no iron-sight ADS (the real scope takes over, phase 3.8), but the
++	// same rifle move penalty applies while they're the active weapon (3.8.8)
++	[WP_SNIPERRIFLE]    = { qfalse, 0.5f, 0,     0,   0, 0 },
++	[WP_SNOOPERSCOPE]   = { qfalse, 0.5f, 0,     0,   0, 0 },
++	[WP_FG42SCOPE]      = { qfalse, 0.5f, 0,     0,   0, 0 },
++};
++
++/*
++================
++BG_CodCanADS
++
++codmod: ADS eligibility from playerState_t alone (phase 3.2). PM_CodUpdateADS adds the
++waterlevel/ladder checks on top of this (those live in pmove_t/pml_t, not playerState_t).
++================
++*/
++qboolean BG_CodCanADS( const playerState_t *ps ) {
++	if ( ps->aiChar ) {
++		return qfalse;
++	}
++	if ( !( bg_cod.enable && bg_cod.adsEnable ) ) {
++		return qfalse;
++	}
++	if ( ps->weapon <= WP_NONE || ps->weapon >= WP_NUM_WEAPONS || !bg_codWeapons[ps->weapon].canADS ) {
++		return qfalse;
++	}
++
++	switch ( ps->weaponstate ) {
++	case WEAPON_RAISING:
++	case WEAPON_RAISING_TORELOAD:
++	case WEAPON_DROPPING:
++	case WEAPON_DROPPING_TORELOAD:
++	case WEAPON_RELOADING:
++		return qfalse;
++	default:
++		break;
++	}
++
++	if ( ps->eFlags & ( EF_ZOOMING | EF_MG42_ACTIVE | EF_MELEE_ACTIVE ) ) {
++		return qfalse;
++	}
++
++	return qtrue;
++}
++
++/*
++================
++BG_CodAdsMoveScale / BG_CodAdsFovScale / BG_CodAdsSpreadScale / BG_CodAdsTimeIn / BG_CodAdsTimeOut
++
++codmod: resolve a weapon's ADS value, falling back to the matching cod_ads* cvar when the
++table entry is 0 (phase 3.2). Weapon indices outside [WP_NONE, WP_NUM_WEAPONS) just get the
++cvar default -- callers only reach these with a currently-equipped weapon, but stay safe.
++================
++*/
++float BG_CodAdsMoveScale( int weapon ) {
++	if ( weapon > WP_NONE && weapon < WP_NUM_WEAPONS && bg_codWeapons[weapon].moveScale != 0 ) {
++		return bg_codWeapons[weapon].moveScale;
++	}
++	return bg_cod.adsMoveScale;
++}
++
++float BG_CodAdsFovScale( int weapon ) {
++	if ( weapon > WP_NONE && weapon < WP_NUM_WEAPONS && bg_codWeapons[weapon].fovScale != 0 ) {
++		return bg_codWeapons[weapon].fovScale;
++	}
++	return bg_cod.adsFovScale;
++}
++
++float BG_CodAdsSpreadScale( int weapon ) {
++	if ( weapon > WP_NONE && weapon < WP_NUM_WEAPONS && bg_codWeapons[weapon].spreadScale != 0 ) {
++		return bg_codWeapons[weapon].spreadScale;
++	}
++	return bg_cod.adsSpreadScale;
++}
++
++int BG_CodAdsTimeIn( int weapon ) {
++	if ( weapon > WP_NONE && weapon < WP_NUM_WEAPONS && bg_codWeapons[weapon].timeIn != 0 ) {
++		return bg_codWeapons[weapon].timeIn;
++	}
++	return (int)bg_cod.adsTimeIn;
++}
++
++int BG_CodAdsTimeOut( int weapon ) {
++	if ( weapon > WP_NONE && weapon < WP_NUM_WEAPONS && bg_codWeapons[weapon].timeOut != 0 ) {
++		return bg_codWeapons[weapon].timeOut;
++	}
++	return (int)bg_cod.adsTimeOut;
++}
++
++/*
++================
++BG_CodIsScopeWeapon
++
++codmod: true for the three secondary-fire scope weapons (phase 3.8). They occupy a
++contiguous enum range (bg_public.h WP_BEGINSECONDARY..WP_LASTSECONDARY).
++================
++*/
++qboolean BG_CodIsScopeWeapon( int weapon ) {
++	return ( weapon >= WP_BEGINSECONDARY && weapon <= WP_LASTSECONDARY ) ? qtrue : qfalse;
++}
+diff --git a/SP/code/game/bg_cod.h b/SP/code/game/bg_cod.h
+index 2e225040..2418fffa 100644
+--- a/SP/code/game/bg_cod.h
++++ b/SP/code/game/bg_cod.h
+@@ -45,9 +45,38 @@ typedef struct {
+ 	int aiSpeedMode;     // 0 = vanilla, 1 = match player speeds, 2 = scale anim-derived speeds
+ 	float aiSpeedScale;  // multiplier used by aiSpeedMode 2
+ 
++	int adsEnable;          // ADS changes (phase 3)
++	float adsMoveScale;     // x runSpeed while fully in ADS; default when a weapon's own moveScale is 0
++	float adsFovScale;      // x cg_fov while fully in ADS; default when a weapon's own fovScale is 0
++	float adsTimeIn;        // ms, default raise time when a weapon's own timeIn is 0
++	float adsTimeOut;       // ms, default lower time when a weapon's own timeOut is 0
++	float adsSpreadScale;   // x aimSpreadScale while fully in ADS; default when a weapon's own spreadScale is 0
++	float adsSensScale;     // extra multiplier on top of the FOV-derived sensitivity scale
++	float adsBobScale;      // viewmodel bob/land-dip/idle-drift are scaled by 1 - e*adsBobScale
++	float adsGunFovComp;    // pushes the viewmodel forward in proportion to the FOV zoom (cgame)
++	float scopeSwitchTime;  // ms, rifle<->scope weapon-change time when >0 (phase 3.8); 0 = vanilla 250ms
++
++	int adsLock;      // debug: cgame treats ADS as fully in, visual only (alignment tooling)
++	int adsTune;      // debug: live-overwrite cg_codAdsView[current weapon] from the Tune* cvars below
++	float adsTuneFwd, adsTuneRight, adsTuneUp;      // u, cgame-only
++	float adsTunePitch, adsTuneYaw, adsTuneRoll;    // degrees, cgame-only
++	float adsTuneFov;                               // fovScale preview while tuning, cgame-only
++
+ 	int debugHud;    // 0 off, 1 HUD, 2 HUD + nearest AI speed
+ } codTuning_t;
+ 
++// codmod: generic smoothstep ease, 0..1 in, 0..1 out (phase 3.5+). GCC doesn't warn about
++// unused "static inline" functions, so qagame linking this header unused is fine.
++static ID_INLINE float BG_CodSmoothstep( float x ) {
++	if ( x <= 0.0f ) {
++		return 0.0f;
++	}
++	if ( x >= 1.0f ) {
++		return 1.0f;
++	}
++	return x * x * ( 3.0f - 2.0f * x );
++}
++
+ // codmod: one instance per module (qagame and cgame each link their own bg_cod.o).
+ extern codTuning_t bg_cod;
+ 
+@@ -65,9 +94,40 @@ extern const int bg_numCodCvars;
+ 
+ // codmod: g_main.c / cg_main.c each keep a static vmCvar_t[BG_COD_MAX_CVARS] and pass it in.
+ // Bump this if bg_codCvars ever grows past it -- BG_CodRegisterCvars() clamps defensively.
+-#define BG_COD_MAX_CVARS 32
++// (phase 3 ADS + alignment tooling cvars pushed this past 32; rounded up for phases 4/4b too.)
++#define BG_COD_MAX_CVARS 64
+ 
+ void BG_CodRegisterCvars( vmCvar_t *cvars, int maxCvars );
+ void BG_CodUpdateCvars( vmCvar_t *cvars, int maxCvars );
+ 
++// codmod: per-weapon ADS gameplay tuning (phase 3.2). A field of 0 means "use the matching
++// cod_ads* cvar default" -- see BG_CodAdsMoveScale() etc. below. Not const-correct to edit
++// at runtime: this is the gameplay table (shared qagame+cgame), separate from cgame's
++// live-tunable cg_codAdsView (cg_cod.c, phase 3.5).
++typedef struct {
++	qboolean canADS;
++	float moveScale;       // 0 => cod_adsMoveScale
++	float fovScale;         // 0 => cod_adsFovScale
++	int timeIn, timeOut;   // ms; 0 => cod_adsTimeIn / cod_adsTimeOut
++	float spreadScale;      // 0 => cod_adsSpreadScale
++} codWeaponTuning_t;
++
++extern const codWeaponTuning_t bg_codWeapons[WP_NUM_WEAPONS];
++
++// codmod: ADS eligibility from playerState_t alone (phase 3.2). Callers that have a
++// pmove_t (PM_CodUpdateADS) additionally gate on waterlevel/ladder, which aren't part of
++// playerState_t -- see docs/phase-3-ads.md section 3.2.
++qboolean BG_CodCanADS( const playerState_t *ps );
++
++// codmod: resolved per-weapon ADS values (table entry if non-zero, else the cvar default).
++float BG_CodAdsMoveScale( int weapon );
++float BG_CodAdsFovScale( int weapon );
++float BG_CodAdsSpreadScale( int weapon );
++int BG_CodAdsTimeIn( int weapon );
++int BG_CodAdsTimeOut( int weapon );
++
++// codmod: true for the three "secondary fire" scoped weapons (phase 3.8). They use the
++// real RTCW scope instead of iron-sight ADS, but still get the ADS move-speed penalty.
++qboolean BG_CodIsScopeWeapon( int weapon );
++
+ #endif // __BG_COD_H__
+-- 
+2.56.0
+

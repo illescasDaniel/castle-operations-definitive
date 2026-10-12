@@ -1,0 +1,553 @@
+#codmod-delta v2 base=ui/controls.menu sha256=988fa4ecc3b5152f3291a3c83b427fd971bd8bb5b8b1ab42cf81e8d6b29f724d
+#src ui/cdkey.menu sha256=96745cb143d3a0d91da1fe5f1b7ac2db26addce0ec675e919ea7ed0050b33bda
+#src ui/clipboard.menu sha256=1234b5cb59f380ca39fb2c56cbcd82ad2d67d0f1c691aab2a3e49e0d428ba6a0
+#src ui/credit.menu sha256=81fe8de5ee0a324483378209b9a9f3f64697f1cce563d1dad60bfdc5eee77b1e
+#src ui/error.menu sha256=d8082e15dc125112689b431f799d17958025389efe435cb8f64a39e68cf4223c
+#src ui/ingame_controls.menu sha256=012cb5b0b443e10d28bfc8d0c0d564a1b45f0f923660fe05a936c7040fbc6150
+#src ui/ingame_help.menu sha256=a407b7894fd7a5ad4d382342725d5254ba36be2f3a7b7513e6a91d1da3edbe30
+#src ui/load.menu sha256=bae9e6f84b8912f5c0b093c13701171591047af887fdac23989af21cc1fbf48a
+#src ui/notebook.menu sha256=7bc854e3ffa6fb56f4036ec3158fc6c0192156d47fd9dc37bbd30240e410c55f
+#src ui/play.menu sha256=a588d0fc5985e36554b5ebf2c516b65fe26a837c207c634a9ab2f2e658c1ccb5
+@@ 3 4
++\\ MOUSE & KEYBOARD MENU (codmod CoD-style fullscreen) \\
+@@ 5 6
++menuDef
+@@ 7 11
++	name "controls_kb_menu"
+=ui/controls.menu 1396 1397
++	fullscreen 1
+=ui/controls.menu 1421 1422
+@@ 12 14
++	style 0
++	border 0
+@@ 15 16
+=ui/load.menu 21 22
+@@ 24 27
++		close controls_kb_menu ; open control_menu
+@@ 29 29
++////////// CHROME (setup-style background) /////////////////////////////////
+@@ 30 40
+=ui/controls.menu 99 100
++	name menu_select
+=ui/notebook.menu 27 28
+=ui/controls.menu 1421 1422
++	background "menu_select"
+=ui/ingame_controls.menu 31 35
+=ui/controls.menu 99 100
++	name BLACKGRAD
+=ui/notebook.menu 27 28
++	rect 0 -4 640 132
++	background "BLACKGRAD"
+=ui/ingame_controls.menu 31 35
+=ui/controls.menu 99 100
++	name BLACKGRAD2
+=ui/notebook.menu 27 28
++	rect 0 420 640 -128
++	background "BLACKGRAD"
+=ui/ingame_controls.menu 31 35
+=ui/controls.menu 99 100
++	name FLAME
+=ui/notebook.menu 27 28
++	rect 210 20 220 67
++	background "fLAME"
+=ui/ingame_controls.menu 31 35
+=ui/controls.menu 99 100
++	name WOLFFLAMELOGO
+=ui/notebook.menu 27 28
++	rect 200 -5 240 120
++	background "WOLFFLAMELOGO"
+=ui/ingame_controls.menu 31 35
+=ui/controls.menu 99 100
++	name gold_line_l
+=ui/notebook.menu 27 28
++	rect 0 76 226 10
++	background "gold_line"
+=ui/ingame_controls.menu 31 35
+=ui/controls.menu 99 100
++	name gold_line_r
+=ui/notebook.menu 27 28
++	rect 414 76 230 10
++	background "gold_line"
+=ui/ingame_controls.menu 31 35
+=ui/controls.menu 99 100
++	name content_panel
++	rect 220 120 380 300
+=ui/controls.menu 106 107
+=ui/error.menu 44 45
+=ui/controls.menu 13 14
++	bordercolor .5 .5 .5 .35
+=ui/ingame_controls.menu 31 35
+=ui/controls.menu 99 100
++	name back
++	text "BACK"
+=ui/controls.menu 105 106
+=ui/play.menu 196 198
++	textscale .30
++	style 0
++	rect 40 420 180 22
+=ui/credit.menu 1504 1505
+=ui/credit.menu 1548 1549
++	textaligny 18
+=ui/credit.menu 1508 1509
+=ui/controls.menu 8 9
++	action { play "sound/misc/kcaction.wav" ;
++	close controls_kb_menu ; open control_menu }
++}
+@@ 42 53
++	
+=ui/controls.menu 1274 1277
++////////// SECTION TABS (codmod CoD-style) /////////////////////////////////
+=ui/controls.menu 98 101
++	text "LOOK"
+=ui/controls.menu 105 106
+=ui/play.menu 196 198
++	textscale .30
++	style 0
++	rect 40 140 180 22
+=ui/credit.menu 1504 1505
+=ui/credit.menu 1548 1549
++	textaligny 18
+=ui/credit.menu 1508 1509
+=ui/controls.menu 8 9
++	action { play "sound/misc/kcaction.wav" ;
+=ui/controls.menu 116 117
+=ui/clipboard.menu 89 92
+=ui/controls.menu 303 304
++	text "MOVE"
+=ui/controls.menu 105 106
+=ui/play.menu 196 198
++	textscale .30
++	style 0
++	rect 40 170 180 22
+=ui/credit.menu 1504 1505
+=ui/credit.menu 1548 1549
++	textaligny 18
+=ui/credit.menu 1508 1509
+=ui/controls.menu 8 9
++	action { play "sound/misc/kcaction.wav" ;
+=ui/controls.menu 321 322
+=ui/clipboard.menu 89 92
+=ui/controls.menu 598 599
++	text "SHOOT"
+=ui/controls.menu 105 106
+=ui/play.menu 196 198
++	textscale .30
++	style 0
++	rect 40 200 180 22
+=ui/credit.menu 1504 1505
+=ui/credit.menu 1548 1549
++	textaligny 18
+=ui/credit.menu 1508 1509
+=ui/controls.menu 8 9
++	action { play "sound/misc/kcaction.wav" ;
+=ui/controls.menu 616 617
+=ui/clipboard.menu 89 92
+=ui/controls.menu 1097 1098
++	text "MISC"
+=ui/controls.menu 105 106
+=ui/play.menu 196 198
++	textscale .30
++	style 0
++	rect 40 230 180 22
+=ui/credit.menu 1504 1505
+=ui/credit.menu 1548 1549
++	textaligny 18
+=ui/credit.menu 1508 1509
+=ui/controls.menu 8 9
++	action { play "sound/misc/kcaction.wav" ;
+=ui/controls.menu 1113 1114
+=ui/clipboard.menu 202 206
+=ui/controls.menu 76 77
++		// Bottom hint strip (empty space under the value panel)
++		rect 40 455 560 20
+=ui/controls.menu 78 79
+=ui/controls.menu 80 81
++		textscale .20
+=ui/controls.menu 36 37
+@@ 56 99
+@@ 100 140
+@@ 145 146
++		rect 240 140 320 14 
+@@ 147 148
++		textalignx 160 
+@@ 158 159
+=ui/controls.menu 99 100
+@@ 164 165
++		rect 240 155 320 14 
+@@ 166 167
++		textalignx 160 
+@@ 177 178
+=ui/controls.menu 99 100
+@@ 183 184
++		rect 240 170 320 14
+@@ 185 186
+=ui/error.menu 217 218
+@@ 195 197
+=ui/controls.menu 98 100
+@@ 202 203
++		rect 240 185 320 14
+@@ 204 205
+=ui/error.menu 217 218
+@@ 215 216
+=ui/controls.menu 99 100
+@@ 221 222
++		rect 240 200 320 14
+@@ 223 224
+=ui/error.menu 217 218
+@@ 234 235
+=ui/controls.menu 99 100
+@@ 240 241
++		rect 240 215 320 14
+@@ 242 243
+=ui/error.menu 217 218
+@@ 253 254
+=ui/controls.menu 99 100
+@@ 259 260
++		rect 240 230 320 14
+@@ 261 262
+=ui/error.menu 217 218
+@@ 272 275
+=ui/controls.menu 99 100
+@@ 280 281
++		rect 240 245 320 14
+@@ 282 283
+=ui/error.menu 217 218
+@@ 293 301
+=ui/controls.menu 99 100
+=ui/controls.menu 275 278
+=ui/controls.menu 1282 1284
++		rect 240 260 320 14
+=ui/controls.menu 146 147
+=ui/error.menu 217 218
+=ui/controls.menu 1287 1297
+@@ 303 325
+=ui/controls.menu 275 278
+=ui/controls.menu 1302 1304
++		rect 240 275 320 14
+=ui/controls.menu 146 147
+=ui/error.menu 217 218
+=ui/controls.menu 1307 1316
+@@ 326 326
+=ui/controls.menu 99 100
+=ui/controls.menu 140 142
+=ui/cdkey.menu 276 277
+=ui/controls.menu 1360 1361
++		cvar "sensitivity"
++		maxChars 8
++		maxPaintChars 8
++		rect 240 290 320 14
+=ui/controls.menu 146 147
+=ui/error.menu 217 218
+=ui/controls.menu 1365 1374
+@@ 327 328
+=ui/controls.menu 99 100
+@@ 333 334
++		rect 240 140 320 14
+@@ 335 336
++		textalignx 160 
+@@ 346 347
+=ui/controls.menu 99 100
+@@ 352 353
++		rect 240 155 320 14
+@@ 354 355
++		textalignx 160 
+@@ 363 364
+=ui/controls.menu 99 100
+@@ 369 370
++		rect 240 170 320 14
+@@ 371 372
++		textalignx 160 
+@@ 380 381
+=ui/controls.menu 99 100
+@@ 386 387
++		rect 240 185 320 14
+@@ 388 389
+=ui/error.menu 217 218
+@@ 399 400
+=ui/controls.menu 99 100
+@@ 405 406
++		rect 240 200 320 14
+@@ 407 408
+=ui/error.menu 217 218
+@@ 417 419
+=ui/controls.menu 98 100
+@@ 424 425
++		rect 240 215 320 14
+@@ 426 427
+=ui/error.menu 217 218
+@@ 437 438
+=ui/controls.menu 99 100
+@@ 443 444
++		rect 240 230 320 14
+@@ 445 446
+=ui/error.menu 217 218
+@@ 456 457
+=ui/controls.menu 99 100
+@@ 462 463
++		rect 240 245 320 14
+@@ 464 465
+=ui/error.menu 217 218
+@@ 475 476
+=ui/controls.menu 99 100
+@@ 481 482
++		rect 240 260 320 14
+@@ 483 484
+=ui/error.menu 217 218
+@@ 493 494
+=ui/controls.menu 98 100
+@@ 499 500
++		rect 240 275 320 14
+@@ 501 502
+=ui/error.menu 217 218
+@@ 512 513
+=ui/controls.menu 99 100
+@@ 518 519
++		rect 240 290 320 14
+@@ 520 521
+=ui/error.menu 217 218
+@@ 531 532
+=ui/controls.menu 99 100
+@@ 537 538
++		rect 240 305 320 14
+@@ 539 540
+=ui/error.menu 217 218
+@@ 550 551
+=ui/controls.menu 99 100
+@@ 556 557
++		rect 240 320 320 14
+@@ 558 559
+=ui/error.menu 217 218
+@@ 569 570
+=ui/controls.menu 99 100
+@@ 575 576
++		rect 240 335 320 14
+@@ 577 578
+=ui/error.menu 217 218
+@@ 588 597
+@@ 598 622
+@@ 627 628
++		rect 240 140 320 14
+@@ 629 630
++		textalignx 160 
+@@ 640 641
+=ui/controls.menu 99 100
+@@ 646 647
++		rect 240 155 320 14
+@@ 648 649
++		textalignx 160 
+@@ 659 660
+=ui/controls.menu 99 100
+@@ 665 666
++		rect 240 170 320 14
+@@ 667 687
+=ui/error.menu 217 218
+@@ 697 699
+=ui/controls.menu 99 100
+@@ 702 705
+=ui/controls.menu 682 684
++		rect 240 185 320 14
+@@ 706 707
+=ui/error.menu 217 218
+@@ 717 736
+=ui/controls.menu 99 100
+@@ 739 742
+=ui/controls.menu 702 704
++		rect 240 200 320 14
+@@ 743 744
+=ui/error.menu 217 218
+@@ 754 755
+=ui/controls.menu 99 100
+=ui/controls.menu 718 724
++		rect 240 215 320 14
+=ui/controls.menu 146 147
+=ui/error.menu 217 218
+=ui/controls.menu 727 735
+=ui/controls.menu 99 100
+@@ 758 761
+=ui/controls.menu 739 741
++		rect 240 230 320 14
+@@ 762 763
+=ui/error.menu 217 218
+@@ 773 774
+=ui/controls.menu 99 100
+@@ 777 780
+=ui/controls.menu 758 760
++		rect 240 245 320 14
+@@ 781 782
+=ui/error.menu 217 218
+@@ 792 793
+=ui/controls.menu 99 100
+@@ 796 799
+=ui/controls.menu 777 779
++		rect 240 260 320 14
+@@ 800 801
+=ui/error.menu 217 218
+@@ 811 812
+=ui/controls.menu 99 100
+@@ 815 818
+=ui/controls.menu 796 798
++		rect 240 275 320 14
+@@ 819 839
+=ui/error.menu 217 218
+@@ 849 850
+=ui/controls.menu 99 100
+@@ 853 856
+=ui/controls.menu 815 817
++		rect 240 290 320 14
+@@ 857 912
+=ui/error.menu 217 218
+@@ 922 923
+=ui/controls.menu 99 100
+=ui/controls.menu 831 836
++		rect 240 305 320 14
+=ui/controls.menu 146 147
+=ui/error.menu 217 218
+=ui/controls.menu 630 639
+@@ 924 924
+=ui/controls.menu 99 100
+=ui/controls.menu 850 855
++		rect 240 320 320 14
+=ui/controls.menu 146 147
+=ui/error.menu 217 218
+=ui/controls.menu 630 639
+@@ 925 930
+=ui/controls.menu 99 100
+=ui/controls.menu 868 873
++		rect 240 335 320 14
+=ui/controls.menu 146 147
+=ui/error.menu 217 218
+=ui/controls.menu 630 640
+=ui/controls.menu 99 100
+=ui/controls.menu 886 891
++		rect 240 350 320 14
+=ui/controls.menu 146 147
+=ui/error.menu 217 218
+=ui/controls.menu 894 903
+=ui/controls.menu 98 100
+=ui/controls.menu 904 909
++		rect 240 365 320 14
+=ui/controls.menu 146 147
+=ui/error.menu 217 218
+=ui/controls.menu 630 639
+@@ 938 939
++	rect 350 390 100 18
+@@ 951 953
+=ui/controls.menu 99 100
+@@ 958 997
++		rect 240 140 320 14
+@@ 1009 1027
+=ui/controls.menu 99 100
+=ui/controls.menu 972 977
++		rect 240 155 320 14
+=ui/controls.menu 978 989
+@@ 1028 1028
+=ui/controls.menu 99 100
+=ui/controls.menu 991 996
++		rect 240 170 320 14
+=ui/controls.menu 959 970
+@@ 1029 1035
+=ui/controls.menu 99 100
+@@ 1039 1040
++	rect 240 195 320 14
+@@ 1049 1050
+=ui/controls.menu 99 100
+@@ 1056 1057
++	rect 240 210 320 14
+@@ 1058 1059
+=ui/ingame_help.menu 59 60
+@@ 1067 1095
++// Orphan itemDef removed â its body was fully commented so the parser treated the
++// next itemDef as nested ("unknown menu item keyword itemDef" at Cyanide).
+@@ 1097 1121
+@@ 1126 1127
++		rect 240 140 320 14
+@@ 1128 1129
++		textalignx 160 
+@@ 1139 1142
+=ui/controls.menu 99 100
+@@ 1147 1148
++		rect 240 155 320 14
+@@ 1149 1150
++		textalignx 160 
+@@ 1160 1161
+=ui/controls.menu 99 100
+@@ 1166 1167
++		rect 240 170 320 14
+@@ 1168 1169
++		textalignx 160 
+@@ 1179 1181
+=ui/controls.menu 99 100
+@@ 1186 1187
++		rect 240 185 320 14
+@@ 1188 1189
+=ui/error.menu 217 218
+@@ 1199 1200
+=ui/controls.menu 99 100
+@@ 1205 1206
++		rect 240 200 320 14
+@@ 1207 1208
+=ui/error.menu 217 218
+@@ 1218 1219
+=ui/controls.menu 99 100
+@@ 1224 1225
++		rect 240 215 320 14
+@@ 1226 1227
+=ui/error.menu 217 218
+@@ 1237 1238
+=ui/controls.menu 99 100
+@@ 1243 1244
++		rect 240 230 320 14
+@@ 1245 1246
+=ui/error.menu 217 218
+@@ 1256 1257
+=ui/controls.menu 99 100
+@@ 1262 1263
++		rect 240 245 320 14
+@@ 1264 1265
+=ui/error.menu 217 218
+@@ 1275 1319
+=ui/controls.menu 99 100
+@@ 1324 1325
++		rect 240 260 320 14
+@@ 1326 1327
++		textalignx 160 
+@@ 1337 1338
+=ui/controls.menu 99 100
+@@ 1343 1344
++		rect 240 275 320 14
+@@ 1345 1346
++		textalignx 160 
+@@ 1356 1374
+=ui/controls.menu 99 100
+=ui/controls.menu 1388 1389
++	rect 40 455 560 20
++	text "Click to toggle Yes or No"
+=ui/controls.menu 1391 1392
++	textscale .20
+=ui/credit.menu 1504 1505
+=ui/credit.menu 1548 1549
+=ui/controls.menu 110 111
+=ui/clipboard.menu 30 32
++}
+@@ 1375 1376
+=ui/controls.menu 99 100
+=ui/controls.menu 1402 1403
++	rect 40 455 560 20
++	text "Enter a value, or use the field to adjust"
+=ui/controls.menu 1391 1392
++	textscale .20
+=ui/credit.menu 1504 1505
+=ui/credit.menu 1548 1549
+=ui/controls.menu 110 111
+=ui/clipboard.menu 30 32
++}
+@@ 1377 1419
+=ui/controls.menu 99 100
++	name fadebox
+=ui/controls.menu 106 107
++	background "ui/assets/fadebox.tga"
+@@ 1422 1423
+=ui/controls.menu 8 9
+@@ 1424 1436
++}
+@@ 1442 1444

@@ -1,0 +1,144 @@
+#codmod-delta v2 base=ui/setup.menu sha256=4f53b1b18c372134948cd75574a4e9883752e98d7a1210d2b42d271ccb2b5c9c
+#src ui/controls.menu sha256=988fa4ecc3b5152f3291a3c83b427fd971bd8bb5b8b1ab42cf81e8d6b29f724d
+#src ui/ingame_controls.menu sha256=012cb5b0b443e10d28bfc8d0c0d564a1b45f0f923660fe05a936c7040fbc6150
+#src ui/notebook.menu sha256=7bc854e3ffa6fb56f4036ec3158fc6c0192156d47fd9dc37bbd30240e410c55f
+@@ 3 4
++\\ SINGLEPLAYER HUB (codmod) \\
+@@ 6 14
++	name "singleplayer_menu"
+=ui/setup.menu 405 406
++	fullscreen 1
+=ui/setup.menu 608 609
++	focusColor .9 .9 .9 1
++	style 1
++	border 0
+@@ 15 64
++	onOpen { setitemcolor fadebox backcolor 0 0 0 1 ;
++		fadeout fadebox }
++	onEsc { close singleplayer_menu ; open main }
+@@ 66 71
++	name menu_select
+=ui/notebook.menu 27 28
+=ui/setup.menu 608 609
++	background "menu_select"
+=ui/controls.menu 8 9
+@@ 72 74
++}
+@@ 76 83
++	name BLACKGRAD
+=ui/notebook.menu 27 28
++	rect 0 -4 640 132
++	background "BLACKGRAD"
+=ui/ingame_controls.menu 31 34
+@@ 85 93
++	name BLACKGRAD2
+=ui/notebook.menu 27 28
++	rect 0 420 640 -128
++	background "BLACKGRAD"
+=ui/ingame_controls.menu 31 34
+@@ 95 102
++	name FLAME
+=ui/notebook.menu 27 28
++	rect 210 20 220 67
++	background "fLAME"
+=ui/ingame_controls.menu 31 34
+@@ 104 111
++	name WOLFFLAMELOGO
+=ui/notebook.menu 27 28
++	rect 200 -5 240 120
++	background "WOLFFLAMELOGO"
+=ui/ingame_controls.menu 31 34
+@@ 113 120
++	name gold_line_l
+=ui/notebook.menu 27 28
++	rect 0 76 226 10
++	background "gold_line"
+=ui/ingame_controls.menu 31 34
+@@ 122 129
++	name gold_line_r
+=ui/notebook.menu 27 28
++	rect 414 76 230 10
++	background "gold_line"
+=ui/ingame_controls.menu 31 34
+@@ 130 149
++////////// SINGLEPLAYER LIST //////////////////////////////////////////////
+@@ 151 155
++	name continue
++	text "CONTINUE"
++	type 1
++	style 0
+@@ 156 157
++	rect 40 180 180 22
+@@ 158 162
+=ui/setup.menu 341 342
++	textscale .30
+=ui/setup.menu 399 400
++	textaligny 18
+@@ 163 181
+=ui/controls.menu 8 9
++	action { play "sound/misc/kcaction.wav" ;
++	close singleplayer_menu ;
++	exec "loadgame current" }
++}
+@@ 183 187
++	name newgame
++	text "NEW GAME"
++	type 1
++	style 0
+@@ 188 189
++	rect 40 210 180 22
+@@ 190 194
+=ui/setup.menu 341 342
++	textscale .30
+=ui/setup.menu 399 400
++	textaligny 18
+@@ 195 211
+=ui/controls.menu 8 9
++	action { play "sound/misc/kcaction.wav" ;
++	close singleplayer_menu ;
++	open play_menu }
++}
+@@ 213 217
++	name loadgame
++	text "LOAD GAME"
++	type 1
++	style 0
+@@ 218 219
++	rect 40 240 180 22
+@@ 220 224
+=ui/setup.menu 341 342
++	textscale .30
+=ui/setup.menu 399 400
++	textaligny 18
+@@ 225 240
+=ui/controls.menu 8 9
++	action { play "sound/misc/kcaction.wav" ;
++	close singleplayer_menu ;
++	open load_menu }
++}
+@@ 242 246
++	name back
++	text "BACK"
+=ui/setup.menu 377 378
+=ui/setup.menu 341 342
+@@ 247 248
++	textscale .30
++	style 0
++	rect 40 420 180 22
+@@ 249 253
+=ui/setup.menu 399 400
++	textaligny 18
+@@ 254 269
+=ui/controls.menu 8 9
++	action { play "sound/misc/kcaction.wav" ;
++	close singleplayer_menu ; open main }
++}
+@@ 271 606
++	name fadebox
+=ui/controls.menu 106 107
++	background "ui/assets/fadebox.tga"
+@@ 609 610
+=ui/controls.menu 8 9
+@@ 611 613
++}
+@@ 616 617

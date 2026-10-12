@@ -1,0 +1,264 @@
+From 2fa2476ea0751ba3543ad295bf00c5e46408c13e Mon Sep 17 00:00:00 2001
+From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
+Date: Sun, 11 Oct 2026 17:06:15 +0200
+Subject: [PATCH 57/64] Add cl_benchDemo: real-time demo frame-time stats
+ (microseconds, percentiles).
+
+Client-only; no renderer, cl_scrn or camera changes.
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+---
+ SP/code/client/cl_cgame.c | 17 ++++++++
+ SP/code/client/cl_main.c  | 92 +++++++++++++++++++++++++++++++++++++++
+ SP/code/client/client.h   | 10 +++++
+ SP/code/qcommon/qcommon.h |  3 ++
+ SP/code/sys/sys_unix.c    |  8 ++++
+ SP/code/sys/sys_win32.c   | 12 +++++
+ 6 files changed, 142 insertions(+)
+
+diff --git a/SP/code/client/cl_cgame.c b/SP/code/client/cl_cgame.c
+index 97829485..e582187f 100644
+--- a/SP/code/client/cl_cgame.c
++++ b/SP/code/client/cl_cgame.c
+@@ -1301,6 +1301,23 @@ void CL_SetCGameTime( void ) {
+ 	// messages from the demo file until the cgame definately
+ 	// has valid snapshots to interpolate between
+ 
++	// cl_benchDemo: measure real-time frame durations; serverTime is left alone
++	// so playback runs at normal speed (unlike timedemo's fixed 50 ms steps).
++	if ( cl_benchDemo->integer && !cl_timedemo->integer ) {
++		long long now = Sys_Microseconds();
++
++		if ( !clc.benchStartUs ) {
++			clc.benchStartUs = now;
++		} else if ( now - clc.benchStartUs >= BENCH_WARMUP_US ) {
++			if ( !clc.benchMeasureUs ) {
++				clc.benchMeasureUs = now;
++			} else if ( clc.benchFrames < MAX_BENCH_FRAMES ) {
++				clc.benchDurations[ clc.benchFrames++ ] = (int)( now - clc.benchLastUs );
++			}
++		}
++		clc.benchLastUs = now;
++	}
++
+ 	// a timedemo will always use a deterministic set of time samples
+ 	// no matter what speed machine it is run on,
+ 	// while a normal demo may have different time samples
+diff --git a/SP/code/client/cl_main.c b/SP/code/client/cl_main.c
+index c61acd20..10bfbf0d 100644
+--- a/SP/code/client/cl_main.c
++++ b/SP/code/client/cl_main.c
+@@ -81,6 +81,7 @@ cvar_t  *cl_shownet = NULL;     // NERVE - SMF - This is referenced in msg.c and
+ cvar_t  *cl_showSend;
+ cvar_t  *cl_timedemo;
+ cvar_t	*cl_timedemoLog;
++cvar_t	*cl_benchDemo;
+ cvar_t	*cl_autoRecordDemo;
+ cvar_t	*cl_aviFrameRate;
+ cvar_t	*cl_aviMotionJpeg;
+@@ -875,6 +876,91 @@ static float CL_DemoFrameDurationSDev( void )
+ 	return sqrt( variance );
+ }
+ 
++static int QDECL CL_BenchCmp( const void *a, const void *b ) {
++	return *(const int *)a - *(const int *)b;
++}
++
++/*
++=================
++CL_ReportBenchDemo
++
++Frame-time statistics for a cl_benchDemo run (real-time demo playback).
++=================
++*/
++static void CL_ReportBenchDemo( void ) {
++	static int sorted[MAX_BENCH_FRAMES];
++	int n = clc.benchFrames;
++	int i, slow, hitches = 0;
++	double total = 0, slowSum = 0, seconds, avgFps, low1Fps;
++	double median, p95, p99, maxMs;
++	char summary[256], line[512], head[512];
++	fileHandle_t f;
++
++	if ( n < 10 ) {
++		Com_Printf( "codmod bench: too few frames (%d), demo too short?\n", n );
++		Cvar_Set( "cl_benchSummary", "no result (demo too short)" );
++		return;
++	}
++
++	Com_Memcpy( sorted, clc.benchDurations, n * sizeof( int ) );
++	qsort( sorted, n, sizeof( int ), CL_BenchCmp );
++
++	for ( i = 0; i < n; i++ ) {
++		total += sorted[i];
++	}
++	median = sorted[n / 2] / 1000.0;
++	p95 = sorted[(int)( n * 0.95 )] / 1000.0;
++	p99 = sorted[(int)( n * 0.99 )] / 1000.0;
++	maxMs = sorted[n - 1] / 1000.0;
++	for ( i = 0; i < n; i++ ) {
++		if ( sorted[i] > median * 3000.0 ) {
++			hitches++;
++		}
++	}
++
++	// 1% low: average of the slowest 1% of frames, as FPS
++	slow = n / 100;
++	if ( slow < 1 ) {
++		slow = 1;
++	}
++	for ( i = n - slow; i < n; i++ ) {
++		slowSum += sorted[i];
++	}
++	low1Fps = 1000000.0 / ( slowSum / slow );
++	seconds = total / 1000000.0;
++	avgFps = n / seconds;
++
++	Com_sprintf( summary, sizeof( summary ), "%.0f fps avg | 1%% low %.0f | P99 %.1f ms | %d frames",
++				 avgFps, low1Fps, p99, n );
++	Cvar_Set( "cl_benchSummary", summary );
++
++	Com_sprintf( line, sizeof( line ),
++				 "frames=%d seconds=%.2f avg_fps=%.1f low1_fps=%.1f median_ms=%.3f p95_ms=%.3f p99_ms=%.3f max_ms=%.2f hitches=%d",
++				 n, seconds, avgFps, low1Fps, median, p95, p99, maxMs, hitches );
++	Com_Printf( "codmod bench: %s\n", line );
++
++	Com_sprintf( head, sizeof( head ), "res=%dx%d msaa=%s swap=%s maxfps=%s renderer=%s",
++				 cls.glconfig.vidWidth, cls.glconfig.vidHeight,
++				 Cvar_VariableString( "r_ext_framebuffer_multisample" ),
++				 Cvar_VariableString( "r_swapInterval" ),
++				 Cvar_VariableString( "com_maxfps" ),
++				 Cvar_VariableString( "cl_renderer" ) );
++	Com_Printf( "codmod bench cfg: %s\n", head );
++	if ( Cvar_VariableIntegerValue( "r_swapInterval" ) != 0 || Cvar_VariableIntegerValue( "com_maxfps" ) != 0 ) {
++		Com_Printf( S_COLOR_YELLOW "codmod bench: WARNING vsync/fps cap active, FPS is limited (want r_swapInterval 0, com_maxfps 0)\n" );
++	}
++
++	f = FS_FOpenFileWrite( "benchmarks/last_frametimes.txt" );
++	if ( f ) {
++		FS_Printf( f, "# %s\n# %s\n# microseconds per frame, in order\n", line, head );
++		for ( i = 0; i < n; i++ ) {
++			FS_Printf( f, "%d\n", clc.benchDurations[i] );
++		}
++		FS_FCloseFile( f );
++		Com_Printf( "benchmarks/last_frametimes.txt written\n" );
++	}
++}
++
+ /*
+ =================
+ CL_DemoCompleted
+@@ -884,6 +970,10 @@ void CL_DemoCompleted( void )
+ {
+ 	char buffer[ MAX_STRING_CHARS ];
+ 
++	if ( cl_benchDemo && cl_benchDemo->integer && !cl_timedemo->integer ) {
++		CL_ReportBenchDemo();
++	}
++
+ 	if( cl_timedemo && cl_timedemo->integer )
+ 	{
+ 		int	time;
+@@ -3675,6 +3765,8 @@ void CL_Init( void ) {
+ 
+ 	cl_timedemo = Cvar_Get( "timedemo", "0", 0 );
+ 	cl_timedemoLog = Cvar_Get ("cl_timedemoLog", "", CVAR_ARCHIVE);
++	cl_benchDemo = Cvar_Get( "cl_benchDemo", "0", CVAR_TEMP );
++	Cvar_Get( "cl_benchSummary", "", CVAR_TEMP );
+ 	cl_autoRecordDemo = Cvar_Get ("cl_autoRecordDemo", "0", CVAR_ARCHIVE);
+ 	cl_aviFrameRate = Cvar_Get ("cl_aviFrameRate", "25", CVAR_ARCHIVE);
+ 	cl_aviMotionJpeg = Cvar_Get ("cl_aviMotionJpeg", "1", CVAR_ARCHIVE);
+diff --git a/SP/code/client/client.h b/SP/code/client/client.h
+index cf123528..1467848e 100644
+--- a/SP/code/client/client.h
++++ b/SP/code/client/client.h
+@@ -184,6 +184,8 @@ demo through a file.
+ */
+ 
+ #define MAX_TIMEDEMO_DURATIONS	4096
++#define BENCH_WARMUP_US		2000000LL	// skip asset/shader load hitches
++#define MAX_BENCH_FRAMES		65536	// cl_benchDemo frame-time samples (microseconds)
+ 
+ typedef struct {
+ 
+@@ -257,6 +259,13 @@ typedef struct {
+ 	int			timeDemoMaxDuration;	// maximum frame duration
+ 	unsigned char	timeDemoDurations[ MAX_TIMEDEMO_DURATIONS ];	// log of frame durations
+ 
++	// cl_benchDemo: real-time demo playback frame times (does not touch cl.serverTime)
++	long long	benchStartUs;			// first frame seen (warm-up starts)
++	long long	benchLastUs;			// previous frame
++	long long	benchMeasureUs;			// first measured frame (after warm-up)
++	int			benchFrames;			// measured frames
++	int			benchDurations[ MAX_BENCH_FRAMES ];	// frame durations in microseconds
++
+ 	float	aviVideoFrameRemainder;
+ 	float	aviSoundFrameRemainder;
+ 
+@@ -440,6 +449,7 @@ extern	cvar_t	*j_side_axis;
+ extern	cvar_t	*j_up_axis;
+ 
+ extern cvar_t  *cl_timedemo;
++extern cvar_t  *cl_benchDemo;
+ extern	cvar_t	*cl_aviFrameRate;
+ extern	cvar_t	*cl_aviMotionJpeg;
+ 
+diff --git a/SP/code/qcommon/qcommon.h b/SP/code/qcommon/qcommon.h
+index a6528aa0..ac69144a 100644
+--- a/SP/code/qcommon/qcommon.h
++++ b/SP/code/qcommon/qcommon.h
+@@ -1146,6 +1146,9 @@ void    Sys_Print( const char *msg );
+ // any game related timing information should come from event timestamps
+ int     Sys_Milliseconds( void );
+ 
++// Monotonic microsecond clock for frame-time benchmarking (cl_benchDemo)
++long long Sys_Microseconds( void );
++
+ qboolean Sys_RandomBytes( byte *string, int len );
+ 
+ // the system console is shown when a dedicated server is running
+diff --git a/SP/code/sys/sys_unix.c b/SP/code/sys/sys_unix.c
+index e315f56c..cac883da 100644
+--- a/SP/code/sys/sys_unix.c
++++ b/SP/code/sys/sys_unix.c
+@@ -171,6 +171,14 @@ unsigned long sys_timeBase = 0;
+      0x7fffffff ms - ~24 days
+    although timeval:tv_usec is an int, I'm not sure wether it is actually used as an unsigned int
+      (which would affect the wrap period) */
++long long Sys_Microseconds( void )
++{
++	struct timespec ts;
++
++	clock_gettime( CLOCK_MONOTONIC, &ts );
++	return (long long)ts.tv_sec * 1000000LL + ts.tv_nsec / 1000;
++}
++
+ int curtime;
+ int Sys_Milliseconds (void)
+ {
+diff --git a/SP/code/sys/sys_win32.c b/SP/code/sys/sys_win32.c
+index 582d470c..3624f0c7 100644
+--- a/SP/code/sys/sys_win32.c
++++ b/SP/code/sys/sys_win32.c
+@@ -235,6 +235,18 @@ char *Sys_GogPath( void )
+ Sys_Milliseconds
+ ================
+ */
++long long Sys_Microseconds( void )
++{
++	static LARGE_INTEGER freq;
++	LARGE_INTEGER now;
++
++	if ( !freq.QuadPart ) {
++		QueryPerformanceFrequency( &freq );
++	}
++	QueryPerformanceCounter( &now );
++	return now.QuadPart * 1000000LL / freq.QuadPart;
++}
++
+ int sys_timeBase;
+ int Sys_Milliseconds (void)
+ {
+-- 
+2.56.0
+

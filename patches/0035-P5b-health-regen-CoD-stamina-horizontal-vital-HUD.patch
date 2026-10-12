@@ -1,0 +1,369 @@
+From bad459347ea87cce525114ad7554f7dd9b7a211e Mon Sep 17 00:00:00 2001
+From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
+Date: Thu, 8 Oct 2026 23:41:57 +0200
+Subject: [PATCH 35/64] P5b: health regen, CoD stamina, horizontal vital HUD
+
+Player-only CoD health regen (delay/rate), linear stamina with
+recharge delay, maxHealth 50, 8s sprint pool, and health/stamina
+bars via codmod_hud.pk3 (avoid zz_* pak rename gotcha).
+
+Co-authored-by: Cursor <cursoragent@cursor.com>
+---
+ SP/code/cgame/cg_cod_menu.c | 11 ++++++++
+ SP/code/cgame/cg_newdraw.c  | 33 +++++++++++++++++++++++
+ SP/code/game/bg_cod.c       | 15 ++++++++++-
+ SP/code/game/bg_cod.h       | 15 +++++++++--
+ SP/code/game/bg_pmove.c     | 36 ++++++++++++++++++-------
+ SP/code/game/bg_public.h    |  5 ++--
+ SP/code/game/g_active.c     | 53 +++++++++++++++++++++++++++++++++++++
+ SP/code/game/g_combat.c     |  8 ++++++
+ SP/code/game/g_local.h      |  4 +++
+ 9 files changed, 166 insertions(+), 14 deletions(-)
+
+diff --git a/SP/code/cgame/cg_cod_menu.c b/SP/code/cgame/cg_cod_menu.c
+index bd6cb3b0..f21403c4 100644
+--- a/SP/code/cgame/cg_cod_menu.c
++++ b/SP/code/cgame/cg_cod_menu.c
+@@ -172,6 +172,7 @@ static const codMenuItem_t cg_codMenuItems[] = {
+ 	{ COD_MI_BOOL,  "cod_adsEnable",          "cod_adsEnable",          1, 1, NULL },
+ 	{ COD_MI_BOOL,  "cod_gaitEnable",         "cod_gaitEnable",         1, 1, NULL },
+ 	{ COD_MI_BOOL,  "cod_weaponEnable",       "cod_weaponEnable",       1, 1, NULL },
++	{ COD_MI_BOOL,  "cod_vitalsEnable",       "cod_vitalsEnable",       1, 1, NULL },
+ 
+ 	{ COD_MI_SECTION, "MOVEMENT SPEEDS", NULL, 0, 0, NULL },
+ 	{ COD_MI_FLOAT, "cod_runSpeed",           "cod_runSpeed",           5,    25,   NULL },
+@@ -187,6 +188,16 @@ static const codMenuItem_t cg_codMenuItems[] = {
+ 	{ COD_MI_FLOAT, "cod_sprintMinTime",      "cod_sprintMinTime",      0.25f, 1,    NULL },
+ 	{ COD_MI_BOOL,  "cod_sprintForwardOnly",  "cod_sprintForwardOnly",  1,     1,    NULL },
+ 	{ COD_MI_FLOAT, "cod_sprintJumpCost",     "cod_sprintJumpCost",     100,   500,  NULL },
++	{ COD_MI_BOOL,  "cod_sprintLinear",       "cod_sprintLinear",       1,     1,    NULL },
++	{ COD_MI_FLOAT, "cod_sprintRechargeDelay","cod_sprintRechargeDelay",50,    200,  NULL },
++
++	{ COD_MI_SECTION, "VITALS (health / HUD)", NULL, 0, 0, NULL },
++	{ COD_MI_FLOAT, "cod_maxHealth",          "cod_maxHealth",          5,     25,   NULL },
++	{ COD_MI_BOOL,  "cod_healthRegenEnable",  "cod_healthRegenEnable",  1,     1,    NULL },
++	{ COD_MI_FLOAT, "cod_healthRegenDelay",   "cod_healthRegenDelay",   250,   1000, NULL },
++	{ COD_MI_FLOAT, "cod_healthRegenRate",    "cod_healthRegenRate",    1,     5,    NULL },
++	{ COD_MI_BOOL,  "cod_healthRegenPauseHurt","cod_healthRegenPauseHurt", 1,  1,    NULL },
++	{ COD_MI_BOOL,  "cod_healthBarNumber",    "cod_healthBarNumber",    1,     1,    NULL },
+ 
+ 	{ COD_MI_SECTION, "GAIT / SPRINT GUN", NULL, 0, 0, NULL },
+ 	{ COD_MI_FLOAT, "cod_sprintRaiseTime",    "cod_sprintRaiseTime",    10,   50,   NULL },
+diff --git a/SP/code/cgame/cg_newdraw.c b/SP/code/cgame/cg_newdraw.c
+index e4e16d94..2ed9ca80 100644
+--- a/SP/code/cgame/cg_newdraw.c
++++ b/SP/code/cgame/cg_newdraw.c
+@@ -1060,6 +1060,9 @@ static void CG_DrawPlayerHealth( rectDef_t *rect, int font, float scale, vec4_t
+ 	playerState_t   *ps;
+ 	int value;
+ 	char num[16];
++	int flags;
++	float frac;
++	int maxHealth;
+ 
+ 	ps = &cg.snap->ps;
+ 
+@@ -1069,6 +1072,31 @@ static void CG_DrawPlayerHealth( rectDef_t *rect, int font, float scale, vec4_t
+ 		CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
+ 	}
+ 
++	// codmod: CoD-style health bar when vitals HUD is on and the menu gave us a bar-shaped
++	// rect (wider than tall). Forced red fill. Number-only fallback otherwise. (phase 5b)
++	if ( bg_cod.enable && bg_cod.vitalsEnable && !shader && rect->w >= rect->h && rect->h > 0 ) {
++		vec4_t barRed = { 0.9f, 0.12f, 0.12f, 0.9f };
++
++		maxHealth = ps->stats[STAT_MAX_HEALTH];
++		if ( maxHealth < 1 ) {
++			maxHealth = 100;
++		}
++		frac = (float)value / (float)maxHealth;
++		if ( frac < 0 ) {
++			frac = 0;
++		}
++		if ( frac > 1 ) {
++			frac = 1;
++		}
++		flags = 16; // BAR_BG — draw contrast box (cg_drawtools.c)
++		CG_FilledBar( rect->x, rect->y, rect->w, rect->h, barRed, NULL, NULL, frac, flags );
++		if ( bg_cod.healthBarNumber ) {
++			Com_sprintf( num, sizeof( num ), "%i", value );
++			CG_Text_Paint( rect->x + 2, rect->y + rect->h - 1, font, scale * 0.7f, barRed, num, 0, 0, textStyle );
++		}
++		return;
++	}
++
+ 	if ( shader ) {
+ 		trap_R_SetColor( color );
+ 		CG_DrawPic( rect->x, rect->y, rect->w, rect->h, shader );
+@@ -2196,6 +2224,11 @@ static void CG_DrawFatigue( rectDef_t *rect, vec4_t color, int align ) {
+ 		CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
+ 	}
+ 
++	// codmod: vitals HUD is always horizontal (phase 5b), even if an old menu omitted align.
++	if ( bg_cod.enable && bg_cod.vitalsEnable ) {
++		align = HUD_HORIZONTAL;
++	}
++
+ 	if ( align != HUD_HORIZONTAL ) {
+ 		flags |= 4;   // BAR_VERT
+ 		flags |= 1;   // BAR_LEFT (left, when vertical means grow 'up')
+diff --git a/SP/code/game/bg_cod.c b/SP/code/game/bg_cod.c
+index 52053c2c..82682858 100644
+--- a/SP/code/game/bg_cod.c
++++ b/SP/code/game/bg_cod.c
+@@ -33,7 +33,8 @@ const codCvarDef_t bg_codCvars[] = {
+ 	{ "cod_backScale",          "0.7",  0,            CODOFS( backScale ),          0 },
+ 	{ "cod_strafeScale",        "0.85", 0,            CODOFS( strafeScale ),        0 },
+ 
+-	{ "cod_sprintTime",         "4",    0,            CODOFS( sprintTime ),         0 },
++	// codmod: Phase 5b tune — double stamina pool vs initial 4s CoD default (8s full bar).
++	{ "cod_sprintTime",         "8",    0,            CODOFS( sprintTime ),         0 },
+ 	{ "cod_sprintRechargeTime", "5",    0,            CODOFS( sprintRechargeTime ), 0 },
+ 	{ "cod_sprintMinTime",      "1",    0,            CODOFS( sprintMinTime ),      0 },
+ 	{ "cod_sprintForwardOnly",  "1",    0,            CODOFS( sprintForwardOnly ),  1 },
+@@ -135,6 +136,18 @@ const codCvarDef_t bg_codCvars[] = {
+ 	// codmod: snappy knife pull (was 250+250). 75 keeps anim readable but CoD-connected.
+ 	{ "cod_knifeSwitchTime",    "75",   0,            CODOFS( knifeSwitchTime ),    0 },
+ 
++	// codmod: Phase 5b vitals (docs/phase-5b-vitals.md)
++	{ "cod_vitalsEnable",       "1",    0,            CODOFS( vitalsEnable ),       1 },
++	{ "cod_healthRegenEnable",  "1",    0,            CODOFS( healthRegenEnable ),  1 },
++	{ "cod_healthRegenDelay",   "5000", 0,            CODOFS( healthRegenDelay ),   0 },
++	{ "cod_healthRegenRate",    "20",   0,            CODOFS( healthRegenRate ),    0 },
++	{ "cod_healthRegenPauseHurt","1",   0,            CODOFS( healthRegenPauseHurt ), 1 },
++	{ "cod_healthBarNumber",    "0",    0,            CODOFS( healthBarNumber ),    1 },
++	// codmod: half of vanilla/CoD 100 — glass-cannon SP with regen. (phase 5b)
++	{ "cod_maxHealth",          "50",   0,            CODOFS( maxHealth ),          0 },
++	{ "cod_sprintLinear",       "1",    0,            CODOFS( sprintLinear ),       1 },
++	{ "cod_sprintRechargeDelay","600",  0,            CODOFS( sprintRechargeDelay ), 0 },
++
+ 	{ "cod_debugHud",           "0",    CVAR_ARCHIVE, CODOFS( debugHud ),           1 },
+ 	// codmod: /cod_menu overlay size (cgame). Archived like cod_debugHud — UI preference.
+ 	{ "cod_menuScale",          "0.7",  CVAR_ARCHIVE, CODOFS( menuScale ),          0 },
+diff --git a/SP/code/game/bg_cod.h b/SP/code/game/bg_cod.h
+index d5dab1e5..85068e7d 100644
+--- a/SP/code/game/bg_cod.h
++++ b/SP/code/game/bg_cod.h
+@@ -107,6 +107,17 @@ typedef struct {
+ 	float quickKnifeTimeout;   // ms failsafe to return to previous weapon
+ 	float knifeSwitchTime;     // ms drop/raise when switching to/from knife (0 = vanilla 250)
+ 
++	// codmod: Phase 5b vitals — health regen, stamina finish, HUD bars
++	int vitalsEnable;          // master for regen + linear stamina + bar HUD draw
++	int healthRegenEnable;     // auto regen after delay
++	float healthRegenDelay;    // ms after last damage before regen
++	float healthRegenRate;     // HP per second while regenerating
++	int healthRegenPauseHurt;  // damage resets the delay timer
++	int healthBarNumber;       // 1 = also paint HP number on the health bar
++	float maxHealth;           // player STAT_MAX_HEALTH when > 0 (vanilla 100; CoD-ish 50)
++	int sprintLinear;          // single-rate recharge (no 25%/idle bonuses)
++	float sprintRechargeDelay; // ms after sprint ends before recharge starts
++
+ 	int debugHud;    // 0 off, 1 HUD, 2 HUD + nearest AI speed
+ 	float menuScale; // /cod_menu text+panel scale (0.5..1.0); cgame UI preference
+ } codTuning_t;
+@@ -143,8 +154,8 @@ extern const int bg_numCodCvars;
+ 
+ // codmod: g_main.c / cg_main.c each keep a static vmCvar_t[BG_COD_MAX_CVARS] and pass it in.
+ // Bump this if bg_codCvars ever grows past it -- BG_CodRegisterCvars() clamps defensively.
+-// (phase 3–5 cvars; leave headroom for slide/prone.)
+-#define BG_COD_MAX_CVARS 96
++// (phase 3–5b cvars; leave headroom for slide/prone.)
++#define BG_COD_MAX_CVARS 112
+ 
+ void BG_CodRegisterCvars( vmCvar_t *cvars, int maxCvars );
+ void BG_CodUpdateCvars( vmCvar_t *cvars, int maxCvars );
+diff --git a/SP/code/game/bg_pmove.c b/SP/code/game/bg_pmove.c
+index 7d54b1f9..ecad3300 100644
+--- a/SP/code/game/bg_pmove.c
++++ b/SP/code/game/bg_pmove.c
+@@ -4240,6 +4240,10 @@ void PM_Sprint( void ) {
+ 	// AI and cod_enable 0 fall through to the unmodified vanilla path below. (phase 2.1.c)
+ 	if ( !pm->ps->aiChar && bg_cod.enable && bg_cod.moveEnable ) {
+ 		float sprintRate;
++		qboolean codLinear;
++
++		// codmod: CoD-like single-rate recharge + post-sprint delay (phase 5b)
++		codLinear = ( bg_cod.vitalsEnable && bg_cod.sprintLinear ) ? qtrue : qfalse;
+ 
+ 		if ( pm->ps->stats[STAT_COD_FLAGS] & COD_SF_SPRINTING ) {
+ 			if ( pm->ps->powerups[PW_NOFATIGUE] ) {    // take time from powerup before taking it from sprintTime
+@@ -4265,20 +4269,34 @@ void PM_Sprint( void ) {
+ 			if ( !pm->ps->sprintExertTime ) {
+ 				pm->ps->sprintExertTime = 1;
+ 			}
++
++			// Arm recharge delay so it starts counting only after sprint ends.
++			if ( codLinear && bg_cod.sprintRechargeDelay > 0 ) {
++				pm->ps->stats[STAT_COD_STAM_DELAY] = (int)bg_cod.sprintRechargeDelay;
++			}
+ 		} else {
+ 			sprintRate = bg_cod.sprintRechargeTime > 0 ? bg_cod.sprintRechargeTime : 1.0f;
+ 
+-			// regular recharge
+-			pm->ps->sprintTime += ( 20000.0f / sprintRate ) * pml.frametime;
+-
+-			// additional (2x) recharge if in top 75% of sprint bar, or with stamina powerup
+-			if ( pm->ps->sprintTime > 5000 || pm->ps->powerups[PW_NOFATIGUE] ) {
++			if ( codLinear ) {
++				if ( pm->ps->stats[STAT_COD_STAM_DELAY] > 0 ) {
++					pm->ps->stats[STAT_COD_STAM_DELAY] -= (int)( pml.frametime * 1000.0f );
++					if ( pm->ps->stats[STAT_COD_STAM_DELAY] < 0 ) {
++						pm->ps->stats[STAT_COD_STAM_DELAY] = 0;
++					}
++				} else {
++					pm->ps->sprintTime += ( 20000.0f / sprintRate ) * pml.frametime;
++				}
++			} else {
++				// Phase 2 multi-tier recharge (vanilla-shaped bonuses)
+ 				pm->ps->sprintTime += ( 20000.0f / sprintRate ) * pml.frametime;
+-			}
+ 
+-			// additional recharge if standing still
+-			if ( !( pm->cmd.forwardmove || pm->cmd.rightmove ) ) {
+-				pm->ps->sprintTime += ( 20000.0f / sprintRate ) * pml.frametime;
++				if ( pm->ps->sprintTime > 5000 || pm->ps->powerups[PW_NOFATIGUE] ) {
++					pm->ps->sprintTime += ( 20000.0f / sprintRate ) * pml.frametime;
++				}
++
++				if ( !( pm->cmd.forwardmove || pm->cmd.rightmove ) ) {
++					pm->ps->sprintTime += ( 20000.0f / sprintRate ) * pml.frametime;
++				}
+ 			}
+ 
+ 			if ( pm->ps->sprintTime > 20000 ) {
+diff --git a/SP/code/game/bg_public.h b/SP/code/game/bg_public.h
+index 7e09059d..c0784893 100644
+--- a/SP/code/game/bg_public.h
++++ b/SP/code/game/bg_public.h
+@@ -346,12 +346,13 @@ typedef enum {
+ 	STAT_COD_FLAGS,          // bitfield, see COD_SF_*
+ 	STAT_COD_SLIDE_SPEED,    // phase 6: start speed of the current slide, u/s
+ 	STAT_COD_STANCE,         // phase 6b: >0 prone transition ms left, <0 prone cooldown ms
+-	STAT_COD_LAND            // phase 5: >0 landing slowdown ms left
++	STAT_COD_LAND,           // phase 5: >0 landing slowdown ms left
++	STAT_COD_STAM_DELAY      // phase 5b: ms left before stamina recharge starts
+ } statIndex_t;
+ 
+ // codmod: compile-time check that STAT_COD_* stay inside ps->stats[MAX_STATS] (q_shared.h).
+ // A negative array size here is a compile error, which is the point.
+-typedef char bg_cod_statIndexRangeCheck_t[ ( STAT_COD_LAND < MAX_STATS ) ? 1 : -1 ];
++typedef char bg_cod_statIndexRangeCheck_t[ ( STAT_COD_STAM_DELAY < MAX_STATS ) ? 1 : -1 ];
+ 
+ // codmod: ps->stats[STAT_COD_FLAGS] bits (phase 2+)
+ #define COD_SF_SPRINTING 1
+diff --git a/SP/code/game/g_active.c b/SP/code/game/g_active.c
+index 9a53219d..b2d3dabc 100644
+--- a/SP/code/game/g_active.c
++++ b/SP/code/game/g_active.c
+@@ -1020,6 +1020,24 @@ void ClientThink_real( gentity_t *ent ) {
+ 		client->ps.crouchSpeedScale = 0.25f;
+ 	}
+ 
++	// codmod: player max health (phase 5b). Re-applied every frame like speeds.
++	if ( !client->ps.aiChar && !ent->aiCharacter
++		 && bg_cod.enable && bg_cod.vitalsEnable && bg_cod.maxHealth > 0 ) {
++		int maxH = (int)bg_cod.maxHealth;
++
++		if ( maxH < 1 ) {
++			maxH = 1;
++		}
++		client->pers.maxHealth = maxH;
++		client->ps.stats[STAT_MAX_HEALTH] = maxH;
++		if ( ent->health > maxH ) {
++			ent->health = maxH;
++		}
++		if ( client->ps.stats[STAT_HEALTH] > maxH ) {
++			client->ps.stats[STAT_HEALTH] = maxH;
++		}
++	}
++
+ 	if ( client->ps.powerups[PW_HASTE] ) {
+ 		client->ps.speed *= 1.3;
+ 	}
+@@ -1422,6 +1440,41 @@ void ClientThink_real( gentity_t *ent ) {
+ 
+ 	// perform once-a-second actions
+ 	ClientTimerActions( ent, msec );
++
++	// codmod: CoD-style health regen (player only). Delay after last damage, then
++	// linear refill to max. Does not create overheal; PW_REGEN / pickups unchanged. (phase 5b)
++	if ( !client->ps.aiChar && !ent->aiCharacter
++		 && bg_cod.enable && bg_cod.vitalsEnable && bg_cod.healthRegenEnable
++		 && ent->health > 0 && client->ps.pm_type != PM_DEAD
++		 && !level.intermissiontime ) {
++		int maxHealth = client->ps.stats[STAT_MAX_HEALTH];
++
++		if ( ent->health < maxHealth ) {
++			int delay = (int)bg_cod.healthRegenDelay;
++			int elapsed;
++
++			if ( client->codLastDamageTime <= 0 ) {
++				client->codLastDamageTime = level.time - delay;
++			}
++			elapsed = level.time - client->codLastDamageTime;
++			if ( elapsed >= delay && bg_cod.healthRegenRate > 0 ) {
++				client->codHealthRegenFrac += bg_cod.healthRegenRate * ( (float)msec / 1000.0f );
++				if ( client->codHealthRegenFrac >= 1.0f ) {
++					int add = (int)client->codHealthRegenFrac;
++
++					client->codHealthRegenFrac -= (float)add;
++					ent->health += add;
++					if ( ent->health > maxHealth ) {
++						ent->health = maxHealth;
++						client->codHealthRegenFrac = 0;
++					}
++					client->ps.stats[STAT_HEALTH] = ent->health;
++				}
++			}
++		} else {
++			client->codHealthRegenFrac = 0;
++		}
++	}
+ }
+ 
+ /*
+diff --git a/SP/code/game/g_combat.c b/SP/code/game/g_combat.c
+index 5a341ba1..58462a1e 100644
+--- a/SP/code/game/g_combat.c
++++ b/SP/code/game/g_combat.c
+@@ -34,6 +34,7 @@ If you have questions concerning this license or the applicable additional terms
+ */
+ 
+ #include "g_local.h"
++#include "bg_cod.h"     // codmod: phase 5b health regen pause on hurt
+ 
+ /*
+ ============
+@@ -1303,6 +1304,13 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
+ 					targ->health = GIB_HEALTH + 1;
+ 				}
+ 			}
++			// codmod: pause CoD health regen on real damage (player only). (phase 5b)
++			if ( !targ->client->ps.aiChar && !targ->aiCharacter
++				 && bg_cod.enable && bg_cod.vitalsEnable
++				 && bg_cod.healthRegenEnable && bg_cod.healthRegenPauseHurt ) {
++				targ->client->codLastDamageTime = level.time;
++				targ->client->codHealthRegenFrac = 0;
++			}
+ 		}
+ 
+ 		//G_Printf("health at: %d\n", targ->health);
+diff --git a/SP/code/game/g_local.h b/SP/code/game/g_local.h
+index 6ab283aa..4d0b7263 100644
+--- a/SP/code/game/g_local.h
++++ b/SP/code/game/g_local.h
+@@ -567,6 +567,10 @@ struct gclient_s {
+ 	// like health / armor countdowns and regeneration
+ 	int timeResidual;
+ 
++	// codmod: Phase 5b CoD health regen (player only)
++	int codLastDamageTime;       // level.time of last HP loss that paused regen
++	float codHealthRegenFrac;    // fractional HP accumulator between whole points
++
+ 	float currentAimSpreadScale;
+ 
+ 	int medicHealAmt;
+-- 
+2.56.0
+

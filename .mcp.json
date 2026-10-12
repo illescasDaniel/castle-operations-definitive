@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "jevmem": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": ["--from", "jevmem", "jevmem-mcp"]
+    }
+  }
+}

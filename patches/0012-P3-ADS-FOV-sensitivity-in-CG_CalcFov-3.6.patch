@@ -1,7 +1,7 @@
 From f56152ccb794a22728fd90ddbcd8e27bd638f1d7 Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Thu, 8 Oct 2026 17:43:48 +0200
-Subject: [PATCH 12/64] P3: ADS FOV + sensitivity in CG_CalcFov (3.6)
+Subject: [PATCH 12/65] P3: ADS FOV + sensitivity in CG_CalcFov (3.6)
 
 Co-authored-by: Cursor <cursoragent@cursor.com>
 ---

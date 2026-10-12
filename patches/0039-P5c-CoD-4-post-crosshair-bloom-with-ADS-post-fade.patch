@@ -1,7 +1,7 @@
 From 3d40dd934d6962f87d7f708e171e60ab0e5ae591 Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Fri, 9 Oct 2026 00:17:16 +0200
-Subject: [PATCH 39/64] P5c: CoD 4-post crosshair bloom with ADS post fade.
+Subject: [PATCH 39/65] P5c: CoD 4-post crosshair bloom with ADS post fade.
 
 Gap opens with fire spread and move speed; crouch tightens; sprint fades
 posts. ADS fades the posts while cod_adsCrosshair 1 keeps the center dot.

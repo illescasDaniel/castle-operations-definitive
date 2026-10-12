@@ -1,7 +1,7 @@
 From 7ca33446891c30f68acfeaab07638b5cbc0c7785 Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Mon, 12 Oct 2026 15:17:40 +0200
-Subject: [PATCH 60/64] rend2: SMAA 1x post-process AA, unified r_aa setting
+Subject: [PATCH 60/65] rend2: SMAA 1x post-process AA, unified r_aa setting
  (SMAA low-ultra, MSAA 2/4/8).
 
 Vendors the iryoku/smaa reference (MIT, Jimenez et al.), stringify escapes quotes, bench prints smaa.

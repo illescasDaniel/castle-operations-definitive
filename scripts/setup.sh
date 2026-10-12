@@ -33,6 +33,10 @@ else
 	branch="$(git -C iortcw rev-parse --abbrev-ref HEAD)"
 	remote_url="$(git -C iortcw remote get-url origin 2>/dev/null || true)"
 	echo "iortcw/ already present (branch=$branch HEAD=${current:0:12} remote=${remote_url:-none}); leaving as-is."
+	if [[ -n "$remote_url" && "$remote_url" != "$IORTCW_REPO" && "$remote_url" != "git@github.com:illescasDaniel/iortcw.git" ]]; then
+		echo "NOTE: iortcw/ origin is $remote_url, not the fork $IORTCW_REPO." >&2
+		echo "      git -C iortcw remote rename origin upstream && git -C iortcw remote add origin $IORTCW_REPO" >&2
+	fi
 	# Bare upstream pin with no codmod commits yet — point the user at the fork.
 	if [[ "$current" == "$IORTCW_UPSTREAM_COMMIT" ]]; then
 		echo "NOTE: iortcw/ is still at bare upstream ${IORTCW_UPSTREAM_COMMIT:0:12}." >&2

@@ -1,7 +1,7 @@
 From c50ae904691868aa71437215b71d88959f95dfeb Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Thu, 8 Oct 2026 17:39:14 +0200
-Subject: [PATCH 10/64] P3: ADS spread multiply in FireWeapon (3.4)
+Subject: [PATCH 10/65] P3: ADS spread multiply in FireWeapon (3.4)
 
 Co-authored-by: Cursor <cursoragent@cursor.com>
 ---

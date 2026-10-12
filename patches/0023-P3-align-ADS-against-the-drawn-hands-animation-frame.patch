@@ -1,7 +1,7 @@
 From 10cffb4eb1f86048ca31dd62293c9101b531bb34 Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Thu, 8 Oct 2026 19:38:26 +0200
-Subject: [PATCH 23/64] P3: align ADS against the drawn hands animation frame
+Subject: [PATCH 23/65] P3: align ADS against the drawn hands animation frame
 
 Previous bore straighten used frame 0 while the viewmodel draws the
 live anim, so tag_weapon stayed diagonally offset. Also iterate the

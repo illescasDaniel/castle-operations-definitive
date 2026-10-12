@@ -1,7 +1,7 @@
 From 06c57cec4c2dbbbf5dc3278ebac21008a436c016 Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Fri, 9 Oct 2026 11:49:21 +0200
-Subject: [PATCH 46/64] P6 follow-up: stand after slide; link bg_cod into UI.
+Subject: [PATCH 46/65] P6 follow-up: stand after slide; link bg_cod into UI.
 
 Clear duck + sticky crouch when the slide ends (CoD). UI needs bg_cod.o
 for BG_CodMaxAmmo or save/load fails to load ui.sp.

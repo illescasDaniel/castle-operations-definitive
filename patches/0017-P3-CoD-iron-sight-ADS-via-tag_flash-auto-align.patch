@@ -1,7 +1,7 @@
 From d9672cb60c303e1ad53ef2fe56d07a5126274a77 Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Thu, 8 Oct 2026 18:36:06 +0200
-Subject: [PATCH 17/64] P3: CoD iron-sight ADS via tag_flash auto-align
+Subject: [PATCH 17/65] P3: CoD iron-sight ADS via tag_flash auto-align
 
 Place the rear sight (derived from tag_flash) on the screen center
 instead of nudging the hip gun. Matches CoD ADS without new models.

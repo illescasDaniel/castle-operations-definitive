@@ -1,7 +1,7 @@
 From 9407ceff3029d464637104592ea7505261e64acf Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Thu, 8 Oct 2026 20:22:35 +0200
-Subject: [PATCH 27/64] P3: bake Luger ADS tune; add cod_adsRight horizontal
+Subject: [PATCH 27/65] P3: bake Luger ADS tune; add cod_adsRight horizontal
  shift
 
 Defaults from codmod_tune.log: Dist 18.5, Height 3, BarrelBack 11.5,

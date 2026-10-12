@@ -1,7 +1,7 @@
 From 1cefa3c5ac8f01e96b73d2c99cacea5bc6224826 Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Fri, 9 Oct 2026 12:35:14 +0200
-Subject: [PATCH 48/64] Flashlight follow-up: lighting-only beam, HUD icon,
+Subject: [PATCH 48/65] Flashlight follow-up: lighting-only beam, HUD icon,
  minDist.
 
 Drop the spotlight overlay for forced dlights with a close-wall

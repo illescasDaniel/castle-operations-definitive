@@ -1,7 +1,7 @@
 From 180c65722c0a1d78534403d7223c80295a8cfcfc Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Mon, 12 Oct 2026 15:30:41 +0200
-Subject: [PATCH 61/64] snd_openal: HRTF via ALC_SOFT_HRTF (s_alHRTF on/off,
+Subject: [PATCH 61/65] snd_openal: HRTF via ALC_SOFT_HRTF (s_alHRTF on/off,
  s_alHRTFProfile, live reset, s_info).
 
 Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>

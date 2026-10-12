@@ -1,7 +1,7 @@
 From 9063865bd343e18f2ec7114f4686bd79cacee5b5 Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Fri, 9 Oct 2026 13:44:56 +0200
-Subject: [PATCH 49/64] Fix HD ResampleTexture stack overflow; raise
+Subject: [PATCH 49/65] Fix HD ResampleTexture stack overflow; raise
  MAX_MULTI_CVARS.
 
 Allocate p1/p2 by outwidth so 2048+ TGAs no longer smash the stack, and

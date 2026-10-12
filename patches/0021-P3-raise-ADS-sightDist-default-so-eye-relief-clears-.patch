@@ -1,7 +1,7 @@
 From 3b5bb08438c0b12705dc4c7c682bce9d1faf8074 Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Thu, 8 Oct 2026 19:28:06 +0200
-Subject: [PATCH 21/64] P3: raise ADS sightDist default so eye relief clears
+Subject: [PATCH 21/65] P3: raise ADS sightDist default so eye relief clears
  the mesh
 
 Clamp window is now 8-18 (was 5-12); default 12. Values near 10 still

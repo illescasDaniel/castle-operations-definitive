@@ -1,7 +1,7 @@
 From 60870ff5884833da780bbedd37b5ecdfe92fdf94 Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Fri, 9 Oct 2026 10:28:14 +0200
-Subject: [PATCH 42/64] Fix FP fire anim: lock attack against IDLE, clear kick
+Subject: [PATCH 42/65] Fix FP fire anim: lock attack against IDLE, clear kick
  every shot.
 
 Quick click-release could predict-fire then ContinueWeaponAnim(IDLE) in one

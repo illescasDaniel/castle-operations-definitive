@@ -1,7 +1,7 @@
 From bad459347ea87cce525114ad7554f7dd9b7a211e Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Thu, 8 Oct 2026 23:41:57 +0200
-Subject: [PATCH 35/64] P5b: health regen, CoD stamina, horizontal vital HUD
+Subject: [PATCH 35/65] P5b: health regen, CoD stamina, horizontal vital HUD
 
 Player-only CoD health regen (delay/rate), linear stamina with
 recharge delay, maxHealth 50, 8s sprint pool, and health/stamina

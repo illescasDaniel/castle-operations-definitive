@@ -49,7 +49,7 @@ AI HD textures/audio). Planning and core decisions are done; implement one phase
   - iortcw/ is a clone of https://github.com/illescasDaniel/iortcw (branch `codmod`, based on
     upstream 438e7d4). All engine and game code commits go there.
   Make small commits prefixed by phase (e.g. "P2: time-based sprint stamina"). After each phase,
-  run scripts/export-patches.sh and commit the patches backup in the outer repo.
+  run scripts/export-patches.sh and commit the patches backup in the outer repo. Never push. Never open PRs.
 - Build on the host by default (it's verified to work with GCC 16). The podman container is optional.
   Docker isn't installed.
 - The user's shell is fish. Scripts are bash files with a `#!/usr/bin/env bash` shebang.

@@ -1,7 +1,7 @@
 From 3e5a1563e973318f29d5d05172479055bcaede74 Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Fri, 9 Oct 2026 11:44:53 +0200
-Subject: [PATCH 45/64] P6: sprint+crouch tactical slide with
+Subject: [PATCH 45/65] P6: sprint+crouch tactical slide with
  fire-while-sliding.
 
 Linear decay slide (boost/steer/cooldown), crouch hand-off, jump cancel,

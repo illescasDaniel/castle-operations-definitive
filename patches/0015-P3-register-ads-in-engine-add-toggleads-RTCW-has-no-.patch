@@ -1,7 +1,7 @@
 From 1ae1a0acc6051ad3c489a9bee78db7c8bd781059 Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Thu, 8 Oct 2026 17:53:39 +0200
-Subject: [PATCH 15/64] P3: register +ads in engine; add toggleads (RTCW has no
+Subject: [PATCH 15/65] P3: register +ads in engine; add toggleads (RTCW has no
  alias)
 
 ioRTCW SP has no console alias command, so cfg alias +ads failed at

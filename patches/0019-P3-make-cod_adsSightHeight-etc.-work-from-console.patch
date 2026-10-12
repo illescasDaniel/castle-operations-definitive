@@ -1,7 +1,7 @@
 From 66834974d2f025ccbe26d0788d905eeecda31f21 Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Thu, 8 Oct 2026 19:11:23 +0200
-Subject: [PATCH 19/64] P3: make cod_adsSightHeight etc. work from console
+Subject: [PATCH 19/65] P3: make cod_adsSightHeight etc. work from console
 
 Table values are additive biases now; cvars are the live knobs.
 Default sight height bumped to 6.

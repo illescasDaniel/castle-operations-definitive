@@ -1,7 +1,7 @@
 From e030bb8b87ea3eadc28e1bdd2d2a2f326e7abb21 Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Thu, 8 Oct 2026 19:33:48 +0200
-Subject: [PATCH 22/64] P3: straighten ADS aim; default pistol Dist 18 / Height
+Subject: [PATCH 22/65] P3: straighten ADS aim; default pistol Dist 18 / Height
  4
 
 Two-pass align (bore to view, then sight to optical axis) so ADS is

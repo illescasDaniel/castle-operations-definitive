@@ -1,7 +1,7 @@
 From d6f8ea16b1b86c65323f4340ea4457aba4cdfb46 Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Fri, 9 Oct 2026 10:13:51 +0200
-Subject: [PATCH 41/64] CoD hipfire cone + click-fire for pistols/bolt/semi.
+Subject: [PATCH 41/65] CoD hipfire cone + click-fire for pistols/bolt/semi.
 
 Floor standing-still hip spread and require release between shots on
 non-autos so MP40-class weapons stay hold-to-spray.

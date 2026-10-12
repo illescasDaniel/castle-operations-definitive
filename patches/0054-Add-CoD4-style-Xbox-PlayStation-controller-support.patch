@@ -1,7 +1,7 @@
 From 2622707e9388d8e8020da028dd2f969d6d6100b1 Mon Sep 17 00:00:00 2001
 From: Daniel Illescas Romero <illescas.daniel@protonmail.com>
 Date: Sun, 11 Oct 2026 11:30:34 +0200
-Subject: [PATCH 54/64] Add CoD4-style Xbox/PlayStation controller support.
+Subject: [PATCH 54/65] Add CoD4-style Xbox/PlayStation controller support.
 
 Enable SDL gamepads with PAD0 binds, menu navigation, family detection, and original prompt glyphs on interact hints.
 ---

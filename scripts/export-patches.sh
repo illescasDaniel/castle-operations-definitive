@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Export iortcw/codmod commits as a patch series into patches/ (outer-repo backup).
+# Export iortcw main commits as a patch series into patches/ (outer-repo backup).
 # setup.sh no longer applies these — the engine fork already has them on branch codmod —
 # but keeping the series makes the outer repo self-describing without cloning the fork.
 set -euo pipefail
@@ -17,7 +17,7 @@ mkdir -p "$OUT"
 # Remove previous series so renumbered patches don't leave stale files.
 rm -f "$OUT"/*.patch
 
-count="$(git -C "$ROOT/iortcw" rev-list --count "${BASE}..codmod" 2>/dev/null || echo 0)"
+count="$(git -C "$ROOT/iortcw" rev-list --count "${BASE}..main" 2>/dev/null || echo 0)"
 if [[ "$count" -eq 0 ]]; then
 	echo "No commits on codmod beyond ${BASE:0:12}; patches/ cleared."
 	# Keep an empty marker so the directory stays tracked.
@@ -26,5 +26,5 @@ if [[ "$count" -eq 0 ]]; then
 fi
 rm -f "$OUT/.gitkeep"
 
-git -C "$ROOT/iortcw" format-patch "${BASE}..codmod" -o "$OUT"
+git -C "$ROOT/iortcw" format-patch "${BASE}..main" -o "$OUT"
 echo "Exported $count patch(es) to $OUT"

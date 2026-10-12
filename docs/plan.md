@@ -92,8 +92,8 @@ rtcw-cod/                         ← this folder; its own git repo (docs, scrip
 ## 5. Key facts already verified (2026-10-08)
 
 - ioRTCW upstream base: `438e7d413b5f7277187c35b032eb0ef9093ae778` (2024-05-26). The
-  `codmod` branch on [illescasDaniel/iortcw](https://github.com/illescasDaniel/iortcw) is built
-  from that pin; `setup.sh` clones the fork's `codmod` branch (patches already applied).
+  `main` branch on [illescasDaniel/iortcw](https://github.com/illescasDaniel/iortcw) is built
+  from that pin; `setup.sh` clones the fork's `main` branch (patches already applied).
 - `make -j32 release` in `iortcw/SP` **builds cleanly on the host** (CachyOS, GCC 16.2.1),
   with no extra packages: it uses bundled headers and libs and links at runtime against the host's
   `sdl2-compat`, `openal`, and `libglvnd`. Output lands in

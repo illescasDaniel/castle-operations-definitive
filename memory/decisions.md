@@ -11,6 +11,12 @@ Append-only log, newest first. Never rewrite history: if a decision is reversed,
 - **Rationale:** <why, and what we rejected>
 -->
 
+## 2026-10-12: Fork default branch is `main`; `codmod` and patches branches deleted
+
+- **Context:** After merging fork PR #2 into `master`, `codmod` (ancestor, identical tree) and `cursor/codmod-patches-0f47` (identical tree, bot history) were redundant.
+- **Decision:** Renamed fork `master` to `main`; `setup.sh` clones `main`, `export-patches.sh` exports `upstream-pin..main`; redundant branches deleted. Supersedes `IORTCW_BRANCH=codmod` below.
+- **Rationale:** One branch to track; the fork is no longer a pure upstream mirror, so `main` is the codmod engine.
+
 ## 2026-10-12: setup.sh clones illescasDaniel/iortcw codmod (no git am)
 
 - **Context:** Engine changes lived as `patches/` applied by `setup.sh` onto upstream ioRTCW; the fork now carries those commits on branch `codmod` (PR [#2](https://github.com/illescasDaniel/iortcw/pull/2); #1 closed).

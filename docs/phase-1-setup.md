@@ -26,11 +26,11 @@
 
 ### 1.2 ioRTCW fork clone (`codmod`)
 ```bash
-git clone --branch codmod --single-branch https://github.com/illescasDaniel/iortcw.git iortcw
+git clone --branch main --single-branch https://github.com/illescasDaniel/iortcw.git iortcw
 ```
-All engine and game changes live on the fork's `codmod` branch (based on upstream
+All engine and game changes live on the fork's `main` branch (based on upstream
 `438e7d413b5f7277187c35b032eb0ef9093ae778`). `scripts/export-patches.sh` still runs
-`git -C iortcw format-patch 438e7d4..codmod -o patches/` so the outer repo keeps a backup;
+`git -C iortcw format-patch 438e7d4..main -o patches/` so the outer repo keeps a backup;
 `setup.sh` no longer applies that series.
 
 ### 1.3 `scripts/setup.sh` (idempotent)

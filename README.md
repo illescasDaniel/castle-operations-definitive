@@ -77,7 +77,7 @@ From the repo root:
 
 What that does:
 
-1. **`setup.sh`** — clones our [ioRTCW fork](https://github.com/illescasDaniel/iortcw) into `iortcw/` (branch `codmod`, patches already applied), creates `run/`, symlinks Steam SP paks into `run/main/`, links mod configs into `run/codmod/`.
+1. **`setup.sh`** — clones our [ioRTCW fork](https://github.com/illescasDaniel/iortcw) into `iortcw/` (branch `main`), creates `run/`, symlinks Steam SP paks into `run/main/`, links mod configs into `run/codmod/`.
 2. **`build.sh`** — builds ioRTCW SP on the host.
 3. **`install.sh --vanilla`** — copies the engine into `run/` and game modules into both `run/codmod/` and `run/main/` (vanilla kept for A/B). Later rebuilds usually use `./scripts/install.sh` (codmod only).
 

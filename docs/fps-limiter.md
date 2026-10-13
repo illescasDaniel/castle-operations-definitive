@@ -195,3 +195,12 @@ verification, `com_maxfpsPrecise` per-menu toggle.
 | Frame Rate Limit | `com_maxfps` | Off = 0, 30, 60, 75, 90, 120, 144, 165, 240, 360 |
 
 Docs and code comments use these names; the numeric values are what the cvars store.
+
+### Menu frame rate limit (2026-10-13)
+
+`com_maxfpsMenu` (engine default -1, `CVAR_ARCHIVE`; reset value in `codmod_binds.cfg`): cap applied only while
+`CL_InMenuOnly()` is true (main menu, intro/cinematics, pause menu = `KEYCATCH_UI` while `CA_ACTIVE`). Loading screens
+and normal play use `com_maxfps` only. -1 = Auto (monitor refresh from `r_displayRefreshActual`, 60 if unknown),
+0 = Off, otherwise fps; the effective cap is the lower of it and `com_maxfps`. `com_maxfps -1` also means Auto
+(not the default; default stays Off). Menu list entry `"Auto (%hz)"` is expanded to the refresh rate by
+`Item_Multi_Label` in `ui_shared.c`. Row "Menu Frame Rate Limit" in GRAPHICS (main + in-game menu).

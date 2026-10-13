@@ -167,7 +167,7 @@
 =ui/options.menu 260 262
 +		text "Frame Rate Limit:"
 +		cvar "com_maxfps"
-+		cvarFloatList { "Off" 0 "30" 30 "60" 60 "75" 75 "90" 90 "120" 120 "144" 144 "165" 165 "240" 240 "360" 360 }
++		cvarFloatList { "Off" 0 "Auto (%hz)" -1 "30" 30 "60" 60 "75" 75 "90" 90 "120" 120 "144" 144 "165" 165 "240" 240 "360" 360 }
 +		rect 240 151 320 11
 =ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
@@ -206,6 +206,17 @@
 +		maxChars 6
 +		maxPaintChars 6
 +		rect 240 184 320 11
+=ui/ingame_options.menu 81 82
+=ui/error.menu 217 218
++		textaligny 9
++		textscale .20
+=ui/ingame_options.menu 325 329
+=ui/ingame_system.menu 69 73
+=ui/options.menu 260 262
++		text "Menu Frame Rate Limit:"
++		cvar "com_maxfpsMenu"
++		cvarFloatList { "Auto (%hz)" -1 "Off" 0 "30" 30 "60" 60 "75" 75 "90" 90 "120" 120 "144" 144 "165" 165 "240" 240 "360" 360 }
++		rect 240 195 320 11
 =ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
 +		textaligny 9

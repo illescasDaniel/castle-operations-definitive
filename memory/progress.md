@@ -103,3 +103,5 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 - AO menu option: `r_ao` (0-4) live-switchable in GRAPHICS; `r_ssao` is now derived, pins removed from run.sh/gfxdefaults. Awaiting user playtest.
 
 - Ambient-only AO (r_ssaoAmbient 1, default) via lightall + full-res aoImage; depth mips tried, no gain, removed.
+
+- [x] **Menu FPS limit (2026-10-13):** `com_maxfpsMenu` (-1 Auto/monitor refresh default, 0 Off, fps) caps only menu/cinematic/pause frames (`CL_InMenuOnly`); `com_maxfps -1` = Auto too (default stays Off). GRAPHICS row "Menu Frame Rate Limit", labels `Auto (%hz)` expanded in `ui_shared.c`. Built + installed; UNCOMMITTED (iortcw + outer), awaiting user playtest (intro/main/pause capped, game not). See `docs/fps-limiter.md`.

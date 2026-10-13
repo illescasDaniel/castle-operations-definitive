@@ -59,3 +59,6 @@ Done and playtested by user ("sounds AMAZING"). `s_alHRTF` On/Off (default On; a
 
 ## Verification (2026-10-12)
 setup.sh verified in place and from a fresh clone (clones fork `main`, no patches); fresh-clone and in-place builds + install OK; AGENTS.md/README/docs updated for fork-only engine flow; `patches/` removed. Fork now has only `main`.
+
+## Menu FPS limit (2026-10-13)
+Implemented `com_maxfpsMenu` + `com_maxfps -1` Auto; built + installed, uncommitted. Awaiting playtest.

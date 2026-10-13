@@ -3,7 +3,7 @@
 Engine side lives in `iortcw/` (see `iortcw/CODMOD.md`, "rend2 additions").
 
 - **Models lit per pixel** (`R_DlightEntity`, `r_dlightEntities`), additive specular for metal (`r_dlightSpecular`),
-  albedo lift so near-black materials still catch light (`r_dlightAlbedoLift`, default 0.6, 1/0 = off).
+  optional albedo lift for near-black materials (`r_dlightAlbedoLift`, default 1 = off; <1 lifts, tested 0.6-0.7 with little effect on dark iron bars).
 - **Shadows:** one spot shadow map from the flashlight (`REF_SHADOW_DLIGHT` set in `CG_CodAddFlashlight`), screen-space
   mask, sampled by the dlight shaders. `r_flashlightShadow` 0/1 (2 = show mask inset, debug), `r_flashlightShadowSize`
   (latched, default 1024). Needs `r_depthPrepass 1`. The player's own body/weapon are excluded from the map.

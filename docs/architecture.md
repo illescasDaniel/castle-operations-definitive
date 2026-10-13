@@ -111,7 +111,7 @@ demo/savegame compatibility, and isn't needed.
 | Lean | `+leanleft`/`+leanright` | `WBUTTON_LEANLEFT/RIGHT` | `q` / `e` |
 | Alt weapon mode | `weapalt` | (cgame command) | `MOUSE3`, `z` |
 | Quick knife | `quickknife` | (cgame command) | `v` |
-| Flashlight (phase 5d) | `toggleflashlight` | eye-origin rend2 spot cones (`AddSpotLightToScene`) | `l` |
+| Flashlight (phase 5d) | `toggleflashlight` | eye-origin rend2 spot cones (`AddSpotLightToScene`, `REF_SHADOW_DLIGHT` → shadow map, `r_flashlightShadow`) | `l` |
 | Prone (toggle, phase 6b) | `+wbutton7` (alias `+prone`) | `wbuttons & WBUTTON_EXTRA7` → `#define WBUTTON_COD_PRONE WBUTTON_EXTRA7` | `CTRL` |
 
 `wbuttons` is delta-encoded as 8 bits (`msg.c` ~L674), so bit 64 travels to the server.

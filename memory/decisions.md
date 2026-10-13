@@ -11,6 +11,12 @@ Append-only log, newest first. Never rewrite history: if a decision is reversed,
 - **Rationale:** <why, and what we rejected>
 -->
 
+## 2026-10-13: Flashlight casts shadows via one spot shadow map + screen-space mask
+
+- **Context:** flashlight light passed through crates onto walls; rend2 `r_dlightMode 2` cube shadows are non-functional (cubemap bound where lightall expects sampler2D, `pvsOrigin` unset).
+- **Decision:** `REF_SHADOW_DLIGHT` flag on the flashlight cones; `R_RenderFlashlightShadowMap` renders one perspective depth map from the widest shadowed spot; `RB_DrawSurfs` builds a full-res R8 mask (`shadowmask` with `USE_SPOT_SHADOW`); `dlight_fp` and lightall (`USE_LIGHT_VECTOR`) multiply by it. The mask shares `TB_AOMAP` (u_AoParams.y flag). View flag `VPF_NOPLAYER` keeps the player's own body/weapon out of the map.
+- **Rationale:** reuses the sun-shadow pipeline instead of fixing cube shadows (6 renders per light). Cvars `r_flashlightShadow` (0 off, 2 shows mask inset), `r_flashlightShadowSize`. User verified 2026-10-13.
+
 ## 2026-10-13: r_ssaoAmbient default back to 0
 
 - **Context:** ambient-only AO (`r_ssaoAmbient 1`) skipped surfaces not drawn by lightall (filter lightmap stages, vertex-lit), so AO looked broken in places.

@@ -31,3 +31,9 @@ mod/codmod/codmod_hud.pk3
 
 # personal Claude Code overrides
 .claude/settings.local.json
+
+# HD video pipeline (proprietary derivatives — never commit)
+tools/hd-video/samples/
+tools/hd-video/.cache/
+tools/hd-video/.venv/
+**/codmod_hd_video.pk3

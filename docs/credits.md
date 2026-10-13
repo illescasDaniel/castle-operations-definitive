@@ -41,6 +41,11 @@ Nothing below is bundled: the tools download the models on your machine on first
   own terms; check them before using or sharing output.
 - `tools/hd-audio`: [AudioSR](https://github.com/haoheliu/versatile_audio_super_resolution) (Haohe Liu et al.; the
   `audiosr` Python package is MIT licensed, the weights follow the project's own terms).
+- `tools/hd-video`: [2xLiveActionV1_SPAN](https://openmodeldb.info/models/2x-LiveActionV1-SPAN) by jcj83429
+  (CC-BY-NC-SA-4.0: non-commercial, share-alike; output stays private like the other HD packs), loaded with
+  [spandrel](https://github.com/chaiNNer-org/spandrel) (MIT) and run with FFmpeg's `nlmeans` denoiser. The weights
+  are downloaded on the user's machine, never bundled. Other models tried (not shipped): 2xNomosUni compact
+  multijpg, 4x-ClearReality, 4x-UltraSharpV2 (Kim2091).
 
 Review each model's license before using or sharing its output.
 

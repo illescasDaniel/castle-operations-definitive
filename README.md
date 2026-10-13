@@ -201,6 +201,22 @@ cd tools/hd-audio
 
 Works on **8 GB** GPUs. Close other GPU apps before a full batch.
 
+## HD videos (optional, local only)
+
+The intro cutscene and the menu background loops can be AI-remastered into a local `run/codmod/codmod_hd_video.pk3`
+(MJPEG/AVI; the engine prefers `video/<name>.avi` over the original RoQ and falls back when the pk3 is absent).
+The **tool is in git**; the **pk3 is not**. Locked recipe: ffmpeg `nlmeans` denoise (strength 1) →
+[2xLiveActionV1_SPAN](https://openmodeldb.info/models/2x-LiveActionV1-SPAN) by **jcj83429** (2x) → dynamic film grain.
+
+Full steps: [`tools/hd-video/README.md`](tools/hd-video/README.md).
+
+```bash
+cd tools/hd-video
+uv sync --python 3.11
+uv run hd-video batch --variant nlm1+span --grain 3
+uv run hd-video pack --variant nlm1+span
+```
+
 ## Localization (community patches)
 
 The game data is English-only: no translated text or audio ships with RTCW on Steam, and the menus and HUD of this mod
@@ -243,6 +259,7 @@ rtcw-cod/
 ├── scripts/              # setup, build, install, run
 ├── tools/hd-textures/    # local AI upscale pipeline (uv); outputs git-ignored
 ├── tools/hd-audio/       # local AI audio remaster (uv); outputs git-ignored
+├── tools/hd-video/       # local AI video remaster (uv); outputs git-ignored
 ├── mod/codmod/           # configs, menu deltas, small original pk3s (not compiled)
 ├── iortcw/               # clone of illescasDaniel/iortcw (git-ignored; own repo)
 └── run/                  # runtime tree (git-ignored)

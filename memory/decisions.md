@@ -11,6 +11,18 @@ Append-only log, newest first. Never rewrite history: if a decision is reversed,
 - **Rationale:** <why, and what we rejected>
 -->
 
+## 2026-10-13: HD video recipe = nlmeans(1) + SPAN 2x + dynamic grain
+
+- **Context:** SPAN alone kept the RoQ blockiness; the user asked for a stronger fix.
+- **Decision:** ffmpeg `nlmeans=s=1:p=5:r=9` before 2xLiveActionV1_SPAN, 2x output (1024x512), luma film grain sigma 3 added per frame after upscaling. Tool: `tools/hd-video` (`--variant nlm1+span --grain 3`).
+- **Rationale:** nlmeans >= 2 is plasticky, deblock alone leaves blocks, Nomos/ClearReality/UltraSharpV2 are softer or slower, 4x (SPAN twice) looked odd to the user. Grain restores the texture the denoise removes.
+
+## 2026-10-13: HD videos as MJPEG/AVI, engine prefers .avi over .roq
+
+- **Context:** Only `wolfintro.RoQ` (512x256, 4142 frames) and `menu`/`menu2.roq` (256x256) are SP videos; the RoQ player has fixed 512x512 buffers and a lossy VQ codec that would blur a 2x upscale.
+- **Decision:** `tools/hd-video` upscales with 2xLiveActionV1_SPAN and encodes MJPEG+PCM AVI (`video/<name>.avi` in `codmod_hd_video.pk3`). `CIN_PlayCinematic` tries the `.avi` first, falls back to the RoQ, so no caller/menu changes. Client now links the in-tree libjpeg. MP videos out of scope until MP is worked on.
+- **Rationale:** MJPEG is simple to decode with libjpeg already in-tree and keeps quality (intro ~0.67 MB/s); rejected re-encoding to RoQ.
+
 ## 2026-10-13: Gyro aiming via SDL sensor API, additive to stick
 
 - **Context:** DualSense gyro aiming requested, with Aiming/Off/Always.

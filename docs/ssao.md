@@ -51,3 +51,16 @@ no restart (SSAO images are always allocated; the depth copy only runs when AO o
 | 2 | GTAO Low (1 slice x 2 steps), default |
 | 3 | GTAO Medium (2 x 4) |
 | 4 | GTAO High (2 x 6, strength 0.8) |
+
+## Ambient-only AO (`r_ssaoAmbient`, default 1)
+
+After the blur, the half-res AO is bilaterally upsampled into a full-res R8 image (`tr.aoImage`) before the main pass.
+`lightall_fp.glsl` samples it (unit `TB_AOMAP` = 7, `u_AoParams.x` enables it per stage) and scales only the baked
+lightmap / vertex light and the ambient term, so the sun (shadow map) and dynamic lights are not darkened. Only opaque
+stages of the main view use it (`backEnd.aoReady`). `r_ssaoAmbient 0` goes back to multiplying the final image in
+`RB_PostProcess`. Cost: none measurable (GTAO Low, AO off and both modes all benchmark at ~252 FPS).
+
+## Depth mips: tried, dropped
+
+A mip chain of the half-res depth with `textureLod` for far taps (XeGTAO style) gave no gain on GTAO High
+(183 vs 181 FPS, 2561x1601); removed to keep the shader simple.

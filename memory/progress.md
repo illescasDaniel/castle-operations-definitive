@@ -97,3 +97,5 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 - [x] **GTAO (2026-10-13):** `ssao_fp.glsl` has a `USE_GTAO` variant (`r_ssaoMode 1` default; 0 = hemisphere), half-res depth `ssaoDepthImage` for AO/blur/upsample. Default 2 slices x 4 steps = 192 FPS vs 255 with SSAO off (bench uncapped). Details + cost table in `docs/ssao.md`. UNCOMMITTED in iortcw (+ outer docs); awaiting user playtest. Idea left: depth mips, ambient-only application in `lightall`.
 
 - AO menu option: `r_ao` (0-4) live-switchable in GRAPHICS; `r_ssao` is now derived, pins removed from run.sh/gfxdefaults. Awaiting user playtest.
+
+- Ambient-only AO (r_ssaoAmbient 1, default) via lightall + full-res aoImage; depth mips tried, no gain, removed.

@@ -23,6 +23,12 @@ You need your own copy of RTCW (Steam). **No game data is included or modified.*
   friction, jump, landing slowdown)
 - **Aim down sights on every firearm**: hold or toggle, per-weapon iron-sight alignment, FOV zoom, lower sensitivity,
   slower movement and tighter spread. Scoped rifles show their real scope while aiming
+- **CoD-style recoil**: every shot kicks your real aim, with a per-weapon kick that climbs while you hold fire, can be
+  pulled back down, and recovers when you stop; less while aiming, crouched or prone (`cod_recoil*`)
+- **ADS weapon sway and breathing**: slow breathing drift of the weapon while aiming, reduced when crouched or prone and
+  increased when moving (`cod_adsSway*`)
+- **AI soldiers sprint**: human enemies break into a short burst of speed (x1.5) when charging a distant target or
+  running to cover; `cod_aiSprint 0` restores vanilla (`cod_aiSprint*`)
 - Sprint with a procedural gun-lower, walk/jog/sprint bob, hipfire cone that tightens when standing still
 - Modern-FPS fire modes (click-fire for pistols, bolt and semi-auto), tap-fire pistol, always-visible reload animation
 - **Quick knife** (`V`), **tactical slide** (sprint + crouch), **prone** (`CTRL`, ported from Enemy Territory: Legacy), toggle crouch
@@ -42,16 +48,21 @@ You need your own copy of RTCW (Steam). **No game data is included or modified.*
 - Xbox and PlayStation pads through SDL GameController, one modern-FPS layout for both
 - Pad-aware menus (directional focus), pad glyphs in interact hints, auto-detected controller family
 - Look sensitivity, stick smoothing, axial snap, and an optional ADS-only auto-aim assist
+- **Gyro aiming** (DualSense): off, while aiming, or always, with its own sensitivity (see [docs/gyro.md](docs/gyro.md))
 
 ### Graphics
-- Uses the **rend2** renderer with sun shadows, **SSAO**, sun rays, per-pixel **dynamic lights**, specular and
-  deluxe mapping, HDR, 16x anisotropic filtering
+- Uses the **rend2** renderer with sun shadows, sun rays, per-pixel **dynamic lights** (which also light characters,
+  props and items), specular and deluxe mapping, HDR, 16x anisotropic filtering
+- **Ambient occlusion** with a menu option (Off / SSAO / **GTAO**, GTAO by default), depth-aware upsampling and distance
+  fade, see [docs/ssao.md](docs/ssao.md)
 - **SMAA** anti-aliasing (4 quality levels) as the default, ~18% faster than 2x MSAA in our benchmark; MSAA 2/4/8x
   still available. One `Anti-Aliasing` menu row drives both
 - **Frame pacing**: an engine-level limiter with absolute deadlines (sleep + spin) for a flat frame-time graph, sub-millisecond
   game-time interpolation so camera motion is even at any cap, and five **VSync** modes (Off / On / Adaptive / Triple /
-  Low latency) plus a frame limit slider, all in the menu
+  Low latency) plus a frame limit slider and a separate menu/cutscene frame cap (Auto = monitor refresh), all in the menu
 - Wayland-friendly fullscreen and mode switching
+- Cutscenes: black letterbox bars, any key skips, and a **Skip Intro** toggle in Settings > Game
+- **Remastered cutscene videos** (optional, local): the intro and menu loops, see [HD videos](#hd-videos-optional-local-only)
 - **Remastered textures** (optional, you generate them locally): AI-upscaled with Real-ESRGAN, see below
 
 ### Audio

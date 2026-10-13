@@ -26,7 +26,9 @@ You need your own copy of RTCW (Steam). **No game data is included or modified.*
 - Sprint with a procedural gun-lower, walk/jog/sprint bob, hipfire cone that tightens when standing still
 - Modern-FPS fire modes (click-fire for pistols, bolt and semi-auto), tap-fire pistol, always-visible reload animation
 - **Quick knife** (`V`), **tactical slide** (sprint + crouch), **prone** (`CTRL`, ported from Enemy Territory: Legacy), toggle crouch
-- Health regeneration, linear stamina, a flashlight (`L`) built from real dynamic spot lights, hit markers with headshot ticks
+- Health regeneration, linear stamina, hit markers with headshot ticks
+- **Fully dynamic flashlight** (`L`): a per-pixel spot light that lights walls, enemies and props alike and
+  **casts real-time shadows** (see [docs/flashlight-shadows.md](docs/flashlight-shadows.md))
 - Everything is tunable: ~190 `cod_*` cvars and an in-game `cod_menu` tuning overlay; `cod_enable 0` restores vanilla feel
 
 ### HUD and menus

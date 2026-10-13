@@ -11,6 +11,12 @@ Append-only log, newest first. Never rewrite history: if a decision is reversed,
 - **Rationale:** <why, and what we rejected>
 -->
 
+## 2026-10-13: Dynamic lights reach GPU (VAO) models; fix in rend2, not in materials
+
+- **Context:** the flashlight left static MD3 props (escape1 cages, iron gates) dark; looked like a dark-material problem.
+- **Decision:** fix three rend2 gaps: OR `needDlights` into `tess.dlightBits` before the surface call, keep `tess.dlightBits` across `RB_EndSurface`/`RB_BeginSurface` restarts, and give `ForwardDlight` the entity lightall variant (`u_ModelMatrix`, bone matrix) for models. Keep `ForwardDlight` ignoring baked vertex colour.
+- **Rationale:** debug prints showed the mask was computed but lost in the backend and the shader lit model-space positions as world space. Albedo lift (material tweak) rejected: no effect. User verified cages, gates and enemies lit.
+
 ## 2026-10-13: Flashlight casts shadows via one spot shadow map + screen-space mask
 
 - **Context:** flashlight light passed through crates onto walls; rend2 `r_dlightMode 2` cube shadows are non-functional (cubemap bound where lightall expects sampler2D, `pvsOrigin` unset).

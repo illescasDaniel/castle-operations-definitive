@@ -17,7 +17,8 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 - [x] Phase 5.5: quick knife on V + snappy switch/return (confirmed in-game 2026-10-08)
 
 ### Open
-- [x] Flashlight shadows (spot shadow map + screen mask, `r_flashlightShadow`); user verified 2026-10-13. Open: black iron doors in first castle map still unlit by flashlight (shader not inspected)
+- [x] Flashlight shadows (spot shadow map + screen mask, `r_flashlightShadow`); user verified 2026-10-13
+- [x] Flashlight lights static VAO models (escape1 cages, iron gates): three rend2 dlight fixes; user verified 2026-10-13
 - [x] Flashlight/dlights now light model entities (characters, props, items) per pixel with spot-cone test (`R_DlightEntity`, cvar `r_dlightEntities` default 1); user approved 2026-10-13. Open: metallic/baked-light items still reflect little
 - [x] Cutscene letterbox bars drawn black; intro always plays (ignores `com_introPlayed`, `+set/+exec` args no longer suppress it); any key skips cinematics — engine commits 5665ad51, 37afbae2; awaiting in-game check of bars (2026-10-13)
 - [x] **Gyro aiming (DualSense):** `cod_padGyro` Aiming/Off/Always + sens, menu rows; playtested OK 2026-10-13 (`docs/gyro.md`)

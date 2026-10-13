@@ -20,6 +20,7 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 - [x] Flashlight shadows (spot shadow map + screen mask, `r_flashlightShadow`); user verified 2026-10-13
 - [x] Flashlight lights static VAO models (escape1 cages, iron gates): three rend2 dlight fixes; user verified 2026-10-13
 - [x] Flashlight/dlights now light model entities (characters, props, items) per pixel with spot-cone test (`R_DlightEntity`, cvar `r_dlightEntities` default 1); user approved 2026-10-13. Open: metallic/baked-light items still reflect little
+- [x] Settings > Game "Skip Intro" toggle (`cod_skipIntro`, engine `common.c` + `game.menu.delta` + `codmod_binds.cfg`); built/installed 2026-10-13, awaiting in-game check
 - [x] Cutscene letterbox bars drawn black; intro always plays (ignores `com_introPlayed`, `+set/+exec` args no longer suppress it); any key skips cinematics — engine commits 5665ad51, 37afbae2; awaiting in-game check of bars (2026-10-13)
 - [x] **Gyro aiming (DualSense):** `cod_padGyro` Aiming/Off/Always + sens, menu rows; playtested OK 2026-10-13 (`docs/gyro.md`)
 - [ ] Phase L0 (optional): translate menus and available game data (briefings, strings, codmod menus/HUD) — see docs/phase-l10n.md

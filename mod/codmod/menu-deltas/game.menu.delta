@@ -154,7 +154,20 @@
 =ui/options.menu 100 101
 @@ 253 254
 =ui/options.menu 81 82
-@@ 255 555
+@@ 255 257
+@@ 259 268
++		name game
+=ui/options.menu 129 130
++		text "Skip Intro:"
++		cvar "cod_skipIntro"
++		rect 240 235 320 14
+@@ 269 270
+=ui/error.menu 217 218
+@@ 271 272
+=ui/options.menu 100 101
+@@ 275 300
+=ui/options.menu 81 82
+@@ 301 555
 @@ 563 564
 =ui/options.menu 81 82
 @@ 565 571

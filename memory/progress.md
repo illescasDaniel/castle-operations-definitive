@@ -51,7 +51,7 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 - [ ] Phase 6b: prone, tier B (third-person animations, optional)
 - [ ] Phase 7: extras (optional). In progress: E4 ADS sway/breath, then E5 recoil model (next, 2026-10-13)
   - [x] E4 ADS sway/breath: done 2026-10-13, user approved, tuned down to 0.34/0.22 (`cod_adsSway*`)
-  - [ ] E5 CoD-style recoil model
+  - [ ] E5 CoD-style recoil model: real aim kick built + installed 2026-10-13, awaiting playtest (`cod_recoil*`, `STAT_COD_RECOIL`)
 - [x] **SMAA default (replace MSAA 2x):** implemented + benchmarked +18% (2026-10-12), see `docs/smaa.md`.
 - [x] SMAA user canary passed 2026-10-12; committed with engine patches exported.
 - [x] **Controller support (Xbox + PlayStation):** CoD4 `PAD0_*` binds, joystick on by default, menu pad nav, original pad glyphs on interact hints (`codmod_pad.pk3`). Built/installed 2026-10-11; pad playtest welcome.

@@ -11,6 +11,12 @@ Append-only log, newest first. Never rewrite history: if a decision is reversed,
 - **Rationale:** <why, and what we rejected>
 -->
 
+## 2026-10-13: Dynamic lights applied per pixel to MD3/MDS models
+
+- **Context:** The flashlight lit walls but not enemies, crates or pickups: rend2 only lit world surfaces per pixel; models got one coarse origin-based term that ignored the spot cone.
+- **Decision:** `R_DlightEntity` (tr_light.c) computes a per-entity dlight mask (sphere vs radius/cone); models set the dlighted sort bit and the back end ORs the mask into `tess.dlightBits`. Entity-lighting skips those dlights to avoid double counting. View weapon (RF_DEPTHHACK) excluded. Cvar `r_dlightEntities` (default 1) is the A/B switch.
+- **Rationale:** reuses the existing spot-aware ForwardDlight/ProjectDlightTexture path; no cgame changes. Rejected: boosting the coarse term (flat, ignores cone). Shadows not addressed.
+
 ## 2026-10-13: HD video recipe = nlmeans(1) + SPAN 2x + dynamic grain
 
 - **Context:** SPAN alone kept the RoQ blockiness; the user asked for a stronger fix.

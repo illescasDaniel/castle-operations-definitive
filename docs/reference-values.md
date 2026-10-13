@@ -79,7 +79,7 @@ documented. **M** = commonly cited, not verified here. **L** = estimate from mem
 | `cod_flashlightR/G/B` | 1 / 0.95 / 0.85 | warm white | Phase 5d |
 | `r_dlightMode` | 1 | rend2 ForwardDlight (needed for spot cones); latch | Phase 5d |
 | `cl_renderer` | `rend2` | modern renderer; latch | Graphics |
-| `r_ao` | 3 | ambient occlusion 0 off, 1 hemisphere, 2-4 GTAO low/med/high; live | Graphics |
+| `r_ao` | 2 | ambient occlusion 0 off, 1 hemisphere, 2-4 GTAO low/med/high; live | Graphics |
 | `r_ext_framebuffer_multisample` | 2 | MSAA 2×; latch | Graphics |
 | `r_ext_texture_filter_anisotropic` | 16 | AF; latch | Graphics |
 | `r_hdr` / `r_postProcess` / `r_toneMap` / `r_autoExposure` | 1 | HDR tonemap path | Graphics |

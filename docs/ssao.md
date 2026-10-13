@@ -40,7 +40,7 @@ screen radius helps more. Depth mips (XeGTAO style) would be the next step if mo
 
 ## In-game setting (`r_ao`)
 
-GRAPHICS > Ambient Occlusion sets `r_ao` (archived, default 3, reset in `codmod_binds.cfg`). `R_ApplyAO()` (called from
+GRAPHICS > Ambient Occlusion sets `r_ao` (archived, default 2, reset in `codmod_binds.cfg`). `R_ApplyAO()` (called from
 `RE_BeginFrame` when `r_ao` changes) derives `r_ssao`/`r_ssaoMode`/`r_ssaoSlices`/`r_ssaoSteps`; changes apply live with
 no restart (SSAO images are always allocated; the depth copy only runs when AO or shadow blur is on).
 
@@ -48,6 +48,6 @@ no restart (SSAO images are always allocated; the depth copy only runs when AO o
 |---|---|
 | 0 | Off |
 | 1 | SSAO, hemisphere (16 samples) |
-| 2 | GTAO Low (1 slice x 2 steps) |
-| 3 | GTAO Medium (2 x 4), default |
+| 2 | GTAO Low (1 slice x 2 steps), default |
+| 3 | GTAO Medium (2 x 4) |
 | 4 | GTAO High (2 x 6, strength 0.8) |

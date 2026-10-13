@@ -8,6 +8,8 @@
 +		name BLACKGRAD2					// bottom bar â hidden for vertical list
 @@ 175 176
 =ui/bookp.menu 111 112
+@@ 196 197
+=ui/bookp.menu 111 112
 @@ 212 213
 +		name WOLFICON					// bottom icon â hidden for vertical list
 @@ 216 217

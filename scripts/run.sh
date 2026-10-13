@@ -89,7 +89,7 @@ if [[ "$VANILLA" -eq 0 ]]; then
 	)
 	# ADVANCED graphics cvars are latched: +set the recommended value only while wolfconfig has no saved
 	# choice, so menu changes persist (otherwise codmod_binds.cfg -> codmod_gfxdefaults.cfg sets them).
-	for kv in r_ssao=1 r_ext_texture_filter_anisotropic=16 r_drawSunRays=1 r_shadowFilter=2 r_shadowMapSize=2048; do
+	for kv in r_ext_texture_filter_anisotropic=16 r_drawSunRays=1 r_shadowFilter=2 r_shadowMapSize=2048; do
 		grep -qs "^seta ${kv%%=*} " "$HOME_PATH/codmod/wolfconfig.cfg" || ARGS+=(+set "${kv%%=*}" "${kv#*=}")
 	done
 	# Apply default binds on first launch (no saved wolfconfig yet) or when requested.

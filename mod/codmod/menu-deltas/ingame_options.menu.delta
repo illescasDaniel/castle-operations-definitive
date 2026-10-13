@@ -185,6 +185,17 @@
 +		textaligny 9
 +		textscale .20
 =ui/ingame_options.menu 325 329
+=ui/ingame_system.menu 69 73
+=ui/options.menu 260 262
++		text "Ambient Occlusion:"
++		cvar "r_ao"
++		cvarFloatList { "Off" 0 "SSAO" 1 "GTAO Low" 2 "GTAO Medium" 3 "GTAO High" 4 }
++		rect 240 173 320 11
+=ui/ingame_options.menu 81 82
+=ui/error.menu 217 218
++		textaligny 9
++		textscale .20
+=ui/ingame_options.menu 325 329
 =ui/ingame_options.menu 450 453
 =ui/ingame_system.menu 356 358
 =ui/ingame_system.menu 72 73
@@ -194,7 +205,7 @@
 +		cvar "r_gamma"
 +		maxChars 6
 +		maxPaintChars 6
-+		rect 240 173 320 11
++		rect 240 184 320 11
 =ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
 +		textaligny 9
@@ -205,7 +216,7 @@
 =ui/ingame_system.menu 462 464
 +		textscale .20
 =ui/ingame_options.menu 38 39
-+		rect 240 195 320 11
++		rect 240 206 320 11
 =ui/ingame_options.menu 443 444
 =ui/error.menu 217 218
 +		textaligny 9
@@ -291,8 +302,8 @@
 +		name advanced
 @@ 357 365
 =ui/controls.menu 277 278
-+		text "SSAO (default: Yes):"
-+		cvar "r_ssao"
++		text "Sun Rays (default: Yes):"
++		cvar "r_drawSunRays"
 +		rect 240 175 320 11
 =ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
@@ -304,8 +315,8 @@
 +		name advanced
 @@ 376 384
 =ui/controls.menu 277 278
-+		text "Sun Rays (default: Yes):"
-+		cvar "r_drawSunRays"
++		text "Dynamic Lights (default: Yes):"
+=ui/options.menu 131 132
 +		rect 240 186 320 11
 =ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
@@ -316,9 +327,10 @@
 @@ 392 393
 +		name advanced
 @@ 394 402
-=ui/controls.menu 277 278
-+		text "Dynamic Lights (default: Yes):"
-=ui/options.menu 131 132
+=ui/controls.menu 720 721
++		text "Anisotropic Filter:"
++		cvar "r_ext_texture_filter_anisotropic"
++		cvarFloatList { "Off" 0 "2x" 2 "4x" 4 "8x" 8 "16x (default)" 16 }
 +		rect 240 197 320 11
 =ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
@@ -329,10 +341,8 @@
 @@ 412 420
 +		name advanced
 @@ 421 430
-=ui/controls.menu 720 721
-+		text "Anisotropic Filter:"
-+		cvar "r_ext_texture_filter_anisotropic"
-+		cvarFloatList { "Off" 0 "2x" 2 "4x" 4 "8x" 8 "16x (default)" 16 }
+=ui/ingame_system.menu 297 300
++		cvarStrList { "Bilinear", "GL_LINEAR_MIPMAP_NEAREST", "Trilinear (default)", "GL_LINEAR_MIPMAP_LINEAR" }
 +		rect 240 208 320 11
 =ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
@@ -343,20 +353,9 @@
 @@ 438 439
 +		name advanced
 @@ 440 443
-=ui/ingame_system.menu 297 300
-+		cvarStrList { "Bilinear", "GL_LINEAR_MIPMAP_NEAREST", "Trilinear (default)", "GL_LINEAR_MIPMAP_LINEAR" }
-+		rect 240 219 320 11
-=ui/ingame_options.menu 81 82
-=ui/error.menu 217 218
-+		textaligny 9
-+		textscale .20
-=ui/ingame_options.menu 325 331
-=ui/ingame_options.menu 213 214
-+		name advanced
-=ui/options.menu 260 262
-=ui/ingame_system.menu 257 259
+=ui/ingame_system.menu 256 259
 +		cvarFloatList { "Low" 2 "Normal" 1 "High (default)" 0 }
-+		rect 240 230 320 11
++		rect 240 219 320 11
 =ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
 +		textaligny 9
@@ -367,7 +366,7 @@
 =ui/options.menu 260 262
 =ui/ingame_system.menu 277 279
 +		cvarFloatList { "Low" 3 "Normal" 2 "High" 1 "Extra (default)" 0 }
-+		rect 240 241 320 11
++		rect 240 230 320 11
 =ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
 +		textaligny 9
@@ -378,7 +377,7 @@
 =ui/options.menu 260 262
 =ui/ingame_system.menu 238 240
 +		cvarFloatList { "High (default)" 0 "Medium" 1 "Low" 2 }
-+		rect 240 252 320 11
++		rect 240 241 320 11
 =ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
 +		textaligny 9
@@ -390,7 +389,7 @@
 +		text "Frame Pacing:"
 +		cvar "com_maxfpsMode"
 +		cvarFloatList { "Lowest Latency" 0 "Even" 1 "Smart (default)" 2 }
-+		rect 240 263 320 11
++		rect 240 252 320 11
 =ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
 +		textaligny 9
@@ -403,7 +402,7 @@
 +		type 1
 +		textscale .20
 =ui/ingame_options.menu 38 39
-+		rect 240 280 320 11
++		rect 240 269 320 11
 @@ 444 446
 =ui/error.menu 217 218
 +		textaligny 9

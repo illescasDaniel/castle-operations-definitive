@@ -20,8 +20,8 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 - [x] Flashlight shadows (spot shadow map + screen mask, `r_flashlightShadow`); user verified 2026-10-13
 - [x] Flashlight lights static VAO models (escape1 cages, iron gates): three rend2 dlight fixes; user verified 2026-10-13
 - [x] Flashlight/dlights now light model entities (characters, props, items) per pixel with spot-cone test (`R_DlightEntity`, cvar `r_dlightEntities` default 1); user approved 2026-10-13. Open: metallic/baked-light items still reflect little
-- [x] Settings > Game "Skip Intro" toggle (`cod_skipIntro`, engine `common.c` + `game.menu.delta` + `codmod_binds.cfg`); built/installed 2026-10-13, awaiting in-game check
-- [x] Cutscene letterbox bars drawn black; intro always plays (ignores `com_introPlayed`, `+set/+exec` args no longer suppress it); any key skips cinematics — engine commits 5665ad51, 37afbae2; awaiting in-game check of bars (2026-10-13)
+- [x] Settings > Game "Skip Intro" toggle (`cod_skipIntro`, engine `common.c` + `game.menu.delta` + `codmod_binds.cfg`); confirmed 2026-10-13
+- [x] Cutscene letterbox bars drawn black; intro always plays (ignores `com_introPlayed`, `+set/+exec` args no longer suppress it); any key skips cinematics — engine commits 5665ad51, 37afbae2; confirmed 2026-10-13
 - [x] **Gyro aiming (DualSense):** `cod_padGyro` Aiming/Off/Always + sens, menu rows; playtested OK 2026-10-13 (`docs/gyro.md`)
 - [ ] Phase L0 (optional): translate menus and available game data (briefings, strings, codmod menus/HUD) — see docs/phase-l10n.md
 - [ ] Phase L1 (optional): AI-transcribe dialogue audio into subtitles + subtitle display
@@ -49,7 +49,9 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 - [x] Phase 6: slide — confirmed in-game 2026-10-09
 - [x] Phase 6b: prone, tier A (gameplay) — confirmed in-game 2026-10-09 (`cod_proneScale 0.55`)
 - [ ] Phase 6b: prone, tier B (third-person animations, optional)
-- [ ] Phase 7: extras (optional)
+- [ ] Phase 7: extras (optional). In progress: E4 ADS sway/breath, then E5 recoil model (next, 2026-10-13)
+  - [ ] E4 ADS sway/breath
+  - [ ] E5 CoD-style recoil model
 - [x] **SMAA default (replace MSAA 2x):** implemented + benchmarked +18% (2026-10-12), see `docs/smaa.md`.
 - [x] SMAA user canary passed 2026-10-12; committed with engine patches exported.
 - [x] **Controller support (Xbox + PlayStation):** CoD4 `PAD0_*` binds, joystick on by default, menu pad nav, original pad glyphs on interact hints (`codmod_pad.pk3`). Built/installed 2026-10-11; pad playtest welcome.
@@ -87,21 +89,21 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 - [x] **Bench abort → no HUD / no pause:** escape1 cutscene `cameraMode` left stuck; cleanup now `stopCamera` + clear client cam. Built/installed 2026-10-11; playtest welcome.
 - [x] **HUD/UI guardrails + config wipe:** orphan fullscreen UI no longer skips cgame; `codmod.cfg` + `run.sh --reset-config` force `cg_draw2D`/`cg_drawGun`; wolfconfig wiped 2026-10-11 (saves kept).
 - [x] **Benchmark (rebuilt):** real-time demo replay (`cl_benchDemo`, µs frame stats) + `scripts/bench.sh` + DISPLAY "RUN BENCHMARK" button; demo `mod/codmod/demos/codmod_bench.dm_50`. Engine change client-only (cl_cgame/cl_main/client.h/sys). CLI smoke OK 2026-10-11; **user to verify menu button + HUD/ESC pause**. Docs: `docs/performance.md`.
-- [x] **Frame-perfect FPS limiter + vsync modes:** all plan steps done 2026-10-12 (uncommitted iortcw + outer; awaiting user review/playtest incl. HUD + ESC pause). `Sys_WaitUntil`, pacer modes 0/1/2, `r_vsync` 0-4 (Off/On/Adaptive/Triple/Low latency), sub-ms cgame lerp, DISPLAY menu rows (menus pk3 repacked). Details + results: `docs/fps-limiter.md` section 6. Open: Windows untested; vsync 1-3 not validated on this Wayland box.
+- [x] **Frame-perfect FPS limiter + vsync modes:** all plan steps done 2026-10-12 (committed; confirmed 2026-10-13). `Sys_WaitUntil`, pacer modes 0/1/2, `r_vsync` 0-4 (Off/On/Adaptive/Triple/Low latency), sub-ms cgame lerp, DISPLAY menu rows (menus pk3 repacked). Details + results: `docs/fps-limiter.md` section 6. Open: Windows untested; vsync 1-3 not validated on this Wayland box.
 - [x] **HRTF 3D audio:** OpenAL Soft `ALC_SOFT_HRTF` via `s_alHRTF` (default on) + sound-menu row; effects volume 1.0. Playtested OK 2026-10-12. Ideas left: EFX reverb per area, low-pass occlusion.
 - [x] **Kick buff + R3 tap/hold:** `cod_kickDamage` 50 (vanilla 15); pad R3 `+quickkick` = tap quickknife / hold kick. Playtested OK 2026-10-12. Docs: `phase-5-feel.md`.
 - [x] **iortcw fork published:** all 83 engine paths on `illescasDaniel/iortcw` `cursor/codmod-engine-0f47` (+ `codmod` mirror) match local `git am` of `patches/`; PR https://github.com/illescasDaniel/iortcw/pull/2 (2026-10-12; #1 closed — staging Action reds only).
 - [x] **Outer uses fork:** `setup.sh` clones `illescasDaniel/iortcw` branch `codmod` (no `git am`); `patches/` kept as `export-patches.sh` backup (2026-10-12).
-- [x] **HD cutscene videos (2026-10-13):** `tools/hd-video` (SPAN 2x -> MJPEG/AVI, `pilot`/`batch`/`pack`) + engine AVI path (`cl_cin_avi.c`, `CIN_PlayCinematic` prefers `video/<name>.avi` over `.roq`, JPEG linked into client). Intro 1024x512 115 MB + menu loops packed to `run/codmod/codmod_hd_video.pk3` (private). Engine built/installed; headless smoke test plays + exits clean. UNCOMMITTED; awaiting user playtest (picture, audio sync, ESC skip, menu background). MP videos out of scope.
+- [x] **HD cutscene videos (2026-10-13):** `tools/hd-video` (SPAN 2x -> MJPEG/AVI, `pilot`/`batch`/`pack`) + engine AVI path (`cl_cin_avi.c`, `CIN_PlayCinematic` prefers `video/<name>.avi` over `.roq`, JPEG linked into client). Intro 1024x512 115 MB + menu loops packed to `run/codmod/codmod_hd_video.pk3` (private). Engine built/installed; headless smoke test plays + exits clean. Committed; confirmed 2026-10-13. MP videos out of scope.
 
-- 2026-10-13 HD video: recipe chosen = `nlm1+span` (ffmpeg nlmeans s=1:p=5:r=9, then 2xLiveActionV1_SPAN, 2x, dynamic grain 3 added after upscale). `hd-video batch --variant nlm1+span --grain 3` + `pack --variant nlm1+span` done (wolfintro/menu/menu2, 130 MB pk3 installed). Aspect (2.37:1 letterbox fit) approved by user. Awaiting playtest of the new look.
+- 2026-10-13 HD video: recipe chosen = `nlm1+span` (ffmpeg nlmeans s=1:p=5:r=9, then 2xLiveActionV1_SPAN, 2x, dynamic grain 3 added after upscale). `hd-video batch --variant nlm1+span --grain 3` + `pack --variant nlm1+span` done (wolfintro/menu/menu2, 130 MB pk3 installed). Aspect (2.37:1 letterbox fit) approved by user. Confirmed 2026-10-13.
 
-- [x] **SSAO option A (2026-10-13):** stock rend2 `ssao_fp.glsl` rewritten (view-space normals, 16-sample spiral with IGN noise, world-unit radius from FOV, distance falloff, view model/sky masked via depth <=0.3 / >=0.99999). New cvars `r_ssaoRadius` (40), `r_ssaoStrength` (1), `r_ssaoSamples` (16), uniform `u_SsaoParams`. Built + installed, screenshots clean, UNCOMMITTED in iortcw; awaiting user playtest. Next: option B (GTAO) per plan.
-- [x] **SSAO option A, part 2 (2026-10-13):** new `ssaoup_fp.glsl` (depth-aware bilateral upsample of the half-res AO + distance fade 1500-4000, sky/viewmodel = 1) replaces the plain multiply blit in `RB_PostProcess`; `depthblur_fp.glsl` USE_DEPTH tolerance is now relative (3% of depth + 1.5 units). Bench uncapped 171 -> 175 FPS (no cost). UNCOMMITTED in iortcw, awaiting playtest.
-- [x] **GTAO (2026-10-13):** `ssao_fp.glsl` has a `USE_GTAO` variant (`r_ssaoMode 1` default; 0 = hemisphere), half-res depth `ssaoDepthImage` for AO/blur/upsample. Default 2 slices x 4 steps = 192 FPS vs 255 with SSAO off (bench uncapped). Details + cost table in `docs/ssao.md`. UNCOMMITTED in iortcw (+ outer docs); awaiting user playtest. Idea left: depth mips, ambient-only application in `lightall`.
+- [x] **SSAO option A (2026-10-13):** stock rend2 `ssao_fp.glsl` rewritten (view-space normals, 16-sample spiral with IGN noise, world-unit radius from FOV, distance falloff, view model/sky masked via depth <=0.3 / >=0.99999). New cvars `r_ssaoRadius` (40), `r_ssaoStrength` (1), `r_ssaoSamples` (16), uniform `u_SsaoParams`. Committed; confirmed 2026-10-13. Next: option B (GTAO) per plan.
+- [x] **SSAO option A, part 2 (2026-10-13):** new `ssaoup_fp.glsl` (depth-aware bilateral upsample of the half-res AO + distance fade 1500-4000, sky/viewmodel = 1) replaces the plain multiply blit in `RB_PostProcess`; `depthblur_fp.glsl` USE_DEPTH tolerance is now relative (3% of depth + 1.5 units). Bench uncapped 171 -> 175 FPS (no cost). Committed; confirmed 2026-10-13.
+- [x] **GTAO (2026-10-13):** `ssao_fp.glsl` has a `USE_GTAO` variant (`r_ssaoMode 1` default; 0 = hemisphere), half-res depth `ssaoDepthImage` for AO/blur/upsample. Default 2 slices x 4 steps = 192 FPS vs 255 with SSAO off (bench uncapped). Details + cost table in `docs/ssao.md`. Committed; confirmed 2026-10-13. Idea left: depth mips, ambient-only application in `lightall`.
 
-- AO menu option: `r_ao` (0-4) live-switchable in GRAPHICS; `r_ssao` is now derived, pins removed from run.sh/gfxdefaults. Awaiting user playtest.
+- AO menu option: `r_ao` (0-4) live-switchable in GRAPHICS; `r_ssao` is now derived, pins removed from run.sh/gfxdefaults. Confirmed 2026-10-13.
 
 - Ambient-only AO (r_ssaoAmbient 1, default) via lightall + full-res aoImage; depth mips tried, no gain, removed.
 
-- [x] **Menu FPS limit (2026-10-13):** `com_maxfpsMenu` (-1 Auto/monitor refresh default, 0 Off, fps) caps only menu/cinematic/pause frames (`CL_InMenuOnly`); `com_maxfps -1` = Auto too (default stays Off). GRAPHICS row "Menu Frame Rate Limit", labels `Auto (%hz)` expanded in `ui_shared.c`. Built + installed; UNCOMMITTED (iortcw + outer), awaiting user playtest (intro/main/pause capped, game not). See `docs/fps-limiter.md`.
+- [x] **Menu FPS limit (2026-10-13):** `com_maxfpsMenu` (-1 Auto/monitor refresh default, 0 Off, fps) caps only menu/cinematic/pause frames (`CL_InMenuOnly`); `com_maxfps -1` = Auto too (default stays Off). GRAPHICS row "Menu Frame Rate Limit", labels `Auto (%hz)` expanded in `ui_shared.c`. Committed; confirmed 2026-10-13. See `docs/fps-limiter.md`.

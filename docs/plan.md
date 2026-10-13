@@ -143,11 +143,11 @@ rtcw-cod/                         ← this folder; its own git repo (docs, scrip
 - [x] Phase 5b — health regen, CoD-like stamina, horizontal health/stamina bars (confirmed 2026-10-08)
 - [x] Phase 5b follow-up — double ammo + “Press F to interact” / “Breakable” hints (confirmed 2026-10-08)
 - [x] Phase 5c — CoD HUD (`clip/reserve` ammo, no bars, low-HP blood; confirmed 2026-10-09)
-- [ ] Phase 5d — binds reset, toggle crouch, health clamp, flashlight, reload anim
-- [ ] Phase 6 — slide
-- [ ] Phase 6b — prone, tier A (gameplay)
+- [x] Phase 5d — binds reset, toggle crouch, health clamp, flashlight, reload anim
+- [x] Phase 6 — slide
+- [x] Phase 6b — prone, tier A (gameplay)
 - [ ] Phase 6b — prone, tier B (third-person anims, optional)
-- [ ] Phase 7 — extras (optional)
+- [ ] Phase 7 — extras (optional); E4 sway then E5 recoil next
 - [ ] Phase L0 — translate menus and available game data (optional)
 - [ ] Phase L1 — AI-transcribed subtitles (optional)
 - [ ] Phase L2 — AI-translated subtitles (optional)

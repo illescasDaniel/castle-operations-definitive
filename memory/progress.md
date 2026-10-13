@@ -50,7 +50,7 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 - [x] Phase 6b: prone, tier A (gameplay) — confirmed in-game 2026-10-09 (`cod_proneScale 0.55`)
 - [ ] Phase 6b: prone, tier B (third-person animations, optional)
 - [ ] Phase 7: extras (optional). In progress: E4 ADS sway/breath, then E5 recoil model (next, 2026-10-13)
-  - [ ] E4 ADS sway/breath: built + installed 2026-10-13, awaiting playtest (`cod_adsSway*`)
+  - [x] E4 ADS sway/breath: done 2026-10-13, user approved, tuned down to 0.34/0.22 (`cod_adsSway*`)
   - [ ] E5 CoD-style recoil model
 - [x] **SMAA default (replace MSAA 2x):** implemented + benchmarked +18% (2026-10-12), see `docs/smaa.md`.
 - [x] SMAA user canary passed 2026-10-12; committed with engine patches exported.

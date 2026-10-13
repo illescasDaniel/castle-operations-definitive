@@ -153,38 +153,67 @@
 =ui/controls.menu 113 115
 =ui/ingame_controls.menu 1141 1144
 @@ 311 333
+=ui/controls.menu 1052 1053
++	text "Gyro Aiming:  "
++	cvar "cod_padGyro"
++	cvarFloatList { "Aiming" 1 "Off" 0 "Always" 2 }
++	rect 240 220 320 14
+=ui/controls.menu 1040 1041
+=ui/ingame_help.menu 59 60
+=ui/controls.menu 1042 1043
+=ui/play.menu 193 194
+=ui/play.menu 244 246
+=ui/controls.menu 113 115
++}
+@@ 335 351
++	type ITEM_TYPE_EDITFIELD
++	text "Gyro Sensitivity:  "
++	cvar "cod_padGyroSens"
++	maxChars 8
++	maxPaintChars 8
++	rect 240 240 320 14
+=ui/controls.menu 1040 1041
+=ui/ingame_help.menu 59 60
+=ui/controls.menu 1042 1043
+=ui/play.menu 193 194
+=ui/play.menu 244 246
+=ui/controls.menu 113 115
+=ui/ingame_controls.menu 1218 1221
+@@ 353 356
 +	name hint
-+	text "Tap X / Square to reload; hold to interact. Stick snap/smoothing/friction (LOS) always on. Auto-Aim snaps only while ADS."
++	text "Tap X / Square to reload; hold to interact. Stick snap/smoothing/friction (LOS) always on. Auto-Aim snaps only while ADS. Gyro (DualSense): Aiming = ADS only."
 =ui/controls.menu 1037 1038
-=ui/play.menu 196 197
+@@ 357 360
 =ui/clipboard.menu 41 42
-+	rect 240 230 340 50
-=ui/play.menu 342 343
++	rect 240 270 340 50
+@@ 361 373
 +	forecolor .7 .7 .7 .9
 =ui/ingame_controls.menu 31 34
-@@ 335 338
+@@ 375 387
 =ui/controls.menu 1402 1403
 +	text "Click to edit value"
 =ui/controls.menu 1037 1038
-@@ 339 342
+=ui/play.menu 196 197
 +	textscale .20
 +	rect 40 448 560 16
-@@ 343 351
+=ui/play.menu 342 343
 +	forecolor .8 .8 .8 .8
-=ui/clipboard.menu 30 32
-+}
-@@ 353 356
+@@ 388 389
+=ui/play.menu 77 79
+@@ 390 390
+=ui/play.menu 25 26
 =ui/controls.menu 1388 1389
 +	text "Click to toggle"
 =ui/controls.menu 1037 1038
-@@ 357 360
+=ui/play.menu 196 197
 +	textscale .20
 +	rect 40 448 560 16
-@@ 361 373
+=ui/play.menu 342 343
 +	forecolor .8 .8 .8 .8
 =ui/clipboard.menu 30 32
 +}
-@@ 375 393
+@@ 391 393
+=ui/play.menu 25 26
 +	name fadebox
 =ui/controls.menu 1421 1422
 =ui/play.menu 244 245

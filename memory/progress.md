@@ -17,6 +17,7 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 - [x] Phase 5.5: quick knife on V + snappy switch/return (confirmed in-game 2026-10-08)
 
 ### Open
+- [x] **Gyro aiming (DualSense):** `cod_padGyro` Aiming/Off/Always + sens, menu rows; playtested OK 2026-10-13 (`docs/gyro.md`)
 - [ ] Phase L0 (optional): translate menus and available game data (briefings, strings, codmod menus/HUD) — see docs/phase-l10n.md
 - [ ] Phase L1 (optional): AI-transcribe dialogue audio into subtitles + subtitle display
 - [ ] Phase L2 (optional): AI-translate subtitles

@@ -11,6 +11,12 @@ Append-only log, newest first. Never rewrite history: if a decision is reversed,
 - **Rationale:** <why, and what we rejected>
 -->
 
+## 2026-10-13: Gyro aiming via SDL sensor API, additive to stick
+
+- **Context:** DualSense gyro aiming requested, with Aiming/Off/Always.
+- **Decision:** `cod_padGyro` 0/1/2 (default 1 = ADS only, read from `STAT_COD_ADS` so toggled ADS counts); gyro added to `cl.viewangles` in `CL_GyroMove` after `CL_JoystickMove`; slow bias learning + deadzone in `sdl_input.c`.
+- **Rationale:** Bypasses the stick pipeline (snap/EMA/friction) so fine aim stays raw; ADS state from the snapshot is more reliable than the +ads button. See `docs/gyro.md`.
+
 ## 2026-10-12: Remove `patches/` and `export-patches.sh`
 
 - **Context:** The fork's `main` carries the full engine history, so the format-patch mirror was redundant.

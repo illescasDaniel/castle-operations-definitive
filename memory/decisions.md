@@ -11,6 +11,12 @@ Append-only log, newest first. Never rewrite history: if a decision is reversed,
 - **Rationale:** <why, and what we rejected>
 -->
 
+## 2026-10-13: r_ssaoAmbient default back to 0
+
+- **Context:** ambient-only AO (`r_ssaoAmbient 1`) skipped surfaces not drawn by lightall (filter lightmap stages, vertex-lit), so AO looked broken in places.
+- **Decision:** default `r_ssaoAmbient 0` (final-image multiply). Mode 1 stays as an opt-in.
+- **Rationale:** user verified mode 0 looks right everywhere; the generic-shader workaround added complexity for an uncertain gain, so it was dropped.
+
 ## 2026-10-13: Dynamic lights applied per pixel to MD3/MDS models
 
 - **Context:** The flashlight lit walls but not enemies, crates or pickups: rend2 only lit world surfaces per pixel; models got one coarse origin-based term that ignored the spot cone.

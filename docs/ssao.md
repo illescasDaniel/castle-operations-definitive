@@ -52,7 +52,10 @@ no restart (SSAO images are always allocated; the depth copy only runs when AO o
 | 3 | GTAO Medium (2 x 4) |
 | 4 | GTAO High (2 x 6, strength 0.8) |
 
-## Ambient-only AO (`r_ssaoAmbient`, default 1)
+## Ambient-only AO (`r_ssaoAmbient`, default 0, optional)
+
+Default is 0 (AO multiplies the final image in `RB_PostProcess`) since 2026-10-13: ambient-only mode only reaches surfaces drawn by the lightall shader, so separate-lightmap (filter) and vertex-lit stages lost their AO and it looked broken. A generic-shader patch to cover them was tried and dropped.
+
 
 After the blur, the half-res AO is bilaterally upsampled into a full-res R8 image (`tr.aoImage`) before the main pass.
 `lightall_fp.glsl` samples it (unit `TB_AOMAP` = 7, `u_AoParams.x` enables it per stage) and scales only the baked

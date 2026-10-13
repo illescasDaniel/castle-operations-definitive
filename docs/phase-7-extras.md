@@ -8,7 +8,7 @@ Ask the user which ones they want before starting any.
 | E1 | ~~Sprint weapon-lower + fire rules~~ | Moved into [phase-4-gait.md](phase-4-gait.md) | — |
 | E2 | ~~Toggle ADS~~ | Moved into phase 3.1: cfg-only `toggleads` alias, no engine change | — |
 | E3 | ~~Scoped weapons on right-click~~ | Moved into phase 3.8 (hold-to-scope) | — |
-| E4 | **ADS sway / breath** | Subtle idle sway while ADS, scaled by movement. Cgame-only | S |
+| E4 | **ADS sway / breath** | Built 2026-10-13, awaiting playtest: viewmodel-only breathing sway (two slow sines on pitch/yaw) scaled by ADS fraction, movement speed, crouch/prone. Cvars `cod_adsSway{Enable,Pitch,Yaw,Rate,Move,Crouch,Prone}` (`/cod_menu` > ADS). Code: `CG_CalculateWeaponPosition` | S |
 | E5 | **Recoil model** | CoD-style view kick: per-weapon pitch/yaw kick with recovery, less while ADS (`CG_KickAngles` in `cg_view.c:363`, plus the server-side spread). Bigger gunplay change | M |
 | E6 | ~~Landing slowdown~~ | Promoted to [phase-5-feel.md](phase-5-feel.md) | — |
 | E7 | ~~Jump tuning~~ | Promoted to [phase-5-feel.md](phase-5-feel.md) (`cod_jumpVelocity`) | — |

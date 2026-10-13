@@ -31,6 +31,14 @@ any more). Check `git status` in both repos.
 
 Edit `mod/codmod/ui/*.menu` (git-ignored, generated from RTCW's paks + deltas), then `scripts/build-menus.sh --export` and commit the `menu-deltas/*.delta` files; never commit generated `.menu` files or the menu/hud pk3s (RTCW menus are not redistributable). Rules in `docs/menus.md`.
 
+## User settings vs internal config
+
+A user-facing setting (anything in an options menu) has a default for first launch and for the Reset action, and the
+user's change must persist across launches. Put its default in the code (`bg_cod.c`, with `CVAR_ARCHIVE`) and its
+reset value in `mod/codmod/codmod_binds.cfg`; never `set`/`seta` it in `codmod.cfg` or `run.sh` `+set`, which run
+every launch and silently undo the choice. Internal/pinned config (tuning, forced engine cvars) belongs in
+`codmod.cfg`. Details and latched-cvar handling in `docs/menus.md` ("Settings must persist").
+
 ## Running the game
 
 Never kill the game forcefully (`kill`, `pkill`, `killall`) unless it is stuck or not responding. A forced exit makes

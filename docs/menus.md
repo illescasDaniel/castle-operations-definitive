@@ -43,6 +43,10 @@ If your RTCW paks differ from the 1.41 data the deltas were made against, the bu
 
 ## Settings must persist
 
+Rule of thumb: **user-facing settings** (anything in an options menu, e.g. gamepad sensitivity, auto-aim, gyro) get a
+default in code (`bg_cod.c` with `CVAR_ARCHIVE`, or the engine `Cvar_Get`) plus a reset value in `codmod_binds.cfg`;
+they are never set in `codmod.cfg`. **Internal config** (tuning, pinned engine cvars) stays in `codmod.cfg`.
+
 A cvar offered in a menu must not be forced on every launch. `codmod.cfg` and the `+set` lines in `scripts/run.sh`
 are applied each start and would silently undo the user's choice. Put the recommended value in
 `mod/codmod/codmod_gfxdefaults.cfg` (graphics) or the display block of `codmod_binds.cfg`, both applied on first

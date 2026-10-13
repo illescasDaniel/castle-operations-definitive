@@ -1,10 +1,21 @@
 #codmod-delta v2 base=ui/ingame_leave.menu sha256=93cfaf3b1818159e61be21b5bfbafd31388fd738fd0c992720542be37eb661fc
+#src ui/bookp.menu sha256=dc708a0c6d09dddca120d7664d2a905c5cb7269128447fa81956bdc9051dc994
+#src ui/error.menu sha256=d8082e15dc125112689b431f799d17958025389efe435cb8f64a39e68cf4223c
 #src ui/ingame_player.menu sha256=df21847e0c423290071f14a69192438bc6bc4e9cd9aeb4e3c9787bad7645a0ad
 #src ui/system.menu sha256=fe28a0c578e2569bc374f20ba969f3711deef4bf2b219904d1b743cf78698acb
 @@ 10 10
 +	popup
 @@ 15 16
 +	onOpen { show grpMenu ; hide leaveConfirm ; hide quitConfirm ; hide restartConfirm ; setfocus leave_main }
+@@ 19 19
+=ui/bookp.menu 19 21
++		name dim
++		rect -500 -125 1440 480
+=ui/ingame_leave.menu 92 93
++		backcolor 0 0 0 .6
+=ui/error.menu 219 223
+@@ 29 30
++	backcolor .06 .06 .06 .92
 @@ 50 51
 +	name leave_title
 @@ 62 62

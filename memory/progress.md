@@ -28,8 +28,8 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 - [ ] Phase L2 (optional): AI-translate subtitles
 - [x] README "Localization (community patches)" section with German/Spanish packs — 2026-10-12
 - [x] First-launch defaults: triple buffer, no cap, desktop res, fullscreen; docs/menus.md rules — 2026-10-12
-- [x] GRAPHICS > ADVANCED tab + `codmod_gfxdefaults.cfg` (settings persist now) — 2026-10-12, awaiting in-game check
-- [x] GRAPHICS menu trimmed to one page (AA, VSync, FPS limit, mode, fullscreen, brightness); pk3 repacked — 2026-10-12, awaiting in-game check of main + pause menus
+- [x] GRAPHICS > ADVANCED tab + `codmod_gfxdefaults.cfg` (settings persist now) — 2026-10-12, confirmed 2026-10-13
+- [x] GRAPHICS menu trimmed to one page (AA, VSync, FPS limit, mode, fullscreen, brightness); pk3 repacked — 2026-10-12, confirmed 2026-10-13
 - [x] Phase 5b: health regen, CoD-like stamina, horizontal health/stamina bars (confirmed 2026-10-08)
 - [x] Phase 5b follow-up: double ammo + interact hint (“Press F” / “Breakable”) (confirmed 2026-10-08)
 - [x] **Phase 3 per-weapon ADS bake** — all 9 from `codmod_ads_tune.log` final pass (2026-10-09); globals 0; `cod_adsCrosshair 2`; `cod_adsCrosshairForce` for re-tune; tooling kept.

@@ -167,3 +167,20 @@ prepass 0.12, ssao_depth 0.13, depth copy 0.10, 2 AO blurs 0.10 each, present 0.
 Left as is: the remaining passes are the visual features doing real work. Removing the full-res depth copy
 (`hdrDepth`, 0.1 ms) would mean sampling the depth texture while it is attached to the FBO being drawn (a GL
 feedback loop). Cascade 3 (whole level) is already cached until the sun moves.
+
+## Frame cap below the cap (2026-10-14)
+
+With a cap set (`com_maxfps`, e.g. 240 = monitor refresh) that the GPU cannot hold, FPS fell well below uncapped
+(gameplay: 180 FPS / ~80% GPU at a 240 cap vs 225 FPS / 99% uncapped). Cause: the frame pacer's `glFinish`
+before the swap (`com_maxfpsGpuSync 1`, `Com_PresentWait` in common.c) serializes CPU and GPU every frame,
+the same stall as the stock `RB_SwapBuffers` finish. It is useful when the cap is reachable (frame timing sees
+the GPU, lower latency), so it is now adaptive: after 4 synced frames in a row finish past their deadline the
+sync is suspended, and retried after 64 frames, doubling (up to 2048) while retries keep failing.
+
+| Bench demo, 2561x1601 | avg FPS | 1% low |
+|---|---|---|
+| cap 240, sync always (before) | 211 | 136 |
+| cap 240, sync off | 239.5 | 160 |
+| cap 240, adaptive (**shipped**) | 239.3 | 160 |
+| cap 144, adaptive (sync stays on) | 144.0 | 123 |
+| cap 280 (above the GPU), adaptive | 250 | 174 (uncapped: ~254) |

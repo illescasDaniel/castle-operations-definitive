@@ -2,6 +2,8 @@ _Last updated: 2026-10-14_
 
 ## Current focus
 
+**Pacer GPU-sync fix (2026-10-14): done, user-verified, engine `194e7bbe`.** Next: investigating strafe+counter-aim camera jitter (user report).
+
 **Lossless GPU pass savings (2026-10-14): done, user confirmed, committed and pushed** (engine 01452ea2).
 Bench 247 -> 303 FPS (GPU 4.07 -> 3.21 ms/frame); details and per-pass profile in docs/performance.md
 ("GPU pass profiling").

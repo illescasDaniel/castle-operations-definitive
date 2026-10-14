@@ -54,6 +54,7 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
   - [x] E13 AI sprint: done 2026-10-13, user approved (`cod_aiSprint*`)
   - [x] Fix: empty-clip reload anim sometimes missing (prediction carried weapAnim; cg_predict.c + cg_weapons.c), done 2026-10-13, user confirmed
   - [x] E5 CoD-style recoil model: real aim kick, done 2026-10-13, user approved feel (`cod_recoil*`, `STAT_COD_RECOIL`)
+- [x] **GPU pass savings, 247 -> 303 FPS** (2026-10-14, user confirmed, engine commit 01452ea2): GPU pass profiler (`r_gpuProfile`/`gpuprof`), non-blocking sun query (sun rays now only when the sun is visible), SMAA without copies + stencil (`r_smaaStencil`), GTAO depth mips (`r_ssaoDepthMips`, not bit-exact, visually same), gather AO upsample; `scripts/shots.sh` + `shots-diff.py` for image diffs. See docs/performance.md
 - [x] **GPU utilisation 76% -> 97%** (2026-10-14): removed per-frame `glFinish` in `RB_SwapBuffers` (`r_swapFinish 0`) and flare depth readback -> occlusion queries (`r_flaresAsync 1`); bench 183 -> 247 FPS, 1% low 106 -> 165. User confirmed in-game (HUD/menus fine, ~99% GPU); engine commit 0b6f57fc. See docs/performance.md
 - [x] **SMAA default (replace MSAA 2x):** implemented + benchmarked +18% (2026-10-12), see `docs/smaa.md`.
 - [x] SMAA user canary passed 2026-10-12; committed with engine patches exported.

@@ -2,7 +2,11 @@ _Last updated: 2026-10-14_
 
 ## Current focus
 
-**GPU utilisation fix (2026-10-14): done, user confirmed, committed and pushed** (engine 0b6f57fc; docs/performance.md).
+**Lossless GPU pass savings (2026-10-14): done, user confirmed, committed and pushed** (engine 01452ea2).
+Bench 247 -> 303 FPS (GPU 4.07 -> 3.21 ms/frame); details and per-pass profile in docs/performance.md
+("GPU pass profiling").
+
+Before that: GPU utilisation fix done, committed and pushed (engine 0b6f57fc).
 
 Previously:
 
@@ -12,7 +16,7 @@ the user's in-game confirmation before the next one.
 
 ## State
 
-- Both repos clean (outer `main`, `iortcw/` `main`); nothing uncommitted as of 2026-10-13.
+- Both repos clean (outer `main`, `iortcw/` `main`) as of 2026-10-14.
 - User confirmed working 2026-10-13: menu FPS limit, Skip Intro + cutscene letterbox, HD cutscene videos (`nlm1+span`),
   SSAO/GTAO + ambient-only AO (`r_ao`), frame pacer + `r_vsync` modes, HD audio pack.
 - Original phases 1-6b (tier A) all shipped and confirmed. Optional leftovers: 6b tier B (third-person prone anims),

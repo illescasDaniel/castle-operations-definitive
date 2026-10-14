@@ -42,7 +42,9 @@ You need your own copy of RTCW (Steam). **No game data is included or modified.*
   "Press F" interact hints
 - Rebuilt options menus: one clear GRAPHICS page plus an ADVANCED tab with labelled defaults and a restore button,
   separate SOUND, GAME and CONTROLS pages (CONTROLLER and MOUSE & KEYBOARD), settings that actually persist
-- Built-in performance benchmark (real-time demo replay, microsecond frame stats, 1% lows)
+- Built-in performance benchmark (real-time demo replay, microsecond frame stats, 1% lows), per-pass GPU profiler
+  (`r_gpuProfile`) and deterministic screenshot diffs; renderer sync stalls and wasted passes removed with no visual
+  change, for +65% FPS over stock rend2 in our benchmark (183 -> 303 FPS)
 
 ### Controller support
 - Xbox and PlayStation pads through SDL GameController, one modern-FPS layout for both

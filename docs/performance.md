@@ -112,8 +112,58 @@ Bench demo, 2561x1601, SMAA 3, `r_ao 4`, median of 2 measured runs:
 | + flares via occlusion queries (**shipped**) | **247** | **163-167** | **5.4** | **97%** |
 | `r_flares 0` (reference ceiling) | 249 | 165 | 5.5 | 97% |
 
-Ruled out (no change): non-blocking sun-flare query (`RB_UpdateSunFlareVis`), `__GL_MaxFramesAllowed=3`,
+Ruled out (no change at the time): non-blocking sun-flare query (`RB_UpdateSunFlareVis`; it did pay off later, see
+the next section), `__GL_MaxFramesAllowed=3`,
 XWayland vs native Wayland, depth read as `GL_UNSIGNED_INT`. The CPU is not the limit here (720p:
 ~2.2 ms/frame vs 4 ms GPU at 2561x1601). Metrics come from `bench.sh --gpumon` (nvidia-smi SM %).
 Tradeoff: without the per-frame finish the CPU may queue up to the driver's limit (2-3 frames) ahead when
 uncapped, so uncapped input latency can be a frame or two higher; a cap or `r_vsync 4` avoids that.
+
+## GPU pass profiling: 247 -> 303 FPS, same image (2026-10-14)
+
+`r_gpuProfile 1` (`tr_gpuprof.c`) times each render pass with GPU timestamp queries, read a few frames later without
+blocking. The table prints with the `gpuprof` command (`gpuprof reset` clears it) and at renderer shutdown, so a
+`bench.sh --set r_gpuProfile 1` run leaves it at the end of `run/home/codmod/rtcwconsole.log`
+(`grep "codmod gpuprof"`). Columns: average ms per 3D frame, share of GPU frame time, worst frame, % of frames that
+ran the pass.
+
+Image checks: `scripts/shots.sh --label NAME [--set CVAR VALUE]` takes 6 deterministic screenshots of the bench demo
+(`timedemo` steps 50 ms of game time per frame; the same build and settings gives bit-identical shots), and
+`scripts/shots-diff.py A B` prints per-shot differing pixels and max difference, and writes amplified diff PNGs.
+Caveat: with `r_ssaoDepthMips 0`, shot 1 reproducibly lands on a different demo frame (cause unknown; other cvars do
+not do this), so compare shots 2-6 for that cvar.
+
+Changes, each measured with the profiler (ms of GPU time per frame) and checked with shots:
+
+1. **Sun flare query no longer blocks** (`RB_UpdateSunFlareVis`, tr_postprocess.c). Stock code read last frame's
+   sun occlusion query with a blocking `GL_QUERY_RESULT`, a CPU/GPU sync every frame the sun is in front of the view.
+   Now a 4-query ring, read when available. Side effect: the stock code's result was usually not ready and counted as
+   visible, so the sun-ray passes ran on almost every frame even indoors; now they run only when the sun is visible
+   (5-10% of the bench demo). Same image (0 differing pixels).
+2. **No tone-map/SMAA copies.** SMAA reads the tone-mapped scratch image and writes straight to the scene FBO,
+   instead of a copy before and after it. Same image.
+3. **SMAA weights on edge pixels only** (`r_smaaStencil 1`): the edge pass marks edge pixels in a stencil buffer and
+   the blend-weight pass skips everything else, as in the reference SMAA. `smaa_weights` 0.145 -> 0.052 ms. Same image.
+4. **GTAO depth mips** (`r_ssaoDepthMips 1`): far GTAO taps read a point-sampled mip of the half-res depth (XeGTAO's
+   trick; level n once the tap is more than 2^(n+3.3) px away). Per-pixel random directions made the far taps miss
+   the texture cache: constant noise was 2.4x faster. `ssao_ao` 0.78 -> 0.49 ms (+0.03 ms to build the mips). Not
+   bit-exact but visually identical: vs before, 1.3-3.8% of pixels differ, nearly all by 1-2/255; worst 25/255 on a
+   1-px depth edge where SMAA's edge detection flipped.
+5. **AO upsample with `textureGather`** (ssaoup_fp.glsl): 2 gathers instead of 8 fetches for the 4 AO and depth
+   texels. `ssao_apply` 0.258 -> 0.201 ms. Same image.
+
+Bench demo, 2561x1601, SMAA 3, `r_ao 4`, `r_vsync 3`, RTX 4070 Laptop:
+
+| Build | avg FPS | 1% low | GPU ms/frame |
+|---|---|---|---|
+| Before (engine 0b6f57fc) | 247 | 165 | ~4.07 |
+| + 1, 2 | 281 | 184 | 3.45 |
+| + 3, 4, 5 (**shipped**) | **303** | **175** | **3.21** |
+
+1% low varies by +-10 between runs; avg FPS repeats within ~1%. Profile after (ms): scene 0.51, ssao_ao 0.49,
+sun cascades 0.42, sun shadow mask 0.27, ssao_apply 0.20, smaa_blend 0.18, tone-map 0.13, smaa_edges 0.13, depth
+prepass 0.12, ssao_depth 0.13, depth copy 0.10, 2 AO blurs 0.10 each, present 0.07.
+
+Left as is: the remaining passes are the visual features doing real work. Removing the full-res depth copy
+(`hdrDepth`, 0.1 ms) would mean sampling the depth texture while it is attached to the FBO being drawn (a GL
+feedback loop). Cascade 3 (whole level) is already cached until the sun moves.

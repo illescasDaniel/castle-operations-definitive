@@ -204,3 +204,21 @@ and normal play use `com_maxfps` only. -1 = Auto (monitor refresh from `r_displa
 0 = Off, otherwise fps; the effective cap is the lower of it and `com_maxfps`. `com_maxfps -1` also means Auto
 (not the default; default stays Off). Menu list entry `"Auto (%hz)"` is expanded to the refresh rate by
 `Item_Multi_Label` in `ui_shared.c`. Row "Menu Frame Rate Limit" in GRAPHICS (main + in-game menu).
+
+## Strafe + counter-aim jitter (2026-10-14)
+
+Symptom: strafing one way while turning the mouse the other to hold aim on a point looked jittery
+(normal movement looked fine). Two camera-position timing errors that mouse look does not have:
+
+1. `CL_SendCmd` runs before `CL_SetCGameTime`, so the newest command (and the predicted origin) is
+   at the *previous* frame's `cl.serverTime`. `cg_showmiss 2` shows it: `[33150 : 33153] [33153 : 33157]`.
+   The old sub-ms correction added only the current frame's fraction, so the position error alternated
+   between whole 4/5 ms steps of movement every frame.
+2. `CL_AdjustTimeDelta` nudges `cl.serverTime` +1 / -2 ms on snapshots (20 Hz), so a frame moves 1-2 ms
+   too far or not at all.
+
+Fix: the engine keeps a view clock (`CL_UpdateViewClock`, cl_cgame.c) that advances with the smooth
+frame clock (`com_frameClockUs`: the pacer schedule, or real time uncapped) and eases 4%/frame toward
+the game clock; it passes the offset to cgame as the frame fraction (can be < 0 or > 999 us now).
+cgame (`cg_subMsecLerp 1`) carries the predicted view by `predictLagMs` + that offset times velocity.
+A/B: `cl_viewSmooth 0` (old clock, keeps the lag fix), `cg_subMsecLerp 0` (vanilla).

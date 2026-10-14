@@ -2,7 +2,7 @@ _Last updated: 2026-10-14_
 
 ## Current focus
 
-**Pacer GPU-sync fix (2026-10-14): done, user-verified, engine `194e7bbe`.** Next: investigating strafe+counter-aim camera jitter (user report).
+**Strafe + counter-aim jitter fix (2026-10-14): done, user-verified, engine `76e18436`.** Both camera cvars are internal (cl_viewSmooth code default, cg_subMsecLerp pinned in codmod.cfg). Gotchas: a scripted run ended by SIGINT hangs in GLSL shutdown; scripted `+quit` during map load segfaults.
 
 **Lossless GPU pass savings (2026-10-14): done, user confirmed, committed and pushed** (engine 01452ea2).
 Bench 247 -> 303 FPS (GPU 4.07 -> 3.21 ms/frame); details and per-pass profile in docs/performance.md

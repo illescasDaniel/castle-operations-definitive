@@ -1,6 +1,10 @@
-_Last updated: 2026-10-13_
+_Last updated: 2026-10-14_
 
 ## Current focus
+
+**GPU utilisation fix (2026-10-14): done, user confirmed, committed and pushed** (engine 0b6f57fc; docs/performance.md).
+
+Previously:
 
 Phase 7 extras, in order: **E4 ADS sway/breath** (cgame-only, small), then **E5 CoD-style recoil model** (medium).
 Specs in `docs/phase-7-extras.md`; ADS context in `docs/phase-3-ads.md`. Phase gating applies: build, report, stop for

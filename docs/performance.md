@@ -85,3 +85,35 @@ Bench demo, 2561x1601, RTX 4070 Laptop, idle GPU, median of 3 measured runs (run
 | No AA | 261.2 | 147.9 | 6.00 |
 
 SMAA High costs ~0.6 ms/frame vs ~1.4 ms for MSAA 2x: **+18% FPS** over the old default. Credits: [credits.md](credits.md).
+
+## GPU utilisation: 76% -> 97% (2026-10-14)
+
+Uncapped, the GPU was only ~76-80% busy (nvidia-smi / MangoHud) although the game is GPU-bound. Two CPU/GPU
+sync points in stock rend2 left it idle every frame:
+
+1. **`glFinish()` in `RB_SwapBuffers`** (stock Q3, runs whenever `r_finish 0`). The CPU waited for the GPU to
+   go idle, then did the next frame's game/front-end work while the GPU had nothing queued. Now off
+   (`r_swapFinish 0`, default; `1` = stock). The driver's frame queue bounds how far ahead the CPU runs; with a
+   cap or `r_vsync 4` the frame pacer still syncs (`com_maxfpsGpuSync`).
+2. **Flare/corona depth readback** (`RB_TestFlare`): one `glReadPixels` of the depth buffer per flare (~3 a
+   frame in the bench demo) drained the GPU pipeline. Reading into a pixel pack buffer with a fence did **not**
+   help (the depth read itself stalls on this driver). Replaced with per-flare `GL_SAMPLES_PASSED` occlusion
+   queries (a one-pixel depth-tested quad at the flare's depth minus the stock 24-unit tolerance), read only
+   once available; visibility lags 1-2 frames, hidden by the fade. `r_flaresAsync 1` (default; `0` = stock).
+   Flare renders per frame match the stock path (1.58 vs 1.56).
+
+Bench demo, 2561x1601, SMAA 3, `r_ao 4`, median of 2 measured runs:
+
+| Config | avg FPS | 1% low | P99 ms | GPU busy |
+|---|---|---|---|---|
+| Before (stock) | 183 | 106 | 7.60 | 76% |
+| `r_swapFinish 0` | 219-227 | 145 | 6.1 | 87-90% |
+| + flares via PBO + fence (rejected) | 223-227 | 146 | 6.1 | 88-91% |
+| + flares via occlusion queries (**shipped**) | **247** | **163-167** | **5.4** | **97%** |
+| `r_flares 0` (reference ceiling) | 249 | 165 | 5.5 | 97% |
+
+Ruled out (no change): non-blocking sun-flare query (`RB_UpdateSunFlareVis`), `__GL_MaxFramesAllowed=3`,
+XWayland vs native Wayland, depth read as `GL_UNSIGNED_INT`. The CPU is not the limit here (720p:
+~2.2 ms/frame vs 4 ms GPU at 2561x1601). Metrics come from `bench.sh --gpumon` (nvidia-smi SM %).
+Tradeoff: without the per-frame finish the CPU may queue up to the driver's limit (2-3 frames) ahead when
+uncapped, so uncapped input latency can be a frame or two higher; a cap or `r_vsync 4` avoids that.

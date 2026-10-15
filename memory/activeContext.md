@@ -2,7 +2,7 @@ _Last updated: 2026-10-15_
 
 ## Current focus
 
-**Lean + aim bug (2026-10-15): implemented, builds clean (engine `3e63880a`), step 4 (ADS viewmodel lean fade) added after the user saw sights off; awaiting re-check.** Shots landed ~10 u above the crosshair while leaning (camera offset used a roll-tilted right vector, server `AddLean` did not). Now both use `BG_CodLeanOffset`. Checklist in `docs/lean-aim-fix.md`; step 4 (ADS viewmodel) only if sights still look off.
+**Lean + aim bug (2026-10-15): done, user confirmed.** Shared `BG_CodLeanOffset` (camera + server `AddLean`) plus viewmodel lean fade in ADS. Remember `scripts/install.sh` after `build.sh`; build alone leaves stale modules in `run/`.
 
 **Strafe + counter-aim jitter fix (2026-10-14): done, user-verified, engine `76e18436`.** Both camera cvars are internal (cl_viewSmooth code default, cg_subMsecLerp pinned in codmod.cfg). Gotchas: a scripted run ended by SIGINT hangs in GLSL shutdown; scripted `+quit` during map load segfaults.
 

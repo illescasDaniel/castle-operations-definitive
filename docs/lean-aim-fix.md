@@ -1,6 +1,6 @@
 # Lean + aim: shots land above the crosshair (fix plan)
 
-Status: steps 1-3 implemented 2026-10-15 (engine `3e63880a`) plus step 4 (viewmodel lean fade in ADS), pending the user's in-game check. Executor: follow the steps in order, then stop for the
+Status: steps 1-3 implemented 2026-10-15 (engine `3e63880a`) plus step 4 (viewmodel lean fade in ADS), confirmed in-game by the user 2026-10-15. Executor: follow the steps in order, then stop for the
 user's in-game check (phase gating, `docs/testing.md`).
 
 ## Symptom

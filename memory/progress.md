@@ -17,6 +17,7 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 - [x] Phase 5.5: quick knife on V + snappy switch/return (confirmed in-game 2026-10-08)
 
 ### Open
+- [x] Lean aim fix: shots fire from the leaned camera eye (`BG_CodLeanOffset`) + viewmodel lean fade in ADS; engine `3e63880a` + follow-up; confirmed 2026-10-15 (`docs/lean-aim-fix.md`). Gotcha: run `scripts/install.sh` after build
 - [x] Flashlight shadows (spot shadow map + screen mask, `r_flashlightShadow`); user verified 2026-10-13
 - [x] Flashlight lights static VAO models (escape1 cages, iron gates): three rend2 dlight fixes; user verified 2026-10-13
 - [x] Flashlight/dlights now light model entities (characters, props, items) per pixel with spot-cone test (`R_DlightEntity`, cvar `r_dlightEntities` default 1); user approved 2026-10-13. Open: metallic/baked-light items still reflect little

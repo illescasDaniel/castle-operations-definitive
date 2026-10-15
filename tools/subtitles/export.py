@@ -3,6 +3,7 @@ import zipfile
 from pathlib import Path
 
 HERE = Path(__file__).parent
+BUILD = HERE / "build"
 
 
 def junk(key, r):  # grunts and prompt leaks are not subtitles (manual edits are never junk)
@@ -29,7 +30,7 @@ def export(cache, out):
 	return len(lines)
 
 
-def pack(out=HERE / "build"):
+def pack(out=BUILD):
 	src = out / "text" / "subtitles.txt"
 	dst = HERE.parent.parent / "run" / "codmod" / "codmod_subtitles.pk3"
 	with zipfile.ZipFile(dst, "w", zipfile.ZIP_DEFLATED) as z:

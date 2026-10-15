@@ -27,7 +27,8 @@ cd tools/subtitles
 uv sync
 uv run python transcribe.py      # ~30 min, resumable
 uv run python review_server.py   # fix lines in the browser: http://127.0.0.1:8765, then "Rebuild + pack"
-uv run python pack.py            # or pack from the CLI
+uv run python pack.py            # pack build/text/subtitles.txt (hand-editable: `path seconds "text"`)
+uv run python pack.py --from-cache  # regenerate subtitles.txt from build/cache.json first
 ```
 
 Fixing a wrong line: use `review_server.py` (audio plus an editable field per line, saved to `build/cache.json`; edits are marked `manual` and survive reruns of `transcribe.py`). Filters: needs review, missing text (add text for dropped clips), edited, all. Empty text removes a subtitle.

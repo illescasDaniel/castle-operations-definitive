@@ -5,10 +5,11 @@ There is no automated test harness for game feel. Testing combines **build check
 
 ## Every change (agent)
 
-1. `scripts/build.sh --game-only` (or the full build if engine files changed). It must finish with no
+1. `scripts/build.sh --game-only --install` (or the full build if engine files changed). `--install` runs
+   `scripts/install.sh` afterwards; without it `run/` keeps stale modules and the game ignores your change. It must finish with no
    errors and no *new* warnings in files we touched:
    `make ... 2>&1 | grep -E "warning|error" | grep -E "bg_cod|cg_cod|bg_pmove|cg_view|cg_weapons|g_active|g_weapon"`.
-2. `scripts/install.sh`
+2. (Install is done by `--install` above.)
 3. Smoke run (opens a window for ~45 s):
    `timeout 45 scripts/run.sh --windowed 1280x720 +spdevmap escape1 +set cod_debugHud 1`
    Then scan `run/home/codmod/rtcwconsole.log` for `ERROR`, `WARNING: ... cod_`, crashes, and our

@@ -7,16 +7,18 @@ USE_CONTAINER=0
 TARGET=release
 CLEAN=0
 GAME_ONLY=0
+INSTALL=0
 JOBS="$(nproc)"
 
 usage() {
 	cat <<'EOF'
-Usage: scripts/build.sh [--container] [--debug] [--clean] [--game-only] [-j N]
+Usage: scripts/build.sh [--container] [--debug] [--clean] [--game-only] [--install] [-j N]
 
   --container   Build inside the podman image (BUILD_DIR=build-container)
   --debug       Build the debug target instead of release
   --clean       make clean before building
   --game-only   BUILD_CLIENT=0 (cgame/qagame/ui only)
+  --install     Run scripts/install.sh on the output afterwards (build.sh alone leaves run/ stale)
   -j N          Parallel jobs (default: nproc)
 EOF
 }
@@ -27,6 +29,7 @@ while [[ $# -gt 0 ]]; do
 		--debug) TARGET=debug; shift ;;
 		--clean) CLEAN=1; shift ;;
 		--game-only) GAME_ONLY=1; shift ;;
+		--install) INSTALL=1; shift ;;
 		-j) JOBS="$2"; shift 2 ;;
 		-h|--help) usage; exit 0 ;;
 		*) echo "Unknown option: $1" >&2; usage >&2; exit 1 ;;
@@ -72,3 +75,7 @@ fi
 echo "Build OK. Output: $OUT_DIR"
 ls -la "$OUT_DIR" || true
 ls -la "$OUT_DIR/main" 2>/dev/null || true
+
+if [[ "$INSTALL" -eq 1 ]]; then
+	"$ROOT/scripts/install.sh" --build-dir "$OUT_DIR"
+fi

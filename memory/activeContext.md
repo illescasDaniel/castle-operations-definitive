@@ -2,7 +2,7 @@ _Last updated: 2026-10-15_
 
 ## Current focus
 
-**Lean + aim bug (2026-10-15): done, user confirmed.** Shared `BG_CodLeanOffset` (camera + server `AddLean`) plus viewmodel lean fade in ADS. Remember `scripts/install.sh` after `build.sh`; build alone leaves stale modules in `run/`.
+**Lean + aim bug (2026-10-15): done, user confirmed.** Shared `BG_CodLeanOffset` (camera + server `AddLean`) plus viewmodel lean fade in ADS. Use `scripts/build.sh --install` (build alone leaves stale modules in `run/`).
 
 **Strafe + counter-aim jitter fix (2026-10-14): done, user-verified, engine `76e18436`.** Both camera cvars are internal (cl_viewSmooth code default, cg_subMsecLerp pinned in codmod.cfg). Gotchas: a scripted run ended by SIGINT hangs in GLSL shutdown; scripted `+quit` during map load segfaults.
 

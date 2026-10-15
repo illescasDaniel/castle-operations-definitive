@@ -130,8 +130,9 @@ no crosshair, and the gun pitched down.
 2. **Allow firing while leaned** (`cod_leanAllowFire 1`):
    - `PM_UpdateLean`: don't zero `leaning` on `EF_FIRING` when allowed.
    - `PM_Weapon` ~L3098: skip the "player is leaning - no fire" return when allowed.
-   - `g_weapon.c` ~L1517 already offsets the muzzle by `leanf`, so shots come from the peeked
-     position. Verify.
+   - `g_weapon.c` `AddLean` offsets the muzzle with `BG_CodLeanOffset`, the same function the
+     camera uses. (The old unrolled offset put shots ~10 u above the crosshair, because the camera's
+     right vector was roll-tilted and dipped the eye; see `docs/lean-aim-fix.md`.)
    - `cg_draw.c` ~L2415 / ~L2598: show the crosshair while leaning when allowed.
    - `cg_weapons.c` ~L1756: drop the "pitch the gun down to show firing is not allowed"
      line when allowed.

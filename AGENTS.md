@@ -27,6 +27,11 @@ repo in `iortcw/` (clone of the fork https://github.com/illescasDaniel/iortcw, b
 repo, `upstream` remote = ioRTCW). Engine/game-code commits go there, not in the outer repo (there is no `patches/`
 any more). Check `git status` in both repos.
 
+## Building
+
+Build with `scripts/build.sh --game-only --install` (drop `--game-only` when engine files changed). `build.sh` alone
+leaves stale modules in `run/`, so the game ignores your change; `--install` runs `scripts/install.sh` afterwards.
+
 ## Menus
 
 Edit `mod/codmod/ui/*.menu` (git-ignored, generated from RTCW's paks + deltas), then `scripts/build-menus.sh --export` and commit the `menu-deltas/*.delta` files; never commit generated `.menu` files or the menu/hud pk3s (RTCW menus are not redistributable). Rules in `docs/menus.md`.

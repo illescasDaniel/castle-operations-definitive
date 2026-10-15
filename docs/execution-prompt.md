@@ -45,7 +45,7 @@ AI HD textures/audio). Planning and core decisions are done; implement one phase
   If the code doesn't match what a doc says, stop and tell the user. Don't improvise around it.
 - Two git repos:
   - The outer repo (this folder, branch `main`) holds docs, scripts, container files, and mod/.
-  - iortcw/ is a clone of https://github.com/illescasDaniel/iortcw (branch `main`, based on
+  - iortcw/ is a submodule (https://github.com/illescasDaniel/iortcw, branch `main`, based on
     upstream 438e7d4). All engine and game code commits go there.
   Make small commits prefixed by phase (e.g. "P2: time-based sprint stamina"). After each phase,
   commit in both repos as needed. Never push. Never open PRs.

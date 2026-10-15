@@ -1,13 +1,8 @@
 #!/usr/bin/env bash
-# Idempotent workspace setup: clone ioRTCW fork, create run/ tree, symlink Steam pk3s + mod cfgs.
+# Idempotent workspace setup: init iortcw submodule, create run/ tree, symlink Steam pk3s + mod cfgs.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-# Engine lives in our fork with the codmod changes already applied.
-IORTCW_REPO="${IORTCW_REPO:-https://github.com/illescasDaniel/iortcw.git}"
-IORTCW_BRANCH="${IORTCW_BRANCH:-main}"
-# Upstream pin the fork's main branch was built from (to detect a bare upstream checkout).
-IORTCW_UPSTREAM_COMMIT="${IORTCW_UPSTREAM_COMMIT:-438e7d413b5f7277187c35b032eb0ef9093ae778}"
 if [[ -z "${RTCW_DATA:-}" ]]; then
 	# Common Steam library locations (native, Flatpak). Override with RTCW_DATA.
 	for d in \
@@ -22,27 +17,12 @@ REQUIRED_PAKS=(pak0.pk3 sp_pak1.pk3 sp_pak2.pk3 sp_pak3.pk3 sp_pak4.pk3)
 
 cd "$ROOT"
 
-# --- 1. Clone / checkout codmod engine fork ---
-if [[ ! -d iortcw/.git ]]; then
-	echo "Cloning ioRTCW fork into $ROOT/iortcw (branch $IORTCW_BRANCH) ..."
-	git clone --branch "$IORTCW_BRANCH" --single-branch "$IORTCW_REPO" iortcw
-	echo "iortcw/ ready ($(git -C iortcw rev-parse --abbrev-ref HEAD) @ $(git -C iortcw rev-parse --short HEAD))."
-else
-	current="$(git -C iortcw rev-parse HEAD)"
-	branch="$(git -C iortcw rev-parse --abbrev-ref HEAD)"
-	remote_url="$(git -C iortcw remote get-url origin 2>/dev/null || true)"
-	echo "iortcw/ already present (branch=$branch HEAD=${current:0:12} remote=${remote_url:-none}); leaving as-is."
-	if [[ -n "$remote_url" && "$remote_url" != "$IORTCW_REPO" && "$remote_url" != "git@github.com:illescasDaniel/iortcw.git" ]]; then
-		echo "NOTE: iortcw/ origin is $remote_url, not the fork $IORTCW_REPO." >&2
-		echo "      git -C iortcw remote rename origin upstream && git -C iortcw remote add origin $IORTCW_REPO" >&2
-	fi
-	# Bare upstream pin with no codmod commits yet — point the user at the fork.
-	if [[ "$current" == "$IORTCW_UPSTREAM_COMMIT" ]]; then
-		echo "NOTE: iortcw/ is still at bare upstream ${IORTCW_UPSTREAM_COMMIT:0:12}." >&2
-		echo "      Prefer re-cloning from $IORTCW_REPO ($IORTCW_BRANCH), or:" >&2
-		echo "      git -C iortcw remote set-url origin $IORTCW_REPO && git -C iortcw fetch origin $IORTCW_BRANCH && git -C iortcw checkout -B main origin/$IORTCW_BRANCH" >&2
-	fi
+# --- 1. Engine fork submodule (iortcw/, pinned by the outer repo) ---
+if [[ ! -e iortcw/.git ]]; then
+	echo "Initialising iortcw submodule ..."
+	git submodule update --init --recursive iortcw
 fi
+echo "iortcw/ ($(git -C iortcw rev-parse --abbrev-ref HEAD) @ $(git -C iortcw rev-parse --short HEAD)); leaving as-is."
 
 # --- 2. Runtime directories ---
 mkdir -p run/main run/codmod run/home

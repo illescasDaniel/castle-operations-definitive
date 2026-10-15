@@ -23,9 +23,9 @@ note. Full protocol: the `jev-memory` skill.
 
 Never alter the rend2 present/2D path or the user's `wolfconfig.cfg` without user verification; both broke the
 game once (no HUD, wiped binds). Rules and cause in `docs/testing.md` ("Safety rules"). The engine is a separate
-repo in `iortcw/` (clone of the fork https://github.com/illescasDaniel/iortcw, branch `main`; git-ignored by the outer
-repo, `upstream` remote = ioRTCW). Engine/game-code commits go there, not in the outer repo (there is no `patches/`
-any more). Check `git status` in both repos.
+repo in `iortcw/`, a git submodule of the outer repo (fork https://github.com/illescasDaniel/iortcw, branch `main`;
+`upstream` remote = ioRTCW). Engine/game-code commits go in the submodule repo and are pushed to the fork; then the
+outer repo commits the bumped submodule pointer (there is no `patches/` any more). Check `git status` in both repos.
 
 ## Building
 

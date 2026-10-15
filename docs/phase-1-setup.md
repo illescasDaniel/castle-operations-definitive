@@ -22,18 +22,19 @@
 
 ### 1.1 Outer repo
 - Already done: the outer repo exists (branch `main`), with the docs and a `.gitignore`
-  (`iortcw/`, `run/`, `*.log`, `build*/`) committed. Commit the scripts, container, and mod files of this phase on top.
+  (`run/`, `*.log`, `build*/`; `iortcw/` is a submodule) committed. Commit the scripts, container, and mod files of this phase on top.
 
-### 1.2 ioRTCW fork clone (`codmod`)
+### 1.2 ioRTCW fork submodule (`codmod`)
 ```bash
-git clone --branch main --single-branch https://github.com/illescasDaniel/iortcw.git iortcw
+git submodule add -b main https://github.com/illescasDaniel/iortcw.git iortcw
+# fresh checkout of the outer repo: git clone --recursive <url>  (or git submodule update --init)
 ```
 All engine and game changes live on the fork's `main` branch (based on upstream
 `438e7d413b5f7277187c35b032eb0ef9093ae778`). The old `patches/` series and
 `export-patches.sh` were removed; the fork's git history is the source of truth.
 
 ### 1.3 `scripts/setup.sh` (idempotent)
-1. Clone ioRTCW if `iortcw/` is missing (as in 1.2).
+1. Run `git submodule update --init --recursive iortcw` if `iortcw/.git` is missing (as in 1.2).
 2. Create `run/main`, `run/codmod`, `run/home`.
 3. Symlink **each** required pk3:
    `run/main/<pak>.pk3 → $RTCW_DATA/<pak>.pk3` for `pak0 sp_pak1 sp_pak2 sp_pak3 sp_pak4`.
@@ -153,7 +154,7 @@ If DLLs fail to load from `run/codmod/` (some ioq3 builds restrict DLL search pa
 
 ## Acceptance criteria (gate)
 
-- [ ] `scripts/build.sh` builds cleanly from a fresh clone; `--game-only` works.
+- [ ] `scripts/build.sh` builds cleanly from a fresh `--recursive` clone; `--game-only` works.
 - [ ] Optional: `scripts/build.sh --container` works.
 - [ ] `scripts/run.sh` → main menu → New Game / `spdevmap escape1` plays, with sound,
       mouse look, and saves working (vanilla and codmod).

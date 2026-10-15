@@ -20,7 +20,7 @@ the user's in-game confirmation before the next one.
 
 ## State
 
-- Both repos clean (outer `main`, `iortcw/` `main`) as of 2026-10-14.
+- Both repos clean (outer `main`, `iortcw/` `main`) as of 2026-10-14. `iortcw/` is now a submodule (2026-10-15): bump the pointer after engine commits.
 - User confirmed working 2026-10-13: menu FPS limit, Skip Intro + cutscene letterbox, HD cutscene videos (`nlm1+span`),
   SSAO/GTAO + ambient-only AO (`r_ao`), frame pacer + `r_vsync` modes, HD audio pack.
 - Original phases 1-6b (tier A) all shipped and confirmed. Optional leftovers: 6b tier B (third-person prone anims),

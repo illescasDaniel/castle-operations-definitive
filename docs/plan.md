@@ -40,7 +40,7 @@ ioRTCW fork and in a separate `fs_game` mod folder named **`codmod`**.
 5. **Everything tunable.** Hard numbers go behind `cod_*` cvars (see
    [architecture.md §5](architecture.md#5-tuning-cvars-cod_)) so the user can tune feel in-game
    without recompiling. Defaults come from [reference-values.md](reference-values.md).
-6. **Small, reviewable commits** on the `main` branch of the ioRTCW fork clone (`iortcw/`), one logical
+6. **Small, reviewable commits** on the `main` branch of the ioRTCW fork submodule (`iortcw/`), one logical
    change per commit, prefixed by phase (e.g. `P2: CoD4 speed scales for player`).
 7. No pushing to any remote, no PRs, unless the user asks.
 8. The tools named in the original brief ("universal-modder toolset", "rea") **do not exist
@@ -50,7 +50,7 @@ ioRTCW fork and in a separate `fs_game` mod folder named **`codmod`**.
 
 | Phase | Doc | Deliverable | Gate |
 |---|---|---|---|
-| 1 | [phase-1-setup.md](phase-1-setup.md) | Repo layout, ioRTCW clone, build scripts (host plus optional podman), asset symlinks, vanilla build that boots to `escape1`, `codmod` mod folder that loads | User boots the game with both `main` and `fs_game codmod` |
+| 1 | [phase-1-setup.md](phase-1-setup.md) | Repo layout, ioRTCW submodule, build scripts (host plus optional podman), asset symlinks, vanilla build that boots to `escape1`, `codmod` mod folder that loads | User boots the game with both `main` and `fs_game codmod` |
 | 2 | [phase-2-movement.md](phase-2-movement.md) | `cod_*` tuning framework, debug HUD, CoD4 speeds, walk, strafe/back scales, crouch smoothing, lean upgrade, soldiers matched to the player's speeds | User confirms the movement feel |
 | 3 | [phase-3-ads.md](phase-3-ads.md) | Right-click aiming on every firearm: iron-sight ADS (pmove state, viewmodel centering with per-weapon offsets, FOV, sensitivity, crosshair, move penalty, spread) and hold-to-scope on scoped rifles | User confirms ADS on every supported weapon |
 | 4 | [phase-4-gait.md](phase-4-gait.md) | First-person gait presentation: walk/jog/sprint bob, procedural sprint gun-lower, sprint camera weight (RTCW has no FP locomotion anims) | User confirms walk vs jog vs sprint feel |
@@ -69,7 +69,7 @@ ioRTCW fork and in a separate `fs_game` mod folder named **`codmod`**.
 rtcw-cod/                         ← this folder; its own git repo (docs, scripts, mod files)
 ├── docs/                         ← these planning docs
 ├── scripts/
-│   ├── setup.sh                  ← clone illescasDaniel/iortcw (codmod), create run/ tree (idempotent)
+│   ├── setup.sh                  ← init iortcw submodule (illescasDaniel/iortcw), create run/ tree (idempotent)
 │   ├── build.sh                  ← build (host by default, --container for podman)
 │   ├── install.sh                ← copy built binaries into run/ (main + codmod)
 │   ├── run.sh                    ← launch the game (vanilla or codmod, extra args passed through)
@@ -78,7 +78,7 @@ rtcw-cod/                         ← this folder; its own git repo (docs, scrip
 │   └── compose.yaml              ← podman-compose service "builder"
 ├── mod/codmod/                   ← mod files that are NOT compiled (cfg, later pk3 contents)
 │   └── codmod.cfg                ← default binds and cvars for the mod
-├── iortcw/                       ← clone of illescasDaniel/iortcw (branch "codmod"); git-ignored by the outer repo
+├── iortcw/                       ← submodule: illescasDaniel/iortcw (branch "main")
 └── run/                          ← runtime tree (git-ignored)
     ├── iowolfsp.x86_64           ← copied from the build
     ├── renderer_sp_*_x86_64.so
@@ -91,7 +91,7 @@ rtcw-cod/                         ← this folder; its own git repo (docs, scrip
 
 - ioRTCW upstream base: `438e7d413b5f7277187c35b032eb0ef9093ae778` (2024-05-26). The
   `main` branch on [illescasDaniel/iortcw](https://github.com/illescasDaniel/iortcw) is built
-  from that pin; `setup.sh` clones the fork's `main` branch (engine changes already in the fork).
+  from that pin; `iortcw/` is a submodule of the fork's `main` branch (engine changes already in the fork).
 - `make -j32 release` in `iortcw/SP` **builds cleanly on the host** (CachyOS, GCC 16.2.1),
   with no extra packages: it uses bundled headers and libs and links at runtime against the host's
   `sdl2-compat`, `openal`, and `libglvnd`. Output lands in

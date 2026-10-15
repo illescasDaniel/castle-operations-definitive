@@ -92,7 +92,7 @@ From the repo root:
 
 What that does:
 
-1. **`setup.sh`** — clones our [ioRTCW fork](https://github.com/illescasDaniel/iortcw) into `iortcw/` (branch `main`), creates `run/`, symlinks Steam SP paks into `run/main/`, links mod configs into `run/codmod/`.
+1. **`setup.sh`** — checks out the `iortcw/` submodule ([our ioRTCW fork](https://github.com/illescasDaniel/iortcw), branch `main`) if missing, creates `run/`, symlinks Steam SP paks into `run/main/`, links mod configs into `run/codmod/`.
 2. **`build.sh`** — builds ioRTCW SP on the host.
 3. **`install.sh --vanilla`** — copies the engine into `run/` and game modules into both `run/codmod/` and `run/main/` (vanilla kept for A/B). Later rebuilds usually use `./scripts/install.sh` (codmod only).
 
@@ -276,7 +276,7 @@ rtcw-cod/
 ├── tools/hd-audio/       # local AI audio remaster (uv); outputs git-ignored
 ├── tools/hd-video/       # local AI video remaster (uv); outputs git-ignored
 ├── mod/codmod/           # configs, menu deltas, small original pk3s (not compiled)
-├── iortcw/               # clone of illescasDaniel/iortcw (git-ignored; own repo)
+├── iortcw/               # git submodule: illescasDaniel/iortcw (own repo)
 └── run/                  # runtime tree (git-ignored)
 ```
 

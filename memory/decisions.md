@@ -11,6 +11,12 @@ Append-only log, newest first. Never rewrite history: if a decision is reversed,
 - **Rationale:** <why, and what we rejected>
 -->
 
+## 2026-10-15: iortcw becomes a git submodule
+
+- **Context:** `iortcw/` was a git-ignored separate clone, so the outer repo never recorded which engine commit matched a codmod commit.
+- **Decision:** register `iortcw/` as a submodule (HTTPS url in `.gitmodules`, branch `main`); `setup.sh` runs `git submodule update --init` when missing.
+- **Rationale:** codmod commits pin the matching engine commit and `git clone --recursive` yields a working pair. Cost: each engine change needs a pointer-bump commit in the outer repo (commit and push in the submodule first). The local clone's origin stays SSH.
+
 ## 2026-10-13: Dynamic lights reach GPU (VAO) models; fix in rend2, not in materials
 
 - **Context:** the flashlight left static MD3 props (escape1 cages, iron gates) dark; looked like a dark-material problem.

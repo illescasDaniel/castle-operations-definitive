@@ -44,3 +44,6 @@ None.
 
 Earlier session detail (release prep, benchmark, perf investigation, SMAA, fork switch, HRTF) is recorded in
 `progress.md`, `archive.md`, `decisions.md` and `docs/`.
+
+## Subtitles (2026-10-15)
+Committed and pushed 2026-10-15 (user verified in-game, cutscenes too). `tools/subtitles/` (faster-whisper large-v3: transcribe.py, pack.py, review_page.py), `cg_subtitles.c`, `cod_subtitles` toggle (Game menu + pause Game), pack `run/codmod/codmod_subtitles.pk3` (620 lines, private). Docs: `docs/subtitles.md`. Awaiting user: in-game check (timing, wrapping, cutscene visibility, toggle) and listen to `tools/subtitles/build/review/index.html` (147 CHECK/RECOVERED lines). Known gap: ~250 dropped clips are mostly SFX; a few real barks (e.g. "Schnell", "Danke") got no text.

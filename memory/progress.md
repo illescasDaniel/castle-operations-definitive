@@ -25,7 +25,7 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 - [x] Cutscene letterbox bars drawn black; intro always plays (ignores `com_introPlayed`, `+set/+exec` args no longer suppress it); any key skips cinematics — engine commits 5665ad51, 37afbae2; confirmed 2026-10-13
 - [x] **Gyro aiming (DualSense):** `cod_padGyro` Aiming/Off/Always + sens, menu rows; playtested OK 2026-10-13 (`docs/gyro.md`)
 - [ ] Phase L0 (optional): translate menus and available game data (briefings, strings, codmod menus/HUD) — see docs/phase-l10n.md
-- [ ] Phase L1 (optional): AI-transcribe dialogue audio into subtitles + subtitle display
+- [x] Phase L1: AI-transcribed subtitles + display + Game-menu toggle (committed 2026-10-15)
 - [ ] Phase L2 (optional): AI-translate subtitles
 - [x] README "Localization (community patches)" section with German/Spanish packs — 2026-10-12
 - [x] First-launch defaults: triple buffer, no cap, desktop res, fullscreen; docs/menus.md rules — 2026-10-12

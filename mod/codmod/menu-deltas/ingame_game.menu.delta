@@ -153,7 +153,20 @@
 =ui/options.menu 100 101
 @@ 253 254
 =ui/options.menu 81 82
-@@ 255 571
+@@ 255 257
+@@ 259 268
++		name game
+=ui/options.menu 129 130
++		text "Subtitles:"
++		cvar "cod_subtitles"
++		rect 240 235 320 14
+@@ 269 270
+=ui/error.menu 217 218
+@@ 271 272
+=ui/options.menu 100 101
+@@ 275 300
+=ui/options.menu 81 82
+@@ 301 571
 @@ 574 574
 +}
 +

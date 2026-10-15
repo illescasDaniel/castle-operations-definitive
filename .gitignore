@@ -35,3 +35,9 @@ tools/hd-video/samples/
 tools/hd-video/.cache/
 tools/hd-video/.venv/
 **/codmod_hd_video.pk3
+
+# subtitles pipeline (derived from game assets, never commit)
+tools/subtitles/.venv/
+tools/subtitles/samples/
+tools/subtitles/build/review/
+tools/subtitles/build/*.tmp

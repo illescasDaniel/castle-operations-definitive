@@ -1,0 +1,6639 @@
+{
+"sound/player/eliteguard/death/death1.wav": {
+"dur": 1.77,
+"lang": "en",
+"prob": 0.36,
+"text": "",
+"orig": ""
+},
+"sound/player/eliteguard/death/death2.wav": {
+"dur": 0.86,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/player/eliteguard/death/death3.wav": {
+"dur": 1.03,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/player/eliteguard/death/death4.wav": {
+"dur": 1.31,
+"lang": "en",
+"prob": 0.37,
+"text": "",
+"orig": ""
+},
+"sound/player/eliteguard/death/death5.wav": {
+"dur": 1.28,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/player/eliteguard/death/fem_flame_scream.wav": {
+"dur": 3.57,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/player/eliteguard/pain/hurt1.wav": {
+"dur": 0.9,
+"lang": "en",
+"prob": 0.58,
+"text": "Ah!",
+"orig": "Ah!"
+},
+"sound/player/eliteguard/pain/hurt2.wav": {
+"dur": 1.33,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/player/eliteguard/pain/hurt3.wav": {
+"dur": 1.18,
+"lang": "en",
+"prob": 0.67,
+"text": "Oh!",
+"orig": "Oh!"
+},
+"sound/player/eliteguard/pain/hurt4.wav": {
+"dur": 0.92,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/player/heinrich/armor/armour_crash1.wav": {
+"dur": 2.47,
+"lang": "en",
+"prob": 0.3,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/player/heinrich/armor/armour_crash2.wav": {
+"dur": 2.15,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/player/heinrich/armor/armour_crash3.wav": {
+"dur": 2.04,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/player/heinrich/armor/armour_crash4.wav": {
+"dur": 1.61,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/player/heinrich/attack/hein_sword1.wav": {
+"dur": 2.37,
+"lang": "en",
+"prob": 0.24,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/player/heinrich/attack/hein_sword8.wav": {
+"dur": 1.52,
+"lang": "en",
+"prob": 0.24,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/player/heinrich/attack/hein_sword_hit.wav": {
+"dur": 0.74,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/player/heinrich/attack/hein_yell2.wav": {
+"dur": 2.99,
+"lang": "en",
+"prob": 0.74,
+"text": "NOOOOOO-",
+"orig": "NOOOOOO-"
+},
+"sound/player/heinrich/attack/hein_yell3.wav": {
+"dur": 3.38,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/player/heinrich/attack/hein_yell4.wav": {
+"dur": 5.5,
+"lang": "en",
+"prob": 0.36,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/player/heinrich/attack/hein_yell7.wav": {
+"dur": 2.34,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/player/heinrich/attack/hein_yell8.wav": {
+"dur": 2.08,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/player/heinrich/attack/hein_yell9.wav": {
+"dur": 2.56,
+"lang": "en",
+"prob": 0.53,
+"text": "AAARGGH!",
+"orig": "B.J. Blazkowicz, Kessler, Heinrich Himmler, Deathshead, Hazlitt,",
+"manual": true,
+"retried": true,
+"recovered": false
+},
+"sound/player/heinrich/death/hein_death1.wav": {
+"dur": 14.63,
+"lang": "en",
+"prob": 0.47,
+"text": "",
+"orig": ""
+},
+"sound/player/heinrich/death/hein_death2.wav": {
+"dur": 14.63,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/player/heinrich/pain/hein_pain1.wav": {
+"dur": 1.45,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/player/heinrich/pain/hein_pain2.wav": {
+"dur": 1.59,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/player/heinrich/pain/hein_pain3.wav": {
+"dur": 2.03,
+"lang": "en",
+"prob": 0.22,
+"text": "",
+"orig": ""
+},
+"sound/player/infantryss/attack/attack2.wav": {
+"dur": 1.28,
+"lang": "pl",
+"prob": 0.18,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/player/infantryss/attack/attack3.wav": {
+"dur": 1.43,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/player/infantryss/death/death1.wav": {
+"dur": 2.26,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/player/infantryss/death/death2.wav": {
+"dur": 1.38,
+"lang": "en",
+"prob": 0.53,
+"text": "OH!",
+"orig": "Owl.",
+"manual": true,
+"retried": true,
+"recovered": false
+},
+"sound/player/infantryss/death/death3.wav": {
+"dur": 1.46,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/player/infantryss/death/death4.wav": {
+"dur": 1.39,
+"lang": "en",
+"prob": 0.79,
+"text": "",
+"orig": ""
+},
+"sound/player/infantryss/death/death_flame1.wav": {
+"dur": 4.52,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/player/infantryss/death/death_forward.wav": {
+"dur": 2.62,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/player/infantryss/death/death_gut.wav": {
+"dur": 2.19,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/player/infantryss/death/death_knife1.wav": {
+"dur": 3.68,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/player/infantryss/death/death_knife2.wav": {
+"dur": 4.0,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/player/infantryss/death/death_knifevo.wav": {
+"dur": 0.93,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/player/infantryss/death/death_machinegun1.wav": {
+"dur": 2.65,
+"lang": "nn",
+"prob": 0.36,
+"text": "",
+"orig": ""
+},
+"sound/player/infantryss/death/death_machinegun2.wav": {
+"dur": 2.4,
+"lang": "en",
+"prob": 0.33,
+"text": "",
+"orig": ""
+},
+"sound/player/infantryss/death/death_rifle_head1.wav": {
+"dur": 2.5,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/player/infantryss/death/death_rifle_head2.wav": {
+"dur": 2.99,
+"lang": "en",
+"prob": 0.33,
+"text": "",
+"orig": ""
+},
+"sound/player/infantryss/death/death_rifle_torso1.wav": {
+"dur": 2.4,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/player/infantryss/death/death_rifle_torso2.wav": {
+"dur": 3.03,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/player/infantryss/death/death_tesla1.wav": {
+"dur": 1.98,
+"lang": "nn",
+"prob": 0.25,
+"text": "",
+"orig": ""
+},
+"sound/player/infantryss/death/death_tesla2.wav": {
+"dur": 2.86,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/player/infantryss/death/flame_scream1.wav": {
+"dur": 3.77,
+"lang": "en",
+"prob": 0.86,
+"text": "",
+"orig": ""
+},
+"sound/player/infantryss/death/flame_scream2.wav": {
+"dur": 4.14,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/player/infantryss/death/flame_scream3.wav": {
+"dur": 3.78,
+"lang": "en",
+"prob": 0.79,
+"text": "",
+"orig": ""
+},
+"sound/player/infantryss/death/heifer.wav": {
+"dur": 1.24,
+"lang": "de",
+"prob": 0.18,
+"text": "",
+"orig": ""
+},
+"sound/player/infantryss/death/meingut.wav": {
+"dur": 1.32,
+"lang": "de",
+"prob": 0.72,
+"text": "MY GOD!",
+"orig": "Mein Gott!"
+},
+"sound/player/infantryss/inspect/hear1.wav": {
+"dur": 0.91,
+"lang": "de",
+"prob": 0.8,
+"text": "What?",
+"orig": "Was?"
+},
+"sound/player/infantryss/inspect/hear2.wav": {
+"dur": 0.99,
+"lang": "de",
+"prob": 0.76,
+"text": "What's going on?",
+"orig": "Was ist los?"
+},
+"sound/player/infantryss/inspect/hear3.wav": {
+"dur": 0.6,
+"lang": "en",
+"prob": 0.81,
+"text": "Hey!",
+"orig": "Hey!"
+},
+"sound/player/infantryss/inspect/hear4.wav": {
+"dur": 1.84,
+"lang": "en",
+"prob": 0.97,
+"text": "I'm sure I heard something.",
+"orig": "I'm sure I heard something."
+},
+"sound/player/infantryss/orders/angreif.wav": {
+"dur": 1.5,
+"lang": "de",
+"prob": 0.92,
+"text": "Attack the Americans!",
+"orig": "Angreift die Amerikaner!"
+},
+"sound/player/infantryss/orders/kook.wav": {
+"dur": 1.33,
+"lang": "de",
+"prob": 0.6,
+"text": "Fuck! An American!",
+"orig": "Küch, ein Amerikaner!",
+"manual": true,
+"retried": true,
+"recovered": false
+},
+"sound/player/infantryss/orders/shnell.wav": {
+"dur": 0.64,
+"lang": "de",
+"prob": 0.33,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/player/infantryss/orders/swine.wav": {
+"dur": 1.07,
+"lang": "tr",
+"prob": 0.46,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/player/infantryss/pain/hurt25.wav": {
+"dur": 0.4,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/player/infantryss/pain/hurt50.wav": {
+"dur": 0.44,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/player/infantryss/pain/hurt75.wav": {
+"dur": 1.17,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/player/infantryss/quer_rel/nada1.wav": {
+"dur": 0.75,
+"lang": "en",
+"prob": 0.8,
+"text": "Hmm.",
+"orig": "Hmm."
+},
+"sound/player/infantryss/quer_rel/nada2.wav": {
+"dur": 1.81,
+"lang": "en",
+"prob": 0.98,
+"text": "Nothing.",
+"orig": "Nothing."
+},
+"sound/player/infantryss/quer_rel/nada3.wav": {
+"dur": 0.89,
+"lang": "en",
+"prob": 0.81,
+"text": "Ah.",
+"orig": "Ah."
+},
+"sound/player/infantryss/quer_rel/nada4.wav": {
+"dur": 1.05,
+"lang": "en",
+"prob": 0.99,
+"text": "That's nothing.",
+"orig": "That's nothing."
+},
+"sound/player/infantryss/rel_quer/hmm1.wav": {
+"dur": 0.93,
+"lang": "en",
+"prob": 0.74,
+"text": "Huh?",
+"orig": "Huh?"
+},
+"sound/player/infantryss/rel_quer/hmm2.wav": {
+"dur": 1.04,
+"lang": "en",
+"prob": 0.83,
+"text": "Hmm?",
+"orig": "Hmm?"
+},
+"sound/player/infantryss/rel_quer/hmm3.wav": {
+"dur": 1.1,
+"lang": "en",
+"prob": 0.83,
+"text": "What was that?",
+"orig": "What was that?"
+},
+"sound/player/infantryss/rel_quer/hmm4.wav": {
+"dur": 1.22,
+"lang": "en",
+"prob": 0.95,
+"text": "Is someone there?",
+"orig": "Is someone there?"
+},
+"sound/player/loper/attack/attack1.wav": {
+"dur": 1.08,
+"lang": "en",
+"prob": 0.26,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/player/loper/attack/attack2.wav": {
+"dur": 1.13,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/player/loper/attack/attack3.wav": {
+"dur": 1.06,
+"lang": "en",
+"prob": 0.26,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/player/loper/attack/attack4.wav": {
+"dur": 0.53,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/player/loper/death/lop_death1.wav": {
+"dur": 1.83,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/player/loper/death/lop_death2.wav": {
+"dur": 1.99,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/player/loper/death/lop_death3.wav": {
+"dur": 2.13,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/player/loper/growl1.wav": {
+"dur": 1.21,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/player/supersoldier/death/sup_death1.wav": {
+"dur": 9.68,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/player/warrior/death/wz_death1.wav": {
+"dur": 4.62,
+"lang": "en",
+"prob": 0.24,
+"text": "",
+"orig": ""
+},
+"sound/player/warrior/death/wz_death2.wav": {
+"dur": 5.4,
+"lang": "en",
+"prob": 0.39,
+"text": "",
+"orig": ""
+},
+"sound/player/warrior/death/wz_death3.wav": {
+"dur": 5.19,
+"lang": "en",
+"prob": 0.37,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/assault/air_raid1.wav": {
+"dur": 10.19,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/assault/big_gate1.wav": {
+"dur": 0.41,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/assault/big_gate2.wav": {
+"dur": 4.28,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/assault/big_gate3.wav": {
+"dur": 1.97,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/assault/cargo_flyby.wav": {
+"dur": 18.11,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/assault/fire_alarm_end1.wav": {
+"dur": 2.9,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/assault/fire_alarm_loop1.wav": {
+"dur": 1.74,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/assault/fuel.wav": {
+"dur": 2.97,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/assault/fuelmotor1.wav": {
+"dur": 3.9,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/assault/fueltank1.wav": {
+"dur": 2.27,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/assault/fueltank2.wav": {
+"dur": 1.67,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/assault/jet_idle.wav": {
+"dur": 2.41,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/assault/jet_takeoff.wav": {
+"dur": 21.66,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/assault/jetexplosion.wav": {
+"dur": 8.2,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/assault/mech_1.wav": {
+"dur": 2.45,
+"lang": "en",
+"prob": 0.6,
+"text": "No, please don't shoot!",
+"orig": "No, please don't shoot!"
+},
+"sound/scenaric/assault/mech_10.wav": {
+"dur": 5.24,
+"lang": "en",
+"prob": 0.91,
+"text": "Now please, let me go. I've told you everything I know.",
+"orig": "Now please, let me go. I've told you everything I know."
+},
+"sound/scenaric/assault/mech_7.wav": {
+"dur": 3.44,
+"lang": "en",
+"prob": 0.83,
+"text": "The lever on the right is to open the hatch doors.",
+"orig": "The lever on the right is to open the hatch doors."
+},
+"sound/scenaric/assault/mech_8.wav": {
+"dur": 6.62,
+"lang": "en",
+"prob": 0.96,
+"text": "The lever has malfunctioned though, so you'll need to go to the manual override station just below the tower door.",
+"orig": "The lever has malfunctioned though, so you'll need to go to the manual override station just below the tower door."
+},
+"sound/scenaric/assault/mech_9.wav": {
+"dur": 4.98,
+"lang": "en",
+"prob": 0.9,
+"text": "In there you'll see a hand crank. You'll have to turn it many times, but the doors will open.",
+"orig": "In there you'll see a hand crank. You'll have to turn it many times, but the doors will open."
+},
+"sound/scenaric/assault/metal_crank1.wav": {
+"dur": 5.43,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/assault/metal_sign_fall1.wav": {
+"dur": 1.42,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/assault/metal_table_fall1.wav": {
+"dur": 2.15,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/assault/pump_loop1.wav": {
+"dur": 3.94,
+"lang": "en",
+"prob": 0.23,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/assault/rocket_plane_flyby1.wav": {
+"dur": 17.81,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/assault/switch.wav": {
+"dur": 0.62,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/assault/truck_fast_loop1.wav": {
+"dur": 1.95,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/baseout/air_raid1.wav": {
+"dur": 9.94,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/beach/radiostaticloop.wav": {
+"dur": 2.6,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/beach/tuningstaticloop.wav": {
+"dur": 3.8,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/boss1/en_01.wav": {
+"dur": 4.27,
+"lang": "en",
+"prob": 0.96,
+"text": "This is Eagle's Nest. We read your mother, Ham. What is your status?",
+"orig": "This is Eagle's Nest. We read your mother, Ham. What is your status?"
+},
+"sound/scenaric/boss1/en_02.wav": {
+"dur": 3.92,
+"lang": "en",
+"prob": 0.99,
+"text": "Well done, mother hen. What is the condition of your passenger?",
+"orig": "Well done, mother hen. What is the condition of your passenger?"
+},
+"sound/scenaric/boss1/en_static.wav": {
+"dur": 9.36,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/boss1/hel_01.wav": {
+"dur": 5.42,
+"lang": "en",
+"prob": 0.93,
+"text": "I'm not planning anything. I'm doing it. I'm getting that dagger.",
+"orig": "I'm not planning anything. I'm doing it. I'm getting that dagger."
+},
+"sound/scenaric/boss1/hel_02.wav": {
+"dur": 2.39,
+"lang": "en",
+"prob": 0.92,
+"text": "I'm prepared to take that risk.",
+"orig": "I'm prepared to take that risk."
+},
+"sound/scenaric/boss1/hel_03.wav": {
+"dur": 10.48,
+"lang": "en",
+"prob": 0.94,
+"text": "Ha! I don't care! I've waited my whole life for an opportunity like this! I'm not turning back now for some cowering bookworm and his pointless fears!",
+"orig": "Ha! I don't care! I've waited my whole life for an opportunity like this! I'm not turning back now for some cowering bookworm and his pointless fears!"
+},
+"sound/scenaric/boss1/hel_04.wav": {
+"dur": 4.78,
+"lang": "en",
+"prob": 0.96,
+"text": "Get out of my way, Zempf! Your feeble threats won't stop me!",
+"orig": "Get out of my way, Zempf! Your feeble threats won't stop me!"
+},
+"sound/scenaric/boss1/hel_05.wav": {
+"dur": 2.31,
+"lang": "en",
+"prob": 0.94,
+"text": "This is your last warning!",
+"orig": "This is your last warning!"
+},
+"sound/scenaric/boss1/hel_06.wav": {
+"dur": 3.87,
+"lang": "en",
+"prob": 0.86,
+"text": "At last!",
+"orig": "At last!"
+},
+"sound/scenaric/boss1/mh_01.wav": {
+"dur": 4.09,
+"lang": "en",
+"prob": 0.93,
+"text": "Mother Hand Eagle's Nest. Mother Hand Eagle's Nest. Come in Eagle's Nest.",
+"orig": "Mother Hand Eagle's Nest. Mother Hand Eagle's Nest. Come in Eagle's Nest."
+},
+"sound/scenaric/boss1/mh_02.wav": {
+"dur": 3.02,
+"lang": "en",
+"prob": 0.97,
+"text": "Status is mission accomplished. We are inbound.",
+"orig": "Status is mission accomplished. We are inbound."
+},
+"sound/scenaric/boss1/mh_03.wav": {
+"dur": 6.79,
+"lang": "en",
+"prob": 0.99,
+"text": "All things considered, the passenger is doing fine. Repeat, passenger is doing fine. Mother hen out.",
+"orig": "All things considered, the passenger is doing fine. Repeat, passenger is doing fine. Mother hen out."
+},
+"sound/scenaric/boss1/mh_static.wav": {
+"dur": 9.36,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/boss1/surprise.wav": {
+"dur": 16.4,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/boss1/zem_01.wav": {
+"dur": 2.36,
+"lang": "en",
+"prob": 0.78,
+"text": "What are you planning now?",
+"orig": "What are you planning now?"
+},
+"sound/scenaric/boss1/zem_02.wav": {
+"dur": 4.2,
+"lang": "en",
+"prob": 0.81,
+"text": "No, you can't do that. You'll break the inner seal.",
+"orig": "No, you can't do that. You'll break the inner seal."
+},
+"sound/scenaric/boss1/zem_03.wav": {
+"dur": 10.23,
+"lang": "en",
+"prob": 0.99,
+"text": "You're prepared. Are you completely mad? Do you realize what will be unleashed? It will make all the rest of this seem like a minor annoyance.",
+"orig": "You're prepared. Are you completely mad? Do you realize what will be unleashed? It will make all the rest of this seem like a minor annoyance."
+},
+"sound/scenaric/boss1/zem_04.wav": {
+"dur": 10.23,
+"lang": "en",
+"prob": 0.97,
+"text": "Frau von Bulow, I warn you, if you persist in this madness, I will be forced to report your conduct to the SS High Court of Inquiry.",
+"orig": "Frau von Bulow, I warn you, if you persist in this madness, I will be forced to report your conduct to the SS High Court of Inquiry."
+},
+"sound/scenaric/boss1/zem_05.wav": {
+"dur": 5.71,
+"lang": "en",
+"prob": 0.95,
+"text": "Please, come to your senses! Stop this madness before it is too late!",
+"orig": "Please, come to your senses! Stop this madness before it is too late!"
+},
+"sound/scenaric/boss1/zem_06.wav": {
+"dur": 1.79,
+"lang": "en",
+"prob": 0.74,
+"text": "No, you can't!",
+"orig": "No, you can't!"
+},
+"sound/scenaric/boss1/zem_07.wav": {
+"dur": 2.45,
+"lang": "en",
+"prob": 0.81,
+"text": "Ow!",
+"orig": "Ow!"
+},
+"sound/scenaric/boss2/dh_feeling_fatigued.wav": {
+"dur": 6.99,
+"lang": "en",
+"prob": 0.95,
+"text": "Feeling fatigued? Short of breath? Muscles starting to cramp? No? I'm exhausted from just watching you.",
+"orig": "Feeling fatigued? Short of breath? Muscles starting to cramp? No? I'm exhausted from just watching you."
+},
+"sound/scenaric/boss2/dh_have_to_do_better.wav": {
+"dur": 5.28,
+"lang": "en",
+"prob": 0.96,
+"text": "Or you'll have to do better than that if you expect me to get any useful data.",
+"orig": "Or you'll have to do better than that if you expect me to get any useful data."
+},
+"sound/scenaric/boss2/dh_i_suppose.wav": {
+"dur": 5.26,
+"lang": "en",
+"prob": 0.97,
+"text": "I suppose I expected too much from you. You are, after all, only flesh and blood.",
+"orig": "I suppose I expected too much from you. You are, after all, only flesh and blood."
+},
+"sound/scenaric/boss2/dh_make_it_easy.wav": {
+"dur": 4.46,
+"lang": "en",
+"prob": 0.95,
+"text": "Why not make it easy on yourself and let him finish you quickly?",
+"orig": "Why not make it easy on yourself and let him finish you quickly?"
+},
+"sound/scenaric/boss2/dh_my_pleasure.wav": {
+"dur": 4.06,
+"lang": "en",
+"prob": 0.89,
+"text": "It will be my pleasure to watch him destroy you.",
+"orig": "It will be my pleasure to watch him destroy you."
+},
+"sound/scenaric/boss2/dh_new_armor.wav": {
+"dur": 3.67,
+"lang": "en",
+"prob": 0.96,
+"text": "That new armor makes all the difference, don't you agree?",
+"orig": "That new armor makes all the difference, don't you agree?"
+},
+"sound/scenaric/boss2/dh_only_delaying.wav": {
+"dur": 2.57,
+"lang": "en",
+"prob": 0.93,
+"text": "Your only delay is inevitable.",
+"orig": "Your only delay is inevitable."
+},
+"sound/scenaric/boss2/dh_quite_the_toy.wav": {
+"dur": 2.99,
+"lang": "en",
+"prob": 0.91,
+"text": "Quite a deadly little toy, isn't he?",
+"orig": "Quite a deadly little toy, isn't he?"
+},
+"sound/scenaric/boss2/dh_see_what_i_mean.wav": {
+"dur": 3.63,
+"lang": "en",
+"prob": 0.99,
+"text": "Do you see what I mean about these improved reactions?",
+"orig": "Do you see what I mean about these improved reactions?"
+},
+"sound/scenaric/boss2/dh_thats_the_spirit.wav": {
+"dur": 2.61,
+"lang": "en",
+"prob": 0.96,
+"text": "That's the spirit. I knew you had it in you.",
+"orig": "That's the spirit. I knew you had it in you."
+},
+"sound/scenaric/boss2/dh_the_results.wav": {
+"dur": 7.92,
+"lang": "en",
+"prob": 0.97,
+"text": "The results of this live fire exercise will be invaluable. I thank you again for providing me with this opportunity.",
+"orig": "The results of this live fire exercise will be invaluable. I thank you again for providing me with this opportunity."
+},
+"sound/scenaric/boss2/dh_thus_we_see.wav": {
+"dur": 4.24,
+"lang": "en",
+"prob": 0.94,
+"text": "Thus we see the superiority of the machine of flesh and blood.",
+"orig": "Thus we see the superiority of the machine of flesh and blood."
+},
+"sound/scenaric/boss2/dh_try_harder.wav": {
+"dur": 4.45,
+"lang": "en",
+"prob": 0.98,
+"text": "Oh, you really must try harder. This is barely competitive at all.",
+"orig": "Oh, you really must try harder. This is barely competitive at all."
+},
+"sound/scenaric/boss2/dh_very_amusing.wav": {
+"dur": 3.78,
+"lang": "en",
+"prob": 0.98,
+"text": "This has all been very amusing, but we're running short of time.",
+"orig": "This has all been very amusing, but we're running short of time."
+},
+"sound/scenaric/boss2/dh_very_good.wav": {
+"dur": 3.18,
+"lang": "en",
+"prob": 0.95,
+"text": "Very good! I may learn something after all!",
+"orig": "Very good! I may learn something after all!"
+},
+"sound/scenaric/boss2/dh_well_agent.wav": {
+"dur": 28.47,
+"lang": "en",
+"prob": 0.96,
+"text": "Well, Agent Blazkowicz, is it? You are our most impressive specimen. It will be my pleasure to dissect you piece by piece. Let me introduce you to someone. Do not confuse him with the mere prototypes you have encountered. This is the pinnacle of all my research. Das Supersoldat. The Super Soldier.",
+"orig": "Well, Agent Blazkowicz, is it? You are our most impressive specimen. It will be my pleasure to dissect you piece by piece. Let me introduce you to someone. Do not confuse him with the mere prototypes you have encountered. This is the pinnacle of all my research. Das Supersoldat. The Super Soldier."
+},
+"sound/scenaric/boss2/dh_winning_how.wav": {
+"dur": 3.59,
+"lang": "en",
+"prob": 0.75,
+"text": "H-H-H-H-Hauen!",
+"orig": "H-H-H-H-Hauen!"
+},
+"sound/scenaric/boss2/dh_winning_meet_again.wav": {
+"dur": 2.81,
+"lang": "en",
+"prob": 0.95,
+"text": "We shall meet again another day.",
+"orig": "We shall meet again another day."
+},
+"sound/scenaric/boss2/dh_winning_what.wav": {
+"dur": 2.42,
+"lang": "en",
+"prob": 0.81,
+"text": "What? It's not possible.",
+"orig": "What? It's not possible."
+},
+"sound/scenaric/boss2/dh_you_must_forgive.wav": {
+"dur": 4.93,
+"lang": "en",
+"prob": 0.98,
+"text": "You must forgive me for carrying on so shamelessly like a proud father.",
+"orig": "You must forgive me for carrying on so shamelessly like a proud father."
+},
+"sound/scenaric/chateau/bg1_almost_feel.wav": {
+"dur": 2.56,
+"lang": "en",
+"prob": 0.94,
+"text": "You can almost feel the tension in the air.",
+"orig": "You can almost feel the tension in the air."
+},
+"sound/scenaric/chateau/bg1_not_kidding.wav": {
+"dur": 5.26,
+"lang": "en",
+"prob": 0.97,
+"text": "You're not kidding. The Major almost bit my head off a while ago and for nothing at all.",
+"orig": "You're not kidding. The Major almost bit my head off a while ago and for nothing at all."
+},
+"sound/scenaric/chateau/bg2_definitely.wav": {
+"dur": 4.64,
+"lang": "en",
+"prob": 0.98,
+"text": "Definitely, this ceremony has everyone's nerves on edge.",
+"orig": "Definitely, this ceremony has everyone's nerves on edge."
+},
+"sound/scenaric/chateau/bguard_intruder.wav": {
+"dur": 3.45,
+"lang": "en",
+"prob": 0.86,
+"text": "There's an intruder in the chateau. Call the guards, quickly!",
+"orig": "There's an intruder in the chateau. Call the guards, quickly!"
+},
+"sound/scenaric/chateau/corp_jawol.wav": {
+"dur": 2.15,
+"lang": "es",
+"prob": 0.71,
+"text": "I'M COMING!",
+"orig": "¡Ya voy!"
+},
+"sound/scenaric/chateau/corp_just_checked.wav": {
+"dur": 3.2,
+"lang": "en",
+"prob": 0.92,
+"text": "I just checked a minute ago, sir. He hasn't.",
+"orig": "I just checked a minute ago, sir. He hasn't."
+},
+"sound/scenaric/chateau/corp_sir.wav": {
+"dur": 1.32,
+"lang": "en",
+"prob": 0.8,
+"text": "Sir!",
+"orig": "Sir!"
+},
+"sound/scenaric/chateau/fplace_begin.wav": {
+"dur": 0.57,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/chateau/fplace_end.wav": {
+"dur": 0.82,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/chateau/fplace_loop.wav": {
+"dur": 3.41,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/chateau/g2_intruder.wav": {
+"dur": 3.31,
+"lang": "en",
+"prob": 0.47,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/chateau/gen1_blav_unwound.wav": {
+"dur": 9.76,
+"lang": "en",
+"prob": 0.96,
+"text": "I hear Blavatsky came completely unwound. According to Otto, she left right away, cancelled the whole party and headed straight for the ceremonial site.",
+"orig": "I hear Blavatsky came completely unwound. According to Otto, she left right away, cancelled the whole party and headed straight for the ceremonial site."
+},
+"sound/scenaric/chateau/gen1_did_you_know.wav": {
+"dur": 3.67,
+"lang": "en",
+"prob": 0.94,
+"text": "Did you know Burghalter and von Stauff still haven't shown up?",
+"orig": "Did you know Burghalter and von Stauff still haven't shown up?"
+},
+"sound/scenaric/chateau/gen1_maybe_so.wav": {
+"dur": 9.85,
+"lang": "en",
+"prob": 0.94,
+"text": "Maybe so, but something tells me that if tonight is not a success, Herr Himmler isn't going to care one little bit about anyone's plans.",
+"orig": "Maybe so, but something tells me that if tonight is not a success, Herr Himmler isn't going to care one little bit about anyone's plans."
+},
+"sound/scenaric/chateau/gen2-josef_furious.wav": {
+"dur": 4.93,
+"lang": "en",
+"prob": 0.96,
+"text": "Oh, Josef is going to be furious. He'd been planning this for weeks.",
+"orig": "Oh, Josef is going to be furious. He'd been planning this for weeks."
+},
+"sound/scenaric/chateau/gen2_very_bad.wav": {
+"dur": 3.94,
+"lang": "en",
+"prob": 0.96,
+"text": "Ah, this is very bad. Something must have gone wrong.",
+"orig": "Ah, this is very bad. Something must have gone wrong."
+},
+"sound/scenaric/chateau/gen2_you_have_a_point.wav": {
+"dur": 1.61,
+"lang": "en",
+"prob": 0.97,
+"text": "You have a point there.",
+"orig": "You have a point there."
+},
+"sound/scenaric/chateau/off_check_again.wav": {
+"dur": 4.04,
+"lang": "en",
+"prob": 0.86,
+"text": "Well, check again, Damio, and be quick about it.",
+"orig": "Well, check again, Damio, and be quick about it."
+},
+"sound/scenaric/chateau/off_corporal.wav": {
+"dur": 1.88,
+"lang": "ru",
+"prob": 0.22,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/chateau/off_go_see.wav": {
+"dur": 4.3,
+"lang": "en",
+"prob": 0.85,
+"text": "Go and see if General Burkhalter has arrived yet.",
+"orig": "Go and see if General Burkhalter has arrived yet."
+},
+"sound/scenaric/church/axis1_dead.wav": {
+"dur": 3.76,
+"lang": "en",
+"prob": 0.9,
+"text": "He must be dead by now. I'm convinced of it.",
+"orig": "He must be dead by now. I'm convinced of it."
+},
+"sound/scenaric/church/axis1_jawhol.wav": {
+"dur": 2.33,
+"lang": "de",
+"prob": 0.99,
+"text": "Yes, my commander!",
+"orig": "Jawohl, mein Hauptmann!"
+},
+"sound/scenaric/church/axis1_poor_josef.wav": {
+"dur": 5.67,
+"lang": "en",
+"prob": 0.9,
+"text": "Poor Joseph. Look at him. Torn to shreds.",
+"orig": "Poor Joseph. Look at him. Torn to shreds."
+},
+"sound/scenaric/church/axis2_done_that.wav": {
+"dur": 1.85,
+"lang": "hu",
+"prob": 0.7,
+"text": "What the hell is that?",
+"orig": "Vatka a tánzát!"
+},
+"sound/scenaric/church/axis3_nothing_human.wav": {
+"dur": 2.61,
+"lang": "en",
+"prob": 0.78,
+"text": "Nothing human.",
+"orig": "Nothing human."
+},
+"sound/scenaric/church/coffin_lid_1.wav": {
+"dur": 5.83,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/church/cs04_hel_01.wav": {
+"dur": 2.09,
+"lang": "en",
+"prob": 0.96,
+"text": "Well, what's happening?",
+"orig": "Well, what's happening?"
+},
+"sound/scenaric/church/cs04_hel_02.wav": {
+"dur": 1.23,
+"lang": "en",
+"prob": 0.89,
+"text": "Is it working?",
+"orig": "Is it working?"
+},
+"sound/scenaric/church/cs04_hel_03.wav": {
+"dur": 5.0,
+"lang": "en",
+"prob": 0.99,
+"text": "Enough of your stalling! Tell me yes or no. Will it work?",
+"orig": "Enough of your stalling! Tell me yes or no. Will it work?"
+},
+"sound/scenaric/church/cs04_hel_04.wav": {
+"dur": 3.02,
+"lang": "en",
+"prob": 0.99,
+"text": "Don't take that patronizing tone with me.",
+"orig": "Don't take that patronizing tone with me."
+},
+"sound/scenaric/church/cs04_hel_05.wav": {
+"dur": 1.4,
+"lang": "en",
+"prob": 0.96,
+"text": "What? What?",
+"orig": "What? What?"
+},
+"sound/scenaric/church/cs04_hel_06.wav": {
+"dur": 1.53,
+"lang": "de",
+"prob": 0.6,
+"text": "EXCELLENT!",
+"orig": "Excellent!"
+},
+"sound/scenaric/church/cs04_zem_01.wav": {
+"dur": 3.38,
+"lang": "de",
+"prob": 0.76,
+"text": "A moment, please, my director.",
+"orig": "A moment, please, mein Director."
+},
+"sound/scenaric/church/cs04_zem_02.wav": {
+"dur": 5.26,
+"lang": "en",
+"prob": 0.93,
+"text": "Please be patient. We are operating under very difficult conditions here.",
+"orig": "Please be patient. We are operating under very difficult conditions here."
+},
+"sound/scenaric/church/cs04_zem_03.wav": {
+"dur": 12.04,
+"lang": "en",
+"prob": 0.89,
+"text": "Frau von Bulow, how many times do I have to remind you? This is a very complex and delicate operation. It cannot be hurried. We are not filling teeth here.",
+"orig": "Frau von Bulow, how many times do I have to remind you? This is a very complex and delicate operation. It cannot be hurried. We are not filling teeth here."
+},
+"sound/scenaric/church/cs04_zem_04.wav": {
+"dur": 3.3,
+"lang": "en",
+"prob": 0.95,
+"text": "Just a moment. Just a moment.",
+"orig": "Just a moment. Just a moment."
+},
+"sound/scenaric/church/cs04_zem_05.wav": {
+"dur": 5.76,
+"lang": "en",
+"prob": 0.97,
+"text": "Ja, ja, the extraction process is beginning. It is only a matter of time now.",
+"orig": "Ja, ja, the extraction process is beginning. It is only a matter of time now."
+},
+"sound/scenaric/church/dispatch.wav": {
+"dur": 7.02,
+"lang": "en",
+"prob": 0.93,
+"text": "Move it, Zempf! Your orders, my noble Fuhrer. Deploy the remaining elite guard. Jawohl!",
+"orig": "Move it, Zempf! Your orders, my noble Fuhrer. Deploy the remaining elite guard. Jawohl!"
+},
+"sound/scenaric/church/doorcrash.wav": {
+"dur": 2.66,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/church/elite1_convinced.wav": {
+"dur": 10.64,
+"lang": "en",
+"prob": 0.96,
+"text": "Oh, you're convinced of it, are you? How reassuring. We can all rest easy now, I suppose. Get moving now before I shoot you on the spot!",
+"orig": "Oh, you're convinced of it, are you? How reassuring. We can all rest easy now, I suppose. Get moving now before I shoot you on the spot!"
+},
+"sound/scenaric/church/elite1_gawking.wav": {
+"dur": 10.67,
+"lang": "en",
+"prob": 0.99,
+"text": "What are you all gawking at? You'll see worse than this if you don't get moving. Stop standing around with your bombs in your mouths and start searching the area. Keep an eye out for the American.",
+"orig": "What are you all gawking at? You'll see worse than this if you don't get moving. Stop standing around with your bombs in your mouths and start searching the area. Keep an eye out for the American."
+},
+"sound/scenaric/church/lightning1.wav": {
+"dur": 6.03,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/church/lightning2.wav": {
+"dur": 7.92,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/church/lightning3.wav": {
+"dur": 5.11,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/church/rain1.wav": {
+"dur": 9.01,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/church/thunder1.wav": {
+"dur": 9.4,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/church/thunder2.wav": {
+"dur": 10.03,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/church/thunder3.wav": {
+"dur": 10.31,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/crypt1/a_not_either.wav": {
+"dur": 4.03,
+"lang": "en",
+"prob": 0.94,
+"text": "I'm not either. I think we should find some cover.",
+"orig": "I'm not either. I think we should find some cover."
+},
+"sound/scenaric/crypt1/a_what.wav": {
+"dur": 1.65,
+"lang": "en",
+"prob": 0.9,
+"text": "What was that?",
+"orig": "What was that?"
+},
+"sound/scenaric/crypt1/ambzomb1.wav": {
+"dur": 5.37,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/crypt1/ambzomb2.wav": {
+"dur": 5.65,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/crypt1/b_agreed.wav": {
+"dur": 3.35,
+"lang": "en",
+"prob": 0.91,
+"text": "Yeah, agreed.",
+"orig": "Yeah, agreed."
+},
+"sound/scenaric/crypt1/b_dont_know.wav": {
+"dur": 3.29,
+"lang": "en",
+"prob": 0.98,
+"text": "I don't know, but I'm not going to check it out.",
+"orig": "I don't know, but I'm not going to check it out."
+},
+"sound/scenaric/crypt1/chase.wav": {
+"dur": 5.87,
+"lang": "en",
+"prob": 0.55,
+"text": "[Monster sounds] My God, Teufelsbrut [hellspawn]! Get back to hell! [Monster sounds]",
+"orig": "B.J.",
+"manual": true,
+"retried": true,
+"recovered": false
+},
+"sound/scenaric/crypt1/cn1_get_ready.wav": {
+"dur": 3.66,
+"lang": "en",
+"prob": 0.89,
+"text": "Get ready. They're coming.",
+"orig": "Get ready. They're coming."
+},
+"sound/scenaric/crypt1/cn1_mein_gott.wav": {
+"dur": 3.6,
+"lang": "en",
+"prob": 0.93,
+"text": "And God! Did you hear that?",
+"orig": "And God! Did you hear that?"
+},
+"sound/scenaric/crypt1/cn1_slaughterhouse.wav": {
+"dur": 3.52,
+"lang": "en",
+"prob": 0.87,
+"text": "It's like a slaughterhouse in here.",
+"orig": "It's like a slaughterhouse in here."
+},
+"sound/scenaric/crypt1/cn1_the_ladder.wav": {
+"dur": 3.55,
+"lang": "en",
+"prob": 0.92,
+"text": "The ladder! It's destroyed!",
+"orig": "The ladder! It's destroyed!"
+},
+"sound/scenaric/crypt1/cn1_what_are_they.wav": {
+"dur": 3.97,
+"lang": "en",
+"prob": 0.86,
+"text": "What are they? Where did they all come from?",
+"orig": "What are they? Where did they all come from?"
+},
+"sound/scenaric/crypt1/cn2_i_know.wav": {
+"dur": 3.26,
+"lang": "en",
+"prob": 0.72,
+"text": "I know, these things are everywhere.",
+"orig": "I know, these things are everywhere."
+},
+"sound/scenaric/crypt1/cn2_sealed_us.wav": {
+"dur": 2.88,
+"lang": "en",
+"prob": 0.88,
+"text": "They've sealed us in here!",
+"orig": "They've sealed us in here!"
+},
+"sound/scenaric/crypt1/cn2_wish.wav": {
+"dur": 2.79,
+"lang": "en",
+"prob": 0.85,
+"text": "Yeah, and I wish I hadn't.",
+"orig": "Yeah, and I wish I hadn't."
+},
+"sound/scenaric/crypt1/cn3_dont_ask_me.wav": {
+"dur": 3.4,
+"lang": "en",
+"prob": 0.85,
+"text": "Don't ask me. No one ever tells me anything.",
+"orig": "Don't ask me. No one ever tells me anything."
+},
+"sound/scenaric/crypt1/cn3_get_out.wav": {
+"dur": 3.84,
+"lang": "en",
+"prob": 0.96,
+"text": "We have to get out of here. Follow me back to the entrance.",
+"orig": "We have to get out of here. Follow me back to the entrance."
+},
+"sound/scenaric/crypt1/crypt_shiver.wav": {
+"dur": 1.03,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/crypt1/firstsight1.wav": {
+"dur": 2.52,
+"lang": "en",
+"prob": 0.75,
+"text": "[Monster sounds]",
+"orig": "Amen.",
+"manual": true,
+"retried": true,
+"recovered": false
+},
+"sound/scenaric/crypt1/firstsight2.wav": {
+"dur": 1.77,
+"lang": "en",
+"prob": 0.33,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/crypt1/firstsight3.wav": {
+"dur": 1.21,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/crypt1/growl1.wav": {
+"dur": 2.41,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/crypt1/lets_go.wav": {
+"dur": 3.44,
+"lang": "de",
+"prob": 0.55,
+"text": "Come on, let's go! Quick, quick!",
+"orig": "Komm, let's go! Schnell, schnell!"
+},
+"sound/scenaric/crypt1/squish.wav": {
+"dur": 2.5,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/crypt2/big_stone_fall1.wav": {
+"dur": 4.02,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/crypt2/big_stone_fall2.wav": {
+"dur": 4.31,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/crypt2/crush_trap1.wav": {
+"dur": 5.61,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/crypt2/earth_rumble.wav": {
+"dur": 15.23,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/crypt2/pillar_raise_loop.wav": {
+"dur": 4.2,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/crypt2/saw_trap1.wav": {
+"dur": 3.38,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/crypt2/spikes.wav": {
+"dur": 2.11,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/crypt2/split1.wav": {
+"dur": 2.78,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/crypt2/split2.wav": {
+"dur": 2.1,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/crypt2/split3.wav": {
+"dur": 2.45,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/crypt2/stone_coffin_pound.wav": {
+"dur": 3.44,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/crypt2/stone_fall1.wav": {
+"dur": 2.94,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/crypt2/stone_fall2.wav": {
+"dur": 3.31,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/crypt2/trap_door1.wav": {
+"dur": 5.81,
+"lang": "nn",
+"prob": 0.23,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/cs1/cs01_dir_01.wav": {
+"dur": 1.3,
+"lang": "en",
+"prob": 0.96,
+"text": "Come in.",
+"orig": "Come in."
+},
+"sound/scenaric/cs1/cs01_dir_02.wav": {
+"dur": 2.75,
+"lang": "en",
+"prob": 1.0,
+"text": "Well, Jack, have we heard anything?",
+"orig": "Well, Jack, have we heard anything?"
+},
+"sound/scenaric/cs1/cs01_dir_03.wav": {
+"dur": 1.38,
+"lang": "en",
+"prob": 0.95,
+"text": "And?",
+"orig": "And?"
+},
+"sound/scenaric/cs1/cs01_dir_04.wav": {
+"dur": 2.99,
+"lang": "en",
+"prob": 0.96,
+"text": "Damn. Quarter meeting, Jack.",
+"orig": "Damn. Quarter meeting, Jack.",
+"retried": true,
+"recovered": false
+},
+"sound/scenaric/cs1/cs01_dir_06.wav": {
+"dur": 6.77,
+"lang": "en",
+"prob": 0.98,
+"text": "All right, gentlemen. Now let's go through it again by the numbers. What did we miss?",
+"orig": "All right, gentlemen. Now let's go through it again by the numbers. What did we miss?"
+},
+"sound/scenaric/cs1/cs01_dir_07.wav": {
+"dur": 7.88,
+"lang": "en",
+"prob": 0.99,
+"text": "So, advanced weapons, rocketry, chemical and biological research. Now, the occult.",
+"orig": "So, advanced weapons, rocketry, chemical and biological research. Now, the occult."
+},
+"sound/scenaric/cs1/cs01_dir_08.wav": {
+"dur": 2.39,
+"lang": "en",
+"prob": 0.94,
+"text": "Well, that's why we sent our boys in there.",
+"orig": "Well, that's why we sent our boys in there."
+},
+"sound/scenaric/cs1/cs01_dir_09.wav": {
+"dur": 2.93,
+"lang": "en",
+"prob": 1.0,
+"text": "Jack, what are our options here?",
+"orig": "Jack, what are our options here?"
+},
+"sound/scenaric/cs1/cs01_dir_10.wav": {
+"dur": 0.7,
+"lang": "en",
+"prob": 0.68,
+"text": "Or?",
+"orig": "Or?"
+},
+"sound/scenaric/cs1/cs01_dir_11.wav": {
+"dur": 3.88,
+"lang": "en",
+"prob": 0.95,
+"text": "Well, looks like we play the waiting game.",
+"orig": "Well, looks like we play the waiting game."
+},
+"sound/scenaric/cs1/cs01_hig_01.wav": {
+"dur": 3.63,
+"lang": "en",
+"prob": 0.97,
+"text": "Special projects. It's marvelously vague.",
+"orig": "Special projects. It's marvelously vague."
+},
+"sound/scenaric/cs1/cs01_hig_02.wav": {
+"dur": 1.67,
+"lang": "en",
+"prob": 0.98,
+"text": "Charming.",
+"orig": "Charming."
+},
+"sound/scenaric/cs1/cs01_jac_01.wav": {
+"dur": 5.91,
+"lang": "en",
+"prob": 1.0,
+"text": "Yes, sir. We've just received a code of transmission from Kessler, our contact in the Kreisau Circle.",
+"orig": "Yes, sir. We've just received a code of transmission from Kessler, our contact in the Kreisau Circle."
+},
+"sound/scenaric/cs1/cs01_jac_02.wav": {
+"dur": 4.82,
+"lang": "en",
+"prob": 1.0,
+"text": "Both agents have been captured and are being held in Castle Wolfenstein.",
+"orig": "Both agents have been captured and are being held in Castle Wolfenstein."
+},
+"sound/scenaric/cs1/cs01_jac_03.wav": {
+"dur": 1.13,
+"lang": "en",
+"prob": 1.0,
+"text": "Yes, sir.",
+"orig": "Yes, sir."
+},
+"sound/scenaric/cs1/cs01_jac_04.wav": {
+"dur": 1.51,
+"lang": "en",
+"prob": 0.99,
+"text": "Well, here's what we know.",
+"orig": "Well, here's what we know."
+},
+"sound/scenaric/cs1/cs01_jac_05.wav": {
+"dur": 5.68,
+"lang": "en",
+"prob": 1.0,
+"text": "This is Castle Wolfenstein, located in the Harz Mountains of northern Germany, property of Heinrich Himmler.",
+"orig": "This is Castle Wolfenstein, located in the Harz Mountains of northern Germany, property of Heinrich Himmler."
+},
+"sound/scenaric/cs1/cs01_jac_06.wav": {
+"dur": 12.09,
+"lang": "en",
+"prob": 1.0,
+"text": "Now, we've known of the existence of Castle Wolfenstein for some time, but we've only recently heard reports from our Kreisau Circle contacts and the German resistance regarding bizarre occult rituals taking place there.",
+"orig": "Now, we've known of the existence of Castle Wolfenstein for some time, but we've only recently heard reports from our Kreisau Circle contacts and the German resistance regarding bizarre occult rituals taking place there."
+},
+"sound/scenaric/cs1/cs01_jac_07.wav": {
+"dur": 14.87,
+"lang": "en",
+"prob": 1.0,
+"text": "Now these characters are part of Himmler's newly formed SS Paranormal Division, a small but elite group comprised of members possessing above-average IQs and backgrounds with the occult and or paranormal. The one in charge is this woman.",
+"orig": "Now these characters are part of Himmler's newly formed SS Paranormal Division, a small but elite group comprised of members possessing above-average IQs and backgrounds with the occult and or paranormal. The one in charge is this woman."
+},
+"sound/scenaric/cs1/cs01_jac_08.wav": {
+"dur": 10.02,
+"lang": "en",
+"prob": 1.0,
+"text": "Helga von Bulow. Our Kreisau contact in one of the villages below the castle has informed us that she and other members of the division have been recently deployed to the area.",
+"orig": "Helga von Bulow. Our Kreisau contact in one of the villages below the castle has informed us that she and other members of the division have been recently deployed to the area."
+},
+"sound/scenaric/cs1/cs01_jac_09.wav": {
+"dur": 9.25,
+"lang": "en",
+"prob": 1.0,
+"text": "The kraut with the monocle is one Wilhelm Strasser, also known as Deathshead, a brilliant and ruthless scientist who heads up Himmler's Special Projects Division.",
+"orig": "The kraut with the monocle is one Wilhelm Strasser, also known as Deathshead, a brilliant and ruthless scientist who heads up Himmler's Special Projects Division."
+},
+"sound/scenaric/cs1/cs01_jac_10.wav": {
+"dur": 10.06,
+"lang": "en",
+"prob": 1.0,
+"text": "Well, we know it encompasses all manner of advanced weapons research, including rocketry. It's also rumored to involve ultra-secret research into chemical and biological warfare.",
+"orig": "Well, we know it encompasses all manner of advanced weapons research, including rocketry. It's also rumored to involve ultra-secret research into chemical and biological warfare."
+},
+"sound/scenaric/cs1/cs01_jac_11.wav": {
+"dur": 5.53,
+"lang": "en",
+"prob": 1.0,
+"text": "But at the moment, we don't know how it ties in with this massive archaeological dig near Castle Wolfenstein.",
+"orig": "But at the moment, we don't know how it ties in with this massive archaeological dig near Castle Wolfenstein."
+},
+"sound/scenaric/cs1/cs01_jac_12.wav": {
+"dur": 3.28,
+"lang": "en",
+"prob": 0.99,
+"text": "Well, we could send a backup team in behind them.",
+"orig": "Well, we could send a backup team in behind them."
+},
+"sound/scenaric/cs1/cs01_jac_13.wav": {
+"dur": 3.46,
+"lang": "en",
+"prob": 1.0,
+"text": "Or we sit tight and hope that they can find a way out.",
+"orig": "Or we sit tight and hope that they can find a way out."
+},
+"sound/scenaric/cs1/cs01_mur_01.wav": {
+"dur": 1.64,
+"lang": "en",
+"prob": 1.0,
+"text": "It still doesn't add up.",
+"orig": "It still doesn't add up."
+},
+"sound/scenaric/cs1/cs01_mur_02.wav": {
+"dur": 1.32,
+"lang": "en",
+"prob": 1.0,
+"text": "It's your call, sir.",
+"orig": "It's your call, sir."
+},
+"sound/scenaric/cs1/knock1.wav": {
+"dur": 1.79,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/cs1/slide_eject.wav": {
+"dur": 1.53,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/cs11/cs11_dir_01_4.wav": {
+"dur": 5.05,
+"lang": "en",
+"prob": 1.0,
+"text": "Well, Jack, Agent Blazkowicz is certainly full of surprises, there's no denying that.",
+"orig": "Well, Jack, Agent Blazkowicz is certainly full of surprises, there's no denying that."
+},
+"sound/scenaric/cs11/cs11_dir_02_5.wav": {
+"dur": 6.89,
+"lang": "en",
+"prob": 1.0,
+"text": "Of course, I always knew he was resourceful, but I never imagined he had such expert interrogation skills.",
+"orig": "Of course, I always knew he was resourceful, but I never imagined he had such expert interrogation skills."
+},
+"sound/scenaric/cs11/cs11_dir_03_4.wav": {
+"dur": 13.55,
+"lang": "en",
+"prob": 1.0,
+"text": "Well, from B.J.'s interrogation of the officer, we now know the approximate location of Deathshead's so-called X-Labs in occupied Norway. What have we learned from our defecting scientist?",
+"orig": "Well, from B.J.'s interrogation of the officer, we now know the approximate location of Deathshead's so-called X-Labs in occupied Norway. What have we learned from our defecting scientist?"
+},
+"sound/scenaric/cs11/cs11_dir_04_1.wav": {
+"dur": 1.0,
+"lang": "en",
+"prob": 0.86,
+"text": "Super Soldier.",
+"orig": "Super Soldier."
+},
+"sound/scenaric/cs11/cs11_dir_05_6.wav": {
+"dur": 1.43,
+"lang": "en",
+"prob": 0.98,
+"text": "For what purpose?",
+"orig": "For what purpose?"
+},
+"sound/scenaric/cs11/cs11_dir_06_2.wav": {
+"dur": 0.95,
+"lang": "en",
+"prob": 0.63,
+"text": "Good lord.",
+"orig": "Good lord."
+},
+"sound/scenaric/cs11/cs11_dir_07_4.wav": {
+"dur": 9.23,
+"lang": "en",
+"prob": 0.99,
+"text": "I suppose that explains the proto-soldier blueprint and those loping monstrosities as well. But it still doesn't explain the involvement with the occult.",
+"orig": "I suppose that explains the proto-soldier blueprint and those loping monstrosities as well. But it still doesn't explain the involvement with the occult."
+},
+"sound/scenaric/cs11/cs11_dir_08_6.wav": {
+"dur": 5.26,
+"lang": "en",
+"prob": 0.99,
+"text": "Yes, that's why Agent Blazkowicz is on his way to the X-Labs in Norway as we speak.",
+"orig": "Yes, that's why Agent Blazkowicz is on his way to the X-Labs in Norway as we speak."
+},
+"sound/scenaric/cs11/cs11_jac_01_6.wav": {
+"dur": 0.87,
+"lang": "en",
+"prob": 1.0,
+"text": "No, sir.",
+"orig": "No, sir."
+},
+"sound/scenaric/cs11/cs11_jac_02.wav": {
+"dur": 10.67,
+"lang": "en",
+"prob": 1.0,
+"text": "Well, unfortunately, not as much as I'd hoped. He was pretty badly shaken when we got a hold of him, and he still hasn't completely recovered. He kept referring to a Project Uber Soldat.",
+"orig": "Well, unfortunately, not as much as I'd hoped. He was pretty badly shaken when we got a hold of him, and he still hasn't completely recovered. He kept referring to a Project Uber Soldat."
+},
+"sound/scenaric/cs11/cs11_jac_03_6.wav": {
+"dur": 6.5,
+"lang": "en",
+"prob": 1.0,
+"text": "Yes. From what I could piece together, it involves some bizarre synthesis of robotic and biological engineering.",
+"orig": "Yes. From what I could piece together, it involves some bizarre synthesis of robotic and biological engineering."
+},
+"sound/scenaric/cs11/cs11_jac_04.wav": {
+"dur": 4.14,
+"lang": "en",
+"prob": 1.0,
+"text": "Apparently, to create the ultimate killing machine.",
+"orig": "Apparently, to create the ultimate killing machine."
+},
+"sound/scenaric/cs11/cs11_jac_05_6.wav": {
+"dur": 9.97,
+"lang": "en",
+"prob": 0.99,
+"text": "According to the scientists, this project is Deathshead's baby, the thing most near and dear to his heart, and he's been working on it in one form or another since 1937.",
+"orig": "According to the scientists, this project is Deathshead's baby, the thing most near and dear to his heart, and he's been working on it in one form or another since 1937."
+},
+"sound/scenaric/cs11/cs11_jac_06_2.wav": {
+"dur": 4.73,
+"lang": "en",
+"prob": 0.99,
+"text": "No, it doesn't. And there's only one place where we're likely to find that out.",
+"orig": "No, it doesn't. And there's only one place where we're likely to find that out."
+},
+"sound/scenaric/cs11/cs11_jac_clearthroat.wav": {
+"dur": 2.02,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/cs14/cs14_dir_01_2.wav": {
+"dur": 1.98,
+"lang": "en",
+"prob": 0.99,
+"text": "How is Agent Blazkowicz?",
+"orig": "How is Agent Blazkowicz?"
+},
+"sound/scenaric/cs14/cs14_dir_02_4.wav": {
+"dur": 4.49,
+"lang": "en",
+"prob": 1.0,
+"text": "Well, he certainly came through for us this time. Remarkable. Absolutely remarkable.",
+"orig": "Well, he certainly came through for us this time. Remarkable. Absolutely remarkable."
+},
+"sound/scenaric/cs14/cs14_dir_03.wav": {
+"dur": 9.54,
+"lang": "en",
+"prob": 1.0,
+"text": "Advanced weapons, biological engineering, robotics, and the occult. It all fits. Into what, exactly? I'm not sure, but it all fits.",
+"orig": "Advanced weapons, biological engineering, robotics, and the occult. It all fits. Into what, exactly? I'm not sure, but it all fits."
+},
+"sound/scenaric/cs14/cs14_dir_04.wav": {
+"dur": 1.46,
+"lang": "en",
+"prob": 0.91,
+"text": "Jack, call a meeting.",
+"orig": "Jack, call a meeting."
+},
+"sound/scenaric/cs14/cs14_dir_05_1.wav": {
+"dur": 1.51,
+"lang": "en",
+"prob": 0.98,
+"text": "What have you got there, Jack?",
+"orig": "What have you got there, Jack?"
+},
+"sound/scenaric/cs14/cs14_dir_06_3.wav": {
+"dur": 0.8,
+"lang": "en",
+"prob": 0.86,
+"text": "Please.",
+"orig": "Please."
+},
+"sound/scenaric/cs14/cs14_dir_07_2.wav": {
+"dur": 1.34,
+"lang": "en",
+"prob": 0.89,
+"text": "Comments, gentlemen?",
+"orig": "Comments, gentlemen?"
+},
+"sound/scenaric/cs14/cs14_dir_08_1.wav": {
+"dur": 1.08,
+"lang": "en",
+"prob": 0.98,
+"text": "By all means.",
+"orig": "By all means."
+},
+"sound/scenaric/cs14/cs14_dir_09_2.wav": {
+"dur": 0.92,
+"lang": "en",
+"prob": 0.97,
+"text": "Go on.",
+"orig": "Go on."
+},
+"sound/scenaric/cs14/cs14_dir_10.wav": {
+"dur": 2.54,
+"lang": "en",
+"prob": 0.99,
+"text": "Jack, I'm sure you have something to add.",
+"orig": "Jack, I'm sure you have something to add."
+},
+"sound/scenaric/cs14/cs14_dir_11_1.wav": {
+"dur": 4.66,
+"lang": "en",
+"prob": 0.98,
+"text": "It's settled then. Blazkowicz returns to Castle Wolfenstein.",
+"orig": "It's settled then. Blazkowicz returns to Castle Wolfenstein."
+},
+"sound/scenaric/cs14/cs14_hig_01.wav": {
+"dur": 1.15,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/cs14/cs14_hig_02_1.wav": {
+"dur": 14.27,
+"lang": "en",
+"prob": 0.99,
+"text": "Sir, it just occurred to me that we may be looking at this the wrong way. I mean, well, if these blokes are really intent upon squandering precious time and resources on all this mystic mumbo-jumbo, well then...",
+"orig": "Sir, it just occurred to me that we may be looking at this the wrong way. I mean, well, if these blokes are really intent upon squandering precious time and resources on all this mystic mumbo-jumbo, well then..."
+},
+"sound/scenaric/cs14/cs14_hig_03_1.wav": {
+"dur": 7.46,
+"lang": "en",
+"prob": 1.0,
+"text": "What I mean to say is, if they're dead set upon sabotaging their own war effort, why should we try to stop them?",
+"orig": "What I mean to say is, if they're dead set upon sabotaging their own war effort, why should we try to stop them?"
+},
+"sound/scenaric/cs14/cs14_jac_01_2.wav": {
+"dur": 4.74,
+"lang": "en",
+"prob": 1.0,
+"text": "A little beat up, sir, but nothing too serious. They've just finished with him in debriefing.",
+"orig": "A little beat up, sir, but nothing too serious. They've just finished with him in debriefing."
+},
+"sound/scenaric/cs14/cs14_jac_03_3.wav": {
+"dur": 2.54,
+"lang": "en",
+"prob": 0.98,
+"text": "I was thinking along those same lines, sir.",
+"orig": "I was thinking along those same lines, sir."
+},
+"sound/scenaric/cs14/cs14_jac_04_3.wav": {
+"dur": 1.02,
+"lang": "en",
+"prob": 0.99,
+"text": "Yes, sir.",
+"orig": "Yes, sir."
+},
+"sound/scenaric/cs14/cs14_jac_05.wav": {
+"dur": 9.12,
+"lang": "en",
+"prob": 1.0,
+"text": "Two Dakota dispatches just in from Ultra. The first one is a complete itinerary for Reichsführer SS Heinrich Himmler, covering the next 48 hours.",
+"orig": "Two Dakota dispatches just in from Ultra. The first one is a complete itinerary for Reichsführer SS Heinrich Himmler, covering the next 48 hours."
+},
+"sound/scenaric/cs14/cs14_jac_06_2.wav": {
+"dur": 10.69,
+"lang": "en",
+"prob": 1.0,
+"text": "Wait till you see the next one. A private communique from one Wilhelm Strasser, alias Deathshead, to the same Reichsführer, SS, dated yesterday. Shall I read it?",
+"orig": "Wait till you see the next one. A private communique from one Wilhelm Strasser, alias Deathshead, to the same Reichsführer, SS, dated yesterday. Shall I read it?"
+},
+"sound/scenaric/cs14/cs14_jac_07.wav": {
+"dur": 38.52,
+"lang": "en",
+"prob": 1.0,
+"text": "My dear Reichsfuhrer SS, as you are no doubt already aware, my X-Labs lie in complete ruin. Operation Ubersoldat, my life's work, is now a bitter memory. I realize you still have faith in the ultimate success of Operation Resurrection. I wish I could share your confidence, but I feel you have been misled by individuals whose mental competence must be called into question. I leave you now with a word of caution. The Allies have sent a most determined and capable agent to disrupt your ceremony. Do not make the mistake of underestimating him, as I did. Yours faithfully, SS Oberfuhrer Wilhelm Strasser",
+"orig": "My dear Reichsfuhrer SS, as you are no doubt already aware, my X-Labs lie in complete ruin. Operation Ubersoldat, my life's work, is now a bitter memory. I realize you still have faith in the ultimate success of Operation Resurrection. I wish I could share your confidence, but I feel you have been misled by individuals whose mental competence must be called into question. I leave you now with a word of caution. The Allies have sent a most determined and capable agent to disrupt your ceremony. Do not make the mistake of underestimating him, as I did. Yours faithfully, SS Oberfuhrer Wilhelm Strasser"
+},
+"sound/scenaric/cs14/cs14_jac_08_2.wav": {
+"dur": 1.55,
+"lang": "en",
+"prob": 0.99,
+"text": "Now wait just a minute.",
+"orig": "Now wait just a minute."
+},
+"sound/scenaric/cs14/cs14_jac_09_4.wav": {
+"dur": 31.07,
+"lang": "en",
+"prob": 1.0,
+"text": "Yes sir, I do. Gentlemen, if just two weeks ago someone had mentioned legions of undead, man-made monsters and demons from hell, would any of you have taken them seriously? Of course not. And neither would I. But think of all we've learned since then. Now you're saying we should ignore the rest of it because, why, it's too incredible? I'm not saying I believe it. I'm saying we can't afford to dismiss it. Once again, it's your call, sir.",
+"orig": "Yes sir, I do. Gentlemen, if just two weeks ago someone had mentioned legions of undead, man-made monsters and demons from hell, would any of you have taken them seriously? Of course not. And neither would I. But think of all we've learned since then. Now you're saying we should ignore the rest of it because, why, it's too incredible? I'm not saying I believe it. I'm saying we can't afford to dismiss it. Once again, it's your call, sir."
+},
+"sound/scenaric/cs14/cs14_mur_01_4.wav": {
+"dur": 2.3,
+"lang": "en",
+"prob": 0.99,
+"text": "Sir, may I speak freely?",
+"orig": "Sir, may I speak freely?"
+},
+"sound/scenaric/cs14/cs14_mur_02_2.wav": {
+"dur": 16.86,
+"lang": "en",
+"prob": 1.0,
+"text": "I have to confess, I'm having a hard time taking this seriously. I mean, are we really supposed to believe that all this has transpired so the Nazis can, I don't know, summon the spirit of a thousand-year-old prince? To do what? Win the war for them?",
+"orig": "I have to confess, I'm having a hard time taking this seriously. I mean, are we really supposed to believe that all this has transpired so the Nazis can, I don't know, summon the spirit of a thousand-year-old prince? To do what? Win the war for them?"
+},
+"sound/scenaric/cs14/cs14_mur_03_1.wav": {
+"dur": 11.5,
+"lang": "en",
+"prob": 1.0,
+"text": "Please, Jack, let me finish. Now, on top of that, we have what amounts to their own top scientists telling them they've all collectively blown a head gasket. What further evidence do we need?",
+"orig": "Please, Jack, let me finish. Now, on top of that, we have what amounts to their own top scientists telling them they've all collectively blown a head gasket. What further evidence do we need?"
+},
+"sound/scenaric/cs19/cs19_dir_01_5.wav": {
+"dur": 1.16,
+"lang": "en",
+"prob": 0.99,
+"text": "Come in.",
+"orig": "Come in."
+},
+"sound/scenaric/cs19/cs19_dir_02_5.wav": {
+"dur": 6.94,
+"lang": "en",
+"prob": 0.97,
+"text": "I just finished reading the last of the reports. It's still hard to believe.",
+"orig": "I just finished reading the last of the reports. It's still hard to believe."
+},
+"sound/scenaric/cs19/cs19_dir_03_5.wav": {
+"dur": 5.65,
+"lang": "en",
+"prob": 1.0,
+"text": "Well, I suppose we can close the book on Operation Resurrection. Wouldn't you agree?",
+"orig": "Well, I suppose we can close the book on Operation Resurrection. Wouldn't you agree?"
+},
+"sound/scenaric/cs19/cs19_dir_04_5.wav": {
+"dur": 10.44,
+"lang": "en",
+"prob": 0.99,
+"text": "Jack, I think that Agent Blazkowicz deserves a medal for what he did, but seeing how this mission never officially existed.",
+"orig": "Jack, I think that Agent Blazkowicz deserves a medal for what he did, but seeing how this mission never officially existed."
+},
+"sound/scenaric/cs19/cs19_dir_05_5.wav": {
+"dur": 3.89,
+"lang": "en",
+"prob": 1.0,
+"text": "Well, I hope at least he's enjoying some well-deserved time off.",
+"orig": "Well, I hope at least he's enjoying some well-deserved time off."
+},
+"sound/scenaric/cs19/cs19_dir_06_1.wav": {
+"dur": 4.57,
+"lang": "en",
+"prob": 0.96,
+"text": "Ah, excellent, excellent. Anything special?",
+"orig": "Ah, excellent, excellent. Anything special?"
+},
+"sound/scenaric/cs19/cs19_jac_01_4.wav": {
+"dur": 1.73,
+"lang": "en",
+"prob": 1.0,
+"text": "You wanted to see me, sir?",
+"orig": "You wanted to see me, sir?"
+},
+"sound/scenaric/cs19/cs19_jac_03_4.wav": {
+"dur": 0.94,
+"lang": "en",
+"prob": 1.0,
+"text": "Yes, sir.",
+"orig": "Yes, sir."
+},
+"sound/scenaric/cs19/cs19_jac_04_3.wav": {
+"dur": 2.45,
+"lang": "en",
+"prob": 1.0,
+"text": "I'm sure he understands, sir.",
+"orig": "I'm sure he understands, sir."
+},
+"sound/scenaric/cs19/cs19_jac_05_5.wav": {
+"dur": 3.6,
+"lang": "en",
+"prob": 1.0,
+"text": "Oh yes, he's off on a little R&R as we speak.",
+"orig": "Oh yes, he's off on a little R&R as we speak."
+},
+"sound/scenaric/cs19/soldiers_running.wav": {
+"dur": 6.0,
+"lang": "en",
+"prob": 0.23,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/cs6/cs06_dir_01_2.wav": {
+"dur": 12.31,
+"lang": "en",
+"prob": 1.0,
+"text": "Well, gentlemen, it's been 48 hours since our man Blazkowicz returned from Castle Wolfenstein. That's given us ample time to digest his findings. Findings which are, to say the least, astonishing.",
+"orig": "Well, gentlemen, it's been 48 hours since our man Blazkowicz returned from Castle Wolfenstein. That's given us ample time to digest his findings. Findings which are, to say the least, astonishing."
+},
+"sound/scenaric/cs6/cs06_dir_02_2.wav": {
+"dur": 5.43,
+"lang": "en",
+"prob": 0.99,
+"text": "The question I'm putting to you all now is this. What are the Nazis really up to?",
+"orig": "The question I'm putting to you all now is this. What are the Nazis really up to?"
+},
+"sound/scenaric/cs6/cs06_dir_04_8.wav": {
+"dur": 0.93,
+"lang": "en",
+"prob": 0.97,
+"text": "Yes, Jack?",
+"orig": "Yes, Jack?"
+},
+"sound/scenaric/cs6/cs06_dir_05_3.wav": {
+"dur": 1.81,
+"lang": "en",
+"prob": 0.99,
+"text": "What did our research come up with?",
+"orig": "What did our research come up with?"
+},
+"sound/scenaric/cs6/cs06_dir_07.wav": {
+"dur": 1.61,
+"lang": "en",
+"prob": 0.99,
+"text": "What's the second thing, Jack?",
+"orig": "What's the second thing, Jack?"
+},
+"sound/scenaric/cs6/cs06_dir_08_1.wav": {
+"dur": 4.86,
+"lang": "en",
+"prob": 1.0,
+"text": "Well, that's correct. In fact, as luck would have it, our man Blazkowicz is headed there now.",
+"orig": "Well, that's correct. In fact, as luck would have it, our man Blazkowicz is headed there now."
+},
+"sound/scenaric/cs6/cs06_dir_09.wav": {
+"dur": 10.2,
+"lang": "en",
+"prob": 0.99,
+"text": "Yes, his orders are to infiltrate and sabotage the entire V-Weapons complex. With any luck, he might even get his hands on the latest experimental Cobra.",
+"orig": "Yes, his orders are to infiltrate and sabotage the entire V-Weapons complex. With any luck, he might even get his hands on the latest experimental Cobra."
+},
+"sound/scenaric/cs6/cs06_dir_10_2.wav": {
+"dur": 1.29,
+"lang": "en",
+"prob": 0.95,
+"text": "The very one.",
+"orig": "The very one."
+},
+"sound/scenaric/cs6/cs06_dir_11_3.wav": {
+"dur": 9.27,
+"lang": "en",
+"prob": 0.99,
+"text": "So, what would you say, Jack, to my instructing our man to keep his eyes and ears open for any links to projects involving the paranormal?",
+"orig": "So, what would you say, Jack, to my instructing our man to keep his eyes and ears open for any links to projects involving the paranormal?"
+},
+"sound/scenaric/cs6/cs06_hig_02_2.wav": {
+"dur": 1.6,
+"lang": "en",
+"prob": 0.89,
+"text": "Hear, hear.",
+"orig": "Hear, hear."
+},
+"sound/scenaric/cs6/cs06_hig_03_1.wav": {
+"dur": 5.17,
+"lang": "en",
+"prob": 0.99,
+"text": "Well, it's obviously more of their jiggery-pokery raising the ghoulies rot.",
+"orig": "Well, it's obviously more of their jiggery-pokery raising the ghoulies rot."
+},
+"sound/scenaric/cs6/cs06_hig_04_7.wav": {
+"dur": 2.37,
+"lang": "en",
+"prob": 0.99,
+"text": "The Cobra rocket plane.",
+"orig": "The Cobra rocket plane."
+},
+"sound/scenaric/cs6/cs06_jac_01_1.wav": {
+"dur": 5.24,
+"lang": "en",
+"prob": 1.0,
+"text": "Well, sir, to put it bluntly, I don't think we know enough to answer that question.",
+"orig": "Well, sir, to put it bluntly, I don't think we know enough to answer that question."
+},
+"sound/scenaric/cs6/cs06_jac_02.wav": {
+"dur": 6.06,
+"lang": "en",
+"prob": 1.0,
+"text": "Don't get me wrong. We've learned plenty about their capabilities. That alone scares the hell out of me.",
+"orig": "Don't get me wrong. We've learned plenty about their capabilities. That alone scares the hell out of me."
+},
+"sound/scenaric/cs6/cs06_jac_03_4.wav": {
+"dur": 0.65,
+"lang": "en",
+"prob": 0.99,
+"text": "But.",
+"orig": "But."
+},
+"sound/scenaric/cs6/cs06_jac_04_2.wav": {
+"dur": 7.46,
+"lang": "en",
+"prob": 1.0,
+"text": "Well, there are two things that still bother me. Exactly what is this dark night they all seem to be so interested in?",
+"orig": "Well, there are two things that still bother me. Exactly what is this dark night they all seem to be so interested in?"
+},
+"sound/scenaric/cs6/cs06_jac_05_1.wav": {
+"dur": 1.93,
+"lang": "en",
+"prob": 0.99,
+"text": "Nothing. A complete blank.",
+"orig": "Nothing. A complete blank."
+},
+"sound/scenaric/cs6/cs06_jac_08.wav": {
+"dur": 10.24,
+"lang": "en",
+"prob": 1.0,
+"text": "The second thing is Deathshead. Now here we have probably the single most dangerous figure in the entire Third Reich. And still, we don't have a clue about his connection to all of this.",
+"orig": "The second thing is Deathshead. Now here we have probably the single most dangerous figure in the entire Third Reich. And still, we don't have a clue about his connection to all of this."
+},
+"sound/scenaric/cs6/cs06_jac_09_3.wav": {
+"dur": 3.26,
+"lang": "en",
+"prob": 1.0,
+"text": "I would say that was an excellent idea, sir.",
+"orig": "I would say that was an excellent idea, sir."
+},
+"sound/scenaric/cs6/cs06_mur_01.wav": {
+"dur": 1.97,
+"lang": "en",
+"prob": 1.0,
+"text": "That's an understatement, sir.",
+"orig": "That's an understatement, sir."
+},
+"sound/scenaric/cs6/cs06_mur_03_1.wav": {
+"dur": 1.49,
+"lang": "en",
+"prob": 0.99,
+"text": "Really?",
+"orig": "Really?"
+},
+"sound/scenaric/cs6/cs06_mur_04_1.wav": {
+"dur": 5.19,
+"lang": "en",
+"prob": 1.0,
+"text": "Deathshead? Haven't our sources placed him at the secret rocket base in Catamarandi?",
+"orig": "Deathshead? Haven't our sources placed him at the secret rocket base in Catamarandi?"
+},
+"sound/scenaric/cs6/cs06_mur_05_4.wav": {
+"dur": 0.9,
+"lang": "en",
+"prob": 0.99,
+"text": "He is?",
+"orig": "He is?"
+},
+"sound/scenaric/cs6/cs06_mur_06_6.wav": {
+"dur": 2.06,
+"lang": "en",
+"prob": 1.0,
+"text": "That's exciting news, sir.",
+"orig": "That's exciting news, sir."
+},
+"sound/scenaric/cs9/cs01_dir_01_2.wav": {
+"dur": 0.59,
+"lang": "en",
+"prob": 0.96,
+"text": "Come in.",
+"orig": "Come in."
+},
+"sound/scenaric/cs9/cs09_dir_02_4.wav": {
+"dur": 0.88,
+"lang": "en",
+"prob": 0.98,
+"text": "Well, Jack?",
+"orig": "Well, Jack?"
+},
+"sound/scenaric/cs9/cs09_dir_03_2.wav": {
+"dur": 2.15,
+"lang": "da",
+"prob": 0.57,
+"text": "Mmmh, in one piece I assume?",
+"orig": "En one-piece-ræsium.",
+"manual": true,
+"retried": true,
+"recovered": false
+},
+"sound/scenaric/cs9/cs09_dir_04_3.wav": {
+"dur": 7.6,
+"lang": "en",
+"prob": 1.0,
+"text": "Excellent. Now, I've read your report, Jack. Tell me what you make of this Operation Resurrection the Jerrys are so hot about.",
+"orig": "Excellent. Now, I've read your report, Jack. Tell me what you make of this Operation Resurrection the Jerrys are so hot about."
+},
+"sound/scenaric/cs9/cs09_dir_05_2.wav": {
+"dur": 0.92,
+"lang": "en",
+"prob": 1.0,
+"text": "Anything else?",
+"orig": "Anything else?"
+},
+"sound/scenaric/cs9/cs09_dir_06_2.wav": {
+"dur": 1.3,
+"lang": "en",
+"prob": 1.0,
+"text": "And what would you suggest?",
+"orig": "And what would you suggest?"
+},
+"sound/scenaric/cs9/cs09_dir_07_2.wav": {
+"dur": 4.11,
+"lang": "en",
+"prob": 0.99,
+"text": "I take it you're referring to the secret weapons facility near Kugelsstadt.",
+"orig": "I take it you're referring to the secret weapons facility near Kugelsstadt."
+},
+"sound/scenaric/cs9/cs09_dir_08_2.wav": {
+"dur": 7.73,
+"lang": "en",
+"prob": 1.0,
+"text": "Hmm, interesting proposition. You know, for months we've been trying to infiltrate that facility and have had no luck at all.",
+"orig": "Hmm, interesting proposition. You know, for months we've been trying to infiltrate that facility and have had no luck at all."
+},
+"sound/scenaric/cs9/cs09_dir_09_4.wav": {
+"dur": 6.68,
+"lang": "en",
+"prob": 1.0,
+"text": "And are you also aware that Kugelstadt itself has been undergoing intense Allied bombing raids for the past 48 hours?",
+"orig": "And are you also aware that Kugelstadt itself has been undergoing intense Allied bombing raids for the past 48 hours?"
+},
+"sound/scenaric/cs9/cs09_dir_10_4.wav": {
+"dur": 16.58,
+"lang": "en",
+"prob": 1.0,
+"text": "Hmm. What you probably don't know is that our Kreisau friends in the area have recently reported the existence of a high-level scientist from the weapons facility who wishes to defect and is desperately seeking asylum. I imagine he could supply us with some very useful facts.",
+"orig": "Hmm. What you probably don't know is that our Kreisau friends in the area have recently reported the existence of a high-level scientist from the weapons facility who wishes to defect and is desperately seeking asylum. I imagine he could supply us with some very useful facts."
+},
+"sound/scenaric/cs9/cs09_dir_11_4.wav": {
+"dur": 17.02,
+"lang": "en",
+"prob": 1.0,
+"text": "All right, now this is what we're going to do. We send Agent Blazkowicz in to link up with the Kreisau group outside of Kugelstadt. They have means for getting him inside the weapons facility, and he can assist them as necessary in order to get this scientist out of there and back in our hands.",
+"orig": "All right, now this is what we're going to do. We send Agent Blazkowicz in to link up with the Kreisau group outside of Kugelstadt. They have means for getting him inside the weapons facility, and he can assist them as necessary in order to get this scientist out of there and back in our hands."
+},
+"sound/scenaric/cs9/cs09_dir_12_4.wav": {
+"dur": 4.06,
+"lang": "en",
+"prob": 1.0,
+"text": "And then we have him play the Bloodhound. Follow the scent.",
+"orig": "And then we have him play the Bloodhound. Follow the scent."
+},
+"sound/scenaric/cs9/cs09_jac_01_2.wav": {
+"dur": 3.46,
+"lang": "en",
+"prob": 1.0,
+"text": "Blazkowicz touched down with the Cobra in Malta about six hours ago.",
+"orig": "Blazkowicz touched down with the Cobra in Malta about six hours ago."
+},
+"sound/scenaric/cs9/cs09_jac_02_3.wav": {
+"dur": 3.41,
+"lang": "en",
+"prob": 1.0,
+"text": "Yes, sir. Advanced Aeronautics is en route to Malta now.",
+"orig": "Yes, sir. Advanced Aeronautics is en route to Malta now."
+},
+"sound/scenaric/cs9/cs09_jac_03.wav": {
+"dur": 10.09,
+"lang": "en",
+"prob": 1.0,
+"text": "Well, sir, this is the second time that name has cropped up. First at the dig, and then at the rocket base. It is unquestionably the link between Deathshead and the paranormal group.",
+"orig": "Well, sir, this is the second time that name has cropped up. First at the dig, and then at the rocket base. It is unquestionably the link between Deathshead and the paranormal group."
+},
+"sound/scenaric/cs9/cs09_jac_04_3.wav": {
+"dur": 2.76,
+"lang": "en",
+"prob": 1.0,
+"text": "I'm afraid not, sir. We still need more information.",
+"orig": "I'm afraid not, sir. We still need more information."
+},
+"sound/scenaric/cs9/cs09_jac_05.wav": {
+"dur": 6.94,
+"lang": "en",
+"prob": 1.0,
+"text": "We go to the source, and by that I mean we shadow Deathshead himself, and we do it right in his own backyard.",
+"orig": "We go to the source, and by that I mean we shadow Deathshead himself, and we do it right in his own backyard."
+},
+"sound/scenaric/cs9/cs09_jac_06_2.wav": {
+"dur": 1.01,
+"lang": "en",
+"prob": 0.99,
+"text": "Exactly.",
+"orig": "Exactly."
+},
+"sound/scenaric/cs9/cs09_jac_07_1.wav": {
+"dur": 1.05,
+"lang": "en",
+"prob": 1.0,
+"text": "I'm aware of that, sir.",
+"orig": "I'm aware of that, sir."
+},
+"sound/scenaric/cs9/cs09_jac_08_4.wav": {
+"dur": 5.0,
+"lang": "en",
+"prob": 1.0,
+"text": "Yes, sir. In fact, I was counting on that diversion to help tip the scales in our favor.",
+"orig": "Yes, sir. In fact, I was counting on that diversion to help tip the scales in our favor."
+},
+"sound/scenaric/cs9/cs09_jac_09_3.wav": {
+"dur": 1.37,
+"lang": "en",
+"prob": 1.0,
+"text": "Indeed.",
+"orig": "Indeed."
+},
+"sound/scenaric/cs9/cs09_jac_10_1.wav": {
+"dur": 1.29,
+"lang": "en",
+"prob": 0.96,
+"text": "And then...",
+"orig": "And then..."
+},
+"sound/scenaric/dam/1933_reichstag.wav": {
+"dur": 21.32,
+"lang": "de",
+"prob": 0.94,
+"text": "The government of the National Assembly is determined to fulfill its mission taken by the German people. Therefore, today, with the hot desire to find a support in it for the implementation of its mission.",
+"orig": "Die Regierung der Nationalen Erhebung ist entschlossen, ihre von dem deutschen Volk übernommene Aufgabe zu erfüllen. Sie trifft daher heute hin mit dem heißen Wunsch, in ihm eine Stütze zu finden für die Durchführung ihrer Mission."
+},
+"sound/scenaric/dam/axis7a_any_minute.wav": {
+"dur": 4.39,
+"lang": "en",
+"prob": 0.97,
+"text": "Okay, he should be coming down any minute now.",
+"orig": "Okay, he should be coming down any minute now."
+},
+"sound/scenaric/dam/b25_radio.wav": {
+"dur": 13.56,
+"lang": "en",
+"prob": 0.99,
+"text": "There's the drop zone up ahead. Visibility, 4,000 yards. Wind, 5 knots south-southeast. Conditions good. Prepare for jump in two minutes.",
+"orig": "There's the drop zone up ahead. Visibility, 4,000 yards. Wind, 5 knots south-southeast. Conditions good. Prepare for jump in two minutes."
+},
+"sound/scenaric/dam/cafemusic.wav": {
+"dur": 43.09,
+"lang": "en",
+"prob": 0.43,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/dam/door_close1.wav": {
+"dur": 1.34,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/dam/driver_delivery_for_gen.wav": {
+"dur": 9.39,
+"lang": "en",
+"prob": 0.97,
+"text": "But this delivery is for General von Staff. It's six cases of cheese and sausages for the officer's kitchen. Get him on the phone now. I'm sure he'll make an exception.",
+"orig": "But this delivery is for General von Staff. It's six cases of cheese and sausages for the officer's kitchen. Get him on the phone now. I'm sure he'll make an exception."
+},
+"sound/scenaric/dam/driver_ja_ja.wav": {
+"dur": 10.08,
+"lang": "en",
+"prob": 0.94,
+"text": "Yeah, yeah, I know, by order of General Von Staff. Look, I'm not going to be held responsible for this. I absolutely refuse to budge from this spot until you let me through.",
+"orig": "Yeah, yeah, I know, by order of General Von Staff. Look, I'm not going to be held responsible for this. I absolutely refuse to budge from this spot until you let me through."
+},
+"sound/scenaric/dam/driver_open_gate.wav": {
+"dur": 4.55,
+"lang": "en",
+"prob": 0.78,
+"text": "Hey, can you open the gate, bitte [please]? I have an important delivery.",
+"orig": "Hey, can you open the gate, bitte? I have an important delivery.",
+"manual": true,
+"retried": true,
+"recovered": false
+},
+"sound/scenaric/dam/driver_what.wav": {
+"dur": 1.08,
+"lang": "en",
+"prob": 0.93,
+"text": "What?",
+"orig": "What?"
+},
+"sound/scenaric/dam/driver_what_am_i_supposed_to_do.wav": {
+"dur": 3.25,
+"lang": "en",
+"prob": 0.86,
+"text": "But what am I supposed to do with all this cheese?",
+"orig": "But what am I supposed to do with all this cheese?"
+},
+"sound/scenaric/dam/driver_what_do_you_mean_closed.wav": {
+"dur": 5.29,
+"lang": "en",
+"prob": 0.83,
+"text": "What do you mean closed? It can't be closed. This is the only road in the Paderborn.",
+"orig": "What do you mean closed? It can't be closed. This is the only road in the Paderborn."
+},
+"sound/scenaric/dam/guard_due_to_radio.wav": {
+"dur": 12.75,
+"lang": "en",
+"prob": 0.94,
+"text": "Due to special conditions of security pertaining to the upcoming ceremony, absolutely no radio communications will be allowed in or out of the vicinity of the village of Pederborn for the next 24 hours by order...",
+"orig": "Due to special conditions of security pertaining to the upcoming ceremony, absolutely no radio communications will be allowed in or out of the vicinity of the village of Pederborn for the next 24 hours by order..."
+},
+"sound/scenaric/dam/guard_i_know.wav": {
+"dur": 15.47,
+"lang": "en",
+"prob": 0.95,
+"text": "I know that's why it's closed. Due to special conditions of security pertaining to the upcoming ceremony, absolutely no traffic is to be allowed in or out of the vicinity of the village of Pederborn for the next 24 hours by order of General von Stauff.",
+"orig": "I know that's why it's closed. Due to special conditions of security pertaining to the upcoming ceremony, absolutely no traffic is to be allowed in or out of the vicinity of the village of Pederborn for the next 24 hours by order of General von Stauff."
+},
+"sound/scenaric/dam/guard_look_for_crackers.wav": {
+"dur": 2.79,
+"lang": "en",
+"prob": 0.99,
+"text": "I don't know. Look for some crackers?",
+"orig": "I don't know. Look for some crackers?"
+},
+"sound/scenaric/dam/guard_sorry_blacked_out.wav": {
+"dur": 2.61,
+"lang": "en",
+"prob": 0.76,
+"text": "Sorry, we are completely blacked out.",
+"orig": "Sorry, we are completely blacked out."
+},
+"sound/scenaric/dam/guard_sorry_road_closed.wav": {
+"dur": 2.57,
+"lang": "en",
+"prob": 0.75,
+"text": "Sorry, this road is closed.",
+"orig": "Sorry, this road is closed."
+},
+"sound/scenaric/dam/guard_suit_yourself.wav": {
+"dur": 3.45,
+"lang": "en",
+"prob": 0.96,
+"text": "Suit yourself, but you'll be staying here until tomorrow.",
+"orig": "Suit yourself, but you'll be staying here until tomorrow."
+},
+"sound/scenaric/dam/horn_blast.wav": {
+"dur": 5.03,
+"lang": "en",
+"prob": 0.4,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/dam/large waterfall loop 1.wav": {
+"dur": 6.29,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/dam/large waterfall loop 2.wav": {
+"dur": 6.29,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/dam/m1_makes_perfect_sense.wav": {
+"dur": 4.02,
+"lang": "en",
+"prob": 0.94,
+"text": "Oh, it makes perfect sense. Haven't you heard? There's a war on.",
+"orig": "Oh, it makes perfect sense. Haven't you heard? There's a war on."
+},
+"sound/scenaric/dam/m1_thats_right.wav": {
+"dur": 8.02,
+"lang": "en",
+"prob": 0.94,
+"text": "That's right, and now we're going to repack it this week. And if we have to, we'll repack it again next week. You see how it works?",
+"orig": "That's right, and now we're going to repack it this week. And if we have to, we'll repack it again next week. You see how it works?"
+},
+"sound/scenaric/dam/m1_verdammt_leak.wav": {
+"dur": 6.12,
+"lang": "en",
+"prob": 0.82,
+"text": "Ah, it's that same damn leak. Well, nothing for us to do but repack the valve.",
+"orig": "Ah, it's that same damn leak. Well, nothing for us to do but repack the valve."
+},
+"sound/scenaric/dam/m1_yes_it_was_obvious.wav": {
+"dur": 11.25,
+"lang": "en",
+"prob": 0.94,
+"text": "Yes, it was obvious six months ago when I put in the requisition, and it's obvious now that we'll be lucky if we get it before 1947. So why don't you stop wasting time and hand me that sprocket wrench?",
+"orig": "Yes, it was obvious six months ago when I put in the requisition, and it's obvious now that we'll be lucky if we get it before 1947. So why don't you stop wasting time and hand me that sprocket wrench?"
+},
+"sound/scenaric/dam/m2_alright.wav": {
+"dur": 3.42,
+"lang": "en",
+"prob": 0.72,
+"text": "Alright, but I still say it doesn't make sense.",
+"orig": "Alright, but I still say it doesn't make sense."
+},
+"sound/scenaric/dam/m2_but_we_just.wav": {
+"dur": 2.72,
+"lang": "en",
+"prob": 0.82,
+"text": "But we just repacked it last week.",
+"orig": "But we just repacked it last week."
+},
+"sound/scenaric/dam/m2_doesnt_make_sense.wav": {
+"dur": 4.41,
+"lang": "en",
+"prob": 0.89,
+"text": "But it doesn't make any sense. Obviously, we need to order a new valve.",
+"orig": "But it doesn't make any sense. Obviously, we need to order a new valve."
+},
+"sound/scenaric/dam/radiostaticloop.wav": {
+"dur": 2.6,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/dam/small generator loop1.wav": {
+"dur": 4.83,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/dam/steam.wav": {
+"dur": 2.97,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/dark/cs15_eli_01_3.wav": {
+"dur": 8.87,
+"lang": "en",
+"prob": 0.98,
+"text": "All right, Madame Blavatsky will begin the ceremony any time now. Once she begins, make sure that you do not look in the direction of the ruins.",
+"orig": "All right, Madame Blavatsky will begin the ceremony any time now. Once she begins, make sure that you do not look in the direction of the ruins."
+},
+"sound/scenaric/dark/cs15_eli_02_2.wav": {
+"dur": 9.39,
+"lang": "en",
+"prob": 0.98,
+"text": "If you look, well, first your blood would begin to boil, and after that, well, it doesn't matter very much after that, yeah?",
+"orig": "If you look, well, first your blood would begin to boil, and after that, well, it doesn't matter very much after that, yeah?"
+},
+"sound/scenaric/dark/cs15_eli_03.wav": {
+"dur": 4.11,
+"lang": "en",
+"prob": 0.98,
+"text": "Stand your posts here and make sure you do not lose power. Understood?",
+"orig": "Stand your posts here and make sure you do not lose power. Understood?"
+},
+"sound/scenaric/dark/cs15_sol2_01.wav": {
+"dur": 1.34,
+"lang": "es",
+"prob": 0.36,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/dark/cs15_sol_01_3.wav": {
+"dur": 2.79,
+"lang": "en",
+"prob": 0.93,
+"text": "What... what will happen if we...",
+"orig": "What... what will happen if we..."
+},
+"sound/scenaric/dark/cs15_sol_02.wav": {
+"dur": 0.98,
+"lang": "de",
+"prob": 0.45,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/dig/bridge_creak1.wav": {
+"dur": 4.38,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/dig/bridge_creak3.wav": {
+"dur": 2.96,
+"lang": "en",
+"prob": 0.73,
+"text": "[Creak sounds]",
+"orig": "Thank you.",
+"manual": true,
+"retried": true,
+"recovered": false
+},
+"sound/scenaric/dig/earthquake.wav": {
+"dur": 5.5,
+"lang": "en",
+"prob": 0.91,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/dig/pebble_fall1.wav": {
+"dur": 3.52,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/dig/windcave.wav": {
+"dur": 5.75,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/end/cs16_hei_01.wav": {
+"dur": 8.25,
+"lang": "en",
+"prob": 0.95,
+"text": "I live again.",
+"orig": "I live again."
+},
+"sound/scenaric/end/cs16_hei_03.wav": {
+"dur": 2.68,
+"lang": "en",
+"prob": 0.92,
+"text": "Who are you?",
+"orig": "Who are you?"
+},
+"sound/scenaric/end/cs16_hei_05_4.wav": {
+"dur": 6.4,
+"lang": "en",
+"prob": 0.96,
+"text": "So much to attend to, but I sense the presence of another.",
+"orig": "So much to attend to, but I sense the presence of another."
+},
+"sound/scenaric/end/cs16_pri_01_1.wav": {
+"dur": 2.37,
+"lang": "en",
+"prob": 0.75,
+"text": "Yes! Yes!",
+"orig": "Yes! Yes!"
+},
+"sound/scenaric/end/cs16_pri_02_6.wav": {
+"dur": 1.72,
+"lang": "en",
+"prob": 0.98,
+"text": "Yes, it is true!",
+"orig": "Yes, it is true!"
+},
+"sound/scenaric/end/cs16_pri_03_7.wav": {
+"dur": 2.68,
+"lang": "en",
+"prob": 0.99,
+"text": "I serve you, my Dark Master.",
+"orig": "I serve you, my Dark Master."
+},
+"sound/scenaric/end/cs16_pri_04_a.wav": {
+"dur": 2.36,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/end/cs18_aid_01.wav": {
+"dur": 4.36,
+"lang": "en",
+"prob": 0.82,
+"text": "Herr Himmler, the plane is waiting to take you back to Berlin.",
+"orig": "Herr Himmler, the plane is waiting to take you back to Berlin."
+},
+"sound/scenaric/end/cs18_aid_02.wav": {
+"dur": 3.65,
+"lang": "en",
+"prob": 0.96,
+"text": "Sir, the Fuhrer is expecting your arrival.",
+"orig": "Sir, the Fuhrer is expecting your arrival."
+},
+"sound/scenaric/end/cs18_him_01.wav": {
+"dur": 4.96,
+"lang": "en",
+"prob": 0.95,
+"text": "This American, he has ruined everything.",
+"orig": "This American, he has ruined everything."
+},
+"sound/scenaric/end/cs18_him_02.wav": {
+"dur": 2.58,
+"lang": "en",
+"prob": 0.66,
+"text": "Yeah, yeah.",
+"orig": "Yeah, yeah."
+},
+"sound/scenaric/end/eg_solo_loop.wav": {
+"dur": 10.1,
+"lang": "la",
+"prob": 0.93,
+"text": "Hic est ius hominum, mordes una miras. [Here is the law of men, you devour marvels all at once.]",
+"orig": "Ite tius hominum mordes una miras.",
+"manual": true,
+"retried": true,
+"recovered": false
+},
+"sound/scenaric/end/hein01.wav": {
+"dur": 4.59,
+"lang": "en",
+"prob": 0.82,
+"text": "You are nothing but dust beneath my feet, mortal.",
+"orig": "You are nothing but dust beneath my feet, mortal."
+},
+"sound/scenaric/end/hein02.wav": {
+"dur": 4.91,
+"lang": "en",
+"prob": 0.77,
+"text": "Bear witness to the dawning of a new dark age.",
+"orig": "Bear witness to the dawning of a new dark age."
+},
+"sound/scenaric/end/hein03.wav": {
+"dur": 4.45,
+"lang": "en",
+"prob": 0.7,
+"text": "You shall be the first to fall before my sword!",
+"orig": "You shall be the first to fall before my sword!"
+},
+"sound/scenaric/end/hein04.wav": {
+"dur": 3.09,
+"lang": "en",
+"prob": 0.84,
+"text": "None can resist my power!",
+"orig": "None can resist my power!"
+},
+"sound/scenaric/end/hein05.wav": {
+"dur": 5.62,
+"lang": "en",
+"prob": 0.76,
+"text": "Behold my unholy minions. Even now they do my bidding.",
+"orig": "Behold my unholy minions. Even now they do my bidding."
+},
+"sound/scenaric/end/hein06.wav": {
+"dur": 5.1,
+"lang": "en",
+"prob": 0.63,
+"text": "For a thousand years I have dreamt of this moment.",
+"orig": "For a thousand years I have dreamt of this moment."
+},
+"sound/scenaric/end/hein07.wav": {
+"dur": 3.91,
+"lang": "en",
+"prob": 0.81,
+"text": "I shall crush you like the insect you are.",
+"orig": "I shall crush you like the insect you are."
+},
+"sound/scenaric/end/hein08.wav": {
+"dur": 2.91,
+"lang": "en",
+"prob": 0.78,
+"text": "You dare to challenge me?",
+"orig": "You dare to challenge me?"
+},
+"sound/scenaric/end/hein09.wav": {
+"dur": 4.35,
+"lang": "en",
+"prob": 0.84,
+"text": "My dark forces shall engulf the Earth.",
+"orig": "My dark forces shall engulf the Earth."
+},
+"sound/scenaric/end/hein10.wav": {
+"dur": 3.45,
+"lang": "en",
+"prob": 0.8,
+"text": "My reign of terror shall never end!",
+"orig": "My reign of terror shall never end!"
+},
+"sound/scenaric/end/hein11.wav": {
+"dur": 3.88,
+"lang": "en",
+"prob": 0.84,
+"text": "Those who will not join me shall be swept aside.",
+"orig": "Those who will not join me shall be swept aside."
+},
+"sound/scenaric/end/hein12.wav": {
+"dur": 3.51,
+"lang": "en",
+"prob": 0.73,
+"text": "I will rip you limb from limb.",
+"orig": "I will rip you limb from limb."
+},
+"sound/scenaric/end/hein13.wav": {
+"dur": 4.67,
+"lang": "en",
+"prob": 0.75,
+"text": "I will wrap you in your own entrails, mortal.",
+"orig": "I will wrap you in your own entrails, mortal."
+},
+"sound/scenaric/end/hein14.wav": {
+"dur": 1.53,
+"lang": "en",
+"prob": 0.73,
+"text": "DIE!",
+"orig": "DIE!"
+},
+"sound/scenaric/end/hein15.wav": {
+"dur": 5.36,
+"lang": "en",
+"prob": 0.91,
+"text": "What? Still you persist in this futile struggle?",
+"orig": "What? Still you persist in this futile struggle?"
+},
+"sound/scenaric/end/hein16.wav": {
+"dur": 3.83,
+"lang": "en",
+"prob": 0.91,
+"text": "That hurt.",
+"orig": "That hurt."
+},
+"sound/scenaric/end/hein17.wav": {
+"dur": 2.82,
+"lang": "en",
+"prob": 0.68,
+"text": "I shall destroy you yet.",
+"orig": "I shall destroy you yet."
+},
+"sound/scenaric/end/hein18.wav": {
+"dur": 4.14,
+"lang": "en",
+"prob": 0.75,
+"text": "You shall not live to see the end of this day.",
+"orig": "You shall not live to see the end of this day."
+},
+"sound/scenaric/end/hein19.wav": {
+"dur": 5.75,
+"lang": "en",
+"prob": 0.85,
+"text": "No. I cannot be defeated by one such as you.",
+"orig": "No. I cannot be defeated by one such as you."
+},
+"sound/scenaric/end/heinr127.wav": {
+"dur": 9.96,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/end/ss_powerup.wav": {
+"dur": 6.7,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/end/war_giant1.wav": {
+"dur": 2.52,
+"lang": "ru",
+"prob": 0.16,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/end/war_giant2.wav": {
+"dur": 1.98,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/end/war_giant3.wav": {
+"dur": 3.17,
+"lang": "en",
+"prob": 0.25,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/end/war_giant_medley.wav": {
+"dur": 9.42,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/escape1/axis12_coded_relax.wav": {
+"dur": 2.39,
+"lang": "en",
+"prob": 0.95,
+"text": "This coded dispatch must go out immediately.",
+"orig": "This coded dispatch must go out immediately."
+},
+"sound/scenaric/escape1/axis12_priority_relax.wav": {
+"dur": 4.7,
+"lang": "en",
+"prob": 0.94,
+"text": "Also, you are to inform me at once of any priority messages. Is that understood?",
+"orig": "Also, you are to inform me at once of any priority messages. Is that understood?"
+},
+"sound/scenaric/escape1/axis12_status_relax.wav": {
+"dur": 2.86,
+"lang": "en",
+"prob": 0.97,
+"text": "What is the status of the M7G transceiver?",
+"orig": "What is the status of the M7G transceiver?"
+},
+"sound/scenaric/escape1/axis12_typical_relax.wav": {
+"dur": 2.62,
+"lang": "en",
+"prob": 0.94,
+"text": "That is so typical. Carry on.",
+"orig": "That is so typical. Carry on."
+},
+"sound/scenaric/escape1/axis13_waiting_relax.wav": {
+"dur": 1.69,
+"lang": "de",
+"prob": 0.95,
+"text": "Still waiting on parts, Herr Leutnant.",
+"orig": "Still waiting on parts, Herr Leutnant."
+},
+"sound/scenaric/escape1/axis13_yes1_relax.wav": {
+"dur": 1.03,
+"lang": "de",
+"prob": 0.93,
+"text": "Yes, Mr. Lieutenant!",
+"orig": "Jawohl, Herr Leutnant."
+},
+"sound/scenaric/escape1/axis13_yes2_relax.wav": {
+"dur": 0.86,
+"lang": "de",
+"prob": 0.71,
+"text": "Yes, my lord!",
+"orig": "Jawohl, mein Herr."
+},
+"sound/scenaric/escape1/axis18_shoot.wav": {
+"dur": 1.6,
+"lang": "de",
+"prob": 0.99,
+"text": "Is that American? Shoot!",
+"orig": "Ist das zu merken? Shoot!"
+},
+"sound/scenaric/escape1/axis1_ahh_there.wav": {
+"dur": 6.08,
+"lang": "en",
+"prob": 0.9,
+"text": "Ah, there you are. Shackle that one to the wall and take the other one off the table.",
+"orig": "Ah, there you are. Shackle that one to the wall and take the other one off the table."
+},
+"sound/scenaric/escape1/axis1_american_is_loose.wav": {
+"dur": 4.29,
+"lang": "en",
+"prob": 0.67,
+"text": "What? Guards! Alarm! They're making it loose!",
+"orig": "What? Guards! Alarm! They're making it loose!"
+},
+"sound/scenaric/escape1/axis1_give_order.wav": {
+"dur": 5.34,
+"lang": "en",
+"prob": 0.95,
+"text": "Sergeant, when I give you an author, I expect an acknowledgement.",
+"orig": "Sergeant, when I give you an author, I expect an acknowledgement."
+},
+"sound/scenaric/escape1/axis1_sergeant.wav": {
+"dur": 1.83,
+"lang": "en",
+"prob": 0.51,
+"text": "Sergeant.",
+"orig": "Sergeant."
+},
+"sound/scenaric/escape1/axis1_yes_yes.wav": {
+"dur": 7.97,
+"lang": "en",
+"prob": 0.67,
+"text": "Yes, yes, yes, yes, yes, yes, yes, hmm, yes.",
+"orig": "Yes, yes, yes, yes, yes, yes, yes, hmm, yes."
+},
+"sound/scenaric/escape1/axis2_good_luck.wav": {
+"dur": 2.93,
+"lang": "de",
+"prob": 0.25,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/escape1/axis2_hey_hans.wav": {
+"dur": 1.92,
+"lang": "en",
+"prob": 0.9,
+"text": "Hey, Hans!",
+"orig": "Hey, Hans!"
+},
+"sound/scenaric/escape1/axis2_not_much.wav": {
+"dur": 3.98,
+"lang": "en",
+"prob": 0.95,
+"text": "Not much. One of the American spies is dead.",
+"orig": "Not much. One of the American spies is dead."
+},
+"sound/scenaric/escape1/axis2_radio_room.wav": {
+"dur": 4.47,
+"lang": "en",
+"prob": 0.88,
+"text": "Yeah, well, I have to report this already all now.",
+"orig": "Yeah, well, I have to report this already all now."
+},
+"sound/scenaric/escape1/axis2_still_trying.wav": {
+"dur": 3.41,
+"lang": "en",
+"prob": 0.73,
+"text": "Hey, still trying to get some music on that thing?",
+"orig": "Hey, still trying to get some music on that thing?"
+},
+"sound/scenaric/escape1/axis2_ya.wav": {
+"dur": 1.85,
+"lang": "en",
+"prob": 0.87,
+"text": "Yeah, yeah.",
+"orig": "Yeah, yeah."
+},
+"sound/scenaric/escape1/axis3_danke.wav": {
+"dur": 1.91,
+"lang": "en",
+"prob": 0.27,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/escape1/axis3_weather.wav": {
+"dur": 2.65,
+"lang": "en",
+"prob": 0.53,
+"text": "Ja, the weather's terrible today.",
+"orig": "Yabba the Vessels table today.",
+"manual": true,
+"retried": true,
+"recovered": false
+},
+"sound/scenaric/escape1/axis6_good_doctor.wav": {
+"dur": 5.31,
+"lang": "en",
+"prob": 0.76,
+"text": "I'm sure the good doctor did his best, eh?",
+"orig": "I'm sure the good doctor did his best, eh?"
+},
+"sound/scenaric/escape1/axis6_village_tonight.wav": {
+"dur": 5.2,
+"lang": "en",
+"prob": 0.79,
+"text": "Maybe I'll see you in the village tonight, eh?",
+"orig": "Maybe I'll see you in the village tonight, eh?"
+},
+"sound/scenaric/escape1/axis6_wie_gates.wav": {
+"dur": 3.49,
+"lang": "de",
+"prob": 0.57,
+"text": "What's up, Willy?",
+"orig": "Wie geht's, Willi?"
+},
+"sound/scenaric/escape1/c_axis1_jawhol.wav": {
+"dur": 1.42,
+"lang": "es",
+"prob": 0.4,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/escape1/c_axis1_your_orders.wav": {
+"dur": 2.28,
+"lang": "en",
+"prob": 0.79,
+"text": "Your orders, Herr Doctor.",
+"orig": "Your orders, Herr Doctor."
+},
+"sound/scenaric/escape1/electrocute.wav": {
+"dur": 2.99,
+"lang": "ru",
+"prob": 0.23,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/escape1/prisoner_cough.wav": {
+"dur": 23.48,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/escape1/prisoner_sob.wav": {
+"dur": 25.43,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/escape1/prisoner_sob2.wav": {
+"dur": 7.17,
+"lang": "en",
+"prob": 0.34,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/escape1/res10_ok.wav": {
+"dur": 4.12,
+"lang": "en",
+"prob": 0.86,
+"text": "Dr. Z, is everything all right down here?",
+"orig": "Dr. Z, is everything all right down here?"
+},
+"sound/scenaric/escape1/scuffle.wav": {
+"dur": 3.03,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/escape1/steam.wav": {
+"dur": 2.97,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/escape1/surgical.wav": {
+"dur": 11.96,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/escape1/tap_loop.wav": {
+"dur": 4.92,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/escape1/tesla_arc_short.wav": {
+"dur": 0.93,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/escape1/torture_scream.wav": {
+"dur": 3.22,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/escape1/zee_01_come_in.wav": {
+"dur": 2.44,
+"lang": "en",
+"prob": 0.91,
+"text": "Come in, Sergeant, come in.",
+"orig": "Come in, Sergeant, come in."
+},
+"sound/scenaric/escape1/zee_02_go_and_get_other_one.wav": {
+"dur": 3.39,
+"lang": "en",
+"prob": 0.45,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/escape1/zee_03_lets_try_again.wav": {
+"dur": 5.18,
+"lang": "en",
+"prob": 0.81,
+"text": "Now, let's try it again, shall we? Who do you work for?",
+"orig": "Now, let's try it again, shall we? Who do you work for?"
+},
+"sound/scenaric/escape2/axis10_bottle.wav": {
+"dur": 3.7,
+"lang": "en",
+"prob": 0.96,
+"text": "Do you think they would really miss just one bottle?",
+"orig": "Do you think they would really miss just one bottle?"
+},
+"sound/scenaric/escape2/axis10_explain.wav": {
+"dur": 6.48,
+"lang": "en",
+"prob": 0.85,
+"text": "Will someone please explain to me why it takes two of us to guard some dusty old wine bottles?",
+"orig": "Will someone please explain to me why it takes two of us to guard some dusty old wine bottles?"
+},
+"sound/scenaric/escape2/axis10_sigh.wav": {
+"dur": 1.93,
+"lang": "en",
+"prob": 0.64,
+"text": "Ah.",
+"orig": "Ah."
+},
+"sound/scenaric/escape2/axis11_heard.wav": {
+"dur": 9.79,
+"lang": "en",
+"prob": 0.92,
+"text": "Haven't you heard? This is valuable property of the Reich. With all those accusations of pilfering coming from the Reichsmasters' office, the Major isn't taking any chances.",
+"orig": "Haven't you heard? This is valuable property of the Reich. With all those accusations of pilfering coming from the Reichsmasters' office, the Major isn't taking any chances."
+},
+"sound/scenaric/escape2/axis11_kidding.wav": {
+"dur": 4.35,
+"lang": "en",
+"prob": 0.9,
+"text": "Are you kidding? The Reichsmarschall's office doesn't miss a thing.",
+"orig": "Are you kidding? The Reichsmarschall's office doesn't miss a thing."
+},
+"sound/scenaric/escape2/axis11_what.wav": {
+"dur": 1.19,
+"lang": "en",
+"prob": 0.95,
+"text": "What?",
+"orig": "What?"
+},
+"sound/scenaric/escape2/axis1_doubled_guard.wav": {
+"dur": 4.83,
+"lang": "en",
+"prob": 0.96,
+"text": "That's because the Major just doubled the gather on the dig site again.",
+"orig": "That's because the Major just doubled the gather on the dig site again."
+},
+"sound/scenaric/escape2/axis1_hey.wav": {
+"dur": 1.49,
+"lang": "en",
+"prob": 0.7,
+"text": "Hey, Hans!",
+"orig": "Hey, Hans!"
+},
+"sound/scenaric/escape2/axis1_i_know.wav": {
+"dur": 8.28,
+"lang": "en",
+"prob": 0.96,
+"text": "I know. According to Otto, he and Frau von Bulow had some big disagreement over security. I suppose it really shook him up.",
+"orig": "I know. According to Otto, he and Frau von Bulow had some big disagreement over security. I suppose it really shook him up."
+},
+"sound/scenaric/escape2/axis1_polish_weapon.wav": {
+"dur": 5.06,
+"lang": "en",
+"prob": 0.91,
+"text": "Hard to say. Well, I'll see you later. I've got to go polish my weapon.",
+"orig": "Hard to say. Well, I'll see you later. I've got to go polish my weapon."
+},
+"sound/scenaric/escape2/axis23_move_fools.wav": {
+"dur": 3.36,
+"lang": "en",
+"prob": 0.59,
+"text": "Move your fools! Schnell! [Fast!] Schnell! [Fast!]",
+"orig": "Move your fools! Schnell! Schnell!",
+"manual": true,
+"retried": true,
+"recovered": false
+},
+"sound/scenaric/escape2/axis23_protect.wav": {
+"dur": 3.58,
+"lang": "en",
+"prob": 0.83,
+"text": "Protect the gold! Kill the intruder!",
+"orig": "Protect the gold! Kill the intruder!"
+},
+"sound/scenaric/escape2/axis2_bad_case.wav": {
+"dur": 7.25,
+"lang": "en",
+"prob": 0.95,
+"text": "Sounds like a bad case of nerves to me. Have you seen the Major lately? He looks positively ill.",
+"orig": "Sounds like a bad case of nerves to me. Have you seen the Major lately? He looks positively ill."
+},
+"sound/scenaric/escape2/axis2_understandable.wav": {
+"dur": 4.96,
+"lang": "en",
+"prob": 0.96,
+"text": "Hmm, that's understandable. She's about as disagreeable as they come.",
+"orig": "Hmm, that's understandable. She's about as disagreeable as they come."
+},
+"sound/scenaric/escape2/axis2_whats_going_on.wav": {
+"dur": 5.27,
+"lang": "en",
+"prob": 0.96,
+"text": "So what's going on here? Where is everyone? Half the castle guard is missing.",
+"orig": "So what's going on here? Where is everyone? Half the castle guard is missing."
+},
+"sound/scenaric/escape2/axis3_wie_gates.wav": {
+"dur": 1.3,
+"lang": "nn",
+"prob": 0.18,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/escape2/axis5_jawhol.wav": {
+"dur": 1.33,
+"lang": "de",
+"prob": 0.22,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/escape2/axis5_nein.wav": {
+"dur": 4.24,
+"lang": "en",
+"prob": 0.54,
+"text": "Nein, mein Hauptmann [No, my commander]. The weather is still blocking all long range transmissions.",
+"orig": "Nine might happen. The weather is still blocking all long range transmissions.",
+"manual": true,
+"retried": true,
+"recovered": false
+},
+"sound/scenaric/escape2/officer2_any_luck.wav": {
+"dur": 1.8,
+"lang": "en",
+"prob": 0.83,
+"text": "Any luck, Sergeant?",
+"orig": "Any luck, Sergeant?"
+},
+"sound/scenaric/escape2/officer2_trying.wav": {
+"dur": 2.0,
+"lang": "en",
+"prob": 0.96,
+"text": "Keep trying, sergeant.",
+"orig": "Keep trying, sergeant."
+},
+"sound/scenaric/factory/axis1_how_disarm.wav": {
+"dur": 3.27,
+"lang": "en",
+"prob": 0.98,
+"text": "So how do I disarm this thing?",
+"orig": "So how do I disarm this thing?"
+},
+"sound/scenaric/factory/axis1_nevermind.wav": {
+"dur": 3.9,
+"lang": "en",
+"prob": 0.96,
+"text": "Never mind, they all look great to me anyway.",
+"orig": "Never mind, they all look great to me anyway."
+},
+"sound/scenaric/factory/axis2_i_told_you.wav": {
+"dur": 9.45,
+"lang": "en",
+"prob": 0.96,
+"text": "I told you, just clip the red wire. Or was it the blue one? Ah, hold on while I go get the manual.",
+"orig": "I told you, just clip the red wire. Or was it the blue one? Ah, hold on while I go get the manual."
+},
+"sound/scenaric/factory/axis3_lower_ladder.wav": {
+"dur": 3.09,
+"lang": "en",
+"prob": 0.93,
+"text": "Hey, someone lower the ladder!",
+"orig": "Hey, someone lower the ladder!"
+},
+"sound/scenaric/forest/axis10_findout.wav": {
+"dur": 5.32,
+"lang": "en",
+"prob": 0.97,
+"text": "I don't know. There's a schedule here somewhere. Find out if you're that interested.",
+"orig": "I don't know. There's a schedule here somewhere. Find out if you're that interested."
+},
+"sound/scenaric/forest/axis10_misdrop.wav": {
+"dur": 8.24,
+"lang": "en",
+"prob": 0.98,
+"text": "Really? It's probably just a misdrop from that black guard division training to the south. It happens all the time. You'll get used to it.",
+"orig": "Really? It's probably just a misdrop from that black guard division training to the south. It happens all the time. You'll get used to it."
+},
+"sound/scenaric/forest/axis10_schedule.wav": {
+"dur": 6.08,
+"lang": "en",
+"prob": 0.93,
+"text": "Look, do whatever you want, but I have to post this watch schedule in the next 20 minutes, or the lieutenant will have my head.",
+"orig": "Look, do whatever you want, but I have to post this watch schedule in the next 20 minutes, or the lieutenant will have my head."
+},
+"sound/scenaric/forest/axis10_sentries.wav": {
+"dur": 1.7,
+"lang": "en",
+"prob": 0.94,
+"text": "I'll go alert the sentries.",
+"orig": "I'll go alert the sentries."
+},
+"sound/scenaric/forest/axis11_investigate.wav": {
+"dur": 2.15,
+"lang": "en",
+"prob": 0.98,
+"text": "I really think we should go investigate.",
+"orig": "I really think we should go investigate."
+},
+"sound/scenaric/forest/axis11_parachute.wav": {
+"dur": 3.99,
+"lang": "en",
+"prob": 0.67,
+"text": "Hey, Rudolf, there's a parachute caught in that tree across the lake.",
+"orig": "Hey, Rudolf, there's a parachute caught in that tree across the lake."
+},
+"sound/scenaric/forest/axis11_training.wav": {
+"dur": 1.51,
+"lang": "en",
+"prob": 0.85,
+"text": "Are they training today?",
+"orig": "Are they training today?"
+},
+"sound/scenaric/forest/axis11_yaya.wav": {
+"dur": 1.39,
+"lang": "en",
+"prob": 0.86,
+"text": "Yeah, yeah.",
+"orig": "Yeah, yeah."
+},
+"sound/scenaric/forest/axis13_wellsir.wav": {
+"dur": 7.23,
+"lang": "en",
+"prob": 0.95,
+"text": "Well, sir, about three hours ago, a general's car with a full escort came flying through here. Then about an hour and a half later, they left.",
+"orig": "Well, sir, about three hours ago, a general's car with a full escort came flying through here. Then about an hour and a half later, they left."
+},
+"sound/scenaric/forest/axis15_better.wav": {
+"dur": 1.87,
+"lang": "en",
+"prob": 0.95,
+"text": "Much better.",
+"orig": "Much better."
+},
+"sound/scenaric/forest/axis15_deathshead.wav": {
+"dur": 7.02,
+"lang": "en",
+"prob": 0.99,
+"text": "Ah, Deathshead and his staff. One of his last-minute tours of inspection, no doubt. He certainly does get around.",
+"orig": "Ah, Deathshead and his staff. One of his last-minute tours of inspection, no doubt. He certainly does get around."
+},
+"sound/scenaric/forest/axis15_handle.wav": {
+"dur": 3.6,
+"lang": "en",
+"prob": 0.9,
+"text": "Pardon me for a moment, Corporal, while I handle something important.",
+"orig": "Pardon me for a moment, Corporal, while I handle something important."
+},
+"sound/scenaric/forest/axis15_meingott.wav": {
+"dur": 2.89,
+"lang": "de",
+"prob": 0.53,
+"text": "What? What's going on? My God!",
+"orig": "Was? Was ist los? Mein Gott!"
+},
+"sound/scenaric/forest/axis15_special.wav": {
+"dur": 2.92,
+"lang": "en",
+"prob": 0.94,
+"text": "Is there anything special to report, Corporal?",
+"orig": "Is there anything special to report, Corporal?"
+},
+"sound/scenaric/forest/axis15_weapons.wav": {
+"dur": 5.47,
+"lang": "en",
+"prob": 0.94,
+"text": "Corporal, I just found a parachute and some weapons back here. Sound the alarm, quickly!",
+"orig": "Corporal, I just found a parachute and some weapons back here. Sound the alarm, quickly!"
+},
+"sound/scenaric/forest/axis7_delivery.wav": {
+"dur": 1.88,
+"lang": "en",
+"prob": 0.98,
+"text": "Is that the last delivery for today?",
+"orig": "Is that the last delivery for today?"
+},
+"sound/scenaric/forest/axis8_believeso.wav": {
+"dur": 2.32,
+"lang": "en",
+"prob": 0.95,
+"text": "I believe so. Nothing else is scheduled.",
+"orig": "I believe so. Nothing else is scheduled."
+},
+"sound/scenaric/forest/axis9_american.wav": {
+"dur": 2.14,
+"lang": "en",
+"prob": 0.92,
+"text": "Look, the American spy!",
+"orig": "Look, the American spy!"
+},
+"sound/scenaric/forest/me109_flight.wav": {
+"dur": 10.12,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/general/b25.wav": {
+"dur": 8.48,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/general/blank.wav": {
+"dur": 0.0,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/general/fem_achtung.wav": {
+"dur": 1.32,
+"lang": "fr",
+"prob": 0.31,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/general/fem_die.wav": {
+"dur": 1.33,
+"lang": "en",
+"prob": 0.98,
+"text": "Die!",
+"orig": "Die!"
+},
+"sound/scenaric/general/fem_get_ready_he_is_coming.wav": {
+"dur": 1.0,
+"lang": "en",
+"prob": 0.93,
+"text": "Get ready!",
+"orig": "Get ready!"
+},
+"sound/scenaric/general/fem_halt.wav": {
+"dur": 0.77,
+"lang": "de",
+"prob": 0.52,
+"text": "Halt!",
+"orig": "HALT!"
+},
+"sound/scenaric/general/fem_its_ze_american.wav": {
+"dur": 1.57,
+"lang": "en",
+"prob": 0.97,
+"text": "It's the American!",
+"orig": "It's the American!"
+},
+"sound/scenaric/general/fem_take_cover.wav": {
+"dur": 1.11,
+"lang": "en",
+"prob": 0.97,
+"text": "Take cover!",
+"orig": "Take cover!"
+},
+"sound/scenaric/general/fem_you_are_dead_american.wav": {
+"dur": 1.91,
+"lang": "en",
+"prob": 0.98,
+"text": "You are dead, American!",
+"orig": "You are dead, American!"
+},
+"sound/scenaric/general/fema_cover_me.wav": {
+"dur": 1.19,
+"lang": "en",
+"prob": 0.89,
+"text": "Cover me!",
+"orig": "Cover me!",
+"retried": true,
+"recovered": true
+},
+"sound/scenaric/general/fema_take_cover.wav": {
+"dur": 1.3,
+"lang": "en",
+"prob": 0.95,
+"text": "Take cover!",
+"orig": "Take cover!",
+"retried": true,
+"recovered": true
+},
+"sound/scenaric/general/fema_were_under_attack.wav": {
+"dur": 1.79,
+"lang": "en",
+"prob": 0.88,
+"text": "You're under attack!",
+"orig": "You're under attack!"
+},
+"sound/scenaric/general/fema_you_are_outnumbered.wav": {
+"dur": 1.77,
+"lang": "en",
+"prob": 0.97,
+"text": "You are outnumbered.",
+"orig": "You are outnumbered."
+},
+"sound/scenaric/general/male_ze_american.wav": {
+"dur": 4.0,
+"lang": "en",
+"prob": 0.89,
+"text": "The American! I must radio the base!",
+"orig": "The American! I must radio the base!"
+},
+"sound/scenaric/general/misc_alarm1.wav": {
+"dur": 2.74,
+"lang": "ar",
+"prob": 0.26,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/general/misc_always.wav": {
+"dur": 2.77,
+"lang": "en",
+"prob": 0.82,
+"text": "Marching, marching, marching. Always marching.",
+"orig": "Marching, marching, marching. Always marching."
+},
+"sound/scenaric/general/misc_american.wav": {
+"dur": 1.32,
+"lang": "en",
+"prob": 0.99,
+"text": "It's the American!",
+"orig": "It's the American!"
+},
+"sound/scenaric/general/misc_american2.wav": {
+"dur": 1.25,
+"lang": "en",
+"prob": 0.46,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/general/misc_cough_1.wav": {
+"dur": 3.22,
+"lang": "en",
+"prob": 0.79,
+"text": "Ahem, hmm.",
+"orig": "Ahem, hmm."
+},
+"sound/scenaric/general/misc_cough_2.wav": {
+"dur": 4.05,
+"lang": "en",
+"prob": 0.44,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/general/misc_da_dum.wav": {
+"dur": 2.97,
+"lang": "en",
+"prob": 0.5,
+"text": "Dun-dun-dun, bum-ba-bum.",
+"orig": "Dun-dun-dun, bum-ba-bum."
+},
+"sound/scenaric/general/misc_da_dum2.wav": {
+"dur": 1.84,
+"lang": "en",
+"prob": 0.3,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/general/misc_da_dum3.wav": {
+"dur": 3.82,
+"lang": "en",
+"prob": 0.32,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/general/misc_da_dum4.wav": {
+"dur": 3.99,
+"lang": "en",
+"prob": 0.43,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/general/misc_get_help.wav": {
+"dur": 2.42,
+"lang": "en",
+"prob": 0.86,
+"text": "Go and get help now!",
+"orig": "Go and get help now!"
+},
+"sound/scenaric/general/misc_going_on.wav": {
+"dur": 2.24,
+"lang": "en",
+"prob": 0.95,
+"text": "What's going on in here?",
+"orig": "What's going on in here?"
+},
+"sound/scenaric/general/misc_halt.wav": {
+"dur": 0.83,
+"lang": "en",
+"prob": 0.71,
+"text": "Halt!",
+"orig": "Halt!"
+},
+"sound/scenaric/general/misc_here_somewhere.wav": {
+"dur": 2.01,
+"lang": "en",
+"prob": 0.96,
+"text": "He's in here somewhere.",
+"orig": "He's in here somewhere."
+},
+"sound/scenaric/general/misc_hes_here.wav": {
+"dur": 1.3,
+"lang": "en",
+"prob": 0.98,
+"text": "I know he's here.",
+"orig": "I know he's here."
+},
+"sound/scenaric/general/misc_huh2.wav": {
+"dur": 2.3,
+"lang": "en",
+"prob": 0.83,
+"text": "Huh? Who did that?",
+"orig": "Huh? Who did that?"
+},
+"sound/scenaric/general/misc_hum1.wav": {
+"dur": 5.01,
+"lang": "en",
+"prob": 0.67,
+"text": "Mm-hmm, mm-hmm, mm-hmm.",
+"orig": "Mm-hmm, mm-hmm, mm-hmm."
+},
+"sound/scenaric/general/misc_hum2.wav": {
+"dur": 6.22,
+"lang": "en",
+"prob": 0.52,
+"text": "Da-dum-dum-da-dum, hmm-hmm-hmm-hmm-hmm.",
+"orig": "Da-dum-dum-da-dum, hmm-hmm-hmm-hmm-hmm."
+},
+"sound/scenaric/general/misc_intruder.wav": {
+"dur": 2.35,
+"lang": "en",
+"prob": 0.83,
+"text": "Intruder, sound the alarm!",
+"orig": "Intruder, sound the alarm!"
+},
+"sound/scenaric/general/misc_keep_looking.wav": {
+"dur": 1.21,
+"lang": "en",
+"prob": 0.68,
+"text": "Keep looking.",
+"orig": "Keep looking."
+},
+"sound/scenaric/general/misc_kill_him.wav": {
+"dur": 1.68,
+"lang": "en",
+"prob": 0.87,
+"text": "KILL THEM!",
+"orig": "KILL THEM!"
+},
+"sound/scenaric/general/misc_mumb2.wav": {
+"dur": 4.53,
+"lang": "no",
+"prob": 0.57,
+"text": "I can't believe there are so many swords here.",
+"orig": "Så er det ikke lenger noen visbare sverden her."
+},
+"sound/scenaric/general/misc_mumb3.wav": {
+"dur": 2.73,
+"lang": "de",
+"prob": 0.39,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/general/misc_mumb4.wav": {
+"dur": 3.62,
+"lang": "de",
+"prob": 0.22,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/general/misc_mumb5.wav": {
+"dur": 4.51,
+"lang": "de",
+"prob": 0.55,
+"text": "Yes, yes, yes. It's worth it.",
+"orig": "Ja, ja, ja. Es weiht uns auf."
+},
+"sound/scenaric/general/misc_over_there.wav": {
+"dur": 3.21,
+"lang": "en",
+"prob": 0.95,
+"text": "He's over there! Unlock the gate!",
+"orig": "He's over there! Unlock the gate!"
+},
+"sound/scenaric/general/misc_schnell.wav": {
+"dur": 0.64,
+"lang": "de",
+"prob": 0.33,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/general/misc_shiver_2.wav": {
+"dur": 2.28,
+"lang": "en",
+"prob": 0.45,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/general/misc_smell_him.wav": {
+"dur": 3.19,
+"lang": "en",
+"prob": 0.93,
+"text": "I know the intruder is here. I can smell him.",
+"orig": "I know the intruder is here. I can smell him."
+},
+"sound/scenaric/general/misc_stop_him.wav": {
+"dur": 2.05,
+"lang": "en",
+"prob": 0.92,
+"text": "There he is! Stop him!",
+"orig": "There he is! Stop him!"
+},
+"sound/scenaric/general/misc_switch.wav": {
+"dur": 0.62,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/general/misc_whats_that.wav": {
+"dur": 1.42,
+"lang": "en",
+"prob": 0.88,
+"text": "What was that?",
+"orig": "What was that?"
+},
+"sound/scenaric/general/misc_whistle.wav": {
+"dur": 2.53,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/general/misc_yawn.wav": {
+"dur": 3.98,
+"lang": "en",
+"prob": 0.65,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/norway/air_raid1b.wav": {
+"dur": 10.19,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/norway/g1_alarm.wav": {
+"dur": 2.74,
+"lang": "ar",
+"prob": 0.26,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/norway/g1_frozen_solid.wav": {
+"dur": 11.33,
+"lang": "en",
+"prob": 0.96,
+"text": "Look, are you acting stupid just to annoy me? Don't you see here practically I'm tearing my arm off? The God for Damn Thing won't start because the God for Damn Thing is frozen solid!",
+"orig": "Look, are you acting stupid just to annoy me? Don't you see here practically I'm tearing my arm off? The God for Damn Thing won't start because the God for Damn Thing is frozen solid!"
+},
+"sound/scenaric/norway/g1_how_is_erich.wav": {
+"dur": 2.5,
+"lang": "en",
+"prob": 0.97,
+"text": "So how's that getting along?",
+"orig": "So how's that getting along?"
+},
+"sound/scenaric/norway/g1_look_for_antifreeze.wav": {
+"dur": 6.74,
+"lang": "en",
+"prob": 0.94,
+"text": "You want to be helpful? Well go look for some antifreeze then. Don't just stand here making idiotic comments.",
+"orig": "You want to be helpful? Well go look for some antifreeze then. Don't just stand here making idiotic comments."
+},
+"sound/scenaric/norway/g1_lucky_for_me.wav": {
+"dur": 4.01,
+"lang": "en",
+"prob": 0.95,
+"text": "Lucky for me, I never touch this stuff.",
+"orig": "Lucky for me, I never touch this stuff."
+},
+"sound/scenaric/norway/g1_no_upper_body.wav": {
+"dur": 5.51,
+"lang": "en",
+"prob": 0.98,
+"text": "No, I'm working on my upper body strength, one arm at a time.",
+"orig": "No, I'm working on my upper body strength, one arm at a time."
+},
+"sound/scenaric/norway/g1_shrewd_observation.wav": {
+"dur": 7.31,
+"lang": "en",
+"prob": 0.92,
+"text": "Tell me, do you often make such shrewd observations? You should seriously consider officer's training.",
+"orig": "Tell me, do you often make such shrewd observations? You should seriously consider officer's training."
+},
+"sound/scenaric/norway/g1_too_bad.wav": {
+"dur": 3.76,
+"lang": "en",
+"prob": 0.93,
+"text": "It's too bad. I hope it's nothing serious.",
+"orig": "It's too bad. I hope it's nothing serious."
+},
+"sound/scenaric/norway/g1_worthless.wav": {
+"dur": 4.3,
+"lang": "en",
+"prob": 0.92,
+"text": "Ah, this worthless pile of junk still won't start!",
+"orig": "Ah, this worthless pile of junk still won't start!"
+},
+"sound/scenaric/norway/g2_alright.wav": {
+"dur": 3.7,
+"lang": "en",
+"prob": 0.83,
+"text": "Alright, alright, I'll go see what I can find.",
+"orig": "Alright, alright, I'll go see what I can find."
+},
+"sound/scenaric/norway/g2_because_of_cold.wav": {
+"dur": 2.78,
+"lang": "en",
+"prob": 0.73,
+"text": "I'll bet it's because of the cold.",
+"orig": "I'll bet it's because of the cold."
+},
+"sound/scenaric/norway/g2_crank_harder.wav": {
+"dur": 2.88,
+"lang": "en",
+"prob": 0.72,
+"text": "I think we need to crank it harder.",
+"orig": "I think we need to crank it harder."
+},
+"sound/scenaric/norway/g2_relax.wav": {
+"dur": 4.35,
+"lang": "en",
+"prob": 0.76,
+"text": "Eh! Relax, will you? I was just trying to be helpful.",
+"orig": "Relax, will you? I was just trying to be helpful.",
+"manual": true,
+"retried": true,
+"recovered": false
+},
+"sound/scenaric/norway/g2_start_generator.wav": {
+"dur": 3.16,
+"lang": "en",
+"prob": 0.76,
+"text": "Are you still trying to start that generator?",
+"orig": "Are you still trying to start that generator?"
+},
+"sound/scenaric/norway/g2_still_sick.wav": {
+"dur": 2.59,
+"lang": "en",
+"prob": 0.73,
+"text": "Still sick as a dog I hear.",
+"orig": "Still sick as a dog I hear."
+},
+"sound/scenaric/norway/g3_bad_water.wav": {
+"dur": 3.07,
+"lang": "en",
+"prob": 0.99,
+"text": "The Metics said it was bad water.",
+"orig": "The Metics said it was bad water."
+},
+"sound/scenaric/norway/intruder_alert.wav": {
+"dur": 6.46,
+"lang": "en",
+"prob": 0.94,
+"text": "X-Lab Control, this is Ice Station One. Intruder alert! Repeat, intruder alert!",
+"orig": "X-Lab Control, this is Ice Station One. Intruder alert! Repeat, intruder alert!"
+},
+"sound/scenaric/norway/m1_full_standby.wav": {
+"dur": 9.09,
+"lang": "en",
+"prob": 0.98,
+"text": "Well now, I have to go out in this filthy weather and change both sets because someone in their infinite wisdom decided to go to full standby in two hours.",
+"orig": "Well now, I have to go out in this filthy weather and change both sets because someone in their infinite wisdom decided to go to full standby in two hours."
+},
+"sound/scenaric/norway/m1_i_didnt_know.wav": {
+"dur": 2.75,
+"lang": "en",
+"prob": 0.89,
+"text": "Oh, I didn't even know he was back.",
+"orig": "Oh, I didn't even know he was back."
+},
+"sound/scenaric/norway/m1_i_dont_believe_it.wav": {
+"dur": 4.44,
+"lang": "en",
+"prob": 0.79,
+"text": "What the? I don't believe it. I do not believe it.",
+"orig": "What the? I don't believe it. I do not believe it."
+},
+"sound/scenaric/norway/m1_ive_had_it.wav": {
+"dur": 9.02,
+"lang": "en",
+"prob": 0.94,
+"text": "I have had it. I've absolutely had it with this place. Another day like today and I'll be ready for the insane asylum.",
+"orig": "I have had it. I've absolutely had it with this place. Another day like today and I'll be ready for the insane asylum."
+},
+"sound/scenaric/norway/m1_orings.wav": {
+"dur": 9.01,
+"lang": "en",
+"prob": 0.95,
+"text": "Remember the cracked O-rings on the reserve thrusters? You know, the ones we've known about since last August? The same ones the Leutnant never gave a damn about?",
+"orig": "Remember the cracked O-rings on the reserve thrusters? You know, the ones we've known about since last August? The same ones the Leutnant never gave a damn about?"
+},
+"sound/scenaric/norway/m1_stinking.wav": {
+"dur": 2.65,
+"lang": "en",
+"prob": 0.96,
+"text": "It's that stinking rocket plane again.",
+"orig": "It's that stinking rocket plane again."
+},
+"sound/scenaric/norway/m1_torque_wrench.wav": {
+"dur": 4.17,
+"lang": "en",
+"prob": 0.72,
+"text": "Where in bloody hell is my splined torque wrench?",
+"orig": "Where in bloody hell is my splined torque wrench?"
+},
+"sound/scenaric/norway/m2_dh_himself.wav": {
+"dur": 6.27,
+"lang": "en",
+"prob": 0.95,
+"text": "I'll bet that was Deathshead himself. He came storming through here a while ago, looking none too pleased.",
+"orig": "I'll bet that was Deathshead himself. He came storming through here a while ago, looking none too pleased."
+},
+"sound/scenaric/norway/m2_dont_look_at_me.wav": {
+"dur": 2.73,
+"lang": "en",
+"prob": 0.77,
+"text": "Don't look at me, these are my tools.",
+"orig": "Don't look at me, these are my tools."
+},
+"sound/scenaric/norway/m2_ja_ja.wav": {
+"dur": 1.47,
+"lang": "de",
+"prob": 0.6,
+"text": "Yes, yes.",
+"orig": "Ja, ja."
+},
+"sound/scenaric/norway/m2_now_what.wav": {
+"dur": 1.6,
+"lang": "en",
+"prob": 0.93,
+"text": "Now what?",
+"orig": "Now what?"
+},
+"sound/scenaric/norway/m2_oh_gott.wav": {
+"dur": 1.3,
+"lang": "en",
+"prob": 0.79,
+"text": "Oh, God.",
+"orig": "Oh, God."
+},
+"sound/scenaric/norway/m2_what_is_it.wav": {
+"dur": 1.87,
+"lang": "en",
+"prob": 0.7,
+"text": "What is it this time?",
+"orig": "What is it this time?"
+},
+"sound/scenaric/norway/metal_crank1.wav": {
+"dur": 1.16,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/axis26_this_way.wav": {
+"dur": 3.45,
+"lang": "en",
+"prob": 0.83,
+"text": "Soldiers! Soldiers! He's this way!",
+"orig": "Soldiers! Soldiers! He's this way!"
+},
+"sound/scenaric/rocket/axis29_out_of_ammo.wav": {
+"dur": 2.11,
+"lang": "en",
+"prob": 0.93,
+"text": "Damn it! Out of ammo!",
+"orig": "Damn it! Out of ammo!"
+},
+"sound/scenaric/rocket/axis2a_elevator.wav": {
+"dur": 3.01,
+"lang": "en",
+"prob": 0.91,
+"text": "He must have gone down the elevator.",
+"orig": "He must have gone down the elevator."
+},
+"sound/scenaric/rocket/axis2a_going_down.wav": {
+"dur": 1.99,
+"lang": "en",
+"prob": 0.96,
+"text": "He's going down the elevator!",
+"orig": "He's going down the elevator!"
+},
+"sound/scenaric/rocket/axis2a_gunfire.wav": {
+"dur": 3.71,
+"lang": "en",
+"prob": 0.85,
+"text": "Wait, I heard gunfire!",
+"orig": "Wait, I heard gunfire!"
+},
+"sound/scenaric/rocket/axis2a_lost_him.wav": {
+"dur": 2.77,
+"lang": "en",
+"prob": 0.84,
+"text": "Agh! Damn, we lost him!",
+"orig": "Agh! Damn, we lost him!"
+},
+"sound/scenaric/rocket/axis30_hurry.wav": {
+"dur": 2.13,
+"lang": "en",
+"prob": 0.96,
+"text": "He's this way! Hurry!",
+"orig": "He's this way! Hurry!"
+},
+"sound/scenaric/rocket/axis35_comes.wav": {
+"dur": 3.94,
+"lang": "en",
+"prob": 0.78,
+"text": "Here he comes! Los! Los!",
+"orig": "Here he comes! Los! Los!"
+},
+"sound/scenaric/rocket/axis36_charge_set.wav": {
+"dur": 2.88,
+"lang": "en",
+"prob": 0.93,
+"text": "Alright, the charge is set. Get out of here!",
+"orig": "Alright, the charge is set. Get out of here!"
+},
+"sound/scenaric/rocket/axis37_hold_him.wav": {
+"dur": 2.64,
+"lang": "en",
+"prob": 0.95,
+"text": "I'll hold him off! Go!",
+"orig": "I'll hold him off! Go!"
+},
+"sound/scenaric/rocket/axis40_move_out.wav": {
+"dur": 4.08,
+"lang": "en",
+"prob": 0.91,
+"text": "Move out! Find cover! We can't let the American escape!",
+"orig": "Move out! Find cover! We can't let the American escape!"
+},
+"sound/scenaric/rocket/axis4_rocket_tests.wav": {
+"dur": 3.87,
+"lang": "en",
+"prob": 0.67,
+"text": "Ach [Ah], these rocket tests. Why don't they just launch the damn thing?",
+"orig": "Ach, these rocket tests. Why don't they just launch the damn thing?",
+"manual": true,
+"retried": true,
+"recovered": false
+},
+"sound/scenaric/rocket/axis4_the_front.wav": {
+"dur": 3.57,
+"lang": "en",
+"prob": 0.68,
+"text": "So, how are things on the front? Have you heard anything?",
+"orig": "So, how are things on the front? Have you heard anything?"
+},
+"sound/scenaric/rocket/axis5_babysitting.wav": {
+"dur": 3.58,
+"lang": "en",
+"prob": 0.99,
+"text": "I wouldn't know. I'm here babysitting a bomb.",
+"orig": "I wouldn't know. I'm here babysitting a bomb."
+},
+"sound/scenaric/rocket/axis5_headache.wav": {
+"dur": 2.74,
+"lang": "en",
+"prob": 0.93,
+"text": "Yes, they're giving me a headache already.",
+"orig": "Yes, they're giving me a headache already."
+},
+"sound/scenaric/rocket/axis6a_where.wav": {
+"dur": 2.4,
+"lang": "en",
+"prob": 0.96,
+"text": "Where the hell is he?",
+"orig": "Where the hell is he?"
+},
+"sound/scenaric/rocket/axis7a_any_minute.wav": {
+"dur": 4.46,
+"lang": "en",
+"prob": 0.84,
+"text": "Alright, he should be coming down any minute now.",
+"orig": "Alright, he should be coming down any minute now."
+},
+"sound/scenaric/rocket/bridge_2nd_fall.wav": {
+"dur": 7.0,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/bridge_crash.wav": {
+"dur": 6.22,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/bridge_creak1.wav": {
+"dur": 4.38,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/bridge_creak2.wav": {
+"dur": 4.92,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/bridge_creak3.wav": {
+"dur": 2.96,
+"lang": "en",
+"prob": 0.73,
+"text": "[Creak sounds]",
+"orig": "Thank you.",
+"manual": true,
+"retried": true,
+"recovered": false
+},
+"sound/scenaric/rocket/bridge_fall.wav": {
+"dur": 7.19,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/crane_alarm_loop.wav": {
+"dur": 2.58,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/crane_end.wav": {
+"dur": 2.25,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/crane_load_end.wav": {
+"dur": 2.25,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/crane_loop.wav": {
+"dur": 2.29,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/crane_move_end.wav": {
+"dur": 0.66,
+"lang": "ru",
+"prob": 0.23,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/crane_move_loop.wav": {
+"dur": 2.9,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/crane_move_start.wav": {
+"dur": 0.4,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/crane_start.wav": {
+"dur": 0.33,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/distant_battle.wav": {
+"dur": 10.9,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/rocket/driver1_damn_tailgate.wav": {
+"dur": 3.0,
+"lang": "en",
+"prob": 0.91,
+"text": "Damn, this tailgate is still not fixed.",
+"orig": "Damn, this tailgate is still not fixed."
+},
+"sound/scenaric/rocket/driver1_dont_kill_me.wav": {
+"dur": 4.03,
+"lang": "en",
+"prob": 0.95,
+"text": "Please, don't kill me. I'm just a mechanic.",
+"orig": "Please, don't kill me. I'm just a mechanic."
+},
+"sound/scenaric/rocket/driver1_gun_fire.wav": {
+"dur": 1.76,
+"lang": "en",
+"prob": 0.7,
+"text": "Gunfire!",
+"orig": "Gunfire!"
+},
+"sound/scenaric/rocket/driver1_huh.wav": {
+"dur": 1.81,
+"lang": "en",
+"prob": 0.92,
+"text": "What was that?",
+"orig": "What was that?"
+},
+"sound/scenaric/rocket/driver1_imagination.wav": {
+"dur": 2.93,
+"lang": "en",
+"prob": 0.95,
+"text": "Hmm, must have been my imagination.",
+"orig": "Hmm, must have been my imagination."
+},
+"sound/scenaric/rocket/driver1_man_down.wav": {
+"dur": 3.13,
+"lang": "en",
+"prob": 0.83,
+"text": "Man down!",
+"orig": "Man down!"
+},
+"sound/scenaric/rocket/driver1_not_falling.wav": {
+"dur": 3.01,
+"lang": "en",
+"prob": 0.96,
+"text": "No, I'm not going to fall for that again.",
+"orig": "No, I'm not going to fall for that again."
+},
+"sound/scenaric/rocket/elec_train_loop.wav": {
+"dur": 3.75,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/elec_train_start.wav": {
+"dur": 2.31,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/elec_train_stop.wav": {
+"dur": 2.36,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/electric_door_end.wav": {
+"dur": 2.41,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/electric_door_loop.wav": {
+"dur": 3.18,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/electric_door_start.wav": {
+"dur": 0.79,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/elev_end1.wav": {
+"dur": 2.93,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/elev_lever.wav": {
+"dur": 1.18,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/elev_loop1.wav": {
+"dur": 4.15,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/elev_start1.wav": {
+"dur": 1.0,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/elevator_crash.wav": {
+"dur": 4.1,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/elevator_fall_loop.wav": {
+"dur": 1.25,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/gq_alarm_loop.wav": {
+"dur": 2.54,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/locker_close.wav": {
+"dur": 1.65,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/locker_open.wav": {
+"dur": 2.12,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/ls_1098765sec.wav": {
+"dur": 15.7,
+"lang": "en",
+"prob": 0.89,
+"text": "Launch will commence in 10, 9, 8, 7, 6, 5, 4, 3, 2, 1.",
+"orig": "Launch will commence in 10, 9, 8, 7, 6, 5, 4, 3, 2, 1."
+},
+"sound/scenaric/rocket/ls_15sec.wav": {
+"dur": 3.91,
+"lang": "en",
+"prob": 0.87,
+"text": "Launch will commence in 15 seconds.",
+"orig": "Launch will commence in 15 seconds."
+},
+"sound/scenaric/rocket/ls_1min.wav": {
+"dur": 3.68,
+"lang": "en",
+"prob": 0.86,
+"text": "Launch will commence in one minute.",
+"orig": "Launch will commence in one minute."
+},
+"sound/scenaric/rocket/ls_1min30sec.wav": {
+"dur": 4.56,
+"lang": "en",
+"prob": 0.9,
+"text": "Launch will commence in 1 minute 30 seconds.",
+"orig": "Launch will commence in 1 minute 30 seconds."
+},
+"sound/scenaric/rocket/ls_2min.wav": {
+"dur": 10.22,
+"lang": "en",
+"prob": 0.8,
+"text": "Achtung! All launch supervisors report final readiness. V2 launch will commence in two minutes.",
+"orig": "Achtung! All launch supervisors report final readiness. V2 launch will commence in two minutes."
+},
+"sound/scenaric/rocket/ls_30sec.wav": {
+"dur": 3.79,
+"lang": "en",
+"prob": 0.77,
+"text": "Launch will commence in 30 seconds.",
+"orig": "Launch will commence in 30 seconds."
+},
+"sound/scenaric/rocket/ls_54321.wav": {
+"dur": 7.2,
+"lang": "en",
+"prob": 0.68,
+"text": "Five, four, three, two, one.",
+"orig": "Five, four, three, two, one."
+},
+"sound/scenaric/rocket/ls_attention.wav": {
+"dur": 6.41,
+"lang": "en",
+"prob": 0.68,
+"text": "Attention all personnel. V2 rocket test to commence in...",
+"orig": "Attention all personnel. V2 rocket test to commence in..."
+},
+"sound/scenaric/rocket/ls_fueling.wav": {
+"dur": 5.82,
+"lang": "en",
+"prob": 0.83,
+"text": "Acton, fueling crew's complete final check of safety seals.",
+"orig": "Acton, fueling crew's complete final check of safety seals."
+},
+"sound/scenaric/rocket/ls_intruder.wav": {
+"dur": 6.68,
+"lang": "en",
+"prob": 0.77,
+"text": "Achtung! [Attention!] Intro the alert! Intro the alert! Security teams, report immediately!",
+"orig": "Acton! Intro the alert! Intro the alert! Security teams, report immediately!",
+"manual": true,
+"retried": true,
+"recovered": false
+},
+"sound/scenaric/rocket/ls_launch.wav": {
+"dur": 2.0,
+"lang": "en",
+"prob": 0.75,
+"text": "Launch!",
+"orig": "Launch!"
+},
+"sound/scenaric/rocket/ls_launch_aborted.wav": {
+"dur": 4.71,
+"lang": "en",
+"prob": 0.83,
+"text": "Launch aborted. All safety crews on station.",
+"orig": "Launch aborted. All safety crews on station."
+},
+"sound/scenaric/rocket/ls_tower.wav": {
+"dur": 6.04,
+"lang": "de",
+"prob": 0.43,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/ls_v2_test_complete.wav": {
+"dur": 8.68,
+"lang": "en",
+"prob": 0.84,
+"text": "V2 rocket test complete. Telemetry operators commence pre-launch calibration procedures.",
+"orig": "V2 rocket test complete. Telemetry operators commence pre-launch calibration procedures."
+},
+"sound/scenaric/rocket/mech1_crane_connected.wav": {
+"dur": 3.9,
+"lang": "en",
+"prob": 0.7,
+"text": "Alright, the crane is connected to the transport container.",
+"orig": "Alright, the crane is connected to the transport container."
+},
+"sound/scenaric/rocket/mech1_crane_ready.wav": {
+"dur": 2.76,
+"lang": "en",
+"prob": 0.26,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/mech1_has_train_arrived.wav": {
+"dur": 2.81,
+"lang": "de",
+"prob": 0.91,
+"text": "Has the train arrived?",
+"orig": "Hast du Tränen gereift?"
+},
+"sound/scenaric/rocket/mech1_lifting_container.wav": {
+"dur": 2.88,
+"lang": "ar",
+"prob": 0.37,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/mech1_lowering.wav": {
+"dur": 4.13,
+"lang": "en",
+"prob": 0.73,
+"text": "Okay, transport in position. Lowering now.",
+"orig": "Okay, transport in position. Lowering now."
+},
+"sound/scenaric/rocket/mech1_man_down.wav": {
+"dur": 2.53,
+"lang": "en",
+"prob": 0.79,
+"text": "Man down! Hit the alarm!",
+"orig": "Man down! Hit the alarm!"
+},
+"sound/scenaric/rocket/mech1_moving_container.wav": {
+"dur": 3.49,
+"lang": "en",
+"prob": 0.89,
+"text": "Moving container into position.",
+"orig": "Moving container into position."
+},
+"sound/scenaric/rocket/mech1pa_crane_connected.wav": {
+"dur": 3.9,
+"lang": "en",
+"prob": 0.85,
+"text": "All right, the crane is connected to the transport container.",
+"orig": "All right, the crane is connected to the transport container."
+},
+"sound/scenaric/rocket/mech1pa_crane_ready.wav": {
+"dur": 2.95,
+"lang": "en",
+"prob": 0.49,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/mech1pa_has_train_arrived.wav": {
+"dur": 2.89,
+"lang": "de",
+"prob": 0.43,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/mech1pa_lifting_container.wav": {
+"dur": 2.78,
+"lang": "en",
+"prob": 0.61,
+"text": "Lifting container.",
+"orig": "Lifting container."
+},
+"sound/scenaric/rocket/mech1pa_lowering.wav": {
+"dur": 3.94,
+"lang": "en",
+"prob": 0.84,
+"text": "Okay, transport in position. Lowering now.",
+"orig": "Okay, transport in position. Lowering now."
+},
+"sound/scenaric/rocket/mech1pa_moving_container.wav": {
+"dur": 3.49,
+"lang": "en",
+"prob": 0.92,
+"text": "Moving container into position.",
+"orig": "Moving container into position."
+},
+"sound/scenaric/rocket/mech1pa_stand_clear.wav": {
+"dur": 5.22,
+"lang": "en",
+"prob": 0.93,
+"text": "Attention! Crane is activated. Please stand clear of the crane.",
+"orig": "Attention! Crane is activated. Please stand clear of the crane."
+},
+"sound/scenaric/rocket/mech2_acknowledged.wav": {
+"dur": 1.5,
+"lang": "en",
+"prob": 0.56,
+"text": "Acknowledged.",
+"orig": "Acknowledged."
+},
+"sound/scenaric/rocket/mech2_affirmative.wav": {
+"dur": 3.28,
+"lang": "en",
+"prob": 0.94,
+"text": "Affirmative. However, it is not in position.",
+"orig": "Affirmative. However, it is not in position."
+},
+"sound/scenaric/rocket/mech2_almost_there.wav": {
+"dur": 3.19,
+"lang": "en",
+"prob": 0.73,
+"text": "Almost there. Lower.",
+"orig": "Almost there. Lower."
+},
+"sound/scenaric/rocket/mech2_hanz_come_in.wav": {
+"dur": 5.54,
+"lang": "en",
+"prob": 0.67,
+"text": "Hans! Hans! Come in, crane controller! Come in!",
+"orig": "Hans! Hans! Come in, crane controller! Come in!"
+},
+"sound/scenaric/rocket/mech2_hanz_you_forgot.wav": {
+"dur": 3.88,
+"lang": "en",
+"prob": 0.97,
+"text": "Hans, you forgot to lift the crane all the way up!",
+"orig": "Hans, you forgot to lift the crane all the way up!"
+},
+"sound/scenaric/rocket/mech2_in_position.wav": {
+"dur": 4.4,
+"lang": "en",
+"prob": 0.92,
+"text": "All right, the transport is in position.",
+"orig": "All right, the transport is in position."
+},
+"sound/scenaric/rocket/mech2_its_on.wav": {
+"dur": 3.38,
+"lang": "en",
+"prob": 0.96,
+"text": "There, it's on. Go ahead and lift it back up.",
+"orig": "There, it's on. Go ahead and lift it back up."
+},
+"sound/scenaric/rocket/mech2_lower.wav": {
+"dur": 1.58,
+"lang": "de",
+"prob": 0.53,
+"text": "Lower?",
+"orig": "Laura?",
+"manual": true,
+"retried": true,
+"recovered": false
+},
+"sound/scenaric/rocket/mech2_sending_troops.wav": {
+"dur": 2.96,
+"lang": "en",
+"prob": 0.95,
+"text": "Sending up two troops to investigate.",
+"orig": "Sending up two troops to investigate."
+},
+"sound/scenaric/rocket/mech2_whats_happening.wav": {
+"dur": 2.54,
+"lang": "en",
+"prob": 0.9,
+"text": "What is happening up there?",
+"orig": "What is happening up there?"
+},
+"sound/scenaric/rocket/mech2_your_back.wav": {
+"dur": 2.91,
+"lang": "en",
+"prob": 0.84,
+"text": "Ah, you're back. Good.",
+"orig": "Ah, you're back. Good."
+},
+"sound/scenaric/rocket/mech2pa_acknowledged.wav": {
+"dur": 1.5,
+"lang": "en",
+"prob": 0.81,
+"text": "Acknowledged.",
+"orig": "Acknowledged."
+},
+"sound/scenaric/rocket/mech2pa_affirmative.wav": {
+"dur": 3.28,
+"lang": "en",
+"prob": 0.76,
+"text": "Affirmative. However, it is not in position.",
+"orig": "Affirmative. However, it is not in position."
+},
+"sound/scenaric/rocket/mech2pa_almost_here.wav": {
+"dur": 3.19,
+"lang": "en",
+"prob": 0.71,
+"text": "Almost there, lower.",
+"orig": "Almost there, lower."
+},
+"sound/scenaric/rocket/mech2pa_hanz_come_in.wav": {
+"dur": 5.54,
+"lang": "en",
+"prob": 0.8,
+"text": "Hans! Hans! Come in, crane controller! Come in!",
+"orig": "Hans! Hans! Come in, crane controller! Come in!"
+},
+"sound/scenaric/rocket/mech2pa_hanz_you_forgot.wav": {
+"dur": 3.88,
+"lang": "en",
+"prob": 0.96,
+"text": "Hans, you forgot to lift the crane all the way up!",
+"orig": "Hans, you forgot to lift the crane all the way up!"
+},
+"sound/scenaric/rocket/mech2pa_in_position.wav": {
+"dur": 4.4,
+"lang": "en",
+"prob": 0.89,
+"text": "All right, the transport is in position.",
+"orig": "All right, the transport is in position."
+},
+"sound/scenaric/rocket/mech2pa_its_on.wav": {
+"dur": 3.38,
+"lang": "en",
+"prob": 0.97,
+"text": "There, it's on. Go ahead and lift it back up.",
+"orig": "There, it's on. Go ahead and lift it back up."
+},
+"sound/scenaric/rocket/mech2pa_lower.wav": {
+"dur": 1.58,
+"lang": "de",
+"prob": 0.58,
+"text": "Lower?",
+"orig": "Laura?",
+"manual": true,
+"retried": true,
+"recovered": false
+},
+"sound/scenaric/rocket/mech2pa_sending_troops.wav": {
+"dur": 2.96,
+"lang": "en",
+"prob": 0.89,
+"text": "Sending up two troops to investigate.",
+"orig": "Sending up two troops to investigate."
+},
+"sound/scenaric/rocket/mech2pa_whats_happening.wav": {
+"dur": 2.54,
+"lang": "en",
+"prob": 0.9,
+"text": "What is happening up there?",
+"orig": "What is happening up there?"
+},
+"sound/scenaric/rocket/mech2pa_your_back.wav": {
+"dur": 2.91,
+"lang": "en",
+"prob": 0.75,
+"text": "Ah, you're back. Good.",
+"orig": "Ah, you're back. Good."
+},
+"sound/scenaric/rocket/rumble.wav": {
+"dur": 13.14,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/rocket/sci0_dont_shoot.wav": {
+"dur": 3.55,
+"lang": "en",
+"prob": 0.87,
+"text": "No! Please don't shoot me!",
+"orig": "No! Please don't shoot me!"
+},
+"sound/scenaric/rocket/sci0_here_all_day.wav": {
+"dur": 2.96,
+"lang": "en",
+"prob": 0.91,
+"text": "I don't want to be here all day.",
+"orig": "I don't want to be here all day."
+},
+"sound/scenaric/rocket/sci0_hurry_up.wav": {
+"dur": 2.36,
+"lang": "en",
+"prob": 0.67,
+"text": "Alright, let's hurry it up!",
+"orig": "Alright, let's hurry it up!"
+},
+"sound/scenaric/rocket/sci1_guards.wav": {
+"dur": 5.32,
+"lang": "en",
+"prob": 0.84,
+"text": "Huh? Who are you? Guards!",
+"orig": "Huh? Who are you? Guards!"
+},
+"sound/scenaric/rocket/sci1_man_down.wav": {
+"dur": 2.18,
+"lang": "en",
+"prob": 0.61,
+"text": "Man down!",
+"orig": "Man down!"
+},
+"sound/scenaric/rocket/sci_fear_2.wav": {
+"dur": 2.68,
+"lang": "en",
+"prob": 0.82,
+"text": "No, don't kill me!",
+"orig": "No, don't kill me!"
+},
+"sound/scenaric/rocket/sci_fear_3.wav": {
+"dur": 3.69,
+"lang": "en",
+"prob": 0.78,
+"text": "Not me, no!",
+"orig": "Not me, no!"
+},
+"sound/scenaric/rocket/sci_jeapordize.wav": {
+"dur": 2.45,
+"lang": "en",
+"prob": 0.33,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/sci_quick_guards.wav": {
+"dur": 2.57,
+"lang": "en",
+"prob": 0.8,
+"text": "The quick gods!",
+"orig": "The quick gods!"
+},
+"sound/scenaric/rocket/tailgate_close.wav": {
+"dur": 2.07,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/tailgate_open.wav": {
+"dur": 2.65,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/rocket/v2_explode.wav": {
+"dur": 13.8,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/rocket/v2_takeoff.wav": {
+"dur": 19.97,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/sfm/barrier_smash.wav": {
+"dur": 1.27,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/sfm/kre_01.wav": {
+"dur": 2.27,
+"lang": "en",
+"prob": 0.58,
+"text": "Harry, we need your help!",
+"orig": "Harry, we need your help!"
+},
+"sound/scenaric/sfm/kre_02.wav": {
+"dur": 2.06,
+"lang": "en",
+"prob": 0.53,
+"text": "We're under attack!",
+"orig": "We're under attack!"
+},
+"sound/scenaric/sfm/kre_03.wav": {
+"dur": 2.3,
+"lang": "en",
+"prob": 0.92,
+"text": "Protect the scientist!",
+"orig": "Protect the scientist!"
+},
+"sound/scenaric/sfm/kre_04.wav": {
+"dur": 2.78,
+"lang": "en",
+"prob": 0.91,
+"text": "Move! Get over here!",
+"orig": "Move! Get over here!"
+},
+"sound/scenaric/sfm/kre_05.wav": {
+"dur": 5.93,
+"lang": "en",
+"prob": 0.97,
+"text": "Thank you for your assistance. We will move the scientist out soon. You'd better get going.",
+"orig": "Thank you for your assistance. We will move the scientist out soon. You'd better get going."
+},
+"sound/scenaric/sfm/kre_06.wav": {
+"dur": 3.69,
+"lang": "en",
+"prob": 0.94,
+"text": "What are you waiting for? The tank driver is waiting for you.",
+"orig": "What are you waiting for? The tank driver is waiting for you."
+},
+"sound/scenaric/sfm/kre_07.wav": {
+"dur": 2.35,
+"lang": "en",
+"prob": 0.78,
+"text": "He needs your help! Move!",
+"orig": "He needs your help! Move!"
+},
+"sound/scenaric/sfm/kre_08.wav": {
+"dur": 1.54,
+"lang": "en",
+"prob": 0.89,
+"text": "God damn you!",
+"orig": "God damn you!"
+},
+"sound/scenaric/sfm/tank_com_01.wav": {
+"dur": 2.7,
+"lang": "en",
+"prob": 0.91,
+"text": "All right, we must move quickly.",
+"orig": "All right, we must move quickly."
+},
+"sound/scenaric/sfm/tank_com_02.wav": {
+"dur": 11.2,
+"lang": "en",
+"prob": 0.94,
+"text": "Panzerfaust! The Kreisau extraction team just ahead of us reports there is a six-man Panzergrenadier unit hiding in the next block. You must eliminate them before I can risk moving forward.",
+"orig": "Panzerfaust! The Kreisau extraction team just ahead of us reports there is a six-man Panzergrenadier unit hiding in the next block. You must eliminate them before I can risk moving forward."
+},
+"sound/scenaric/sfm/tank_com_03.wav": {
+"dur": 4.99,
+"lang": "en",
+"prob": 0.94,
+"text": "Excellent work. Now keep moving. You must locate the extraction team.",
+"orig": "Excellent work. Now keep moving. You must locate the extraction team."
+},
+"sound/scenaric/sfm/tank_com_04.wav": {
+"dur": 7.2,
+"lang": "en",
+"prob": 0.92,
+"text": "Our team has just linked up with the defecting scientists, but they are under heavy fire in the next block. We need your assistance. Hurry!",
+"orig": "Our team has just linked up with the defecting scientists, but they are under heavy fire in the next block. We need your assistance. Hurry!"
+},
+"sound/scenaric/sfm/tank_com_05.wav": {
+"dur": 6.65,
+"lang": "en",
+"prob": 0.96,
+"text": "Good. The scientist is safe. But there's heavy resistance along the last road before the weapons complex. Let's go.",
+"orig": "Good. The scientist is safe. But there's heavy resistance along the last road before the weapons complex. Let's go."
+},
+"sound/scenaric/sfm/tank_com_06.wav": {
+"dur": 3.67,
+"lang": "en",
+"prob": 0.98,
+"text": "You may enter now. Good luck on your mission.",
+"orig": "You may enter now. Good luck on your mission."
+},
+"sound/scenaric/sfm/tank_com_07.wav": {
+"dur": 3.9,
+"lang": "en",
+"prob": 0.96,
+"text": "I will destroy the bell tower in case there are more snipers.",
+"orig": "I will destroy the bell tower in case there are more snipers."
+},
+"sound/scenaric/sfm/tank_com_08.wav": {
+"dur": 4.46,
+"lang": "en",
+"prob": 0.98,
+"text": "I'm under attack! They have more anti-tank weapons! Hurry!",
+"orig": "I'm under attack! They have more anti-tank weapons! Hurry!"
+},
+"sound/scenaric/sfm/tank_com_09.wav": {
+"dur": 3.63,
+"lang": "en",
+"prob": 0.96,
+"text": "Take much more of this. Move!",
+"orig": "Take much more of this. Move!"
+},
+"sound/scenaric/sfm/tank_com_10.wav": {
+"dur": 4.75,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/swf/axis1_wunderba.wav": {
+"dur": 4.11,
+"lang": "en",
+"prob": 0.7,
+"text": "Ah, wunderbar [wonderful]. I see you've finally fixed the elevator.",
+"orig": "Ah, wunderbar. I see you've finally fixed the elevator.",
+"manual": true,
+"retried": true,
+"recovered": false
+},
+"sound/scenaric/swf/cs10_dh_01.wav": {
+"dur": 3.95,
+"lang": "en",
+"prob": 0.84,
+"text": "Major, why are we not yet ready to depart?",
+"orig": "Major, why are we not yet ready to depart?"
+},
+"sound/scenaric/swf/cs10_dh_02.wav": {
+"dur": 10.1,
+"lang": "en",
+"prob": 0.94,
+"text": "I don't have time for this nonsense. I have important business to attend to. This boat leaves for the X-Labs within the hour, torpedoes or not. Is that understood, Major?",
+"orig": "I don't have time for this nonsense. I have important business to attend to. This boat leaves for the X-Labs within the hour, torpedoes or not. Is that understood, Major?"
+},
+"sound/scenaric/swf/cs10_maj_01.wav": {
+"dur": 8.78,
+"lang": "en",
+"prob": 0.92,
+"text": "My apologies, Herr Oberfuhrer, but the weapons loadout on the new torpedoes is taking more time than originally anticipated.",
+"orig": "My apologies, Herr Oberfuhrer, but the weapons loadout on the new torpedoes is taking more time than originally anticipated."
+},
+"sound/scenaric/swf/cs10_maj_02.wav": {
+"dur": 1.85,
+"lang": "en",
+"prob": 0.43,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/swf/lab3_let_me_in.wav": {
+"dur": 5.62,
+"lang": "en",
+"prob": 0.74,
+"text": "Help! Let me in! Those things are loose! AAAAAAAH!",
+"orig": "Help! Let me in! Those things are loose! AAAAAAAH!"
+},
+"sound/scenaric/swf/spo_01.wav": {
+"dur": 3.29,
+"lang": "en",
+"prob": 0.94,
+"text": "I will not divulge any information to you.",
+"orig": "I will not divulge any information to you."
+},
+"sound/scenaric/swf/spo_02.wav": {
+"dur": 6.29,
+"lang": "en",
+"prob": 0.94,
+"text": "They're going to Norway. The coordinates are 67 degrees north by 16 degrees east.",
+"orig": "They're going to Norway. The coordinates are 67 degrees north by 16 degrees east."
+},
+"sound/scenaric/trainyard/mech1_elevator_fixed.wav": {
+"dur": 5.6,
+"lang": "en",
+"prob": 0.95,
+"text": "Alright, the elevator is fixed. Now go upstairs and switch on the power.",
+"orig": "Alright, the elevator is fixed. Now go upstairs and switch on the power."
+},
+"sound/scenaric/trainyard/sci1_a_minute.wav": {
+"dur": 5.61,
+"lang": "en",
+"prob": 0.9,
+"text": "We don't have a minute. Deathshead wanted to leave an hour ago and he's furious.",
+"orig": "We don't have a minute. Deathshead wanted to leave an hour ago and he's furious."
+},
+"sound/scenaric/trainyard/sci1_hes_leaving.wav": {
+"dur": 5.09,
+"lang": "en",
+"prob": 0.96,
+"text": "He's leaving for the facility up north. It's something big, that's all I know.",
+"orig": "He's leaving for the facility up north. It's something big, that's all I know."
+},
+"sound/scenaric/trainyard/sci1_hurry_up.wav": {
+"dur": 1.95,
+"lang": "en",
+"prob": 0.99,
+"text": "Hurry up with those documents!",
+"orig": "Hurry up with those documents!"
+},
+"sound/scenaric/trainyard/sci2_almost_done.wav": {
+"dur": 2.25,
+"lang": "en",
+"prob": 0.77,
+"text": "I'm almost done, just a minute.",
+"orig": "I'm almost done, just a minute."
+},
+"sound/scenaric/trainyard/sci2_alright.wav": {
+"dur": 3.55,
+"lang": "en",
+"prob": 0.87,
+"text": "All right, all right, so why the rush?",
+"orig": "All right, all right, so why the rush?"
+},
+"sound/scenaric/tram/cable_creak.wav": {
+"dur": 3.51,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/tram/kess_dead.wav": {
+"dur": 0.92,
+"lang": "en",
+"prob": 0.92,
+"text": "Dead.",
+"orig": "Dead."
+},
+"sound/scenaric/tram/kess_dont_shoot.wav": {
+"dur": 1.9,
+"lang": "en",
+"prob": 0.93,
+"text": "Don't shoot, I'm Kessler!",
+"orig": "Don't shoot, I'm Kessler!"
+},
+"sound/scenaric/tram/kess_follow_me.wav": {
+"dur": 3.75,
+"lang": "en",
+"prob": 0.96,
+"text": "Follow me. We must get you inside the village.",
+"orig": "Follow me. We must get you inside the village."
+},
+"sound/scenaric/tram/kess_under_control.wav": {
+"dur": 4.14,
+"lang": "en",
+"prob": 0.86,
+"text": "Yes, Lieutenant Ruger here. Situation under control.",
+"orig": "Yes, Lieutenant Ruger here. Situation under control."
+},
+"sound/scenaric/tram/mgs_01.wav": {
+"dur": 3.78,
+"lang": "en",
+"prob": 0.98,
+"text": "Midgard Station, report! What is happening up there?",
+"orig": "Midgard Station, report! What is happening up there?"
+},
+"sound/scenaric/tram/mgs_02.wav": {
+"dur": 3.77,
+"lang": "en",
+"prob": 0.98,
+"text": "Report. Midgard station. Come in.",
+"orig": "Report. Midgard station. Come in."
+},
+"sound/scenaric/tram/station_report.wav": {
+"dur": 4.66,
+"lang": "en",
+"prob": 0.94,
+"text": "Tram guard station report. Tram guard station, what is happening?",
+"orig": "Tram guard station report. Tram guard station, what is happening?"
+},
+"sound/scenaric/tram/station_station_out.wav": {
+"dur": 3.09,
+"lang": "en",
+"prob": 0.79,
+"text": "Excellent. Village Guard Station out.",
+"orig": "Excellent. Village Guard Station out."
+},
+"sound/scenaric/tram/station_ze_american.wav": {
+"dur": 2.65,
+"lang": "de",
+"prob": 0.58,
+"text": "Ah, and the american?",
+"orig": "Ah, und Sie merken?",
+"manual": true,
+"retried": true,
+"recovered": false
+},
+"sound/scenaric/tram/tram_creak.wav": {
+"dur": 1.22,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/tram/tram_move.wav": {
+"dur": 8.86,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/tram/tram_start.wav": {
+"dur": 0.83,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/tram/tram_stop.wav": {
+"dur": 2.38,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/village1/axis0_bathed_in_2_weeks.wav": {
+"dur": 6.35,
+"lang": "en",
+"prob": 0.97,
+"text": "I just hope we get some hot water soon. I haven't bathed in over two weeks.",
+"orig": "I just hope we get some hot water soon. I haven't bathed in over two weeks."
+},
+"sound/scenaric/village1/axis0_its_freezing.wav": {
+"dur": 4.86,
+"lang": "en",
+"prob": 0.93,
+"text": "It's freezing out here.",
+"orig": "It's freezing out here."
+},
+"sound/scenaric/village1/axis14_crazy_witch.wav": {
+"dur": 3.76,
+"lang": "en",
+"prob": 0.98,
+"text": "And yes, the crazy old witch was right after all.",
+"orig": "And yes, the crazy old witch was right after all."
+},
+"sound/scenaric/village1/axis14_right_about_rest.wav": {
+"dur": 2.83,
+"lang": "en",
+"prob": 0.97,
+"text": "You suppose she's right about the rest of it?",
+"orig": "You suppose she's right about the rest of it?"
+},
+"sound/scenaric/village1/axis14_well_you_know.wav": {
+"dur": 2.76,
+"lang": "en",
+"prob": 0.95,
+"text": "Well, you know.",
+"orig": "Well, you know."
+},
+"sound/scenaric/village1/axis14_what_do_you_know.wav": {
+"dur": 3.65,
+"lang": "en",
+"prob": 0.97,
+"text": "What do you know? They actually found it.",
+"orig": "What do you know? They actually found it."
+},
+"sound/scenaric/village1/axis15_jawohl.wav": {
+"dur": 1.45,
+"lang": "de",
+"prob": 0.99,
+"text": "Yes, captain!",
+"orig": "Jawohl, Herr Hauptmann.",
+"manual": true,
+"retried": true,
+"recovered": false
+},
+"sound/scenaric/village1/axis15_knew_to_dig.wav": {
+"dur": 3.56,
+"lang": "en",
+"prob": 0.31,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/village1/axis15_rest_of_what.wav": {
+"dur": 1.75,
+"lang": "en",
+"prob": 0.89,
+"text": "The rest of what?",
+"orig": "The rest of what?"
+},
+"sound/scenaric/village1/axis15_resurrecting.wav": {
+"dur": 5.46,
+"lang": "en",
+"prob": 0.88,
+"text": "What, resurrecting the dead? Oh, come on. What, do you take me for a schoolboy?",
+"orig": "What, resurrecting the dead? Oh, come on. What, do you take me for a schoolboy?"
+},
+"sound/scenaric/village1/axis15_unbelievable.wav": {
+"dur": 4.45,
+"lang": "en",
+"prob": 0.92,
+"text": "Unbelievable. I would have sworn the whole thing was make-believe.",
+"orig": "Unbelievable. I would have sworn the whole thing was make-believe."
+},
+"sound/scenaric/village1/axis17_come_here.wav": {
+"dur": 1.65,
+"lang": "en",
+"prob": 0.78,
+"text": "Willy, go and see here.",
+"orig": "Willy, go and see here."
+},
+"sound/scenaric/village1/axis1_colder_than_last_night.wav": {
+"dur": 6.32,
+"lang": "en",
+"prob": 0.89,
+"text": "It's going to be even colder than last night. I hope we get some new blankets soon.",
+"orig": "It's going to be even colder than last night. I hope we get some new blankets soon."
+},
+"sound/scenaric/village1/axis1_i_know.wav": {
+"dur": 4.73,
+"lang": "en",
+"prob": 0.72,
+"text": "Yeah, I know, I know.",
+"orig": "Yeah, I know, I know."
+},
+"sound/scenaric/village1/axis1_los_los.wav": {
+"dur": 2.36,
+"lang": "de",
+"prob": 0.91,
+"text": "The Americans! Go! Go!",
+"orig": "Sie merken! Los, los!"
+},
+"sound/scenaric/village1/axis3_did_they_really.wav": {
+"dur": 3.14,
+"lang": "it",
+"prob": 0.49,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/village1/axis3_i_didnt_ask_you.wav": {
+"dur": 6.51,
+"lang": "en",
+"prob": 0.96,
+"text": "Ah, but I didn't ask you, Leutnant. I suggest we change the subject to something less controversial.",
+"orig": "Ah, but I didn't ask you, Leutnant. I suggest we change the subject to something less controversial."
+},
+"sound/scenaric/village1/axis3_i_hear_very_little.wav": {
+"dur": 4.95,
+"lang": "en",
+"prob": 0.91,
+"text": "Truthfully, Leutnant, I hear very little and remember even less.",
+"orig": "Truthfully, Leutnant, I hear very little and remember even less."
+},
+"sound/scenaric/village1/axis3_i_wouldnt_know.wav": {
+"dur": 1.45,
+"lang": "en",
+"prob": 0.85,
+"text": "I wouldn't know.",
+"orig": "I wouldn't know."
+},
+"sound/scenaric/village1/axis3_is_that_a_fact.wav": {
+"dur": 1.33,
+"lang": "en",
+"prob": 0.91,
+"text": "Is that a fact?",
+"orig": "Is that a fact?"
+},
+"sound/scenaric/village1/axis3_otto_talks_too_much.wav": {
+"dur": 4.92,
+"lang": "en",
+"prob": 0.86,
+"text": "According to Otto, eh? Well, Otto always did talk too much for his own good.",
+"orig": "According to Otto, eh? Well, Otto always did talk too much for his own good."
+},
+"sound/scenaric/village1/axis3_you_dont_say.wav": {
+"dur": 1.66,
+"lang": "en",
+"prob": 0.83,
+"text": "Hmm, you don't say.",
+"orig": "Hmm, you don't say."
+},
+"sound/scenaric/village1/axis5_3_replacements.wav": {
+"dur": 3.36,
+"lang": "en",
+"prob": 0.97,
+"text": "And the three replacements reported in just this morning.",
+"orig": "And the three replacements reported in just this morning."
+},
+"sound/scenaric/village1/axis5_according_to_otto.wav": {
+"dur": 4.92,
+"lang": "en",
+"prob": 0.87,
+"text": "According to Arthur, one of them is a special assistant to the Reichsführer SS himself.",
+"orig": "According to Arthur, one of them is a special assistant to the Reichsführer SS himself."
+},
+"sound/scenaric/village1/axis5_another_casualty.wav": {
+"dur": 3.14,
+"lang": "en",
+"prob": 0.97,
+"text": "Another casualty on the research team, I'm told.",
+"orig": "Another casualty on the research team, I'm told."
+},
+"sound/scenaric/village1/axis5_as_you_wish.wav": {
+"dur": 3.71,
+"lang": "en",
+"prob": 0.95,
+"text": "As you wish, Herr Hauptmann, but you must have heard what happened to Erich.",
+"orig": "As you wish, Herr Hauptmann, but you must have heard what happened to Erich."
+},
+"sound/scenaric/village1/axis5_on_to_something.wav": {
+"dur": 3.29,
+"lang": "en",
+"prob": 0.99,
+"text": "If you ask me, they really are onto something now.",
+"orig": "If you ask me, they really are onto something now."
+},
+"sound/scenaric/village1/axis5_out_of_control.wav": {
+"dur": 3.27,
+"lang": "en",
+"prob": 0.96,
+"text": "Things are definitely getting more and more out of control.",
+"orig": "Things are definitely getting more and more out of control."
+},
+"sound/scenaric/village1/axis5_strange_things.wav": {
+"dur": 2.62,
+"lang": "en",
+"prob": 0.78,
+"text": "Some very strange goings on up there last night, eh?",
+"orig": "Some very strange goings on up there last night, eh?"
+},
+"sound/scenaric/village1/axis5_ya_ya.wav": {
+"dur": 1.7,
+"lang": "en",
+"prob": 0.27,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/village1/drunk1_attention.wav": {
+"dur": 6.23,
+"lang": "en",
+"prob": 0.44,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/village1/drunk1_back_to_post.wav": {
+"dur": 6.56,
+"lang": "en",
+"prob": 0.8,
+"text": "Get back to your post, you malignant coward. I'll have you shot.",
+"orig": "Get back to your post, you malignant coward. I'll have you shot."
+},
+"sound/scenaric/village1/drunk1_bring_beer.wav": {
+"dur": 4.88,
+"lang": "en",
+"prob": 0.61,
+"text": "Bring me another beer, you dog. Schnell! [Fast!] Schnell! [Fast!]",
+"orig": "Bring me another beer, you dog. Schnell! Schnell!",
+"manual": true,
+"retried": true,
+"recovered": false
+},
+"sound/scenaric/village1/drunk1_chorus1.wav": {
+"dur": 7.31,
+"lang": "en",
+"prob": 0.37,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/village1/drunk1_chorus2.wav": {
+"dur": 7.31,
+"lang": "en",
+"prob": 0.37,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/village1/drunk1_chorus3.wav": {
+"dur": 7.59,
+"lang": "en",
+"prob": 0.3,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/village1/drunk1_chorus4.wav": {
+"dur": 7.28,
+"lang": "en",
+"prob": 0.64,
+"text": "Yeah, yeah, yeah, yeah.",
+"orig": "Yeah, yeah, yeah, yeah."
+},
+"sound/scenaric/village1/drunk1_frauhlein.wav": {
+"dur": 5.9,
+"lang": "de",
+"prob": 0.49,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/village1/drunk1_slovenly_swine.wav": {
+"dur": 5.12,
+"lang": "en",
+"prob": 0.78,
+"text": "Shut your filthy hole, you slovenly swine!",
+"orig": "Shut your filthy hole, you slovenly swine!"
+},
+"sound/scenaric/village1/kess_accompany.wav": {
+"dur": 3.05,
+"lang": "en",
+"prob": 0.99,
+"text": "I regret that I cannot accompany you any further in my condition.",
+"orig": "I regret that I cannot accompany you any further in my condition."
+},
+"sound/scenaric/village1/kess_down_stairs.wav": {
+"dur": 3.6,
+"lang": "en",
+"prob": 0.99,
+"text": "If you go down these stairs, there's a back entrance to the cafe.",
+"orig": "If you go down these stairs, there's a back entrance to the cafe."
+},
+"sound/scenaric/village1/kess_must_hurry.wav": {
+"dur": 7.69,
+"lang": "en",
+"prob": 1.0,
+"text": "You must hurry. Helga's team has an excavation site at the graveyard at the end of town. The entrance to the crypt is there. Good luck.",
+"orig": "You must hurry. Helga's team has an excavation site at the graveyard at the end of town. The entrance to the crypt is there. Good luck."
+},
+"sound/scenaric/village1/kess_my_house.wav": {
+"dur": 3.08,
+"lang": "en",
+"prob": 0.98,
+"text": "Such as it is, this is my house.",
+"orig": "Such as it is, this is my house."
+},
+"sound/scenaric/village1/officer1_bad_business.wav": {
+"dur": 1.84,
+"lang": "en",
+"prob": 0.93,
+"text": "That was bad business back there.",
+"orig": "That was bad business back there."
+},
+"sound/scenaric/village1/officer1_need_drink.wav": {
+"dur": 1.49,
+"lang": "en",
+"prob": 0.9,
+"text": "I need a drink.",
+"orig": "I need a drink."
+},
+"sound/scenaric/village1/officer1_of_course.wav": {
+"dur": 1.8,
+"lang": "en",
+"prob": 0.94,
+"text": "Yeah, of course. An order.",
+"orig": "Yeah, of course. An order."
+},
+"sound/scenaric/village1/officer1_our_own_men.wav": {
+"dur": 5.54,
+"lang": "en",
+"prob": 0.86,
+"text": "So it was for our own men, our own men, we sealed in with those things.",
+"orig": "So it was for our own men, our own men, we sealed in with those things."
+},
+"sound/scenaric/village1/officer1_those_screams.wav": {
+"dur": 8.78,
+"lang": "en",
+"prob": 0.98,
+"text": "Those screams. Those horrible screams. Didn't you hear them? I can hear them still. I don't think I'll ever stop hearing them.",
+"orig": "Those screams. Those horrible screams. Didn't you hear them? I can hear them still. I don't think I'll ever stop hearing them."
+},
+"sound/scenaric/village1/officer2_enough_already.wav": {
+"dur": 3.95,
+"lang": "en",
+"prob": 0.81,
+"text": "Enough already. Stop punishing yourself. No one is to blame.",
+"orig": "Enough already. Stop punishing yourself. No one is to blame."
+},
+"sound/scenaric/village1/officer2_i_was_there.wav": {
+"dur": 6.28,
+"lang": "en",
+"prob": 0.99,
+"text": "I know, I was there. But what else could we do? It was an order. An order from Helga, no less.",
+"orig": "I know, I was there. But what else could we do? It was an order. An order from Helga, no less."
+},
+"sound/scenaric/village1/officer2_seal_crypt.wav": {
+"dur": 3.01,
+"lang": "en",
+"prob": 0.91,
+"text": "We had to seal off the crypt. There was no time left.",
+"orig": "We had to seal off the crypt. There was no time left."
+},
+"sound/scenaric/village1/officer2_yes_agree.wav": {
+"dur": 2.77,
+"lang": "en",
+"prob": 0.93,
+"text": "Yeah, I agree. Terrible.",
+"orig": "Yeah, I agree. Terrible."
+},
+"sound/scenaric/village1/p3_guards.wav": {
+"dur": 1.1,
+"lang": "en",
+"prob": 0.95,
+"text": "Guards!",
+"orig": "Guards!"
+},
+"sound/scenaric/village1/p3_stay_away.wav": {
+"dur": 1.13,
+"lang": "en",
+"prob": 0.69,
+"text": "Stay away!",
+"orig": "Stay away!"
+},
+"sound/scenaric/village1/p3_you_want.wav": {
+"dur": 3.23,
+"lang": "en",
+"prob": 0.94,
+"text": "What do you want? I have nothing for you!",
+"orig": "What do you want? I have nothing for you!"
+},
+"sound/scenaric/village1/p4_come_inside.wav": {
+"dur": 2.7,
+"lang": "en",
+"prob": 0.62,
+"text": "Late! Don't shoot! Come inside!",
+"orig": "Late! Don't shoot! Come inside!"
+},
+"sound/scenaric/village1/p4_have_something.wav": {
+"dur": 2.0,
+"lang": "en",
+"prob": 0.95,
+"text": "I have something for you.",
+"orig": "I have something for you."
+},
+"sound/scenaric/village1/p4_mp40_ammo.wav": {
+"dur": 3.82,
+"lang": "en",
+"prob": 0.99,
+"text": "It uses the same 9mm ammunition as the MP40.",
+"orig": "It uses the same 9mm ammunition as the MP40."
+},
+"sound/scenaric/village1/p4_must_go.wav": {
+"dur": 3.8,
+"lang": "en",
+"prob": 0.99,
+"text": "You must go now. If the guards find you here with me, we'll both be shot.",
+"orig": "You must go now. If the guards find you here with me, we'll both be shot."
+},
+"sound/scenaric/village1/p4_must_stay.wav": {
+"dur": 2.53,
+"lang": "en",
+"prob": 0.98,
+"text": "I must stay here.",
+"orig": "I must stay here."
+},
+"sound/scenaric/village1/p4_nothing.wav": {
+"dur": 1.65,
+"lang": "en",
+"prob": 0.97,
+"text": "I have nothing else for you.",
+"orig": "I have nothing else for you."
+},
+"sound/scenaric/village1/p4_officer_qtrs.wav": {
+"dur": 2.91,
+"lang": "en",
+"prob": 0.98,
+"text": "Be careful. There's an officer's quarters just down the street.",
+"orig": "Be careful. There's an officer's quarters just down the street."
+},
+"sound/scenaric/village1/p4_snipers.wav": {
+"dur": 1.99,
+"lang": "en",
+"prob": 0.99,
+"text": "Watch for snipers in open windows.",
+"orig": "Watch for snipers in open windows."
+},
+"sound/scenaric/village1/p4_sten.wav": {
+"dur": 5.5,
+"lang": "en",
+"prob": 0.99,
+"text": "Our British friends thought you might be able to use this, a silenced Sten submachine gun.",
+"orig": "Our British friends thought you might be able to use this, a silenced Sten submachine gun."
+},
+"sound/scenaric/village2/air_raid1.wav": {
+"dur": 10.19,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/village2/beethoven.wav": {
+"dur": 99.28,
+"lang": "en",
+"prob": 0.37,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/village2/beethoven_9_2.wav": {
+"dur": 63.3,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/village2/col_huh.wav": {
+"dur": 0.66,
+"lang": "en",
+"prob": 0.79,
+"text": "Huh?",
+"orig": "Huh?"
+},
+"sound/scenaric/village2/col_m1.wav": {
+"dur": 5.07,
+"lang": "de",
+"prob": 0.48,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/village2/col_m2.wav": {
+"dur": 4.53,
+"lang": "no",
+"prob": 0.57,
+"text": "I can't believe there are so many swords here.",
+"orig": "Så er det ikke lenger noen visbare sverden her."
+},
+"sound/scenaric/village2/col_m3.wav": {
+"dur": 2.73,
+"lang": "de",
+"prob": 0.39,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/village2/col_m4.wav": {
+"dur": 3.62,
+"lang": "de",
+"prob": 0.22,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/village2/col_m5.wav": {
+"dur": 4.51,
+"lang": "de",
+"prob": 0.55,
+"text": "Yes, yes, yes. It's worth it.",
+"orig": "Ja, ja, ja. Es weiht uns auf."
+},
+"sound/scenaric/village2/col_vos_is_los.wav": {
+"dur": 1.25,
+"lang": "de",
+"prob": 0.92,
+"text": "What's going on?",
+"orig": "Was ist los?"
+},
+"sound/scenaric/village2/drunk1_chorus1.wav": {
+"dur": 7.31,
+"lang": "en",
+"prob": 0.44,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/village2/g1_ach_allright.wav": {
+"dur": 3.99,
+"lang": "en",
+"prob": 0.93,
+"text": "Ach, all right. I'm coming inside, Zinn. It's cold out here.",
+"orig": "Ach, all right. I'm coming inside, Zinn. It's cold out here."
+},
+"sound/scenaric/village2/g1_alarm.wav": {
+"dur": 2.62,
+"lang": "en",
+"prob": 0.85,
+"text": "An intruder! Alarm! Alarm!",
+"orig": "An intruder! Alarm! Alarm!"
+},
+"sound/scenaric/village2/g1_glorious_death.wav": {
+"dur": 2.85,
+"lang": "en",
+"prob": 0.99,
+"text": "But what a glorious death it would have been.",
+"orig": "But what a glorious death it would have been."
+},
+"sound/scenaric/village2/g1_haha.wav": {
+"dur": 1.56,
+"lang": "en",
+"prob": 0.77,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/village2/g1_no_ze_officers.wav": {
+"dur": 2.63,
+"lang": "en",
+"prob": 0.91,
+"text": "No, the officers are being very tight-lipped about it.",
+"orig": "No, the officers are being very tight-lipped about it."
+},
+"sound/scenaric/village2/g1_quite_a_show.wav": {
+"dur": 2.52,
+"lang": "en",
+"prob": 0.55,
+"text": "Well, it's going to be quite a show, eh, Karl?",
+"orig": "Well, it's going to be quite a show, eh, Karl?"
+},
+"sound/scenaric/village2/g1_still_you_doubt.wav": {
+"dur": 5.12,
+"lang": "en",
+"prob": 0.97,
+"text": "Still you doubt. Sure you remember what Blavatsky did back in Holstein.",
+"orig": "Still you doubt. Sure you remember what Blavatsky did back in Holstein."
+},
+"sound/scenaric/village2/g1_tasty_sb.wav": {
+"dur": 4.12,
+"lang": "de",
+"prob": 0.57,
+"text": "Mmmh, that's what you call a tasty Sauerbraten!",
+"orig": "Mmmh, so etwas in tasty Sauberaden.",
+"manual": true,
+"retried": true,
+"recovered": false
+},
+"sound/scenaric/village2/g1_vas_is_los.wav": {
+"dur": 3.45,
+"lang": "en",
+"prob": 0.6,
+"text": "Hey, what's going on? Is the Major ready to leave yet?",
+"orig": "Hey, what's going on? Is the Major ready to leave yet?"
+},
+"sound/scenaric/village2/g1lc_haha.wav": {
+"dur": 2.09,
+"lang": "en",
+"prob": 0.47,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/village2/g2_he_changed_mind.wav": {
+"dur": 2.25,
+"lang": "en",
+"prob": 0.84,
+"text": "No, he changed his mind.",
+"orig": "No, he changed his mind."
+},
+"sound/scenaric/village2/g2_no_glory.wav": {
+"dur": 2.61,
+"lang": "en",
+"prob": 0.77,
+"text": "There is no glory in a meaningless death, Gunther.",
+"orig": "There is no glory in a meaningless death, Gunther."
+},
+"sound/scenaric/village2/g2_not_bad.wav": {
+"dur": 2.62,
+"lang": "en",
+"prob": 0.94,
+"text": "Not bad, but my mother still makes better.",
+"orig": "Not bad, but my mother still makes better."
+},
+"sound/scenaric/village2/g2_really_true.wav": {
+"dur": 1.87,
+"lang": "en",
+"prob": 0.95,
+"text": "If any of it is really true,",
+"orig": "If any of it is really true,"
+},
+"sound/scenaric/village2/g2_so_did_you_find.wav": {
+"dur": 3.01,
+"lang": "en",
+"prob": 0.96,
+"text": "So, did you find out what's happening over at the Chateau?",
+"orig": "So, did you find out what's happening over at the Chateau?"
+},
+"sound/scenaric/village2/g2_ya_ya.wav": {
+"dur": 2.15,
+"lang": "en",
+"prob": 0.99,
+"text": "Yeah, yeah.",
+"orig": "Yeah, yeah."
+},
+"sound/scenaric/village2/g2_yes_i_remember.wav": {
+"dur": 2.79,
+"lang": "en",
+"prob": 0.99,
+"text": "Yes, I remember that she almost got all of us killed.",
+"orig": "Yes, I remember that she almost got all of us killed."
+},
+"sound/scenaric/village2/g_awful_racket.wav": {
+"dur": 4.12,
+"lang": "en",
+"prob": 0.97,
+"text": "I wish Otto would stop that awful racket.",
+"orig": "I wish Otto would stop that awful racket."
+},
+"sound/scenaric/village2/g_shut_up.wav": {
+"dur": 2.5,
+"lang": "en",
+"prob": 0.87,
+"text": "Hey, shut up down there!",
+"orig": "Hey, shut up down there!"
+},
+"sound/scenaric/village2/g_warm_up.wav": {
+"dur": 4.24,
+"lang": "en",
+"prob": 0.92,
+"text": "I'll just come inside and warm up for a bit.",
+"orig": "I'll just come inside and warm up for a bit."
+},
+"sound/scenaric/village2/gen5_alarm_alarm.wav": {
+"dur": 2.97,
+"lang": "en",
+"prob": 0.83,
+"text": "Huh? Guards! Alarm! Alarm!",
+"orig": "Huh? Guards! Alarm! Alarm!"
+},
+"sound/scenaric/village2/gen_i_must_raise_alarm.wav": {
+"dur": 2.51,
+"lang": "en",
+"prob": 0.96,
+"text": "An intruder! I must raise the alarm!",
+"orig": "An intruder! I must raise the alarm!"
+},
+"sound/scenaric/village2/gen_izzat_you.wav": {
+"dur": 1.86,
+"lang": "en",
+"prob": 0.92,
+"text": "Ah, is that you, Vili?",
+"orig": "Ah, is that you, Vili?"
+},
+"sound/scenaric/village2/gen_look_at_moon.wav": {
+"dur": 5.74,
+"lang": "en",
+"prob": 0.93,
+"text": "Ah, just look at this moon tonight. Absolutely breathtaking.",
+"orig": "Ah, just look at this moon tonight. Absolutely breathtaking."
+},
+"sound/scenaric/village2/gen_see_that_you_do.wav": {
+"dur": 2.15,
+"lang": "hu",
+"prob": 0.2,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/village2/gen_vas_is_happening.wav": {
+"dur": 1.88,
+"lang": "en",
+"prob": 0.97,
+"text": "What is happening down there?",
+"orig": "What is happening down there?"
+},
+"sound/scenaric/village2/gen_where_is_my_latour.wav": {
+"dur": 6.76,
+"lang": "en",
+"prob": 0.96,
+"text": "Kempf, where is my 38 litre? I sent that idiot down to the wine cellar 20 minutes ago.",
+"orig": "Kempf, where is my 38 litre? I sent that idiot down to the wine cellar 20 minutes ago."
+},
+"sound/scenaric/village2/gret_dont_kill_me.wav": {
+"dur": 1.7,
+"lang": "en",
+"prob": 0.94,
+"text": "Oh, please do not kill me.",
+"orig": "Oh, please do not kill me."
+},
+"sound/scenaric/village2/hilda_just_a_minute.wav": {
+"dur": 1.43,
+"lang": "en",
+"prob": 0.9,
+"text": "I'll be out soon!",
+"orig": "I'll be out soon!"
+},
+"sound/scenaric/village2/hoch_come_my_dear.wav": {
+"dur": 3.94,
+"lang": "en",
+"prob": 0.72,
+"text": "Come, my dear. Surely it doesn't take all night to get dressed.",
+"orig": "Come, my dear. Surely it doesn't take all night to get dressed."
+},
+"sound/scenaric/village2/hoch_hum1.wav": {
+"dur": 5.01,
+"lang": "en",
+"prob": 0.67,
+"text": "Mm-hmm, mm-hmm, mm-hmm.",
+"orig": "Mm-hmm, mm-hmm, mm-hmm."
+},
+"sound/scenaric/village2/hoch_hum2.wav": {
+"dur": 6.22,
+"lang": "en",
+"prob": 0.52,
+"text": "Da-dum-dum-da-dum, hmm-hmm-hmm-hmm-hmm.",
+"orig": "Da-dum-dum-da-dum, hmm-hmm-hmm-hmm-hmm."
+},
+"sound/scenaric/village2/hoch_hum3.wav": {
+"dur": 7.38,
+"lang": "en",
+"prob": 0.35,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/village2/hoch_whats_going_on.wav": {
+"dur": 1.92,
+"lang": "en",
+"prob": 0.91,
+"text": "What's going on down there?",
+"orig": "What's going on down there?"
+},
+"sound/scenaric/village2/hoch_who_are_you.wav": {
+"dur": 1.83,
+"lang": "en",
+"prob": 0.73,
+"text": "What? Who are you?",
+"orig": "What? Who are you?"
+},
+"sound/scenaric/village2/inge_please_dont.wav": {
+"dur": 3.02,
+"lang": "en",
+"prob": 0.85,
+"text": "Please don't hurt me. I know nothing.",
+"orig": "Please don't hurt me. I know nothing."
+},
+"sound/scenaric/village2/inge_wimp1.wav": {
+"dur": 2.13,
+"lang": "en",
+"prob": 0.96,
+"text": "No! No!",
+"orig": "No! No!"
+},
+"sound/scenaric/village2/kemph_my_apologies.wav": {
+"dur": 3.02,
+"lang": "en",
+"prob": 0.94,
+"text": "Apologies, Man-General. I will go and investigate the delay.",
+"orig": "Apologies, Man-General. I will go and investigate the delay."
+},
+"sound/scenaric/village2/klugg_hmmph.wav": {
+"dur": 4.48,
+"lang": "en",
+"prob": 0.79,
+"text": "Hmmp",
+"orig": "Mmm.",
+"manual": true,
+"retried": true,
+"recovered": false
+},
+"sound/scenaric/village2/klugg_hopeless.wav": {
+"dur": 2.35,
+"lang": "en",
+"prob": 0.71,
+"text": "Ah, this is hopeless.",
+"orig": "Ah, this is hopeless."
+},
+"sound/scenaric/village2/klugg_no_such_wine.wav": {
+"dur": 5.96,
+"lang": "en",
+"prob": 0.82,
+"text": "38 Le Tour, 38 Le Tour. There's no such wine down here.",
+"orig": "38 Le Tour, 38 Le Tour. There's no such wine down here."
+},
+"sound/scenaric/village2/misc_magic.wav": {
+"dur": 13.86,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/village2/prof_another_failure.wav": {
+"dur": 4.71,
+"lang": "he",
+"prob": 0.58,
+"text": "Ugh, another failure! But we try again.",
+"orig": "אה, ענוזה פייליה. אבל, נתראה עגן."
+},
+"sound/scenaric/village2/prof_hmm.wav": {
+"dur": 3.41,
+"lang": "en",
+"prob": 0.7,
+"text": "Hmm. No, that's not it.",
+"orig": "Hmm. No, that's not it."
+},
+"sound/scenaric/village2/prof_who_are_you.wav": {
+"dur": 1.96,
+"lang": "en",
+"prob": 0.41,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/village2/prof_yes_yes.wav": {
+"dur": 4.48,
+"lang": "en",
+"prob": 0.35,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/xlabs/cine1_jawohl.wav": {
+"dur": 1.1,
+"lang": "de",
+"prob": 0.64,
+"text": "Yes!",
+"orig": "Jawohl!"
+},
+"sound/scenaric/xlabs/cryo_bubble_loop1.wav": {
+"dur": 6.23,
+"lang": "ko",
+"prob": 0.16,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/xlabs/death_better_be_important.wav": {
+"dur": 3.19,
+"lang": "en",
+"prob": 0.84,
+"text": "This had better be important.",
+"orig": "This had better be important."
+},
+"sound/scenaric/xlabs/death_dispatch_security.wav": {
+"dur": 4.16,
+"lang": "en",
+"prob": 0.98,
+"text": "Dispatch the remaining security force immediately.",
+"orig": "Dispatch the remaining security force immediately."
+},
+"sound/scenaric/xlabs/death_i_will_deal.wav": {
+"dur": 2.96,
+"lang": "en",
+"prob": 0.45,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/xlabs/death_what.wav": {
+"dur": 5.09,
+"lang": "en",
+"prob": 0.84,
+"text": "What? Will this fool follow me to the ends of the earth?",
+"orig": "What? Will this fool follow me to the ends of the earth?"
+},
+"sound/scenaric/xlabs/guard_and_if_the_american.wav": {
+"dur": 3.28,
+"lang": "en",
+"prob": 0.88,
+"text": "And if the American gets past the security force?",
+"orig": "And if the American gets past the security force?"
+},
+"sound/scenaric/xlabs/guard_sir.wav": {
+"dur": 1.02,
+"lang": "en",
+"prob": 0.64,
+"text": "Sir!",
+"orig": "Sir!"
+},
+"sound/scenaric/xlabs/guard_what_are_your_orders.wav": {
+"dur": 2.38,
+"lang": "en",
+"prob": 0.57,
+"text": "What are your orders, Herr Oberfuhrer? [Senior Colonel]",
+"orig": "What are your orders, Herr Oberfuhrer?",
+"manual": true,
+"retried": true,
+"recovered": false
+},
+"sound/scenaric/xlabs/guard_yes_sir.wav": {
+"dur": 4.26,
+"lang": "en",
+"prob": 0.91,
+"text": "Yes, sir. The American agent has infiltrated the X-Lab facility.",
+"orig": "Yes, sir. The American agent has infiltrated the X-Lab facility."
+},
+"sound/scenaric/xlabs/tesla_field_loop.wav": {
+"dur": 2.0,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/xlabs/xl_alarm_01.wav": {
+"dur": 4.25,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/xlabs/xl_alarm_02.wav": {
+"dur": 2.17,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": "",
+"retried": true
+},
+"sound/scenaric/xlabs/xl_breath_01.wav": {
+"dur": 10.31,
+"lang": "en",
+"prob": 0.42,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/xlabs/xl_mach_01.wav": {
+"dur": 10.08,
+"lang": "en",
+"prob": 0.28,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/xlabs/xl_mach_02.wav": {
+"dur": 10.08,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+},
+"sound/scenaric/xlabs/xl_mach_03.wav": {
+"dur": 10.08,
+"lang": "nn",
+"prob": 0.69,
+"text": "",
+"orig": ""
+}
+}

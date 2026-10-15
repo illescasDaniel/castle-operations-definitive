@@ -11,5 +11,5 @@ community packs extracted from them exist (links in the root [README](../README.
 | L1 | There are no subtitles to reuse, so make them: transcribe all dialogue audio with AI speech-to-text, then add a subtitle display in cgame. |
 | L2 | Translate the L1 subtitles with AI. |
 
-Policy: generated packs are derived from game assets, so they stay local and private, like the HD packs. Tools go in
+Policy: generated packs are derived from game assets, so they stay local and private, like the HD packs. Exception (owner's decision, 2026-10-15): the final subtitle text (`tools/subtitles/build/text/subtitles.txt`, and `cache.json` with the manual fixes) is committed; the pk3 and review/sample audio are not. Tools go in
 `tools/`, outputs are not committed.

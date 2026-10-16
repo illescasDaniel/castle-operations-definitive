@@ -40,7 +40,9 @@ fi
 
 export MANGOHUD_CONFIGFILE="$MANGOHUD_CONF"
 # Required for Shift+F2 logging; keep path repo-local (no personal home).
-export MANGOHUD_CONFIG="${MANGOHUD_CONFIG:+$MANGOHUD_CONFIG,}output_folder=$SCRIPTS"
+# read_cfg is required: when MANGOHUD_CONFIG is set, MangoHud ignores
+# MANGOHUD_CONFIGFILE entirely (default HUD, no gamemode row) unless it has read_cfg.
+export MANGOHUD_CONFIG="read_cfg,${MANGOHUD_CONFIG:+$MANGOHUD_CONFIG,}output_folder=$SCRIPTS"
 
 # gamemoderun first (libgamemodeauto), then mangohud (shim) — both LD_PRELOADs
 # survive run.sh's final exec into iowolfsp.x86_64.

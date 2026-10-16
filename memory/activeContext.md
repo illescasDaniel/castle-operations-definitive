@@ -2,6 +2,10 @@ _Last updated: 2026-10-16_
 
 ## Current focus
 
+**Glasses / letterbox / AO fog (2026-10-16): done, committed.** Glasses cause: AO blit left viewport full-screen (fixed with `SetViewportAndScissor()`). Cutscene letterbox bars removed. AO now fades with global fog and the fog-volume pass is drawn after the AO multiply. User confirmed fog fix; 4:3 briefing in-game check still pending.
+
+**Cutscene speed + 4:3 briefing (2026-10-16):** built/installed, engine changes uncommitted in `iortcw/`. User to check cutscene1 Jack walk/glasses and briefing screens; if glasses still off, A/B screenshot rend2 vs opengl1 (see plan file).
+
 **Cutscene AO re-enabled (2026-10-16):** `r_cutsceneFx` default 31 (AO bit on); user confirmed. **AO through translucents (2026-10-16):** multiply AO after opaques, before blends (curtains no longer get wall AO overlay). Prior: cutscene/exposure pushed (engine `61c9cbf6`, outer `2bf6075`). User: verify curtains/glass with AO on.
 
 **Soft vid_restart for MangoHud (2026-10-16): implemented, smoke-verified under mangohud Wayland.** Mode Apply keeps GL context (`re.Shutdown(qfalse)` + `GLimp_SetModeInPlace`); hard path only for context-attribute latches. Engine changes in `iortcw/` uncommitted until user asks. GRAPHICS Video Mode Apply under `game_run.sh` should no longer SIGSEGV.

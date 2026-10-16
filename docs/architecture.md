@@ -68,7 +68,8 @@ Never change `g_speed` (it is applied to AI clients too). Override the player's
 
 **One deliberate exception:** phase 2.4 (`cod_aiSpeedMode`) changes human AI walk/run/crouch
 *speed values* in the server-only AI think code (`ai_cast_think.c`). It never touches
-`bg_pmove.c` or AI behaviour, and `cod_aiSpeedMode 0` restores vanilla.
+`bg_pmove.c` or AI behaviour, and `cod_aiSpeedMode 0` restores vanilla. It is skipped while the AI runs a
+scripted event (cutscenes, scripted walks) so actors keep their authored animation speeds.
 
 ### Rule 2 — New pmove state must be networked
 The client only gets the playerState fields listed in `qcommon/msg.c` `playerStateFields[]`

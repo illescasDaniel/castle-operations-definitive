@@ -175,6 +175,8 @@ So "soldiers move like me" means:
      `WALKING_SPEED = cod_runSpeed × cod_walkScale`, `CROUCHING_SPEED = cod_runSpeed × cod_crouchScale`.
      Then recompute `ps.crouchSpeedScale` as the vanilla line does.
    - `cod_aiSpeedMode 2`: scale. Multiply the anim-derived values by `cod_aiSpeedScale`.
+   Skipped while `castScriptStatus.castScriptEventIndex >= 0` (cutscenes and scripted walks keep the
+   speeds their animations were authored for; otherwise actors look sped up and slide).
    This is the **only** deliberate AI change in the mod. It lives in `ai_*.c` (qagame only),
    never in `bg_pmove.c`, so prediction and golden rule 1 are untouched (see
    [architecture.md §3](architecture.md#rule-1--gate-everything-on-the-player-not-on-ai)).

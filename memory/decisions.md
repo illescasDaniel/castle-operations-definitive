@@ -504,6 +504,11 @@ Append-only log, newest first. Never rewrite history: if a decision is reversed,
 - **Decision:** Procedural `CG_CodDrawCrosshair` (`cod_crosshairStyle 1`): posts bloom with `aimSpreadScale` + XY speed; ADS fades posts; center dot stays while `cod_adsCrosshair 1`. Mode `2` still hides everything once all weapons are tuned.
 - **Rationale:** Matches CoD visual language without requiring new shaders; keeps the interim ADS aid from Phase 3 until the deferred per-weapon bake.
 
+## 2026-10-16: Fog volume pass drawn after the AO multiply
+
+- **Context:** AO is multiplied over the opaque result; fog-volume passes were blended into it first, so AO darkened the fog (corners visible through haze).
+- **Decision:** while AO applies, defer `RB_FogPass(0)` and redraw only fogged opaque surfaces after the AO (`backEnd.fogDefer`/`fogOnly`); global fog scales AO in `ssaoup_fp.glsl`. Also restore the viewport after the AO blit.
+
 ## 2026-10-08: Phase 5c heat/health as colour ramps, not bars
 
 - **Context:** User rejected dropping MG heat with no replacement; wants ammo text white→yellow→orange→red for overheat, and the same ramp on the crosshair for health. Stamina must keep Phase 5b feel with no bar.

@@ -5,6 +5,7 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 ## RTCW remaster (`codmod`) — CoD4 feel + HD presentation
 
 ### Done
+- [x] **Cutscene AI speed + 4:3 briefing (2026-10-16, uncommitted, awaiting user check):** `AICast_CodApplySpeedMode` now skips scripted events (Jack/Director walked too fast in cutscene1, civilians got CoD speeds); briefing/pregame menus forced 4:3 on widescreen via `ui_force43` in `UI_AdjustFrom640` + blurred dimmed levelshot backdrop (`UI_DrawBriefingBackdrop`, ui_main.c). Jack's glasses misplacement: textures/shader ruled out, re-check after speed fix (plan: `~/.claude/plans/i-m-comparing-our-game-mod-temporal-hollerith.md`).
 - [x] Public release prep: README/LICENSE/credits, setup.sh applies patches, patches re-exported (2026-10-12; see activeContext for open items)
 - [x] Root `README.md` (what / install / run) (2026-10-08)
 - [x] Planning docs and all design decisions D1-D10 (2026-10-08)
@@ -121,3 +122,6 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 - [x] **Menu FPS limit (2026-10-13):** `com_maxfpsMenu` (-1 Auto/monitor refresh default, 0 Off, fps) caps only menu/cinematic/pause frames (`CL_InMenuOnly`); `com_maxfps -1` = Auto too (default stays Off). GRAPHICS row "Menu Frame Rate Limit", labels `Auto (%hz)` expanded in `ui_shared.c`. Committed; confirmed 2026-10-13. See `docs/fps-limiter.md`.
 
 - 2026-10-16: Multi-language support (text packs de/es, main-menu selector, subtitle size field, English transcript fixes) committed.
+
+- 2026-10-16: Jack's glasses floating above his face in cutscenes fixed (awaiting user in-game check). Cause: the AO apply blit (`FBO_Blit` in `RB_...` between the opaque and translucent draw lists, rend2 `tr_backend.c`) left the GL viewport at full screen while the cutscene view was letterboxed, so translucents (sort 5 glasses) were drawn offset from the opaques. Fix: `SetViewportAndScissor()` after the blit.
+- 2026-10-16: Cutscene letterbox bars removed (`cg_view.c` no longer shrinks refdef for `cg_letterbox`; black bar fill dropped from `cg_draw.c`). Awaiting user check.

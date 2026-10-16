@@ -2,6 +2,8 @@ _Last updated: 2026-10-16_
 
 ## Current focus
 
+**Video Mode popup (2026-10-16): ready to commit/push.** Scrollable `vidmode_popmenu`; CaptureItem/popup focus fixes; modes sorted desc. Also fixed `load.menu` fadebox missing `}` that nested delete-confirm `itemDef`s (parse error at line 585).
+
 **Menu cursor (2026-10-16): done, user verified in-game, engine `2d81a83e`.** New dagger art `ui/assets/codmod_cursor.tga` (in `codmod_pad.pk3`, source PNG next to it); art tip is the top-left pixel = hotspot; drawn square from `yscale` (size 24 in `ui_main.c`).
 
 **Multi-language (2026-10-16): done, user verified in-game.** Text packs de/es (`mod/codmod/lang/`), selector on main menu, `cod_textLang`/`cod_audioLang`/`cod_subtitleScale` (edit field). Docs: `docs/languages.md`. Next: subtitle font/outline style.
@@ -41,8 +43,8 @@ None.
 
 ## Next steps
 
-1. E4: idle ADS sway scaled by movement, `cod_*` cvars (default in `bg_cod.c`, reset in `codmod_binds.cfg`).
-2. E5: per-weapon pitch/yaw kick with recovery, reduced in ADS (`CG_KickAngles`, `cg_view.c`).
+1. In-game: GRAPHICS → Video Mode → popup scrolls/selects; double-click or Back closes; Apply still applies `r_mode`.
+2. E4/E5 leftovers only if user wants that thread again.
 
 ## Historical notes
 

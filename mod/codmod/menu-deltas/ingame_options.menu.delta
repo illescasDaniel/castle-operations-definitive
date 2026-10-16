@@ -1,6 +1,5 @@
 #codmod-delta v2 base=ui/ingame_options.menu sha256=7ab9261b77f5b5ea07c43efdac9ffce6a9b15edb01910621f3e24dce5f0fd7a8
 #src ui/bookp.menu sha256=dc708a0c6d09dddca120d7664d2a905c5cb7269128447fa81956bdc9051dc994
-#src ui/bookv.menu sha256=ab1e2d98d20641ce422c6bac7cee143917579c5fb70dc859642545179d85734e
 #src ui/cdkey.menu sha256=96745cb143d3a0d91da1fe5f1b7ac2db26addce0ec675e919ea7ed0050b33bda
 #src ui/clipboard.menu sha256=1234b5cb59f380ca39fb2c56cbcd82ad2d67d0f1c691aab2a3e49e0d428ba6a0
 #src ui/controls.menu sha256=988fa4ecc3b5152f3291a3c83b427fd971bd8bb5b8b1ab42cf81e8d6b29f724d
@@ -142,8 +141,9 @@
 @@ 39 41
 =ui/ingame_options.menu 86 87
 @@ 42 44
-=ui/bookv.menu 115 118
-=ui/ingame_system.menu 71 73
+=ui/ingame_options.menu 7 8
++		action { play "sound/misc/kcaction.wav" ; open vidmode_popmenu }
+=ui/ingame_system.menu 69 73
 =ui/options.menu 128 130
 =ui/ingame_system.menu 201 203
 +		rect 240 129 320 11

@@ -29,7 +29,8 @@
 @@ 484 485
 +		rect 560 450 60 14 
 @@ 658 659
-+		
++	}
++
 +	// delete confirmation (inline: closing a popup over this fullscreen menu re-opened it on top of itself)
 =ui/load.menu 45 46
 +		name delbox

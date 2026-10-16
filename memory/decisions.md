@@ -11,6 +11,12 @@ Append-only log, newest first. Never rewrite history: if a decision is reversed,
 - **Rationale:** <why, and what we rejected>
 -->
 
+## 2026-10-16: Video Mode via scrollable popup (not click-cycle)
+
+- **Context:** The Graphics Video Mode MULTI click-cycled through a long `r_availableModes` list; picking a target resolution was slow and easy to overshoot.
+- **Decision:** Keep the MULTI row for the current label, but open `vidmode_popmenu` (`FEEDER_VIDMODES` listbox) on activate; `Item_Multi_HandleKey` no longer cycles `r_mode`. Shared list from `UI_RefreshVidModeList` (same SDL filter + Automatic/Custom as before).
+- **Rationale:** Matches the language-pack popup pattern; scroll + click beats cycling dozens of modes. Rejected replacing the row with a plain button (would lose the live mode label) and embedding a listbox in the GRAPHICS page (tabs already host yesno/multi rows).
+
 ## 2026-10-15: iortcw becomes a git submodule
 
 - **Context:** `iortcw/` was a git-ignored separate clone, so the outer repo never recorded which engine commit matched a codmod commit.

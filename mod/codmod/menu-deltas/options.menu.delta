@@ -133,12 +133,25 @@
 +}
 +
 +////////// DISPLAY ////////////////////////////////////////////////////////
-@@ 90 260
+@@ 90 91
 =ui/ingame_system.menu 72 73
-@@ 262 268
-=ui/system.menu 190 193
+@@ 92 97
+=ui/ingame_system.menu 161 164
+=ui/system.menu 192 193
 +		rect 240 118 320 11
-@@ 269 345
+@@ 98 101
+=ui/error.menu 217 218
++		textaligny 9
++		textscale .20
+@@ 104 176
+=ui/options.menu 348 349
++		action { play "sound/misc/kcaction.wav" ; open vidmode_popmenu }
+@@ 179 180
+=ui/ingame_system.menu 72 73
+@@ 182 185
+=ui/ingame_system.menu 201 203
++		rect 240 129 320 11
+@@ 186 345
 =ui/error.menu 217 218
 +		textaligny 9
 +		textscale .20
@@ -146,17 +159,6 @@
 @@ 356 357
 =ui/ingame_system.menu 72 73
 @@ 358 367
-=ui/ingame_system.menu 200 203
-+		rect 240 129 320 11
-=ui/options.menu 97 98
-=ui/error.menu 217 218
-+		textaligny 9
-+		textscale .20
-@@ 368 373
-=ui/options.menu 346 350
-@@ 375 376
-=ui/ingame_system.menu 72 73
-@@ 377 385
 =ui/options.menu 261 262
 +		text "Vertical Sync:"
 +		cvar "r_vsync"
@@ -166,7 +168,7 @@
 =ui/error.menu 217 218
 +		textaligny 9
 +		textscale .20
-@@ 386 438
+@@ 368 438
 =ui/options.menu 102 103
 @@ 439 441
 =ui/options.menu 348 349

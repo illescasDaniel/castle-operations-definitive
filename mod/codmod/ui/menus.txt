@@ -17,6 +17,7 @@
 	loadMenu { "ui/quit.menu" }
 	loadMenu { "ui/lang_text.menu" }
 	loadMenu { "ui/lang_audio.menu" }
+	loadMenu { "ui/vidmode.menu" }
 	loadMenu { "ui/vid_restart.menu" }
 	loadMenu { "ui/snd_restart.menu" }
 	loadMenu { "ui/rec_restart.menu" }

@@ -38,7 +38,11 @@ If your RTCW paks differ from the 1.41 data the deltas were made against, the bu
   `hide grpOptions ; show <name> ; show graphicsapply`. A tab's last row must stay above the Apply button (y 418).
 - Text does not wrap or clip: at scale .17 about 55 characters fit from x=240. Split long notes into several lines.
 - `cvarStrList` entries need commas (`"Label", "value", ...`); `cvarFloatList` does not. Without them the value shows blank.
-- The video-mode list is rebuilt in C (`UI_RebuildVidModeMulti`, ui_shared.c); the `.menu` list is only a seed.
+- The video-mode list is rebuilt in C (`UI_RefreshVidModeList`, ui_shared.c); the `.menu` list is only a seed.
+  Clicking Video Mode opens `vidmode_popmenu` (scrollable `FEEDER_VIDMODES` list); it no longer click-cycles.
+  Shared popups used from both main and pause (`vidmode.menu`, language popups, …) must be listed only in
+  `menus.txt` — both menu lists are loaded together, and a duplicate `loadMenu` creates two menus with the same
+  name so open/close hit different copies.
 - Do not use `uiScript glCustom`; the quality-preset cvar `ui_glCustom` is gone.
 
 ## Settings must persist

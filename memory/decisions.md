@@ -11,6 +11,12 @@ Append-only log, newest first. Never rewrite history: if a decision is reversed,
 - **Rationale:** <why, and what we rejected>
 -->
 
+## 2026-10-16: Soft vid_restart keeps GL context (MangoHud)
+
+- **Context:** Fullscreen-only Apply was already in-place (`IN_ToggleFullscreenInPlace`), but Video Mode / `r_mode` Apply still ran hard `vid_restart` → `CL_ShutdownRef` → `SDL_QuitSubSystem(VIDEO)` and SIGSEGV under MangoHud/gamemode on Wayland.
+- **Decision:** Soft path for non-context applies: `re.Shutdown(qfalse)` (keep window/GL/renderer.so), then `GLimp_SetModeInPlace` from `InitOpenGL` when `glConfig.vidWidth != 0`. Hard path only when latched: `r_ext_multisample`, `r_colorbits`/`depthbits`/`stencilbits`, `r_stereoEnabled`, `cl_renderer`.
+- **Rationale:** Same overlay crash as FS toggle; FBO/media rebuild does not need a new context. Rejected unsetting MangoHud mid-process and process-restart Apply. Verified soft mode 18→26 + FS toggle under mangohud Wayland (exit 0).
+
 ## 2026-10-16: Video Mode via scrollable popup (not click-cycle)
 
 - **Context:** The Graphics Video Mode MULTI click-cycled through a long `r_availableModes` list; picking a target resolution was slow and easy to overshoot.

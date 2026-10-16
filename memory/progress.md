@@ -17,6 +17,7 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 - [x] Phase 5.5: quick knife on V + snappy switch/return (confirmed in-game 2026-10-08)
 
 ### Open
+- [x] **Soft vid_restart (MangoHud)** (2026-10-16): mode/FS Apply keeps GL context; hard only for context-attr latches; smoke OK under mangohud Wayland (`vid_restart: soft`, `GLimp_SetModeInPlace`); docs in `docs/testing.md`
 - [x] **Video Mode scrollable popup** (2026-10-16): `vidmode_popmenu` / `FEEDER_VIDMODES`; engine `7f342afe`, outer `40f36c7`; also fixed load.menu fadebox missing `}` (delete-confirm parse error)
 - [x] Menu cursor: new dagger art, hotspot at the tip, no widescreen stretch; engine `2d81a83e`; user verified 2026-10-16
 - [x] Lean aim fix: shots fire from the leaned camera eye (`BG_CodLeanOffset`) + viewmodel lean fade in ADS; engine `3e63880a` + follow-up; confirmed 2026-10-15 (`docs/lean-aim-fix.md`). Gotcha: run `scripts/install.sh` after build

@@ -2,7 +2,7 @@ _Last updated: 2026-10-16_
 
 ## Current focus
 
-**Video Mode popup (2026-10-16): ready to commit/push.** Scrollable `vidmode_popmenu`; CaptureItem/popup focus fixes; modes sorted desc. Also fixed `load.menu` fadebox missing `}` that nested delete-confirm `itemDef`s (parse error at line 585).
+**Video Mode popup (2026-10-16): committed/pushed** (engine `7f342afe`, outer `80de7c7`). Also fixed `load.menu` fadebox missing `}` (delete-confirm parse error). Quit cleanly to pick up menus pk3.
 
 **Menu cursor (2026-10-16): done, user verified in-game, engine `2d81a83e`.** New dagger art `ui/assets/codmod_cursor.tga` (in `codmod_pad.pk3`, source PNG next to it); art tip is the top-left pixel = hotspot; drawn square from `yscale` (size 24 in `ui_main.c`).
 

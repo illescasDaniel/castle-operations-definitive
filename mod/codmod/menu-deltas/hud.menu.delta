@@ -4,7 +4,7 @@
 +// codmod: Phase 5c â CoD-style HUD (clip/reserve ammo, no health/stamina/heat bars).
 +// Packaged as codmod_hud.pk3 (not zz_*: ioRTCW renames zz_âsp_ when resolving pak paths).
 @@ 20 33
-+		cursor "ui/assets/3_cursor3"
++		cursor "ui/assets/codmod_cursor"
 +		gradientBar "ui/assets/gradientbar2.tga"
 +		fadeClamp 1.0
 +		fadeCycle 1

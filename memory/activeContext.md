@@ -1,6 +1,8 @@
-_Last updated: 2026-10-15_
+_Last updated: 2026-10-16_
 
 ## Current focus
+
+**Menu cursor (2026-10-16): done, user verified in-game, engine `2d81a83e`.** New dagger art `ui/assets/codmod_cursor.tga` (in `codmod_pad.pk3`, source PNG next to it); art tip is the top-left pixel = hotspot; drawn square from `yscale` (size 24 in `ui_main.c`).
 
 **Multi-language (2026-10-16): done, user verified in-game.** Text packs de/es (`mod/codmod/lang/`), selector on main menu, `cod_textLang`/`cod_audioLang`/`cod_subtitleScale` (edit field). Docs: `docs/languages.md`. Next: subtitle font/outline style.
 

@@ -53,6 +53,7 @@ Review each model's license before using or sharing its output.
 
 - `mod/codmod/ui/glyphs/*.tga` (controller prompts in `codmod_pad.pk3`): original Xbox-like and PlayStation-like art
   made for this project, not taken from any console maker's assets.
+- `mod/codmod/ui/assets/codmod_cursor.tga` (menu cursor in `codmod_pad.pk3`; source `codmod_cursor_src.png`): original art made for this project. Cropped so the blade tip is the top-left pixel, which is the click point.
 - `mod/codmod/sound/codmod/hitmarker*.wav` (in `codmod_fx.pk3`): short synthesized tones generated with Claude (Anthropic)
   for this project; no third-party samples.
 - `mod/codmod/demos/codmod_bench.dm_50`: benchmark demo recorded by the author, contains no third-party data

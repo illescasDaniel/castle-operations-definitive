@@ -2,7 +2,7 @@ _Last updated: 2026-10-16_
 
 ## Current focus
 
-**AO through translucents (2026-10-16):** multiply AO after opaques, before blends (curtains no longer get wall AO overlay). Prior: cutscene/exposure pushed (engine `61c9cbf6`, outer `2bf6075`). User: verify curtains/glass with AO on.
+**Cutscene AO re-enabled (2026-10-16):** `r_cutsceneFx` default 31 (AO bit on); user confirmed. **AO through translucents (2026-10-16):** multiply AO after opaques, before blends (curtains no longer get wall AO overlay). Prior: cutscene/exposure pushed (engine `61c9cbf6`, outer `2bf6075`). User: verify curtains/glass with AO on.
 
 **Soft vid_restart for MangoHud (2026-10-16): implemented, smoke-verified under mangohud Wayland.** Mode Apply keeps GL context (`re.Shutdown(qfalse)` + `GLimp_SetModeInPlace`); hard path only for context-attribute latches. Engine changes in `iortcw/` uncommitted until user asks. GRAPHICS Video Mode Apply under `game_run.sh` should no longer SIGSEGV.
 

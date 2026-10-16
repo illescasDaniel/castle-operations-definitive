@@ -42,20 +42,20 @@ user's binds. Rules so it cannot repeat:
 ## Cutscene lighting (lite mode + `r_cutsceneFx`)
 
 Scripted cams (`cg.cameraMode`, e.g. escape1 intro) set `RDF_NOSUNLIGHT`. Default
-`r_cutsceneFx 27` keeps sun/CSM, map dlights, HDR autoexposure, and sun rays; turns off
-SSAO/AO; flashlight is skipped in cgame. Filmic exposure (`r_cameraExposure`) matches
+`r_cutsceneFx 31` keeps sun/CSM, map dlights, SSAO/AO, HDR autoexposure, and sun rays;
+flashlight is skipped in cgame. Filmic exposure (`r_cameraExposure`) matches
 gameplay. Gamma default is **`r_gamma 1`**.
 
 | bit | value | feature |
 |---|---|---|
 | sun/CSM | 1 | `r_forceSun` cascades |
 | dlights | 2 | map/scripted dynamic lights |
-| AO | 4 | SSAO/GTAO (off by default in cams) |
+| AO | 4 | SSAO/GTAO |
 | autoexposure | 8 | HDR autoexposure |
 | sun rays | 16 | `r_drawSunRays` |
 | gamma | 32 | keep user `r_gamma` if raised (else HW ramp = 1.0) |
 
-Default is `27` (sun+dlights+autoexp+rays). A/B: `r_cutsceneFx 11` (no rays), `19` (no autoexp), `63` (all incl. AO).
+Default is `31` (sun+dlights+ao+autoexp+rays). A/B: `r_cutsceneFx 27` (no AO), `23` (no autoexp), `15` (no rays).
 Verify: New Game → escape1 outdoor flags/sky, then normal play.
 
 ## Soft vs hard `vid_restart` (MangoHud / overlays)

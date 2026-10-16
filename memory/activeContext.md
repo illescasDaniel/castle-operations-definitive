@@ -2,6 +2,8 @@ _Last updated: 2026-10-16_
 
 ## Current focus
 
+**Specular highlights (2026-10-16): user confirmed weapons/metal look great; rolled out to all game materials, awaiting in-game check.** `tools/spec-bake` classifies ~490 textures by path regex (gunmetal/armor/metal/wood/marble/stone/glass/ceramic) into private `run/codmod/codmod_spec.pk3` (148 MB, git-ignored; rerun after setup). Defaults pinned: `r_deluxeSpecular 3` + `r_cubeMapping 1` (codmod.cfg + run.sh +set). Engine fix (decouple deluxe specular from cubemaps, `tr_glsl.c`) uncommitted in `iortcw/`. Open: perf cost of cubemaps/pack, tune per-class gloss, regenerate packaging docs.
+
 **Glasses / letterbox / AO fog (2026-10-16): done, committed.** Glasses cause: AO blit left viewport full-screen (fixed with `SetViewportAndScissor()`). Cutscene letterbox bars removed. AO now fades with global fog and the fog-volume pass is drawn after the AO multiply. User confirmed fog fix; 4:3 briefing in-game check still pending.
 
 **Cutscene speed + 4:3 briefing (2026-10-16):** built/installed, engine changes uncommitted in `iortcw/`. User to check cutscene1 Jack walk/glasses and briefing screens; if glasses still off, A/B screenshot rend2 vs opengl1 (see plan file).

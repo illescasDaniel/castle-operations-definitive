@@ -75,8 +75,8 @@ if [[ "$VANILLA" -eq 0 ]]; then
 		+set r_dlightMode 1
 		+set r_ext_framebuffer_multisample 0
 		+set r_floatLightmap 1
-		+set r_specularMapping 1
-		+set r_deluxeMapping 1
+		+set r_deluxeSpecular 3
+		+set r_cubeMapping 1
 		+set r_forceSun 1
 		+set r_sunShadows 1
 		+set r_sunlightMode 1

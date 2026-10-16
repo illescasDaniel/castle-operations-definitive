@@ -5,6 +5,7 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 ## RTCW remaster (`codmod`) — CoD4 feel + HD presentation
 
 ### Done
+- [x] **Specular highlights (2026-10-16, user-approved direction; full rollout awaiting in-game check):** `tools/spec-bake` bakes `_s` maps for ~76 hand-tagged textures into private `codmod_spec.pk3`. Finding: engine `r_deluxeSpecular 0.1` hides them; with `1.0` armor/weapon metal shows. Cubemaps (`r_cubeMapping 1`) render from ai_marker/misc_cubemap at runtime, effect mild. Waiting for user in-game A/B before touching defaults.
 - [x] **Cutscene AI speed + 4:3 briefing (2026-10-16, uncommitted, awaiting user check):** `AICast_CodApplySpeedMode` now skips scripted events (Jack/Director walked too fast in cutscene1, civilians got CoD speeds); briefing/pregame menus forced 4:3 on widescreen via `ui_force43` in `UI_AdjustFrom640` + blurred dimmed levelshot backdrop (`UI_DrawBriefingBackdrop`, ui_main.c). Jack's glasses misplacement: textures/shader ruled out, re-check after speed fix (plan: `~/.claude/plans/i-m-comparing-our-game-mod-temporal-hollerith.md`).
 - [x] Public release prep: README/LICENSE/credits, setup.sh applies patches, patches re-exported (2026-10-12; see activeContext for open items)
 - [x] Root `README.md` (what / install / run) (2026-10-08)

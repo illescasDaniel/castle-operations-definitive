@@ -181,7 +181,9 @@
 =ui/controls.menu 1037 1038
 @@ 357 360
 =ui/clipboard.menu 41 42
-+	rect 240 270 340 50
++	rect 240 268 340 60
+=ui/controls.menu 1042 1043
+=ui/clipboard.menu 88 89
 @@ 361 393
 +	forecolor .7 .7 .7 .9
 =ui/ingame_controls.menu 31 34

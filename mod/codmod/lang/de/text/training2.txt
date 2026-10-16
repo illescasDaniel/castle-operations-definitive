@@ -1,0 +1,15 @@
+Übung 2: Türen öffnen
+
+Die folgende Übung zeigt Ihnen, wie Sie Türen öffnen.
+
+Anleitung:
+
+Öffnen Sie die Türen vor Ihnen nacheinander. Wenn Sie die Taste 'Aktivieren' drücken, öffnet sich die Tür und Sie erhalten Zutritt.
+
+Das 'Hand'-Symbol am unteren Rand Ihrer Anzeige zeigt an, wann eine Tür, ein Tor oder ein Fallgitter betreten werden kann.
+
+Eine Drehtür können Sie auch mit einem kräftigen Stiefeltritt öffnen. Drücken Sie direkt vor der Tür die Taste 'Treten'. Ein Tritt gegen die Tür öffnet sie schneller.
+
+Wenn Sie sich mit beiden oben beschriebenen Methoden zum Öffnen von Türen sicher fühlen, gehen Sie zur nächsten Station.
+
+Zeitlimit: Keines

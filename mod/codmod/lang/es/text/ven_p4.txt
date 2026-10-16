@@ -1,0 +1,6 @@
+ 
+Originalmente se roscaba un perno de acero de 1/4 de pulgada a una tuerca autoblocante. Con demasiada frecuencia esta tuerca se desgastaba tanto que la abrazadera salía despedida del arma. Ahora usamos un perno de 5/16 de pulgada atornillado a una tuerca almenada, fijada con un pasador de aletas. 
+
+Los impactos descentrados del percutor también fueron un gran problema al principio. Cuando la cabeza del cerrojo avanza hacia la posición de disparo, justo antes de girar pierde toda guía de alineación, que proporcionaban unos lóbulos mecanizados en el rotor. Esto permitía que la cabeza del cerrojo se desviara del centro, con los consiguientes impactos descentrados del percutor. Recientemente hemos fabricado un nuevo rotor que mantiene sus tolerancias mucho más ajustadas que en la versión original.
+
+El alimentador/desenlazador representó el mayor problema del diseño original. Siempre que se producía una restricción en la cinta (algo bastante común), la cinta se desviaba hacia un lado al entrar en el desenlazador y uno de los dientes extractores perforaba literalmente la

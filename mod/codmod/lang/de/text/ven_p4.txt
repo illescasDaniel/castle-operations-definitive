@@ -1,0 +1,6 @@
+
+Ursprünglich wurde ein 1/4-Zoll-Stahlbolzen mit einer selbstsichernden Mutter verschraubt. Diese Mutter verschliss allzu häufig so stark, dass die Klemme von der Waffe abgeschossen wurde. Wir verwenden jetzt einen 5/16-Zoll-Bolzen mit einer Kronenmutter, gesichert durch einen Splint.
+
+Außermittige Schlagbolzentreffer waren anfangs ebenfalls ein großes Problem. Wenn sich der Verschlusskopf nach vorn in die Schussstellung bewegt, verliert er kurz vor der Drehung jede Ausrichtungsführung, die von gefrästen Nocken am Rotor bereitgestellt wurde. Dadurch konnte der Verschlusskopf seitlich ausweichen, was zu außermittigen Schlagbolzentreffern führte. Wir haben kürzlich einen neuen Rotor gefertigt, der seine Toleranzen deutlich enger einhält als die ursprüngliche Version.
+
+Der Zuführer/Entgurter war das größte Einzelproblem der ursprünglichen Konstruktion. Immer wenn es zu einer Gurtstauung kam (ein recht häufiges Ereignis), schwenkte der Gurt beim Eintritt in den Entgurter seitlich aus, und einer der Abstreifzähne durchbohrte buchstäblich die

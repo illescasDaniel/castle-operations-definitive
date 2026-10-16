@@ -2,6 +2,7 @@
 #src ui/bookp.menu sha256=dc708a0c6d09dddca120d7664d2a905c5cb7269128447fa81956bdc9051dc994
 #src ui/cdkey.menu sha256=96745cb143d3a0d91da1fe5f1b7ac2db26addce0ec675e919ea7ed0050b33bda
 #src ui/ingame_player.menu sha256=df21847e0c423290071f14a69192438bc6bc4e9cd9aeb4e3c9787bad7645a0ad
+#src ui/load.menu sha256=bae9e6f84b8912f5c0b093c13701171591047af887fdac23989af21cc1fbf48a
 @@ 38 38
 +		setfocus singleplayer ;
 @@ 171 172
@@ -118,7 +119,54 @@
 =ui/main.menu 51 52
 +		mouseEnter { fadein message_accept ; setitemcolor quit backcolor .15 .1 .1 .7 }
 +		mouseExit { setitemcolor quit backcolor .4 .4 .4 .35 }
-@@ 398 400
+@@ 398 398
++		}
+@@ 399 400
++////////// LANGUAGE SELECTOR (bottom right) ///////////////////////////////
+=ui/main.menu 43 45
++		name langtextflag
++		ownerdraw UI_TEXTLANG_FLAG
++		rect 496 417 24 15
+=ui/cdkey.menu 91 96
+=ui/main.menu 44 45
++		name langtext
++		text "Texts"
++		type 1
+=ui/cdkey.menu 31 32
+=ui/main.menu 268 269
++		rect 526 414 100 22
+=ui/main.menu 270 271
++		textscale .30
+=ui/load.menu 375 376
+=ui/ingame_player.menu 154 155
+=ui/main.menu 368 370
++		backcolor .4 .4 .4 .35
+=ui/main.menu 51 52
++		mouseEnter { fadein message_accept ; setitemcolor langtext backcolor .15 .1 .1 .7 }
++		mouseExit { setitemcolor langtext backcolor .4 .4 .4 .35 }
++		action { play "sound/misc/zap.wav" ; open lang_text_popmenu }
+=ui/main.menu 145 148
++		name langaudioflag
++		ownerdraw UI_AUDIOLANG_FLAG
++		rect 496 445 24 15
+=ui/cdkey.menu 91 96
+=ui/main.menu 44 45
++		name langaudio
++		text "Audio"
++		type 1
+=ui/cdkey.menu 31 32
+=ui/main.menu 268 269
++		rect 526 442 100 22
+=ui/main.menu 270 271
++		textscale .30
+=ui/load.menu 375 376
+=ui/ingame_player.menu 154 155
+=ui/main.menu 368 370
++		backcolor .4 .4 .4 .35
+=ui/main.menu 51 52
++		mouseEnter { fadein message_accept ; setitemcolor langaudio backcolor .15 .1 .1 .7 }
++		mouseExit { setitemcolor langaudio backcolor .4 .4 .4 .35 }
++		action { play "sound/misc/zap.wav" ; open lang_audio_popmenu }
 +		}
 @@ 430 430
 +}

@@ -1,0 +1,13 @@
+Ejercicio 3: Saltar y agacharse
+
+El siguiente conjunto de obstáculos te enseñará a saltar y agacharte. 
+
+Instrucciones:
+
+Mientras avanzas, pulsa la tecla de 'saltar' para impulsarte desde el suelo en un solo movimiento y pasar sobre el montón de troncos.
+
+Cuando llegues al armazón de troncos suspendido, no podrás atravesarlo con tu postura normal. Pulsa la tecla de 'agacharse' mientras avanzas. Todo tu cuerpo se encorvará más cerca del suelo y te permitirá pasar. 
+
+Practica estas dos técnicas hasta sentirte cómodo con tu habilidad. Cuando estés listo, cruza el obstáculo de agua hasta llegar a la siguiente estación.
+
+Límite de tiempo: Ninguno

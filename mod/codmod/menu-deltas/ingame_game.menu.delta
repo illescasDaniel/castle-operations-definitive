@@ -166,7 +166,22 @@
 =ui/options.menu 100 101
 @@ 275 300
 =ui/options.menu 81 82
-@@ 301 571
+@@ 302 332
+@@ 333 339
++		name game
+=ui/cdkey.menu 276 277
++		text "Subtitle Size (0.5-2.5):  "
++		cvar "cod_subtitleScale"
++		maxChars 8
++		maxPaintChars 8
++		rect 240 260 320 14
+@@ 340 343
+=ui/error.menu 217 218
+@@ 344 345
+=ui/options.menu 100 101
+@@ 348 349
+=ui/options.menu 81 82
+@@ 350 571
 @@ 574 574
 +}
 +

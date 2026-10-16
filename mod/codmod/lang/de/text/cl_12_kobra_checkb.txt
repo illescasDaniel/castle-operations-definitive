@@ -1,0 +1,6 @@
+1) Anheben - Der Plattformbediener hebt die Rakete in die Betankungsposition.
+
+
+2) Betankung - Nach Abschluss des Anhebens leitet der Betankungsbediener die Betankung ein.
+
+3) Turmfreigabe - Nach Abschluss der Betankung öffnet der Startturmbediener die Turmtore.

@@ -1,0 +1,15 @@
+Übung 20: Stühle
+
+Hier lernen Sie, einen Stuhl aufzuheben und zu benutzen.
+
+Anleitung:
+
+Stühle sind nützlich, wenn es keinen anderen Fluchtweg gibt. Sie dienen auch als Deckung oder um den Feind zu betäuben.
+
+Gehen Sie auf einen Stuhl zu, bis unten am Bildschirm das Symbol 'Hand' erscheint. Ist es durchgestrichen, tragen Sie eine zweihändige Waffe und haben keine Hand frei. Wechseln Sie zu einer einhändigen Waffe und drücken Sie die Taste 'Aktivieren', um den Stuhl aufzuheben.
+
+Mit der Taste 'Treten' schwingen Sie den Stuhl. Zum Werfen drücken Sie noch einmal 'Aktivieren'. Ist ein Hindernis im Weg, bleibt der Stuhl in der Hand, bis der Weg frei ist.
+
+Mit dem Stuhl erreichen Sie auch sonst unzugängliche Bereiche. Stellen Sie ihn unter den Ausgang (rechts von der Leiter). Drücken Sie 'Springen' und gehen Sie vorwärts, um auf den Stuhl zu springen. Springen Sie noch einmal vorwärts, um die Station zu verlassen.
+
+HINWEIS: Zerbricht der Stuhl, verlassen Sie die Station über die Leiter.

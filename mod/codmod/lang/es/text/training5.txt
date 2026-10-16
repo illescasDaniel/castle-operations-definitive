@@ -1,0 +1,7 @@
+Ejercicio 5: Caídas
+ 
+Instrucciones:
+
+Déjate caer libremente desde la estructura y aterriza sin riesgo en la arena de abajo. Esta caída te hará perder algo de salud. Más adelante te mostraremos cómo evitar recibir daño. Pero por ahora, déjate caer y pasa a la siguiente estación, donde se te proporcionará un botiquín.
+
+Límite de tiempo: Ninguno

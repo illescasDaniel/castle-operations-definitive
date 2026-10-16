@@ -1,0 +1,10 @@
+Ejercicio 1: Movimiento general y equilibrio
+
+Este ejercicio te enseñará habilidades generales de movimiento y equilibrio.
+
+Instrucciones:
+
+Avanza por el camino de troncos manteniendo el equilibrio. Si te caes de un tronco, vuelve al principio de la estación e inténtalo de nuevo. Cuando te sientas cómodo con tus habilidades generales de movimiento y equilibrio, pasa a la siguiente estación. 
+
+Límite de tiempo: Ninguno
+

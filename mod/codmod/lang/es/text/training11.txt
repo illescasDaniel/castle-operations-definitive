@@ -1,0 +1,13 @@
+Ejercicio 11: Natación
+
+Este ejercicio te enseñará a nadar.
+
+Instrucciones:
+
+Entra en el agua y sigue las marcas de baldosas a rayas hasta llegar al extremo opuesto de la piscina. 
+
+Tus teclas de movimiento normales funcionan igual bajo el agua que fuera de ella. Sin embargo, bajo la superficie solo dispondrás de un tiempo limitado antes de quedarte sin aire. Vigila tu indicador de salud. Usa la escalera del lado opuesto de la piscina para salir del agua.
+
+Cuando hayas completado este ejercicio, entra en el edificio contiguo.
+
+Límite de tiempo: Ninguno

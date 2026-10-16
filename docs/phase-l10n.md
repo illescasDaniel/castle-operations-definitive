@@ -13,3 +13,9 @@ community packs extracted from them exist (links in the root [README](../README.
 
 Policy: generated packs are derived from game assets, so they stay local and private, like the HD packs. Exception (owner's decision, 2026-10-15): the final subtitle text (`tools/subtitles/build/text/subtitles.txt`, and `cache.json` with the manual fixes) is committed; the pk3 and review/sample audio are not. Tools go in
 `tools/`, outputs are not committed.
+
+## Policy: translations are committed (2026-10-16)
+
+`mod/codmod/lang/<code>/` (strings, subtitles, briefing texts, flags) is committed so anyone can re-pack it with
+`tools/l10n/pack.py`; the generated `codmod_lang_*.pk3` files stay in `run/` and are not committed. English subtitle text
+still comes from the private `codmod_subtitles.pk3`. Implementation and format: `docs/languages.md`.

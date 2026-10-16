@@ -1,0 +1,8 @@
+Detalles operativos:
+
+El Venom Gun GP-VG MK2 funciona eléctricamente y utiliza un sistema de recámara cerrada con seis cañones y seis cerrojos. Los cañones giran en sentido antihorario y disparan por turno al llegar a la posición de las 12 en punto. El mecanismo de recámara cuenta con una cabeza de cerrojo rotativa con dos superficies de cierre (similar a la ametralladora de uso general MG34).
+
+El subconjunto del cerrojo presenta una lengüeta helicoidal en la cabeza que encaja con una ranura helicoidal en el cuerpo del cerrojo. La rotación hacia la posición de disparo es en sentido horario, girando el cerrojo alrededor del percutor, que mantiene unido todo el conjunto.
+
+La propia cabeza del cerrojo se traba en unos rebajes del rotor (el principal componente estructural del arma), mientras que el cañón se acopla a la parte frontal del rotor. Un rodillo situado sobre el subconjunto del cerrojo, que se desplaza por una trayectoria de leva elíptica en la carcasa del receptor, impulsa el cerrojo hacia delante. 
+

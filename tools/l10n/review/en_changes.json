@@ -1,0 +1,392 @@
+[
+ {
+  "path": "sound/scenaric/cs1/cs01_dir_04.wav",
+  "old": "Damn. Quarter meeting, Jack.",
+  "new": "Damn! Call a meeting, Jack.",
+  "source": "user"
+ },
+ {
+  "path": "sound/scenaric/chateau/off_check_again.wav",
+  "old": "Well, check again, Damio, and be quick about it.",
+  "new": "Well, check again, damn you, and be quick about it.",
+  "source": "user"
+ },
+ {
+  "path": "sound/scenaric/village1/p4_come_inside.wav",
+  "old": "Late! Don't shoot! Come inside!",
+  "new": "Wait! Don't shoot! Come inside!",
+  "source": "user"
+ },
+ {
+  "path": "sound/scenaric/village1/axis5_according_to_otto.wav",
+  "old": "According to Arthur, one of them is a special assistant to the Reichsführer SS himself.",
+  "new": "According to Otto, one of them is a special assistant to the Reichsführer SS himself.",
+  "source": "user"
+ },
+ {
+  "path": "sound/player/infantryss/orders/kook.wav",
+  "old": "Fuck! An American!",
+  "new": "Look! An American!",
+  "source": "user"
+ },
+ {
+  "path": "sound/scenaric/end/eg_solo_loop.wav",
+  "old": "Hic est ius hominum, mordes una miras. [Here is the law of men, you devour marvels all at once.]",
+  "new": "[Chanting in Latin]",
+  "source": "user"
+ },
+ {
+  "path": "sound/scenaric/cs6/cs06_mur_04_1.wav",
+  "old": "Deathshead? Haven't our sources placed him at the secret rocket base in Catamarandi?",
+  "new": "Deathshead? Haven't our sources placed him at the secret rocket base in Katamarunde?",
+  "source": "coordinator"
+ },
+ {
+  "path": "sound/scenaric/boss1/en_01.wav",
+  "old": "This is Eagle's Nest. We read your mother, Ham. What is your status?",
+  "new": "This is Eagle's Nest. We read you, Mother Hen. What is your status?",
+  "source": "coordinator"
+ },
+ {
+  "path": "sound/scenaric/boss1/mh_01.wav",
+  "old": "Mother Hand Eagle's Nest. Mother Hand Eagle's Nest. Come in Eagle's Nest.",
+  "new": "Mother Hen Eagle's Nest. Mother Hen Eagle's Nest. Come in Eagle's Nest.",
+  "source": "coordinator"
+ },
+ {
+  "path": "sound/scenaric/cs6/cs06_jac_04_2.wav",
+  "old": "Well, there are two things that still bother me. Exactly what is this dark night they all seem to be so interested in?",
+  "new": "Well, there are two things that still bother me. Exactly what is this Dark Knight they all seem to be so interested in?",
+  "source": "coordinator"
+ },
+ {
+  "path": "sound/scenaric/boss2/dh_only_delaying.wav",
+  "old": "Your only delay is inevitable.",
+  "new": "You're only delaying the inevitable.",
+  "source": "coordinator"
+ },
+ {
+  "path": "sound/scenaric/boss2/dh_winning_how.wav",
+  "old": "H-H-H-H-Hauen!",
+  "new": "H-h-h-how?",
+  "source": "coordinator"
+ },
+ {
+  "path": "sound/scenaric/rocket/sci_quick_guards.wav",
+  "old": "The quick gods!",
+  "new": "Quick! Guards!",
+  "source": "coordinator"
+ },
+ {
+  "path": "sound/scenaric/escape1/axis1_american_is_loose.wav",
+  "old": "What? Guards! Alarm! They're making it loose!",
+  "new": "What? Guards! Alarm! The American is loose!",
+  "source": "coordinator"
+ },
+ {
+  "path": "sound/scenaric/escape1/axis1_give_order.wav",
+  "old": "Sergeant, when I give you an author, I expect an acknowledgement.",
+  "new": "Sergeant, when I give you an order, I expect an acknowledgement.",
+  "source": "coordinator"
+ },
+ {
+  "path": "sound/scenaric/escape2/axis11_heard.wav",
+  "old": "Haven't you heard? This is valuable property of the Reich. With all those accusations of pilfering coming from the Reichsmasters' office, the Major isn't taking any chances.",
+  "new": "Haven't you heard? This is valuable property of the Reich. With all those accusations of pilfering coming from the Reichsmarschall's office, the Major isn't taking any chances.",
+  "source": "coordinator"
+ },
+ {
+  "path": "sound/scenaric/escape2/axis1_doubled_guard.wav",
+  "old": "That's because the Major just doubled the gather on the dig site again.",
+  "new": "That's because the Major just doubled the guard on the dig site again.",
+  "source": "coordinator"
+ },
+ {
+  "path": "sound/scenaric/village2/kemph_my_apologies.wav",
+  "old": "Apologies, Man-General. I will go and investigate the delay.",
+  "new": "Apologies, Herr General. I will go and investigate the delay.",
+  "source": "coordinator"
+ },
+ {
+  "path": "sound/scenaric/village2/gen_where_is_my_latour.wav",
+  "old": "Kempf, where is my 38 litre? I sent that idiot down to the wine cellar 20 minutes ago.",
+  "new": "Kempf, where is my '38 Latour? I sent that idiot down to the wine cellar 20 minutes ago.",
+  "source": "coordinator"
+ },
+ {
+  "path": "sound/scenaric/village2/klugg_no_such_wine.wav",
+  "old": "38 Le Tour, 38 Le Tour. There's no such wine down here.",
+  "new": "'38 Latour, '38 Latour. There's no such wine down here.",
+  "source": "coordinator"
+ },
+ {
+  "path": "sound/scenaric/norway/g3_bad_water.wav",
+  "old": "The Metics said it was bad water.",
+  "new": "The medics said it was bad water.",
+  "source": "coordinator"
+ },
+ {
+  "path": "sound/scenaric/dam/1933_reichstag.wav",
+  "old": "The government of the National Assembly is determined to fulfill its mission taken by the German people. Therefore, today, with the hot desire to find a support in it for the implementation of its mission.",
+  "new": "The government of the national uprising is determined to fulfil the task entrusted to it by the German people. It therefore comes before the Reichstag today with the ardent wish to find in it support for carrying out its mission.",
+  "source": "coordinator"
+ },
+ {
+  "path": "sound/scenaric/chateau/gen1_did_you_know.wav",
+  "old": "Did you know Burghalter and von Stauff still haven't shown up?",
+  "new": "Did you know Burkhalter and von Stauff still haven't shown up?",
+  "source": "coordinator"
+ },
+ {
+  "path": "sound/scenaric/dam/driver_delivery_for_gen.wav",
+  "old": "But this delivery is for General von Staff. It's six cases of cheese and sausages for the officer's kitchen. Get him on the phone now. I'm sure he'll make an exception.",
+  "new": "But this delivery is for General von Stauff. It's six cases of cheese and sausages for the officer's kitchen. Get him on the phone now. I'm sure he'll make an exception.",
+  "source": "coordinator"
+ },
+ {
+  "path": "sound/scenaric/dam/driver_ja_ja.wav",
+  "old": "Yeah, yeah, I know, by order of General Von Staff. Look, I'm not going to be held responsible for this. I absolutely refuse to budge from this spot until you let me through.",
+  "new": "Yeah, yeah, I know, by order of General von Stauff. Look, I'm not going to be held responsible for this. I absolutely refuse to budge from this spot until you let me through.",
+  "source": "coordinator"
+ },
+ {
+  "path": "sound/scenaric/boss1/hel_04.wav",
+  "old": "Get out of my way, Zempf! Your feeble threats won't stop me!",
+  "new": "Get out of my way, Zemph! Your feeble threats won't stop me!",
+  "source": "coordinator"
+ },
+ {
+  "path": "sound/scenaric/church/dispatch.wav",
+  "old": "Move it, Zempf! Your orders, my noble Fuhrer. Deploy the remaining elite guard. Jawohl!",
+  "new": "Move it, Zemph! Your orders, my noble Fuhrer. Deploy the remaining elite guard. Jawohl!",
+  "source": "coordinator"
+ },
+ {
+  "path": "sound/scenaric/xlabs/death_i_will_deal.wav",
+  "old": "",
+  "new": "I will deal with him.",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/swf/cs10_dh_02.wav",
+  "old": "I don't have time for this nonsense. I have important business to attend to. This boat leaves for the X-Labs within the hour, torpedoes or not. Is that understood, Major?",
+  "new": "I don't have time for this nonsense. I have important business to attend to. This boat leaves for the X-Labs within an hour, torpedoes or none. Is that understood, Major?",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/boss2/dh_well_agent.wav",
+  "old": "Well, Agent Blazkowicz, is it? You are our most impressive specimen. It will be my pleasure to dissect you piece by piece. Let me introduce you to someone. Do not confuse him with the mere prototypes you have encountered. This is the pinnacle of all my research. Das Supersoldat. The Super Soldier.",
+  "new": "Well, Agent Blazkowicz. You are a most impressive specimen. It would be my pleasure to dissect you piece by piece. Let me introduce you to someone. Do not confuse it with the mere prototypes you've encountered. This is the pinnacle of all my research. Das Über-Soldat. The Super Soldier.",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/boss2/dh_my_pleasure.wav",
+  "old": "It will be my pleasure to watch him destroy you.",
+  "new": "It will be my pleasure to watch it destroy you.",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/boss2/dh_thus_we_see.wav",
+  "old": "Thus we see the superiority of the machine of flesh and blood.",
+  "new": "Thus we will see the superiority of the machine over flesh and blood!",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/boss2/dh_quite_the_toy.wav",
+  "old": "Quite a deadly little toy, isn't he?",
+  "new": "Quite a scientific little toy, isn't it?",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/boss2/dh_very_good.wav",
+  "old": "Very good! I may learn something after all!",
+  "new": "Very good! I might learn something after all!",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/boss2/dh_new_armor.wav",
+  "old": "That new armor makes all the difference, don't you agree?",
+  "new": "The new armor makes all the difference, don't you agree?",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/boss2/dh_make_it_easy.wav",
+  "old": "Why not make it easy on yourself and let him finish you quickly?",
+  "new": "Why don't you make it easy on yourself and let it finish you quickly?",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/boss2/dh_very_amusing.wav",
+  "old": "This has all been very amusing, but we're running short of time.",
+  "new": "This has all been very amusing, but we are running short on time.",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/boss2/dh_have_to_do_better.wav",
+  "old": "Or you'll have to do better than that if you expect me to get any useful data.",
+  "new": "Oh, you'll have to do better than that if you expect me to get any useful data.",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/boss2/dh_see_what_i_mean.wav",
+  "old": "Do you see what I mean about these improved reactions?",
+  "new": "Do you see what I mean about its improved reactions?",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/boss2/dh_try_harder.wav",
+  "old": "Oh, you really must try harder. This is barely competitive at all.",
+  "new": "Oh, you really must try harder than that! This is barely tempting at all.",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/boss2/dh_the_results.wav",
+  "old": "The results of this live fire exercise will be invaluable. I thank you again for providing me with this opportunity.",
+  "new": "The results of this lifelike exercise will be invaluable. I thank you again for providing me with this opportunity.",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/boss2/dh_winning_meet_again.wav",
+  "old": "We shall meet again another day.",
+  "new": "We will meet again another day.",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/cs6/cs06_dir_05_3.wav",
+  "old": "What did our research come up with?",
+  "new": "Well, what did our research come up with?",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/cs6/cs06_dir_09.wav",
+  "old": "Yes, his orders are to infiltrate and sabotage the entire V-Weapons complex. With any luck, he might even get his hands on the latest experimental Cobra.",
+  "new": "Yes, his orders are to infiltrate and sabotage the entire V-Weapons complex. With any luck, he might even get his hands on the latest experimental Kobra.",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/cs6/cs06_hig_04_7.wav",
+  "old": "The Cobra rocket plane.",
+  "new": "The Kobra rocket plane.",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/cs9/cs09_jac_01_2.wav",
+  "old": "Blazkowicz touched down with the Cobra in Malta about six hours ago.",
+  "new": "Blazkowicz touched down with the Kobra in Malta about six hours ago.",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/cs9/cs09_dir_04_3.wav",
+  "old": "Excellent. Now, I've read your report, Jack. Tell me what you make of this Operation Resurrection the Jerrys are so hot about.",
+  "new": "Excellent. Now, I read your report, Jack. Tell me what you make of this Operation Resurrection the Jerrys are so hot about.",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/cs9/cs09_dir_07_2.wav",
+  "old": "I take it you're referring to the secret weapons facility near Kugelsstadt.",
+  "new": "I take it you're referring to the secret weapons facility near Kugelstadt.",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/cs9/cs09_dir_10_4.wav",
+  "old": "Hmm. What you probably don't know is that our Kreisau friends in the area have recently reported the existence of a high-level scientist from the weapons facility who wishes to defect and is desperately seeking asylum. I imagine he could supply us with some very useful facts.",
+  "new": "Hmm. And what you probably don't know is that our Kreisau friends in the area have recently reported the existence of a high-level scientist from the weapons facility who wishes to defect and is desperately seeking asylum. I imagine he could supply us with some very useful facts.",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/cs9/cs09_jac_03.wav",
+  "old": "Well, sir, this is the second time that name has cropped up. First at the dig, and then at the rocket base. It is unquestionably the link between Deathshead and the paranormal group.",
+  "new": "Well, sir, this is the second time that name has cropped up. First at the dig, and then at the rocket base. It is unquestionably the link to Deathshead and the paranormal group.",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/cs14/cs14_dir_01_2.wav",
+  "old": "How is Agent Blazkowicz?",
+  "new": "Now, how is Agent Blazkowicz?",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/cs14/cs14_dir_05_1.wav",
+  "old": "What have you got there, Jack?",
+  "new": "Now, what have you got there, Jack?",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/cs19/cs19_dir_02_5.wav",
+  "old": "I just finished reading the last of the reports. It's still hard to believe.",
+  "new": "I just finished reading the last of the reports. Still hard to believe.",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/cs19/cs19_dir_06_1.wav",
+  "old": "Ah, excellent, excellent. Anything special?",
+  "new": "Ha ha ha, excellent, excellent. Anything special?",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/cs1/cs01_jac_01.wav",
+  "old": "Yes, sir. We've just received a code of transmission from Kessler, our contact in the Kreisau Circle.",
+  "new": "Yes, sir. We just received a coded transmission from Kessler, our contact in the Kreisau Circle.",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/cs1/cs01_jac_04.wav",
+  "old": "Well, here's what we know.",
+  "new": "Oh, here's what we know.",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/cs1/cs01_jac_06.wav",
+  "old": "Now, we've known of the existence of Castle Wolfenstein for some time, but we've only recently heard reports from our Kreisau Circle contacts and the German resistance regarding bizarre occult rituals taking place there.",
+  "new": "Now, we've known of the existence of Castle Wolfenstein for some time, but we've only recently heard reports from our Kreisau Circle contacts in the German resistance regarding bizarre occult rituals taking place there.",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/cs1/cs01_jac_09.wav",
+  "old": "The kraut with the monocle is one Wilhelm Strasser, also known as Deathshead, a brilliant and ruthless scientist who heads up Himmler's Special Projects Division.",
+  "new": "The kraut with the monocle is one Wilhelm Strasse, also known as Deathshead, a brilliant and ruthless scientist who heads up Himmler's Special Projects Division.",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/cs6/cs06_jac_02.wav",
+  "old": "Don't get me wrong. We've learned plenty about their capabilities. That alone scares the hell out of me.",
+  "new": "Don't get me wrong. We've learned plenty about their capabilities, and that alone scares the hell out of me.",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/cs11/cs11_jac_02.wav",
+  "old": "Well, unfortunately, not as much as I'd hoped. He was pretty badly shaken when we got a hold of him, and he still hasn't completely recovered. He kept referring to a Project Uber Soldat.",
+  "new": "Well, unfortunately, not as much as I hoped. He was pretty badly shaken when we got a hold of him, and he still hasn't completely recovered. He kept referring to a Project Über-Soldat.",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/cs11/cs11_jac_03_6.wav",
+  "old": "Yes. From what I could piece together, it involves some bizarre synthesis of robotic and biological engineering.",
+  "new": "Yes. From what I could piece together, it involved some bizarre synthesis of robotic and biological engineering.",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/cs11/cs11_jac_05_6.wav",
+  "old": "According to the scientists, this project is Deathshead's baby, the thing most near and dear to his heart, and he's been working on it in one form or another since 1937.",
+  "new": "According to the scientist, this project is Deathshead's baby, the thing most near and dear to his heart, and he's been working on it in one form or another since 1937.",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/cs14/cs14_jac_05.wav",
+  "old": "Two Dakota dispatches just in from Ultra. The first one is a complete itinerary for Reichsführer SS Heinrich Himmler, covering the next 48 hours.",
+  "new": "Two decoded dispatches just in from Ultra. The first one is a complete itinerary for Reichsführer SS Heinrich Himmler, covering the next 48 hours.",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/cs14/cs14_jac_06_2.wav",
+  "old": "Wait till you see the next one. A private communique from one Wilhelm Strasser, alias Deathshead, to the same Reichsführer, SS, dated yesterday. Shall I read it?",
+  "new": "And wait until you see the next one. A private communique from Wilhelm Strasse, alias Deathshead, to the same Reichsführer, SS, dated yesterday. Shall I read it?",
+  "source": "wiki"
+ },
+ {
+  "path": "sound/scenaric/cs14/cs14_jac_07.wav",
+  "old": "My dear Reichsfuhrer SS, as you are no doubt already aware, my X-Labs lie in complete ruin. Operation Ubersoldat, my life's work, is now a bitter memory. I realize you still have faith in the ultimate success of Operation Resurrection. I wish I could share your confidence, but I feel you have been misled by individuals whose mental competence must be called into question. I leave you now with a word of caution. The Allies have sent a most determined and capable agent to disrupt your ceremony. Do not make the mistake of underestimating him, as I did. Yours faithfully, SS Oberfuhrer Wilhelm Strasser",
+  "new": "My dear Reichsführer SS, as you are no doubt already aware, my X-Labs lie in complete ruin. Operation Über-Soldat, my life's work, is now a bitter memory. I realize you still have faith in the ultimate success of Operation Resurrection. I wish I could share your confidence, but I feel you have been misled by individuals whose mental competence must be called into question. I leave you now with a word of caution. The Allies have sent a most determined and capable agent to disrupt your ceremony. Do not make the mistake of underestimating him, as I did. Your faithful SS Oberführer Wilhelm Strasse",
+  "source": "wiki"
+ }
+]

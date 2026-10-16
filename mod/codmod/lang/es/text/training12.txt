@@ -1,0 +1,15 @@
+Ejercicio 12: El cuchillo de combate y la patada
+
+Aquí aprenderás a usar con eficacia el cuchillo de combate de la OSA y a dar una patada al enemigo.
+
+Instrucciones:
+
+Con el cuchillo de combate seleccionado (tecla predeterminada 1), acércate a un saco de lona. Justo delante, pulsa la tecla de 'atacar'. Si causas daño, el saco se balanceará.
+
+Desde ahí también puedes dar una patada pulsando la tecla de 'patada'. Resulta útil cuando no tienes munición ni tiempo para sacar el cuchillo.
+
+Colócate detrás del saco y apunta con el cuchillo a la 'X' roja que marca la médula del enemigo. Aparecerá el icono del cuchillo: estás en posición para un golpe único, silencioso y mortal.
+
+Practica con los sacos. Cuando te sientas cómodo, pasa a la siguiente estación.
+
+Límite de tiempo: Ninguno

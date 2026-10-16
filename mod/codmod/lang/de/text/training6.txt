@@ -1,0 +1,15 @@
+Übung 6: Verbandskästen
+
+Dies ist eine Einführung in die Erste Hilfe.
+
+Anleitung:
+
+Auf dem Tisch neben Ihnen liegen drei große Verbandskästen. Benötigen Sie Heilung, nehmen Sie sie automatisch auf, wenn Sie darauf zugehen.
+
+Sie können einen Verbandskasten auch mit der Taste 'Aktivieren' aufnehmen. Sind Sie nah genug, wird der Gegenstand hervorgehoben und zeigt an, dass er benutzbar ist.
+
+Wenn Sie diese Methode bevorzugen, können Sie die Option 'Auto-Aufnahme' in Ihren Steuerungseinstellungen ausschalten. Dann müssen Sie jedoch alle Gegenstände im Spiel manuell aufnehmen, auch Waffen und Munition.
+
+Sobald Ihre Gesundheit voll ist, gehen Sie zur nächsten Station.
+
+Zeitlimit: Keines

@@ -1,0 +1,19 @@
+Übung 17: Mauser K98K mit Zielfernrohr
+
+Hier lernen Sie, das Langgewehr Mauser K98K mit variablem Zielfernrohr (Scharfschützenzielfernrohr) einzusetzen.
+
+Anleitung:
+
+Üben Sie nun das Schießen auf die weit entfernten Ziele mit angebrachtem Zielfernrohr. Es liegt auf der Schützenbank vor Ihnen.
+
+Zum Wechsel in die Zielfernrohransicht wählen Sie das K98K (Standardtaste 4) und drücken die Taste 'Alternativwaffe'.
+
+Durch die Vergrößerung schwankt Ihr Fadenkreuz leicht. Der farbige Balken links vom waagerechten Fadenkreuz zeigt das an.
+
+Rot bedeutet das stärkste Schwanken. Bleiben Sie ruhig, schrumpft der Balken und wird grün. Bleiben Sie lange genug ruhig, verschwindet er ganz und das Schwanken ist kaum noch wahrnehmbar. Dann sind Sie am genauesten.
+
+Mit den Tasten 'Heranzoomen' und 'Herauszoomen' ändern Sie Sichtfeld und Vergrößerung. Das Schwanken nimmt zu, die Reichweite aber auch.
+
+Üben Sie weiter, bis Sie auf große Entfernung sicher sind, dann gehen Sie zur nächsten Station.
+
+Zeitlimit: Keines

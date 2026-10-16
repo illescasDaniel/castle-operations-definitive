@@ -1,0 +1,221 @@
+# German subtitles: lines needing review
+
+Most doubtful first. 51 lines flagged of 625.
+
+- `sound/scenaric/assault/mech_7.wav`
+  - EN: The lever on the right is to open the hatch doors.
+  - DE: Der Hebel rechts öffnet die Hangartore.
+  - Why: "hatch doors" could be Luken/Klappen; Hangartore is a guess
+- `sound/scenaric/boss1/zem_04.wav`
+  - EN: Frau von Bulow, I warn you, if you persist in this madness, I will be forced to report your conduct to the SS High Court of Inquiry.
+  - DE: Frau von Bülow, ich warne Sie: Wenn Sie auf diesem Wahnsinn beharren, muss ich Ihr Verhalten dem SS-Obersten Untersuchungsgericht melden.
+  - Why: "SS High Court of Inquiry" - official German term uncertain
+- `sound/scenaric/boss2/dh_only_delaying.wav`
+  - EN: You're only delaying the inevitable.
+  - DE: Sie zögern das Unvermeidliche nur hinaus.
+  - Why: English "Your only delay is inevitable" is garbled; guessed "You are only delaying the inevitable"
+- `sound/scenaric/church/axis2_done_that.wav`
+  - EN: What the hell is that?
+  - DE: Was zum Teufel ist das?
+  - Why: Filename "done_that" does not match English; unclear
+- `sound/scenaric/church/dispatch.wav`
+  - EN: Move it, Zemph! Your orders, my noble Fuhrer. Deploy the remaining elite guard. Jawohl!
+  - DE: Los, Zemph! Zu Befehl, mein edler Führer. Setzen Sie die restliche Elitegarde ein. Jawohl!
+  - Why: Three speakers/phone conversation mixed; unclear
+- `sound/scenaric/church/elite1_gawking.wav`
+  - EN: What are you all gawking at? You'll see worse than this if you don't get moving. Stop standing around with your bombs in your mouths and start searching the area. Keep an eye out for the American.
+  - DE: Was gafft ihr alle so? Ihr werdet Schlimmeres sehen, wenn ihr euch nicht bewegt. Steht nicht mit offenen Mündern herum und durchsucht die Gegend. Haltet Ausschau nach dem Amerikaner.
+  - Why: "bombs in your mouths" is likely a mistranscription; replaced with idiom
+- `sound/scenaric/cs6/cs06_hig_03_1.wav`
+  - EN: Well, it's obviously more of their jiggery-pokery raising the ghoulies rot.
+  - DE: Offensichtlich noch mehr von ihrem Hokuspokus, mit dem sie Geister erwecken.
+  - Why: English "raising the ghoulies rot" garbled; guessed "raising the ghoulies, what"
+- `sound/scenaric/cs9/cs09_jac_02_3.wav`
+  - EN: Yes, sir. Advanced Aeronautics is en route to Malta now.
+  - DE: Ja, Sir. Die Fortgeschrittene Luftfahrt ist jetzt nach Malta unterwegs.
+  - Why: "Advanced Aeronautics" a unit/department name; unclear
+- `sound/scenaric/dam/1933_reichstag.wav`
+  - EN: The government of the national uprising is determined to fulfil the task entrusted to it by the German people. It therefore comes before the Reichstag today with the ardent wish to find in it support for carrying out its mission.
+  - DE: Die Regierung der nationalen Erhebung ist entschlossen, die ihr vom deutschen Volk übertragene Aufgabe zu erfüllen. Sie tritt daher heute mit dem heißen Wunsch vor Sie, in ihm eine Stütze für die Durchführung ihrer Mission zu finden.
+  - Why: Spoken German; orig transcript was garbled ("trifft daher heute hin"); reconstructed from 1933 Reichstag speech, wording approximate
+- `sound/scenaric/dam/driver_what_do_you_mean_closed.wav`
+  - EN: What do you mean closed? It can't be closed. This is the only road in the Paderborn.
+  - DE: Was heißt gesperrt? Das kann nicht sein. Das ist die einzige Straße in Paderborn.
+  - Why: "Paderborn" vs "Pederborn" in other lines: village name uncertain
+- `sound/scenaric/dam/guard_look_for_crackers.wav`
+  - EN: I don't know. Look for some crackers?
+  - DE: Keine Ahnung. Such doch ein paar Kracher?
+  - Why: Unclear source ("Look for some crackers?"); likely garbled
+- `sound/scenaric/dam/m1_yes_it_was_obvious.wav`
+  - EN: Yes, it was obvious six months ago when I put in the requisition, and it's obvious now that we'll be lucky if we get it before 1947. So why don't you stop wasting time and hand me that sprocket wrench?
+  - DE: Ja, das war schon vor sechs Monaten klar, als ich den Antrag gestellt habe, und jetzt ist klar, dass wir Glück haben, wenn wir es vor 1947 bekommen. Also hören Sie auf, Zeit zu verschwenden, und reichen Sie mir den Ringschlüssel.
+  - Why: "sprocket wrench" - tool term guess
+- `sound/scenaric/escape1/axis18_shoot.wav`
+  - EN: Is that American? Shoot!
+  - DE: Ist das der Amerikaner? Schießen!
+  - Why: Orig "Ist das zu merken? Shoot!" garbled
+- `sound/scenaric/escape2/axis1_polish_weapon.wav`
+  - EN: Hard to say. Well, I'll see you later. I've got to go polish my weapon.
+  - DE: Schwer zu sagen. Na ja, bis später. Ich muss meine Waffe polieren.
+  - Why: Possibly a joke/innuendo; context unclear
+- `sound/scenaric/forest/axis10_misdrop.wav`
+  - EN: Really? It's probably just a misdrop from that black guard division training to the south. It happens all the time. You'll get used to it.
+  - DE: Ach ja? Wahrscheinlich nur ein Fehlabwurf von der Schwarzgardisten-Division, die im Süden übt. Das passiert ständig. Daran gewöhnst du dich.
+  - Why: "black guard division" = Schwarze Garde? uncertain
+- `sound/scenaric/general/misc_mumb5.wav`
+  - EN: Yes, yes, yes. It's worth it.
+  - DE: Ja, ja, ja. Es lohnt sich.
+  - Why: German orig "Es weiht uns auf" is garbled; unclear meaning
+- `sound/scenaric/rocket/ls_fueling.wav`
+  - EN: Acton, fueling crew's complete final check of safety seals.
+  - DE: Betankungsteam, schließt die letzte Prüfung der Sicherheitsdichtungen ab.
+  - Why: English "Acton" garbled (probably "Attention")
+- `sound/scenaric/rocket/mech2_lower.wav`
+  - EN: Lower?
+  - DE: Absenken?
+  - Why: German orig "Laura?" is a bad transcription; likely "Lower?"/"Tiefer?"
+- `sound/scenaric/rocket/mech2pa_lower.wav`
+  - EN: Lower?
+  - DE: Absenken?
+  - Why: German orig "Laura?" is a bad transcription; likely "Lower?"/"Tiefer?"
+- `sound/scenaric/sfm/kre_06.wav`
+  - EN: What are you waiting for? The tank driver is waiting for you.
+  - DE: Worauf wartest du? Der Panzerfahrer wartet auf dich.
+  - Why: du/Sie unclear
+- `sound/scenaric/sfm/tank_com_09.wav`
+  - EN: Take much more of this. Move!
+  - DE: Noch viel mehr halte ich nicht aus. Los!
+  - Why: English garbled ("Take much more of this")
+- `sound/scenaric/tram/kess_under_control.wav`
+  - EN: Yes, Lieutenant Ruger here. Situation under control.
+  - DE: Ja, hier Leutnant Ruger. Lage unter Kontrolle.
+  - Why: "Ruger" name spelling uncertain (Rüger?)
+- `sound/scenaric/village1/axis1_los_los.wav`
+  - EN: The Americans! Go! Go!
+  - DE: Die Amerikaner! Los, los!
+  - Why: Orig "Sie merken!" is garbled ("Sie kommen"?); English says Americans
+- `sound/scenaric/village2/col_m5.wav`
+  - EN: Yes, yes, yes. It's worth it.
+  - DE: Ja, ja, ja. Es lohnt sich.
+  - Why: German orig "Es weiht uns auf" is garbled
+- `sound/scenaric/village2/kemph_my_apologies.wav`
+  - EN: Apologies, Herr General. I will go and investigate the delay.
+  - DE: Verzeihung, Herr General. Ich gehe der Verzögerung nach.
+  - Why: English "Man-General" garbled; probably "Herr General"
+- `sound/scenaric/chateau/corp_jawol.wav`
+  - EN: I'M COMING!
+  - DE: ICH KOMME!
+  - Why: Filename says "jawol" (German "Jawohl") but English says "I'm coming"
+- `sound/scenaric/chateau/gen1_did_you_know.wav`
+  - EN: Did you know Burkhalter and von Stauff still haven't shown up?
+  - DE: Wussten Sie, dass Burkhalter und von Stauff immer noch nicht aufgetaucht sind?
+  - Why: English spells "Burghalter" here, "Burkhalter" elsewhere; used Burkhalter
+- `sound/scenaric/church/cs04_hel_06.wav`
+  - EN: EXCELLENT!
+  - DE: Ausgezeichnet!
+  - Why: Spoken in English in game ("Excellent!") per orig
+- `sound/scenaric/church/cs04_zem_01.wav`
+  - EN: A moment, please, my director.
+  - DE: Einen Moment, bitte, mein Direktor.
+  - Why: Orig mixed English/German ("mein Director")
+- `sound/scenaric/cs11/cs11_dir_07_4.wav`
+  - EN: I suppose that explains the proto-soldier blueprint and those loping monstrosities as well. But it still doesn't explain the involvement with the occult.
+  - DE: Das erklärt wohl auch den Proto-Soldaten-Bauplan und diese hüpfenden Monstrositäten. Aber die Verbindung zum Okkulten erklärt es immer noch nicht.
+  - Why: "loping monstrosities" - Wort choice (hüpfend vs. schlurfend/trottend)
+- `sound/scenaric/cs11/cs11_jac_02.wav`
+  - EN: Well, unfortunately, not as much as I hoped. He was pretty badly shaken when we got a hold of him, and he still hasn't completely recovered. He kept referring to a Project Über-Soldat.
+  - DE: Leider nicht so viel, wie ich gehofft hatte. Er stand ziemlich unter Schock, als wir ihn bekamen, und hat sich noch nicht ganz erholt. Er sprach immer wieder von einem Projekt Über-Soldat.
+  - Why: Uber Soldat: kept as Über-Soldat
+- `sound/scenaric/cs14/cs14_hig_02_1.wav`
+  - EN: Sir, it just occurred to me that we may be looking at this the wrong way. I mean, well, if these blokes are really intent upon squandering precious time and resources on all this mystic mumbo-jumbo, well then...
+  - DE: Sir, mir kam gerade der Gedanke, dass wir das vielleicht falsch angehen. Wenn diese Burschen wirklich kostbare Zeit und Ressourcen für diesen mystischen Hokuspokus verschwenden wollen, dann ...
+  - Why: Spoken by a posh Brit; register choice
+- `sound/scenaric/cs14/cs14_mur_03_1.wav`
+  - EN: Please, Jack, let me finish. Now, on top of that, we have what amounts to their own top scientists telling them they've all collectively blown a head gasket. What further evidence do we need?
+  - DE: Bitte, Jack, lassen Sie mich ausreden. Dazu kommt, dass ihre eigenen Spitzenwissenschaftler ihnen sagen, sie seien alle zusammen übergeschnappt. Welche Beweise brauchen wir noch?
+  - Why: "blown a head gasket" idiom -> "übergeschnappt"
+- `sound/scenaric/cs9/cs09_dir_04_3.wav`
+  - EN: Excellent. Now, I read your report, Jack. Tell me what you make of this Operation Resurrection the Jerrys are so hot about.
+  - DE: Ausgezeichnet. Ich habe Ihren Bericht gelesen, Jack. Sagen Sie mir, was Sie von dieser Operation Wiederauferstehung halten, auf die die Jerrys so scharf sind.
+  - Why: "Jerrys" = British slang for Germans; alternative "Fritzen"
+- `sound/scenaric/dam/guard_sorry_blacked_out.wav`
+  - EN: Sorry, we are completely blacked out.
+  - DE: Tut mir leid, wir sind komplett abgeriegelt.
+  - Why: "blacked out" ambiguous (Blackout/Sperre)
+- `sound/scenaric/dam/m1_thats_right.wav`
+  - EN: That's right, and now we're going to repack it this week. And if we have to, we'll repack it again next week. You see how it works?
+  - DE: Richtig, und diese Woche packen wir es neu ab. Und wenn nötig, nächste Woche noch einmal. Sehen Sie, wie das funktioniert?
+  - Why: "repack the valve" = Ventil neu abdichten (Stopfbuchse neu packen)
+- `sound/scenaric/end/cs18_aid_02.wav`
+  - EN: Sir, the Fuhrer is expecting your arrival.
+  - DE: Herr Reichsführer, der Führer erwartet Ihre Ankunft.
+  - Why: English says "Sir"; adjusted
+- `sound/scenaric/escape1/axis12_status_relax.wav`
+  - EN: What is the status of the M7G transceiver?
+  - DE: Wie ist der Status des M7G-Funkgeräts?
+  - Why: "M7G transceiver" fictional model
+- `sound/scenaric/escape1/axis1_give_order.wav`
+  - EN: Sergeant, when I give you an order, I expect an acknowledgement.
+  - DE: Sergeant, wenn ich Ihnen einen Befehl gebe, erwarte ich eine Bestätigung.
+  - Why: English "author" = order
+- `sound/scenaric/escape1/axis2_radio_room.wav`
+  - EN: Yeah, well, I have to report this already all now.
+  - DE: Ja, ich muss das schon alles melden.
+  - Why: Garbled English
+- `sound/scenaric/escape2/axis11_heard.wav`
+  - EN: Haven't you heard? This is valuable property of the Reich. With all those accusations of pilfering coming from the Reichsmarschall's office, the Major isn't taking any chances.
+  - DE: Hast du nicht gehört? Das ist wertvolles Eigentum des Reiches. Bei all den Plünderungsvorwürfen aus dem Büro des Reichsmarschalls geht der Major kein Risiko ein.
+  - Why: English "Reichsmasters' office" - Reichsmarschall
+- `sound/scenaric/escape2/axis1_doubled_guard.wav`
+  - EN: That's because the Major just doubled the guard on the dig site again.
+  - DE: Das liegt daran, dass der Major die Wache an der Grabungsstätte schon wieder verdoppelt hat.
+  - Why: "gather" probably "guard"
+- `sound/scenaric/forest/axis15_handle.wav`
+  - EN: Pardon me for a moment, Corporal, while I handle something important.
+  - DE: Verzeihen Sie einen Moment, Gefreiter, ich muss etwas Wichtiges erledigen.
+  - Why: "Corporal" -> Gefreiter/Obergefreiter, rank wording
+- `sound/scenaric/general/fema_were_under_attack.wav`
+  - EN: You're under attack!
+  - DE: Wir werden angegriffen!
+  - Why: English "You're under attack"; "fema" = female voice
+- `sound/scenaric/general/misc_kill_him.wav`
+  - EN: KILL THEM!
+  - DE: TÖTET SIE!
+  - Why: English says "THEM" while filename says "him"
+- `sound/scenaric/norway/g1_how_is_erich.wav`
+  - EN: So how's that getting along?
+  - DE: Und, wie geht es ihm so?
+  - Why: Probably about Erich (filename how_is_erich) but English is vague
+- `sound/scenaric/norway/m1_torque_wrench.wav`
+  - EN: Where in bloody hell is my splined torque wrench?
+  - DE: Wo zum Teufel ist mein Drehmomentschlüssel mit Keilprofil?
+  - Why: "splined torque wrench" technical term
+- `sound/scenaric/sfm/tank_com_02.wav`
+  - EN: Panzerfaust! The Kreisau extraction team just ahead of us reports there is a six-man Panzergrenadier unit hiding in the next block. You must eliminate them before I can risk moving forward.
+  - DE: Panzerfaust! Das Kreisauer Bergungsteam vor uns meldet eine Panzergrenadier-Einheit von sechs Mann im nächsten Block. Beseitigen Sie sie, bevor ich vorrücken kann.
+  - Why: "Panzerfaust!" is probably a callout/code word
+- `sound/scenaric/tram/station_report.wav`
+  - EN: Tram guard station report. Tram guard station, what is happening?
+  - DE: Seilbahn-Wachstation, melden. Seilbahn-Wachstation, was ist los?
+  - Why: "Tram" = Seilbahn/Straßenbahn? Aerial tram suspected
+- `sound/scenaric/village1/kess_my_house.wav`
+  - EN: Such as it is, this is my house.
+  - DE: Für das, was es ist: Das ist mein Haus.
+  - Why: "Such as it is" - bescheiden gemeint; wording choice
+- `sound/scenaric/village1/officer1_our_own_men.wav`
+  - EN: So it was for our own men, our own men, we sealed in with those things.
+  - DE: Also für unsere eigenen Männer, unsere eigenen Männer, haben wir mit diesen Dingern eingeschlossen.
+  - Why: Awkward English; meaning: we sealed our own men in with those things
+
+## Phase 2 updates (English source revision)
+
+Applied: 65 lines from en_changes.json, plus Totenkopf/Strasse/Zemph/Kobra/Katamarunde, plus the new line `xlabs/death_i_will_deal.wav`. 625 paths now match the regenerated English file.
+
+- `boss2/dh_well_agent.wav`: Super Soldier addressed as "es" ("Verwechseln Sie es nicht", "Es ist der Höhepunkt"). German "Das Über-Soldat" kept as spoken. Mild doubt: the following "Der Supersoldat." mixes gender; matches the English "Das Über-Soldat. The Super Soldier."
+- `boss2/dh_*` lines (my_pleasure, see_what_i_mean, make_it_easy): "es"/"sein" references; `von ihm schnell erledigen` is grammatically both "him" and "it".
+- `player/infantryss/orders/kook.wav`: "Seht! Ein Amerikaner!" (English "Look!"; a shout to comrades).
+- `boss1/en_*`, `mh_*`: "Eagle's Nest"/"Mother Hen" kept in English; German sentence frame around them ("Hier ist Eagle's Nest. Wir empfangen Sie, Mother Hen.").
+- `end/eg_solo_loop.wav`: "[Lateinischer Gesang]".
+- `dam/1933_reichstag.wav`: unchanged, already matches the revised English ("nationale Erhebung").
+- Zemph: previous "Zempf" unified to "Zemph" in all subtitles.
+- `cs06_jac_04_2`: "dieser Dunkle Ritter" (masculine, matches "Dark Knight").

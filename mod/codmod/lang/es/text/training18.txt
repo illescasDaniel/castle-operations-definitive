@@ -1,0 +1,18 @@
+Ejercicio 17: La ametralladora MG42
+
+Este ejercicio te enseñará a montar y disparar la ametralladora MG42 desde una posición fija.
+
+Instrucciones:
+
+Ve a la parte trasera de la ametralladora MG42 montada en el banco que tienes delante. Cuando estés justo detrás del arma, pulsa la tecla de 'activar' para montarla.
+
+Una vez montada, simplemente mantén pulsada la tecla de 'atacar'. Puedes seguir disparando el arma hasta neutralizar todas las amenazas inmediatas. No es necesario recargar la ametralladora MG42.
+
+Para desmontar la MG42, pulsa de nuevo la tecla de 'activar'.
+
+Cuando estés listo, pasa a la siguiente estación.
+
+Límite de tiempo: Ninguno
+
+
+

@@ -114,3 +114,5 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 - Ambient-only AO (r_ssaoAmbient 1, default) via lightall + full-res aoImage; depth mips tried, no gain, removed.
 
 - [x] **Menu FPS limit (2026-10-13):** `com_maxfpsMenu` (-1 Auto/monitor refresh default, 0 Off, fps) caps only menu/cinematic/pause frames (`CL_InMenuOnly`); `com_maxfps -1` = Auto too (default stays Off). GRAPHICS row "Menu Frame Rate Limit", labels `Auto (%hz)` expanded in `ui_shared.c`. Committed; confirmed 2026-10-13. See `docs/fps-limiter.md`.
+
+- 2026-10-16: Multi-language support (text packs de/es, main-menu selector, subtitle size field, English transcript fixes) committed.

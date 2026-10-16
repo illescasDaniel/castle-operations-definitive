@@ -1,0 +1,11 @@
+
+^8MISIÓN 3: ARMAS DE VENGANZA^8
+
+^8Parte 2: Base de cohetes^8
+
+La resistencia alemana nos informa de que el cohete que Calavera pretende disparar contra Londres lleva una nueva ojiva química de algún tipo, cuyo poder destructivo total se desconoce por ahora.
+
+La resistencia alemana también nos informa de que todos estos cohetes tienen un interruptor de "autodestrucción", normalmente situado en la sala de control principal de cohetes. Por desgracia, no sabemos prácticamente nada de la distribución interior de la base. Te corresponde a ti determinar la mejor forma de llegar a la sala de control principal para destruir el cohete antes de que llegue a Londres.  
+
+Tras destruir el cohete, es probable que la base esté en alerta máxima. Usa todos los medios disponibles para salir de la base y avanzar hacia el recinto exterior.
+

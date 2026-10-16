@@ -1,0 +1,19 @@
+Ejercicio 13: La pistola M1911A1
+
+Aquí aprenderás a apuntar, disparar y recargar tu pistola reglamentaria M1911A1.
+
+Instrucciones:
+
+Si hace falta, ve al lado izquierdo del banco de tiro y recoge la M1911A1 (tecla predeterminada 2). Con 'recoger objetos auto.' activado en el menú de opciones, la cogerás sola y irá al inventario. Si no, apunta al arma y pulsa la tecla de 'activar'.
+
+Después ve al lado derecho del banco y recoge la munición.
+
+Apunta a los blancos móviles. Con la mira sobre uno, pulsa la tecla de 'atacar'. Si aciertas, caerá hacia atrás.
+
+La M1911A1 tiene 8 balas. Con el cargador vacío recargarás por instinto. Para recargar antes, pulsa la tecla de 'recargar arma'.
+
+Con una segunda M1911A1 puedes llevar ambas pistolas: pulsa la tecla de 'cambiar a alternativa' y dispararán a la vez. Púlsala otra vez para volver a una sola.
+
+Cuando dispares con soltura, pasa a la siguiente estación.
+
+Límite de tiempo: Ninguno

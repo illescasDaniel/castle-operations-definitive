@@ -1,0 +1,13 @@
+Ejercicio 19: Barreras destructibles
+
+Aquí aprenderás a atravesar barreras destructibles.
+
+Instrucciones:
+
+Ante una barrera destructible, aparecerá abajo en la pantalla el icono de 'rompible'.
+
+Colócate justo delante y destrúyela con cualquier método de ataque. Cuanto mayor es el objeto, más daño necesita. Para ahorrar munición, usa el cuchillo o la patada. La barra azul bajo el icono de 'rompible' indica el daño necesario.
+
+Destruye los tablones de madera y sigue hasta las tablas del suelo. Destruye el suelo y cae a la siguiente estación.
+
+Límite de tiempo: Ninguno

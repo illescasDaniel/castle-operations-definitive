@@ -1,0 +1,19 @@
+Übung 13: Die Pistole M1911A1
+
+Hier lernen Sie, die Standardpistole M1911A1 zu zielen, abzufeuern und nachzuladen.
+
+Anleitung:
+
+Gehen Sie, falls nötig, zur linken Seite der Schützenbank und nehmen Sie die M1911A1 auf (Standardtaste 2). Bei aktivierter 'Auto-Aufnahme' im Optionsmenü kommt sie automatisch ins Inventar. Sonst zielen Sie auf die Waffe und drücken die Taste 'Aktivieren'.
+
+Gehen Sie dann zur rechten Seite der Bank und nehmen Sie die Munition auf.
+
+Zielen Sie auf die beweglichen Ziele. Liegt das Fadenkreuz auf einem Ziel, drücken Sie die Taste 'Angriff'. Bei einem Treffer fällt das Ziel nach hinten.
+
+Die M1911A1 fasst 8 Schuss. Ist das Magazin leer, laden Sie instinktiv nach. Wollen Sie früher nachladen, drücken Sie die Taste 'Nachladen'.
+
+Mit einer zweiten M1911A1 können Sie beide Pistolen tragen: Drücken Sie die Taste 'Alternativwaffe'. Dann feuern beide gleichzeitig. Zum Zurückwechseln drücken Sie sie noch einmal.
+
+Wenn Sie sicher schießen, gehen Sie zur nächsten Station.
+
+Zeitlimit: Keines

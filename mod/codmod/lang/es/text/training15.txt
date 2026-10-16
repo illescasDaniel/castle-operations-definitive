@@ -1,0 +1,17 @@
+Ejercicio 15: El fusil largo Mauser K98K
+
+El Mauser K98K es el fusil largo preferido de tu enemigo. Aquí aprenderás a emplearlo con eficacia.
+
+Instrucciones:
+
+El K98K (tecla predeterminada 4) es fácil de manejar y preciso a larga distancia. Apunta a los blancos y haz un solo disparo, como en los ejercicios anteriores.
+
+Notarás que es extremadamente preciso. Conseguir bajas a larga distancia es sencillo.
+
+Tras cada disparo meterás una bala nueva por instinto. Para llenar el cargador con un peine nuevo, pulsa la tecla de 'recargar arma' cuando quieras.
+
+Sigue apuntando, disparando y recargando hasta sentirte cómodo. Después pasa a la siguiente estación.
+
+NOTA: En un ejercicio posterior verás cómo usar la mira óptica variable con la tecla de 'cambiar a alternativa'.
+
+Límite de tiempo: Ninguno

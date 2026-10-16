@@ -1,0 +1,15 @@
+Ejercicio 6: Botiquines
+
+Esto es una introducción a los primeros auxilios.
+
+Instrucciones:
+
+Sobre la mesa que tienes al lado hay tres botiquines grandes. Si necesitas curarte, los recogerás automáticamente al acercarte a ellos.
+
+También puedes recoger un botiquín pulsando la tecla de 'activar'. Cuando estés lo bastante cerca para coger el objeto, se resaltará para indicar que está listo para usarse. 
+
+Si prefieres este método, puedes desactivar la opción de 'recoger objetos auto.' en los ajustes de control. Sin embargo, al hacerlo tendrás que recoger manualmente todos los objetos del juego, incluidas armas y munición.
+
+Cuando tengas la salud al máximo, pasa a la siguiente estación.
+
+Límite de tiempo: Ninguno

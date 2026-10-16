@@ -10,3 +10,11 @@
 =ui/ingame_load.menu 261 266
 @@ 26 27
 +		backcolor .06 .06 .06 .92
+@@ 70 71
++	rect 47 60 46 16
+@@ 72 73
++	textalignx 23
+@@ 123 124
++	rect 140 60 46 16
+@@ 125 126
++	textalignx 23

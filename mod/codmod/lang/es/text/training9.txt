@@ -1,0 +1,11 @@
+Ejercicio 9: Salto-agachado
+
+Este obstáculo te enseñará a dominar el salto-agachado.
+
+Instrucciones:
+
+Mientras avanzas hacia la tubería de drenaje, pulsa la tecla de 'saltar' seguida rápidamente de la tecla de 'agacharse' hasta entrar con éxito en el obstáculo. Sigue avanzando agachado hasta salir de la tubería. 
+
+Sigue practicando a moverte por las tuberías de drenaje hasta dominar esta habilidad. Cuando termines, pasa a la siguiente estación.
+
+Límite de tiempo: Ninguno

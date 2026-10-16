@@ -1,0 +1,19 @@
+Ejercicio 17: El Mauser K98K con mira óptica variable
+
+Aquí aprenderás a emplear el fusil Mauser K98K con un sistema óptico variable (mira de francotirador).
+
+Instrucciones:
+
+Practica con los blancos lejanos y la mira de francotirador acoplada. La mira está en el banco de tiro que tienes delante.
+
+Para pasar a la vista de la mira, selecciona el K98K (tecla predeterminada 4) y pulsa la tecla de 'cambiar a alternativa'.
+
+Con la ampliación, la mira oscila ligeramente. La barra de color a la izquierda de la mira horizontal te permite controlarlo.
+
+El rojo indica la mayor oscilación. Si te mantienes quieto, la barra se encoge y se vuelve verde. Con el tiempo suficiente desaparece y la oscilación es casi imperceptible. Entonces eres más preciso.
+
+Con las teclas de 'acercar zoom' y 'alejar zoom' cambias el campo de visión y la ampliación. Aumenta la oscilación, pero también el alcance del arma.
+
+Sigue practicando hasta disparar con soltura a larga distancia y pasa a la siguiente estación.
+
+Límite de tiempo: Ninguno

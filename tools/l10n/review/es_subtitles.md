@@ -1,0 +1,180 @@
+# Spanish subtitles: lines to review
+
+Most doubtful first. 44 of 625 lines flagged.
+
+- `sound/scenaric/church/elite1_gawking.wav`
+  - EN: What are you all gawking at? You'll see worse than this if you don't get moving. Stop standing around with your bombs in your mouths and start searching the area. Keep an eye out for the American.
+  - ES: ¿Qué miráis todos con la boca abierta? Veréis cosas peores si no os movéis. Dejad de quedaros ahí parados con las bombas en la boca y empezad a registrar la zona. Ojo con el americano.
+  - Why: "bombs in your mouths" odd idiom (probably "bombs" mistranscribed, maybe "thumbs in your mouths")
+- `sound/scenaric/dam/guard_look_for_crackers.wav`
+  - EN: I don't know. Look for some crackers?
+  - ES: No lo sé. ¿Busca unas galletas?
+  - Why: Probably mistranscription; unclear
+- `sound/scenaric/rocket/mech1_has_train_arrived.wav`
+  - EN: Has the train arrived?
+  - ES: ¿Ha llegado el tren?
+  - Why: German original "Hast du Tränen gereift?" is garbled; English guess used
+- `sound/scenaric/village1/axis1_los_los.wav`
+  - EN: The Americans! Go! Go!
+  - ES: ¡Los americanos! ¡Rápido, rápido!
+  - Why: German original "Sie merken! Los, los!" garbled; English "The Americans" guessed
+- `sound/scenaric/church/axis2_done_that.wav`
+  - EN: What the hell is that?
+  - ES: ¿Qué demonios es eso?
+  - Why: Filename "done_that"; English text may be mistranscribed
+- `sound/scenaric/crypt1/cn2_wish.wav`
+  - EN: Yeah, and I wish I hadn't.
+  - ES: Sí, y ojalá no lo hubiera visto.
+  - Why: Reply context unclear ("I wish I hadn't")
+- `sound/scenaric/cs6/cs06_hig_03_1.wav`
+  - EN: Well, it's obviously more of their jiggery-pokery raising the ghoulies rot.
+  - ES: Es evidente que es otra de sus brujerías para resucitar a los muertos.
+  - Why: Source "raising the ghoulies rot" garbled; likely "raising the ghoulies and ghosties"
+- `sound/scenaric/escape1/axis18_shoot.wav`
+  - EN: Is that American? Shoot!
+  - ES: ¿Es americano? ¡Disparad!
+  - Why: German original "Ist das zu merken?" unclear
+- `sound/scenaric/escape1/axis2_radio_room.wav`
+  - EN: Yeah, well, I have to report this already all now.
+  - ES: Sí, bueno, tengo que informar de esto ya mismo.
+  - Why: Source garbled
+- `sound/scenaric/escape1/axis6_good_doctor.wav`
+  - EN: I'm sure the good doctor did his best, eh?
+  - ES: Seguro que el buen doctor hizo lo que pudo, ¿eh?
+  - Why: Irony/context unclear
+- `sound/scenaric/forest/axis10_misdrop.wav`
+  - EN: Really? It's probably just a misdrop from that black guard division training to the south. It happens all the time. You'll get used to it.
+  - ES: ¿En serio? Seguramente es un lanzamiento errado de esa división de la Guardia Negra que entrena al sur. Pasa continuamente. Ya te acostumbrarás.
+  - Why: "black guard division" = Schwarze Garde? unclear
+- `sound/scenaric/general/misc_mumb5.wav`
+  - EN: Yes, yes, yes. It's worth it.
+  - ES: Sí, sí, sí. Merece la pena.
+  - Why: German original "Es weiht uns auf" differs from this English; unclear
+- `sound/scenaric/norway/g1_lucky_for_me.wav`
+  - EN: Lucky for me, I never touch this stuff.
+  - ES: Menos mal que yo nunca toco esto.
+  - Why: Context unclear (drink?)
+- `sound/scenaric/norway/g2_still_sick.wav`
+  - EN: Still sick as a dog I hear.
+  - ES: Dicen que sigue pachucho.
+  - Why: Who is sick unclear (Erich?)
+- `sound/scenaric/rocket/ls_fueling.wav`
+  - EN: Acton, fueling crew's complete final check of safety seals.
+  - ES: Equipo de repostaje, completen la comprobación final de los sellos de seguridad.
+  - Why: Source "Acton, fueling crew's" garbled
+- `sound/scenaric/rocket/mech2_lower.wav`
+  - EN: Lower?
+  - ES: ¿Bajar?
+  - Why: German original "Laura?" - likely mistranscription of "Lower?"
+- `sound/scenaric/rocket/mech2pa_lower.wav`
+  - EN: Lower?
+  - ES: ¿Bajar?
+  - Why: German original "Laura?" - likely mistranscription of "Lower?"
+- `sound/scenaric/sfm/tank_com_09.wav`
+  - EN: Take much more of this. Move!
+  - ES: No aguantaré mucho más. ¡Muévete!
+  - Why: Source "Take much more of this" seems truncated ("I can't take much more of this")
+- `sound/scenaric/tram/kess_under_control.wav`
+  - EN: Yes, Lieutenant Ruger here. Situation under control.
+  - ES: Sí, aquí el teniente Ruger. Situación bajo control.
+  - Why: Kessler is posing as an officer; "Ruger" name guess
+- `sound/scenaric/tram/station_ze_american.wav`
+  - EN: Ah, and the american?
+  - ES: Ah, ¿y el americano?
+  - Why: German original "Ah, und Sie merken?" garbled
+- `sound/scenaric/village1/officer1_our_own_men.wav`
+  - EN: So it was for our own men, our own men, we sealed in with those things.
+  - ES: Así que era por nuestros propios hombres, a nuestros propios hombres los emparedamos con esas cosas.
+  - Why: "for our own men" ambiguous: probably "it was our own men we sealed in"
+- `sound/scenaric/village2/col_m5.wav`
+  - EN: Yes, yes, yes. It's worth it.
+  - ES: Sí, sí, sí. Merece la pena.
+  - Why: German "Es weiht uns auf" differs; unclear
+- `sound/scenaric/village2/g1_tasty_sb.wav`
+  - EN: Mmmh, that's what you call a tasty Sauerbraten!
+  - ES: Mmm, ¡a esto sí que lo llamo un Sauerbraten sabroso!
+  - Why: German original "tasty Sauberaden" garbled; Sauerbraten is a German pot roast
+- `sound/player/infantryss/orders/kook.wav`
+  - EN: Look! An American!
+  - ES: ¡Mira! ¡Un americano!
+  - Why: Now 'Look!' (German 'Guck mal'); rendered '¡Mira!'
+- `sound/scenaric/boss1/hel_05.wav`
+  - EN: This is your last warning!
+  - ES: ¡Es su última advertencia!
+  - Why: Speaker (Helga) addresses Zemph: "your last warning" - tú/usted choice
+- `sound/scenaric/boss2/dh_feeling_fatigued.wav`
+  - EN: Feeling fatigued? Short of breath? Muscles starting to cramp? No? I'm exhausted from just watching you.
+  - ES: ¿Fatigado? ¿Falta de aire? ¿Los músculos empiezan a acalambrarse? ¿No? Yo estoy agotado solo de mirarlo.
+  - Why: tú vs usted for Deathshead addressing B.J.
+- `sound/scenaric/boss2/dh_quite_the_toy.wav`
+  - EN: Quite a scientific little toy, isn't it?
+  - ES: Un juguetito de lo más científico, ¿verdad?
+  - Why: Wiki English 'scientific little toy'; 'it' for the machine, neutral phrasing
+- `sound/scenaric/boss2/dh_try_harder.wav`
+  - EN: Oh, you really must try harder than that! This is barely tempting at all.
+  - ES: Oh, de verdad debe esforzarse más que eso. Esto apenas resulta tentador.
+  - Why: Wiki English 'barely tempting' is odd; rendered as 'resulta tentador'
+- `sound/scenaric/boss2/dh_well_agent.wav`
+  - EN: Well, Agent Blazkowicz. You are a most impressive specimen. It would be my pleasure to dissect you piece by piece. Let me introduce you to someone. Do not confuse it with the mere prototypes you've encountered. This is the pinnacle of all my research. Das Über-Soldat. The Super Soldier.
+  - ES: Bien, agente Blazkowicz. Es usted un espécimen de lo más impresionante. Sería un placer diseccionarlo pieza a pieza. Permítame presentarle a alguien. No lo confunda con los meros prototipos que ha encontrado. Esto es la cumbre de toda mi investigación. Das Über-Soldat. El Supersoldado.
+  - Why: 'Das Über-Soldat' kept in German; 'Esto' (neutral) for the Super Soldier; text files use 'Uber Soldat'
+- `sound/scenaric/chateau/corp_jawol.wav`
+  - EN: I'M COMING!
+  - ES: ¡YA VOY!
+  - Why: Filename suggests "Jawohl"; English gives "I'm coming"
+- `sound/scenaric/chateau/off_check_again.wav`
+  - EN: Well, check again, damn you, and be quick about it.
+  - ES: Pues vuelve a comprobarlo, maldito seas, y date prisa.
+  - Why: English 'damn you' replaces the name Damio: rendered as 'maldito seas'
+- `sound/scenaric/church/axis1_jawhol.wav`
+  - EN: Yes, my commander!
+  - ES: ¡Sí, mi comandante!
+  - Why: Original German "Jawohl, mein Hauptmann" = captain, not commander; kept rank loosely
+- `sound/scenaric/cs1/cs01_dir_04.wav`
+  - EN: Damn! Call a meeting, Jack.
+  - ES: ¡Maldición! Convoca una reunión, Jack.
+  - Why: Now 'Call a meeting'; imperative, tú with Jack kept
+- `sound/scenaric/cs11/cs11_dir_07_4.wav`
+  - EN: I suppose that explains the proto-soldier blueprint and those loping monstrosities as well. But it still doesn't explain the involvement with the occult.
+  - ES: Supongo que eso también explica el plano del protosoldado y esos monstruos saltarines. Pero sigue sin explicar la implicación del ocultismo.
+  - Why: "loping monstrosities" translated loosely
+- `sound/scenaric/cs14/cs14_dir_06_3.wav`
+  - EN: Please.
+  - ES: Adelante.
+  - Why: "Please" - offering the floor
+- `sound/scenaric/cs14/cs14_jac_07.wav`
+  - EN: My dear Reichsführer SS, as you are no doubt already aware, my X-Labs lie in complete ruin. Operation Über-Soldat, my life's work, is now a bitter memory. I realize you still have faith in the ultimate success of Operation Resurrection. I wish I could share your confidence, but I feel you have been misled by individuals whose mental competence must be called into question. I leave you now with a word of caution. The Allies have sent a most determined and capable agent to disrupt your ceremony. Do not make the mistake of underestimating him, as I did. Your faithful SS Oberführer Wilhelm Strasse
+  - ES: Mi estimado Reichsführer SS: como sin duda ya sabrá, mis Laboratorios X están en completa ruina. La Operación Über-Soldat, la obra de mi vida, es ya un amargo recuerdo. Sé que aún confía en el éxito final de la Operación Resurrección. Ojalá pudiera compartir su confianza, pero creo que le han engañado personas cuya competencia mental debe ponerse en duda. Le dejo con una advertencia. Los Aliados han enviado a un agente muy decidido y capaz para frustrar su ceremonia. No cometa el error de subestimarlo, como hice yo. Su fiel SS Oberführer Wilhelm Strasse
+  - Why: Über-Soldat here vs 'Uber Soldat' in notebook texts; sign-off 'Su fiel'
+- `sound/scenaric/cs14/cs14_jac_09_4.wav`
+  - EN: Yes sir, I do. Gentlemen, if just two weeks ago someone had mentioned legions of undead, man-made monsters and demons from hell, would any of you have taken them seriously? Of course not. And neither would I. But think of all we've learned since then. Now you're saying we should ignore the rest of it because, why, it's too incredible? I'm not saying I believe it. I'm saying we can't afford to dismiss it. Once again, it's your call, sir.
+  - ES: Sí, señor. Caballeros, si hace solo dos semanas alguien hubiera hablado de legiones de muertos vivientes, monstruos artificiales y demonios del infierno, ¿se lo habría tomado alguien en serio? Claro que no. Yo tampoco. Pero pensad en todo lo que hemos averiguado desde entonces. ¿Y ahora decís que debemos ignorar el resto porque es demasiado increíble? No digo que lo crea. Digo que no podemos permitirnos descartarlo. Una vez más, usted decide, señor.
+  - Why: 31 s long text; register of addressing Murphy/others
+- `sound/scenaric/cs14/cs14_mur_03_1.wav`
+  - EN: Please, Jack, let me finish. Now, on top of that, we have what amounts to their own top scientists telling them they've all collectively blown a head gasket. What further evidence do we need?
+  - ES: Por favor, Jack, déjame terminar. Además, tenemos a sus propios científicos de primera diciéndoles que, colectivamente, se les ha fundido un fusible. ¿Qué más pruebas necesitamos?
+  - Why: "blown a head gasket" idiom
+- `sound/scenaric/escape1/axis13_yes1_relax.wav`
+  - EN: Yes, Mr. Lieutenant!
+  - ES: ¡Sí, Herr Leutnant!
+  - Why: Source German is "Jawohl, Herr Leutnant"
+- `sound/scenaric/escape1/axis13_yes2_relax.wav`
+  - EN: Yes, my lord!
+  - ES: ¡Sí, mi señor!
+  - Why: German "Jawohl, mein Herr"; "mein Herr" = sir
+- `sound/scenaric/general/fema_were_under_attack.wav`
+  - EN: You're under attack!
+  - ES: ¡Nos atacan!
+  - Why: English said "You're under attack"; adapted
+- `sound/scenaric/general/misc_kill_him.wav`
+  - EN: KILL THEM!
+  - ES: ¡MATADLOS!
+  - Why: English says "KILL THEM" but filename is "kill_him"
+- `sound/scenaric/norway/m1_torque_wrench.wav`
+  - EN: Where in bloody hell is my splined torque wrench?
+  - ES: ¿Dónde diablos está mi llave dinamométrica?
+  - Why: "splined torque wrench" simplified
+- `sound/scenaric/rocket/ls_intruder.wav`
+  - EN: Achtung! [Attention!] Intro the alert! Intro the alert! Security teams, report immediately!
+  - ES: ¡Achtung! ¡Alerta de intruso! ¡Alerta de intruso! ¡Equipos de seguridad, preséntense de inmediato!
+  - Why: Source "Intro the alert" = intruder alert

@@ -75,6 +75,9 @@ done
 # rewrites zz_→sp_ when resolving pak paths (see files.c FS_AddGameDirectory).
 # Menu + HUD pk3s are generated (deltas + your RTCW paks), so build before copying.
 "$ROOT/scripts/build-menus.sh"
+
+# Language packs (flags, lang.info, translations) -> run/codmod/codmod_lang_<code>.pk3
+python3 "$ROOT/tools/l10n/pack.py"
 if [[ -f "$ROOT/mod/codmod/codmod_hud.pk3" ]]; then
 	cp -f "$ROOT/mod/codmod/codmod_hud.pk3" "$ROOT/run/codmod/codmod_hud.pk3"
 	rm -f "$ROOT/run/codmod/zz_codmod_hud.pk3"

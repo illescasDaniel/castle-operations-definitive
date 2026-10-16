@@ -1,0 +1,10 @@
+
+Un perfil plano de reposo en la trayectoria de la leva mantiene el cerrojo trabado brevemente hasta que la bala ha pasado la boca del cañón y la presión ha bajado a un nivel seguro.
+
+Unos pasadores en la cabeza del cerrojo se acoplan a las superficies de leva del percutor y hacen que este gire con la cabeza.
+
+Tras la extracción y la expulsión, el cerrojo ha completado un ciclo de 360 grados y queda en posición de recoger otra bala. Los seis cerrojos repiten este mismo proceso en secuencia.
+
+Problemas del diseño original y notas de construcción:
+
+Los seis cañones se sujetan a la parte frontal del rotor mediante una brida interrumpida integral en un lado de cada cañón, que requiere un giro de 180 grados para su retención. Una abrazadera de cañones, que encaja con cuatro bridas en la parte frontal de cada cañón, impide que ninguno de ellos gire y salga de su posición. Esta abrazadera se sujeta con un solo perno.

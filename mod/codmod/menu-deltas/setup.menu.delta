@@ -101,10 +101,14 @@
 +	close options_menu ;
 +	close sound_menu ;
 +	close game_menu ;
+@@ 344 345
++	rect 30 450 60 14 
 @@ 354 355
 +	close options_menu ;
 +	close sound_menu ;
 +	close game_menu ;
+@@ 370 371
++	rect 30 450 60 14 
 @@ 382 383
 +	close options_menu ;
 +	close sound_menu ;

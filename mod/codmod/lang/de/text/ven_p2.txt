@@ -1,0 +1,8 @@
+Funktionsweise im Detail:
+
+Die GP-VG MK2 Venom Gun ist elektrisch betrieben und nutzt ein Verriegelungssystem mit sechs Läufen und sechs Verschlüssen. Die Läufe rotieren entgegen dem Uhrzeigersinn und feuern nacheinander, sobald sie die 12-Uhr-Position erreichen. Der Verschlussmechanismus besitzt einen rotierenden Verschlusskopf mit zwei Verriegelungsflächen (ähnlich dem MG34).
+
+Die Verschlussbaugruppe besitzt am Verschlusskopf einen schraubenförmigen Zapfen, der in eine schraubenförmige Nut im Verschlusskörper greift. Die Drehung in die Schussstellung erfolgt im Uhrzeigersinn, wobei sich der Verschluss um den Schlagbolzen dreht, der die gesamte Verschlussbaugruppe zusammenhält.
+
+Der Verschlusskopf selbst verriegelt in Aussparungen im Rotor (dem tragenden Hauptbauteil der Waffe), während der Lauf an der Vorderseite des Rotors ansetzt. Eine Rolle oben auf der Verschlussbaugruppe, die sich in einer elliptischen Kurvenbahn im Gehäuse bewegt, treibt den Verschluss nach vorn.
+

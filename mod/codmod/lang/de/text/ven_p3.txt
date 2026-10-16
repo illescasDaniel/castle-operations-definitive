@@ -1,0 +1,10 @@
+
+Ein flaches Verweilprofil in der Kurvenbahn hält den Verschluss kurz verriegelt, bis das Geschoss die Mündung passiert hat und der Druck auf ein sicheres Maß gesunken ist.
+
+Stifte im Verschlusskopf greifen in die Kurvenflächen am Schlagbolzen und lassen den Schlagbolzen mit dem Kopf mitdrehen.
+
+Nach Auszug und Auswurf hat der Verschluss einen Zyklus von 360 Grad abgeschlossen und ist bereit, die nächste Patrone aufzunehmen. Alle sechs Verschlüsse wiederholen diesen identischen Vorgang nacheinander.
+
+Ursprüngliche Konstruktionsprobleme und Fertigungshinweise:
+
+Die sechs Läufe werden an der Vorderseite des Rotors durch einen einteiligen unterbrochenen Flansch an einer Seite jedes Laufs gehalten, der zum Festsetzen eine Drehung um 180 Grad erfordert. Alle Läufe werden durch eine Laufklemme am Herausdrehen aus ihrer gehaltenen Position gehindert, die in vier Flansche an der Vorderseite jedes Laufs greift. Diese Klemme wird von einem einzelnen Bolzen gehalten.

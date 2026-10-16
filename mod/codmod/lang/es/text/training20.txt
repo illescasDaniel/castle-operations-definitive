@@ -1,0 +1,15 @@
+Ejercicio 20: Sillas
+
+Aquí aprenderás a coger y usar una silla.
+
+Instrucciones:
+
+Las sillas son útiles cuando no hay otra salida. También sirven de cobertura o para aturdir al enemigo.
+
+Camina hacia una silla hasta ver el icono de la 'mano' abajo en la pantalla. Si aparece dentro de un círculo tachado, llevas un arma de dos manos y no tienes una mano libre. Cambia a un arma de una mano y pulsa la tecla de 'activar' para coger la silla.
+
+Con la tecla de 'patada' la blandes. Para lanzarla, pulsa de nuevo 'activar'. Si hay un obstáculo delante, la silla seguirá en tu mano hasta que esté despejado.
+
+También sirve para subir a zonas inaccesibles. Colócala bajo la salida (a la derecha de la escalera). Pulsa la tecla de 'saltar' mientras avanzas para subirte a la silla. Vuelve a saltar y avanzar para salir de la estación.
+
+NOTA: Si la silla se rompe, sal por la escalera.

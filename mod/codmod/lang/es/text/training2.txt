@@ -1,0 +1,15 @@
+Ejercicio 2: Abrir puertas
+
+El siguiente ejercicio te enseñará a abrir puertas.
+
+Instrucciones:
+
+Abre el siguiente conjunto de puertas que tienes delante. Al pulsar la tecla de 'activar', la puerta se abrirá y podrás pasar. 
+
+El icono de la 'mano', que aparece en la parte inferior de la pantalla, te avisará cuando se pueda atravesar una puerta, verja o rastrillo.
+
+También puedes abrir una puerta giratoria de una rápida patada. Colocado justo delante de la puerta, pulsa la tecla de 'patada'. Patear una puerta hará que se abra más deprisa.
+
+Cuando te sientas cómodo abriendo puertas con los dos métodos descritos, pasa a la siguiente estación.
+
+Límite de tiempo: Ninguno

@@ -1,0 +1,18 @@
+Übung 17: Das Maschinengewehr MG42
+
+Diese Übung zeigt Ihnen, wie Sie das Maschinengewehr MG42 aufstellen und aus fester Position abfeuern.
+
+Anleitung:
+
+Gehen Sie hinter das montierte Maschinengewehr MG42 auf der Bank vor Ihnen. Wenn Sie direkt hinter der Waffe stehen, drücken Sie die Taste 'Aktivieren', um die Waffe zu besetzen.
+
+Sobald Sie die Waffe besetzt haben, halten Sie einfach die Taste 'Angriff' gedrückt. Sie können weiterfeuern, bis alle unmittelbaren Bedrohungen neutralisiert sind. Das Maschinengewehr MG42 muss nicht nachgeladen werden.
+
+Um die MG42 wieder zu verlassen, drücken Sie noch einmal die Taste 'Aktivieren'.
+
+Wenn Sie bereit sind, gehen Sie zur nächsten Station.
+
+Zeitlimit: Keines
+
+
+

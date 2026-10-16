@@ -1,0 +1,12 @@
+Ejercicio 4: Trepar
+
+Este ejercicio te enseñará a subir una escalera.
+
+Instrucciones:
+
+Sube la escalera que tienes delante avanzando hacia los peldaños paralelos de la estructura. Cuando estés lo bastante cerca para subir, aparecerá en la parte inferior de la pantalla el icono de 'escalera'. Te avisará de que puedes trepar. Avanza mirando hacia el cielo. Sigue avanzando (mirando hacia arriba) hasta llegar a lo alto de la estructura. Avanza para salir de la escalera. 
+
+Cuando hayas completado este ejercicio, sigue las indicaciones del tablón situado en lo alto de esta estación. 
+
+Límite de tiempo: Ninguno
+

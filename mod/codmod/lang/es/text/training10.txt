@@ -1,0 +1,13 @@
+Ejercicio 10: Salto de longitud con carrera
+
+Este ejercicio te enseñará a salvar mayores distancias corriendo a máxima zancada.
+
+Instrucciones:
+
+Salva los siguientes obstáculos sin caer en la arena. Para ello, pulsa la tecla de 'correr / caminar' mientras avanzas. Cuando llegues al obstáculo, pulsa la tecla de 'saltar' sin dejar de correr.
+
+Si has elegido 'correr siempre' en los ajustes de control, solo tendrás que saltar al comienzo de cada obstáculo.  
+
+Cuando domines la carrera y el salto, pasa a la siguiente estación.
+
+Límite de tiempo: Ninguno

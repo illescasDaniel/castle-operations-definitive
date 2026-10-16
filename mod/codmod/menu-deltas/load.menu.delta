@@ -1,0 +1,9 @@
+#codmod-delta v2 base=ui/load.menu sha256=bae9e6f84b8912f5c0b093c13701171591047af887fdac23989af21cc1fbf48a
+@@ 429 430
++		rect 30 450 60 14 
+@@ 447 448
++		rect 30 450 60 14 
+@@ 466 467
++		rect 560 450 60 14 
+@@ 484 485
++		rect 560 450 60 14 

@@ -1,0 +1,6 @@
+1) Elevación - el operador de la plataforma elevará el cohete hasta la posición de repostaje.
+
+
+2) Repostaje - Una vez completada la elevación, el operador de repostaje iniciará el repostaje.
+
+3) Despeje de la torre - Una vez completado el repostaje, el operador de la torre de lanzamiento abrirá las puertas de la torre.

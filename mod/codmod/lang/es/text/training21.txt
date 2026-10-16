@@ -1,0 +1,21 @@
+Ejercicio 21: Granadas
+
+Aquí aprenderás a usar correctamente una granada.
+
+P E L I G R O
+
+Todas las granadas llevan detonadores de mecha. Un uso indebido provoca lesiones graves o la muerte.
+
+Instrucciones:
+
+Coge una bolsa de granadas de la pila de cajas a tu derecha. Selecciona la granada (tecla predeterminada 6) y ve hasta la valla. Apunta con cuidado a las cajas de humo amarillo de los pequeños cráteres.
+
+Pulsa y SUELTA la tecla de 'atacar' para lanzar la granada.
+
+La distancia depende del horizonte: cuanto más alto apuntes sobre él, más lejos irá la granada; cuanto más bajo, más cerca caerá.
+
+Todas tienen una mecha de 5 segundos. Para acortarla, mantén pulsada la tecla de 'atacar'. Oirás el tic al arder la mecha. Suéltala para lanzar la granada activa, siempre antes de que detone.
+
+P E L I G R O
+
+Límite de tiempo: Ninguno

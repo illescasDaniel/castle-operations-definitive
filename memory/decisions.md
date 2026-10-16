@@ -11,6 +11,12 @@ Append-only log, newest first. Never rewrite history: if a decision is reversed,
 - **Rationale:** <why, and what we rejected>
 -->
 
+## 2026-10-16: Multiply AO before translucents
+
+- **Context:** SSAO/GTAO multiply in post darkened curtains/glass with the AO of walls behind them.
+- **Decision:** Apply multiply AO after opaque draws and before `shader->sort > SS_OPAQUE`; skip the post-process multiply when already applied.
+- **Rationale:** Depth is opaque-only; post multiply was wrong for alpha. Ambient-only AO (`r_ssaoAmbient 1`) was already opaque-only via lightall.
+
 ## 2026-10-16: GRAPHICS Gamma + Exposure; cutscene dlights on
 
 - **Context:** Brightness slider was really gamma; filmic `r_cameraExposure` was cheat-only. Cutscenes still dark with sun-only lite mode.

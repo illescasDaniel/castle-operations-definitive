@@ -17,6 +17,7 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 - [x] Phase 5.5: quick knife on V + snappy switch/return (confirmed in-game 2026-10-08)
 
 ### Open
+- [x] **Cutscene lite + Exposure menu** (2026-10-16): `r_cutsceneFx` default 3 (sun+dlights); GRAPHICS Gamma (`r_gamma`) + Exposure (`r_cameraExposure`); awaiting user confirm on escape1 + menus (`docs/testing.md`)
 - [x] **Soft vid_restart (MangoHud)** (2026-10-16): mode/FS Apply keeps GL context; hard only for context-attr latches; smoke OK under mangohud Wayland (`vid_restart: soft`, `GLimp_SetModeInPlace`); docs in `docs/testing.md`
 - [x] **Video Mode scrollable popup** (2026-10-16): `vidmode_popmenu` / `FEEDER_VIDMODES`; engine `7f342afe`, outer `40f36c7`; also fixed load.menu fadebox missing `}` (delete-confirm parse error)
 - [x] Menu cursor: new dagger art, hotspot at the tip, no widescreen stretch; engine `2d81a83e`; user verified 2026-10-16
@@ -38,7 +39,8 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 - [x] Phase 5b follow-up: double ammo + interact hint (“Press F” / “Breakable”) (confirmed 2026-10-08)
 - [x] **Phase 3 per-weapon ADS bake** — all 9 from `codmod_ads_tune.log` final pass (2026-10-09); globals 0; `cod_adsCrosshair 2`; `cod_adsCrosshairForce` for re-tune; tooling kept.
 - [x] Hip crosshair on Garand + Mauser-with-scope (was vanilla-hidden) — 2026-10-09
-- [x] Default `r_gamma 3` in `codmod.cfg` — 2026-10-09
+- [x] Default `r_gamma 1` in `codmod.cfg` (was 3, incorrect) — 2026-10-16
+- [x] Default `r_gamma 3` in `codmod.cfg` — 2026-10-09 (reverted 2026-10-16)
 - [x] Phase 5c: CoD HUD — `clip/reserve` ammo, no health/stamina bars, low-HP blood (confirmed 2026-10-09)
 - [x] Phase 5c follow-up: CoD 4-post crosshair bloom + ADS post fade (keep center dot) — committed 2026-10-09
 - [x] E9 hitmarkers (X flash + body/headshot sounds) + unbind CTRL from `+attack` — committed 2026-10-09

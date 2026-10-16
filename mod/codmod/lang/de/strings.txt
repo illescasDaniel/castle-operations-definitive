@@ -178,6 +178,8 @@
 "GTAO Medium" "GTAO Medium"
 "GTAO High" "GTAO High"
 "Brightness:" "Helligkeit:"
+"Gamma:" "Gamma:"
+"Exposure:" "Belichtung:"
 "Menu Frame Rate Limit:" "Menü-Bildratenlimit:"
 "Driver Info" "Treiberinfo"
 "RUN BENCHMARK" "BENCHMARK STARTEN"

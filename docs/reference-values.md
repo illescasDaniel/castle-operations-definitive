@@ -85,7 +85,7 @@ documented. **M** = commonly cited, not verified here. **L** = estimate from mem
 | `r_hdr` / `r_postProcess` / `r_toneMap` / `r_autoExposure` | 1 | HDR tonemap path | Graphics |
 | `r_floatLightmap` | 1 | float lightmaps (less banding); latch | Graphics |
 | `r_specularMapping` / `r_deluxeMapping` | 1 | specular + deluxe; auto `_s` if present; latch | Graphics |
-| `r_forceSun` | 1 | force cascaded sun shadows (stock `q3map_sun`) | Graphics |
+| `r_forceSun` | 1 | force cascaded sun shadows (stock `q3map_sun`); suppressed in scripted cams via `RDF_NOSUNLIGHT` | Graphics |
 | `r_drawSunRays` | 1 | sun god rays; latch; pinned in run.sh, no menu entry | Graphics |
 | `r_sunShadows` / `r_sunlightMode` | 1 / 1 | sun CSM plumbing; latch | Graphics |
 | `r_shadowFilter` / `r_shadowMapSize` | 2 / 2048 | soft + hi-res cascades; latch | Graphics |

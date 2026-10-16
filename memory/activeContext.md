@@ -2,6 +2,8 @@ _Last updated: 2026-10-16_
 
 ## Current focus
 
+**Cutscene + exposure (2026-10-16):** defaults locked — `r_cameraExposure 1.65`, `r_gamma 1`, `r_cutsceneFx 27`. Committing/pushing, then AO-through-translucents fix.
+
 **Soft vid_restart for MangoHud (2026-10-16): implemented, smoke-verified under mangohud Wayland.** Mode Apply keeps GL context (`re.Shutdown(qfalse)` + `GLimp_SetModeInPlace`); hard path only for context-attribute latches. Engine changes in `iortcw/` uncommitted until user asks. GRAPHICS Video Mode Apply under `game_run.sh` should no longer SIGSEGV.
 
 **Video Mode popup (2026-10-16): committed/pushed** (engine `7f342afe`, outer `80de7c7`). Also fixed `load.menu` fadebox missing `}` (delete-confirm parse error). Quit cleanly to pick up menus pk3.
@@ -45,8 +47,8 @@ None.
 
 ## Next steps
 
-1. In-game under `game_run.sh`: GRAPHICS → change Video Mode → Apply (expect soft restart, no crash); FS toggle still in-place.
-2. Commit engine soft-vid_restart + outer submodule pointer when user asks.
+1. In-game: New Game → escape1 intro with `r_cutsceneFx 0` (baked only); re-enable bits to find culprit; outdoor sun after cam.
+2. Commit engine cutscene-sun + soft-vid_restart + outer submodule pointer when user asks.
 3. E4/E5 leftovers only if user wants that thread again.
 
 ## Historical notes

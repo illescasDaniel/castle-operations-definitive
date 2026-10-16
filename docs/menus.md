@@ -60,7 +60,8 @@ add more. Never edit the user's `wolfconfig.cfg` (`docs/testing.md`, Safety rule
 
 ## What is exposed, and why
 
-GRAPHICS shows only settings with a real effect (mode, fullscreen, vsync, FPS cap, anti-aliasing, brightness).
+GRAPHICS shows only settings with a real effect (mode, fullscreen, vsync, FPS cap, anti-aliasing,
+gamma, HDR exposure).
 ADVANCED lists the rest with each default tagged "(default)". Settings tied to the sun/shadow pipeline (depth
 prepass, force sun, HDR chain) stay hidden because toggling them alone is misleading; see `docs/performance.md`.
 First-launch display defaults: SMAA High, vsync Triple Buffer, no FPS cap, desktop resolution (`r_mode -2`), fullscreen.

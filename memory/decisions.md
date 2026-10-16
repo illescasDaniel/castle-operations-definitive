@@ -11,6 +11,36 @@ Append-only log, newest first. Never rewrite history: if a decision is reversed,
 - **Rationale:** <why, and what we rejected>
 -->
 
+## 2026-10-16: GRAPHICS Gamma + Exposure; cutscene dlights on
+
+- **Context:** Brightness slider was really gamma; filmic `r_cameraExposure` was cheat-only. Cutscenes still dark with sun-only lite mode.
+- **Decision:** Rename menu label to Gamma; add Exposure editfield (`r_cameraExposure`, `CVAR_ARCHIVE`, range -2..4, default 1 in binds). Default `r_cutsceneFx 3` (sun+dlights). Remove every-launch `r_gamma` from `codmod.cfg` (user setting → binds only).
+- **Rationale:** Correct names; exposure is the HDR brightness knob next to gamma. Indoor cams need scripted dlights.
+
+## 2026-10-16: Default `r_gamma 1`; cutsceneFx sun + neutral tonemap
+
+- **Context:** `r_gamma 3` playtest lock was wrong for gameplay and cams. Outdoor escape1 cam (flags/sky) looked washed gray with `r_cutsceneFx 0` (no sun).
+- **Decision:** `seta r_gamma "1"` in `codmod.cfg` + binds reset. Default `r_cutsceneFx 1` (keep sun/CSM). During cams, filmic exposure boost is forced to 0 unless bit 64. HW gamma override to 1.0 during cams kept for users who raise brightness.
+- **Rationale:** Outdoor cams need sun; gamma 3 was washing everything. Neutral tonemap exposure avoids gray sky with HDR. Revisit indoor if sun patchiness returns at gamma 1.
+
+## 2026-10-16: Cutscene lite also forces gamma 1.0 — superseded
+
+- **Context:** baked-only cams wrong at gameplay `r_gamma 3`.
+- **Decision:** HW gamma 1.0 during `RDF_NOSUNLIGHT` without writing archive.
+- **Rationale:** Superseded same day: gameplay default is now 1; outdoor needed sun back on.
+
+## 2026-10-16: Cutscene lite lighting (`RDF_NOSUNLIGHT` + `r_cutsceneFx`)
+
+- **Context:** escape1 intro looked washed / uneven; turning off forced sun alone helped only a little. Need a clean baked-LM baseline, then re-enable remaster FX one by one.
+- **Decision:** `cameraMode` sets `RDF_NOSUNLIGHT`. Default `r_cutsceneFx 0` suppresses sun/CSM, all dlights, SSAO/AO, autoexposure, and sun rays during the cam (flashlight still skipped in cgame). Bits 1/2/4/8/16 re-enable those features for A/B. Gameplay after the cam is unchanged.
+- **Rationale:** Diagnostic first (broad off), then narrow the culprit via console bits. Rejected archiving `r_forceSun`/`r_dynamiclight` toggles from cgame (wolfconfig leak) and permanently killing cine dlights without a re-enable path.
+
+## 2026-10-16: Cutscenes suppress forced sun (RDF_NOSUNLIGHT) — superseded
+
+- **Context:** first cutscene lighting pass; sun-only gate.
+- **Decision:** sun/CSM + flashlight off during cams; keep map dlights.
+- **Rationale:** Superseded the same day by the `r_cutsceneFx` lite mode when sun-only was not enough.
+
 ## 2026-10-16: Soft vid_restart keeps GL context (MangoHud)
 
 - **Context:** Fullscreen-only Apply was already in-place (`IN_ToggleFullscreenInPlace`), but Video Mode / `r_mode` Apply still ran hard `vid_restart` → `CL_ShutdownRef` → `SDL_QuitSubSystem(VIDEO)` and SIGSEGV under MangoHud/gamemode on Wayland.
@@ -306,10 +336,10 @@ Append-only log, newest first. Never rewrite history: if a decision is reversed,
 - **Decision:** Override `ui/main.menu` in `codmod_menus.pk3` (not `zz_*`): left vertical stack at x=40, hide bottom WOLFICON / gold lines / BLACKGRAD2; keep scene art and all six actions.
 - **Rationale:** Same fs_game pk3 override pattern as `codmod_hud.pk3`; layout-only first slice before pause menu or new art.
 
-## 2026-10-09: Default `r_gamma 3`
+## 2026-10-09: Default `r_gamma 3` — reversed 2026-10-16
 
 - **Context:** User’s playtest brightness (`r_gamma 3` in wolfconfig) should be the mod default, not engine 1.
-- **Decision:** `seta r_gamma "3"` in `mod/codmod/codmod.cfg`.
+- **Decision:** `seta r_gamma "3"` in `mod/codmod/codmod.cfg`. **Reversed 2026-10-16:** default is 1 again (3 washed cutscenes/gameplay).
 - **Rationale:** Matches the locked in-game feel; archived every launch with other graphics defaults.
 
 ## 2026-10-09: Hip crosshair on Garand + scoped Mauser

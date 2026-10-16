@@ -143,7 +143,7 @@
 =ui/options.menu 461 463
 +		name game
 =ui/cdkey.menu 276 277
-=ui/options.menu 467 468
++		text "Gamma:"
 +		cvar "r_gamma"
 +		maxChars 6
 +		maxPaintChars 6

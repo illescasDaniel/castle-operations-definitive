@@ -178,6 +178,8 @@
 "GTAO Medium" "GTAO medio"
 "GTAO High" "GTAO alto"
 "Brightness:" "Brillo:"
+"Gamma:" "Gamma:"
+"Exposure:" "Exposición:"
 "Menu Frame Rate Limit:" "Límite de FPS del menú:"
 "Driver Info" "Info del controlador"
 "RUN BENCHMARK" "EJECUTAR PRUEBA"

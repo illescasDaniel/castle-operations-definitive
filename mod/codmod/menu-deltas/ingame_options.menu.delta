@@ -196,12 +196,10 @@
 +		textaligny 9
 +		textscale .20
 =ui/ingame_options.menu 325 329
-=ui/ingame_options.menu 450 453
-=ui/ingame_system.menu 356 358
-=ui/ingame_system.menu 72 73
+=ui/ingame_system.menu 69 73
 =ui/ingame_options.menu 216 217
 =ui/cdkey.menu 276 277
-=ui/ingame_options.menu 422 423
++		text "Gamma:"
 +		cvar "r_gamma"
 +		maxChars 6
 +		maxPaintChars 6
@@ -212,11 +210,24 @@
 +		textscale .20
 =ui/ingame_options.menu 325 329
 =ui/ingame_system.menu 69 73
+=ui/ingame_options.menu 216 217
+=ui/cdkey.menu 276 277
++		text "Exposure:"
++		cvar "r_cameraExposure"
++		maxChars 6
++		maxPaintChars 6
++		rect 240 195 320 11
+=ui/ingame_options.menu 81 82
+=ui/error.menu 217 218
++		textaligny 9
++		textscale .20
+=ui/ingame_options.menu 325 329
+=ui/ingame_system.menu 69 73
 =ui/options.menu 260 262
 +		text "Menu Frame Rate Limit:"
 +		cvar "com_maxfpsMenu"
 +		cvarFloatList { "Auto (%hz)" -1 "Off" 0 "30" 30 "60" 60 "75" 75 "90" 90 "120" 120 "144" 144 "165" 165 "240" 240 "360" 360 }
-+		rect 240 195 320 11
++		rect 240 206 320 11
 =ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
 +		textaligny 9
@@ -227,7 +238,7 @@
 =ui/ingame_system.menu 462 464
 +		textscale .20
 =ui/ingame_options.menu 38 39
-+		rect 240 206 320 11
++		rect 240 217 320 11
 =ui/ingame_options.menu 443 444
 =ui/error.menu 217 218
 +		textaligny 9

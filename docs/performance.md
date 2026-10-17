@@ -184,3 +184,23 @@ sync is suspended, and retried after 64 frames, doubling (up to 2048) while retr
 | cap 240, adaptive (**shipped**) | 239.3 | 160 |
 | cap 144, adaptive (sync stays on) | 144.0 | 123 |
 | cap 280 (above the GPU), adaptive | 250 | 174 (uncapped: ~254) |
+
+## Specular cost (2026-10-17)
+
+`r_codSpecular 1` (spec maps + light-grid specular + cubemaps) took the bench demo from 274 to 141 FPS (median frame
+unchanged, p95 3.8 -> 13 ms, hundreds of hitches). `r_speeds 1` showed batches/frame 600 -> 3500 with the same
+surfaces and verts: with no `misc_cubemap` entities rend2 uses every `ai_marker` as a probe (164 on escape2), and the
+per-surface `cubemapIndex` is not in the draw sort key but ends a batch whenever it changes. The `sunshadow` GPU pass
+(not fill-bound, unchanged by shadow map size) went 0.4 -> 4.1 ms because shadow/depth views drew one batch per
+surface. Disabling any one of deluxe specular or spec maps hid it (batch splitting needs a probe on lit surfaces).
+
+Fixes (engine `iortcw/SP/code/rend2`):
+1. `R_AddDrawSurf` zeroes the cubemap for shadow/depth views, unlit shaders and (with `r_cubemapSpecOnly 1`, default)
+   shaders without a spec map (`shader_t.useCubemap` / `hasSpecMap`); `RB_RenderDrawSurfList` ignores it in depth fill;
+   `R_RadixSort` gets a stable cubemap pass so equal keys group per probe.
+2. `R_ClusterCubemaps`: ai_marker probes merged within `r_cubemapMergeDist` (384u, latched): 164 -> 33 on escape2
+   (also ~5x faster map load).
+3. `lightall_fp.glsl`: uniform branches skip the spec-map fetch and cubemap block when not bound.
+
+Bench (escape2 demo, 2561x1601): spec off 274 FPS, spec on before 141, after 267 (0 hitches; batches 3500 -> 517).
+Fix 1 alone gives 266; 2 and 3 add load time and a little GPU. Spec-map VRAM was not the issue (not reduced).

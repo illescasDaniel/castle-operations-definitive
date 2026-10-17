@@ -2,6 +2,8 @@ _Last updated: 2026-10-16_
 
 ## Current focus
 
+**Specular perf fix (2026-10-17): built/installed, engine changes uncommitted in `iortcw/`, awaiting in-game look.** Spec-on FPS 141 -> 267 (spec off 274): cubemap index split draw batches (3500/frame); fixed via cubemap gating in `R_AddDrawSurf`, radix pass, ai_marker clustering (`r_cubemapMergeDist`), `r_cubemapSpecOnly`, shader uniform branches. Details in `docs/performance.md` ("Specular cost"). User to check metal/armor/glass reflections still look right (probes now only on spec-mapped shaders, 33 instead of 164).
+
 **Specular highlights (2026-10-16): user confirmed weapons/metal look great; rolled out to all game materials, awaiting in-game check.** `tools/spec-bake` classifies ~490 textures by path regex (gunmetal/armor/metal/wood/marble/stone/glass/ceramic) into private `run/codmod/codmod_spec.pk3` (148 MB, git-ignored; rerun after setup). Defaults pinned: `r_deluxeSpecular 3` + `r_cubeMapping 1` (codmod.cfg + run.sh +set). Engine fix (decouple deluxe specular from cubemaps, `tr_glsl.c`) uncommitted in `iortcw/`. Open: perf cost of cubemaps/pack, tune per-class gloss, regenerate packaging docs.
 
 **Glasses / letterbox / AO fog (2026-10-16): done, committed.** Glasses cause: AO blit left viewport full-screen (fixed with `SetViewportAndScissor()`). Cutscene letterbox bars removed. AO now fades with global fog and the fog-volume pass is drawn after the AO multiply. User confirmed fog fix; 4:3 briefing in-game check still pending.

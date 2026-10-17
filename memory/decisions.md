@@ -4,6 +4,9 @@ Append-only log, newest first. Never rewrite history: if a decision is reversed,
 
 <!-- Copy this block to the top for each new decision.
 
+## 2026-10-17 Specular perf: group draw batches by cubemap, cluster ai_marker probes, probes only on spec-mapped shaders
+Cause of 274 -> 141 FPS was ai_marker cubemaps splitting batches (600 -> 3500/frame), not shader ALU or VRAM. Chose sort-grouping + gating + clustering (lossless step first) over dropping cubemaps. `r_cubemapSpecOnly 1` trades faint cubemap tint on plain walls for fewer probes.
+
 ## YYYY-MM-DD: <short title>
 
 - **Context:** <what forced a choice>

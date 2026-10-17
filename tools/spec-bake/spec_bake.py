@@ -21,7 +21,7 @@ MATERIALS = {
     "gunmetal": (0.30, 0.45, 0.35, 0.55, 0.35),
     "metal":    (0.22, 0.38, 0.40, 0.40, 0.35),
     "armor":    (0.35, 0.45, 0.60, 0.55, 0.30),
-    "wood":     (0.04, 0.03, 0.00, 0.30, 0.35),
+    "wood":     (0.03, 0.02, 0.00, 0.17, 0.20),
     "marble":   (0.05, 0.03, 0.00, 0.55, 0.30),
     "stone":    (0.04, 0.02, 0.00, 0.28, 0.25),
     "glass":    (0.05, 0.00, 0.00, 0.85, 0.10),
@@ -40,13 +40,49 @@ RULES = [
     ("metal", r"metal|steel|iron|machine_|atool|atruss|elec1|mesure|assault/panel|xpanel|panel_|controlpanel|/train|"
               r"track_|tram|sawblade|rocket|flywheel|stove|file_cab|lockers|barrel|kobra|/sub\d|cable|xgrid|xradio|"
               r"tank_top|nxlab/|mdoor|cagelight|cage_light|chandl|pendant|sconce|bel_lamp|base_lamp|furnace|generator|"
-              r"xsink|shovel|/tools|weldtanks|mapobjects/vehicles/|electronics/|gold_m|silverware|candle|trim_c0[356]b?$"),
+              r"chain|xsink|shovel|/tools|weldtanks|mapobjects/vehicles/|electronics/|gold_m|silverware|candle|trim_c0[356]b?$"),
     ("marble", r"marble"),
     ("stone", r"chateau/(floor|stair)|castle_floor|town_floor|xlab_floor"),
     ("wood", r"wood|desk|chair|table|board_|box_m|castle_door|town_door|textures/doors/|chateau/door|"
              r"shudder|crate|book_c|loveseat|wag_|furniture"),
 ]
 MAX_SIDE = 1024  # specular detail does not need the HD size
+
+
+# Chains are vertex-lit (rgbGen vertex/identity), which bypasses rend2's lit shader path, so no specular could ever
+# reach them. Override their shaders to rgbGen lightingDiffuse (autoSprite2 chain2 stays unlit: deforms are not lit).
+SHADER = """// codmod specular: lit chains
+models/mapobjects/chain/chain
+{
+	cull disable
+	{
+		map models/mapobjects/chain/chain.tga
+		alphaFunc GE128
+		depthWrite
+		rgbGen lightingDiffuse
+	}
+}
+models/mapobjects/chain/chain3
+{
+	cull disable
+	{
+		map models/mapobjects/chain/chain3.tga
+		alphaFunc GE128
+		depthWrite
+		rgbGen lightingDiffuse
+	}
+}
+models/mapobjects/corpse/chain
+{
+	cull disable
+	{
+		map models/mapobjects/corpse/chain.tga
+		alphaFunc GE128
+		depthWrite
+		rgbGen lightingDiffuse
+	}
+}
+"""
 
 
 def material_for(stem):
@@ -103,6 +139,7 @@ def main():
         return
     n = 0
     with zipfile.ZipFile(a.out, "w", zipfile.ZIP_DEFLATED) as zo:
+        zo.writestr("scripts/codmod_spec.shader", SHADER)
         for stem, (pk, member) in sorted(found.items()):
             with zipfile.ZipFile(pk) as z:
                 img = Image.open(io.BytesIO(z.read(member)))

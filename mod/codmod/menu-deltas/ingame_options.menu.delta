@@ -1,6 +1,5 @@
 #codmod-delta v2 base=ui/ingame_options.menu sha256=7ab9261b77f5b5ea07c43efdac9ffce6a9b15edb01910621f3e24dce5f0fd7a8
 #src ui/bookp.menu sha256=dc708a0c6d09dddca120d7664d2a905c5cb7269128447fa81956bdc9051dc994
-#src ui/bookv.menu sha256=ab1e2d98d20641ce422c6bac7cee143917579c5fb70dc859642545179d85734e
 #src ui/cdkey.menu sha256=96745cb143d3a0d91da1fe5f1b7ac2db26addce0ec675e919ea7ed0050b33bda
 #src ui/clipboard.menu sha256=1234b5cb59f380ca39fb2c56cbcd82ad2d67d0f1c691aab2a3e49e0d428ba6a0
 #src ui/controls.menu sha256=988fa4ecc3b5152f3291a3c83b427fd971bd8bb5b8b1ab42cf81e8d6b29f724d
@@ -34,16 +33,16 @@
 =ui/controls.menu 1421 1422
 @@ 25 29
 +	backcolor 0 0 0 .65
-@@ 31 51
+@@ 31 32
 +}
-@@ 53 65
+@@ 33 38
+=ui/ingame_options.menu 52 53
 +	name BLACKGRAD
 =ui/notebook.menu 27 28
 +	rect 0 -4 640 132
 +	background "BLACKGRAD"
-@@ 66 72
-=ui/clipboard.menu 126 128
-@@ 74 81
+=ui/ingame_controls.menu 31 35
+=ui/ingame_options.menu 52 53
 +	name BLACKGRAD2
 =ui/notebook.menu 27 28
 +	rect 0 420 640 -128
@@ -152,116 +151,103 @@
 =ui/options.menu 260 262
 =ui/ingame_system.menu 162 165
 +		rect 240 118 320 11
-@@ 82 85
+=ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
 +		textaligny 9
 +		textscale .20
-@@ 88 90
+@@ 39 41
+=ui/ingame_options.menu 86 87
+@@ 42 44
 =ui/ingame_options.menu 7 8
 +		action { play "sound/misc/kcaction.wav" ; open vidmode_popmenu }
-+		}
-@@ 91 117
-=ui/ingame_options.menu 213 214
+=ui/ingame_options.menu 450 453
 +		name display
 =ui/options.menu 260 262
 +		text "Display Mode:"
 +		cvar "r_displayMode"
 +		cvarFloatList { "Windowed" 0 "Borderless Windowed" 1 "Fullscreen (default)" 2 }
 +		rect 240 129 320 11
-@@ 118 121
+=ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
 +		textaligny 9
 +		textscale .20
-@@ 124 126
-=ui/bookv.menu 115 117
-@@ 127 134
-=ui/ingame_options.menu 213 214
+=ui/ingame_options.menu 325 329
+=ui/ingame_options.menu 450 453
 +		name display
 =ui/options.menu 260 262
 +		text "Vertical Sync:"
 +		cvar "r_vsync"
 +		cvarFloatList { "Off" 0 "On" 1 "Adaptive" 2 "Triple Buffer" 3 "Low Latency" 4 }
 +		rect 240 140 320 11
-@@ 135 138
+=ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
 +		textaligny 9
 +		textscale .20
-@@ 141 143
-=ui/bookv.menu 115 117
-@@ 144 151
-=ui/ingame_options.menu 213 214
+=ui/ingame_options.menu 325 329
+=ui/ingame_options.menu 450 453
 +		name display
 =ui/options.menu 260 262
 +		text "Frame Rate Limit:"
 +		cvar "com_maxfps"
 +		cvarFloatList { "Off" 0 "Auto (%hz)" -1 "30" 30 "60" 60 "75" 75 "90" 90 "120" 120 "144" 144 "165" 165 "240" 240 "360" 360 }
 +		rect 240 151 320 11
-@@ 152 155
+=ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
 +		textaligny 9
 +		textscale .20
-@@ 158 160
-=ui/bookv.menu 115 117
-@@ 161 168
-=ui/ingame_options.menu 213 214
+=ui/ingame_options.menu 325 329
+=ui/ingame_options.menu 450 453
 +		name display
 =ui/options.menu 260 262
 +		text "Menu Frame Rate Limit:"
 +		cvar "com_maxfpsMenu"
 +		cvarFloatList { "Auto (%hz)" -1 "Off" 0 "30" 30 "60" 60 "75" 75 "90" 90 "120" 120 "144" 144 "165" 165 "240" 240 "360" 360 }
 +		rect 240 162 320 11
-@@ 169 172
+=ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
 +		textaligny 9
 +		textscale .20
-@@ 175 177
-=ui/bookv.menu 115 117
-@@ 178 185
-=ui/ingame_system.menu 71 73
+=ui/ingame_options.menu 325 329
+=ui/ingame_system.menu 69 73
 =ui/options.menu 260 262
 +		text "Anti-Aliasing:"
 +		cvar "r_aa"
 +		cvarFloatList { "Off" 0 "SMAA Low" 1 "SMAA Medium" 2 "SMAA High" 3 "SMAA Ultra" 4 "MSAA 2x" 5 "MSAA 4x" 6 "MSAA 8x" 7 }
 +		rect 240 118 320 11
-@@ 186 189
+=ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
 +		textaligny 9
 +		textscale .20
-@@ 192 212
-=ui/bookv.menu 115 117
-@@ 214 216
-=ui/ingame_system.menu 72 73
-@@ 217 221
-=ui/controls.menu 720 721
+=ui/ingame_options.menu 325 329
+=ui/ingame_system.menu 69 73
+=ui/options.menu 260 262
 +		text "Ambient Occlusion:"
 +		cvar "r_ao"
 +		cvarFloatList { "Off" 0 "SSAO" 1 "GTAO Low" 2 "GTAO Medium" 3 "GTAO High" 4 }
 +		rect 240 129 320 11
-@@ 222 225
+=ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
 +		textaligny 9
 +		textscale .20
-@@ 228 233
-=ui/bookv.menu 115 117
-@@ 235 236
-=ui/ingame_system.menu 72 73
-@@ 237 242
-=ui/controls.menu 720 721
-+		text "Specular Highlights:"
-+		cvar "r_codSpecular"
-+		cvarFloatList { "Off (default)" 0 "On" 1 }
-+		rect 240 140 320 11
-@@ 243 325
-=ui/error.menu 217 218
-+		textaligny 9
-+		textscale .20
-@@ 331 335
-@@ 336 337
-=ui/ingame_system.menu 72 73
-@@ 338 402
+=ui/ingame_options.menu 325 329
+=ui/ingame_system.menu 69 73
+=ui/ingame_options.menu 216 217
 =ui/cdkey.menu 276 277
 +		text "Gamma:"
 +		cvar "r_gamma"
++		maxChars 6
++		maxPaintChars 6
++		rect 240 140 320 11
+=ui/ingame_options.menu 81 82
+=ui/error.menu 217 218
++		textaligny 9
++		textscale .20
+=ui/ingame_options.menu 325 329
+=ui/ingame_system.menu 69 73
+=ui/ingame_options.menu 216 217
+=ui/cdkey.menu 276 277
++		text "Exposure:"
++		cvar "r_cameraExposure"
 +		maxChars 6
 +		maxPaintChars 6
 +		rect 240 151 320 11
@@ -269,33 +255,13 @@
 =ui/error.menu 217 218
 +		textaligny 9
 +		textscale .20
-@@ 404 447
-@@ 448 450
-=ui/ingame_options.menu 7 8
-@@ 453 454
-=ui/ingame_system.menu 72 73
-@@ 455 457
-=ui/cdkey.menu 276 277
-+		text "Exposure:"
-+		cvar "r_cameraExposure"
-+		maxChars 6
-+		maxPaintChars 6
-+		rect 240 162 320 11
-@@ 458 460
-=ui/error.menu 217 218
-+		textaligny 9
-+		textscale .20
-@@ 461 462
-=ui/ingame_options.menu 86 87
-@@ 464 465
-+		}
-@@ 466 466
-=ui/ingame_system.menu 71 73
+=ui/ingame_options.menu 325 329
+=ui/ingame_system.menu 69 73
 =ui/ingame_options.menu 216 217
 =ui/ingame_system.menu 462 464
 +		textscale .20
 =ui/ingame_options.menu 38 39
-+		rect 240 173 320 11
++		rect 240 162 320 11
 =ui/ingame_options.menu 443 444
 =ui/error.menu 217 218
 +		textaligny 9
@@ -313,8 +279,8 @@
 +		textaligny 8
 +		textscale .17
 =ui/controls.menu 80 81
-=ui/bookp.menu 139 141
-@@ 468 468
+=ui/ingame_options.menu 7 8
+@@ 47 69
 =ui/ingame_options.menu 213 214
 +		name advanced
 =ui/ingame_options.menu 216 217
@@ -325,8 +291,8 @@
 +		textaligny 8
 +		textscale .17
 =ui/controls.menu 80 81
-=ui/ingame_system.menu 487 490
-@@ 469 469
+=ui/bookp.menu 139 141
+@@ 71 89
 =ui/ingame_options.menu 213 214
 +		name advanced
 =ui/ingame_options.menu 216 217
@@ -337,8 +303,8 @@
 +		textaligny 8
 +		textscale .17
 +		forecolor .85 .85 .85 .9
-=ui/ingame_system.menu 487 490
-@@ 470 471
+=ui/bookp.menu 139 141
+@@ 91 125
 =ui/ingame_options.menu 213 214
 +		name advanced
 =ui/ingame_options.menu 216 217
@@ -349,8 +315,8 @@
 +		textaligny 8
 +		textscale .17
 +		forecolor .85 .85 .85 .9
-=ui/ingame_system.menu 487 490
-@@ 472 472
+=ui/bookp.menu 139 141
+@@ 127 134
 =ui/ingame_options.menu 213 214
 +		name advanced
 =ui/options.menu 260 262
@@ -358,15 +324,15 @@
 +		cvar "r_shadowMapSize"
 +		cvarFloatList { "512" 512 "1024" 1024 "2048 (default)" 2048 }
 +		rect 240 153 320 11
-=ui/ingame_options.menu 81 82
+@@ 135 325
 =ui/error.menu 217 218
 +		textaligny 9
 +		textscale .20
-=ui/ingame_options.menu 325 330
-@@ 473 473
-=ui/ingame_options.menu 213 214
+@@ 331 335
+@@ 336 337
 +		name advanced
-=ui/options.menu 260 262
+@@ 338 347
+=ui/controls.menu 720 721
 +		text "Soft Shadows:"
 +		cvar "r_shadowFilter"
 +		cvarFloatList { "Off" 0 "Soft" 1 "Softer (default)" 2 }
@@ -375,11 +341,12 @@
 =ui/error.menu 217 218
 +		textaligny 9
 +		textscale .20
-=ui/ingame_options.menu 325 330
-@@ 474 474
-=ui/ingame_options.menu 213 214
+@@ 348 353
+=ui/ingame_options.menu 326 330
+@@ 355 356
 +		name advanced
-=ui/options.menu 260 262
+@@ 357 365
+=ui/controls.menu 720 721
 +		text "Anisotropic Filter:"
 +		cvar "r_ext_texture_filter_anisotropic"
 +		cvarFloatList { "Off" 0 "2x" 2 "4x" 4 "8x" 8 "16x (default)" 16 }
@@ -388,45 +355,48 @@
 =ui/error.menu 217 218
 +		textaligny 9
 +		textscale .20
-=ui/ingame_options.menu 325 330
-@@ 475 486
-=ui/ingame_options.menu 213 214
+@@ 366 372
+=ui/ingame_options.menu 326 330
+@@ 374 375
 +		name advanced
-=ui/options.menu 260 262
-=ui/ingame_system.menu 298 300
+@@ 376 384
+=ui/ingame_system.menu 297 300
 +		cvarStrList { "Bilinear", "GL_LINEAR_MIPMAP_NEAREST", "Trilinear (default)", "GL_LINEAR_MIPMAP_LINEAR" }
 +		rect 240 186 320 11
 =ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
 +		textaligny 9
 +		textscale .20
-=ui/ingame_options.menu 325 331
-=ui/ingame_options.menu 213 214
+@@ 385 390
+=ui/ingame_options.menu 326 330
+@@ 392 393
 +		name advanced
-=ui/options.menu 260 262
-=ui/ingame_system.menu 257 259
+@@ 394 402
+=ui/ingame_system.menu 256 259
 +		cvarFloatList { "Low" 2 "Normal" 1 "High (default)" 0 }
 +		rect 240 197 320 11
 =ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
 +		textaligny 9
 +		textscale .20
-=ui/ingame_options.menu 325 331
-=ui/ingame_options.menu 213 214
+@@ 404 410
+=ui/ingame_options.menu 327 330
+@@ 412 420
 +		name advanced
-=ui/options.menu 260 262
-=ui/ingame_system.menu 277 279
+@@ 421 430
+=ui/ingame_system.menu 276 279
 +		cvarFloatList { "Low" 3 "Normal" 2 "High" 1 "Extra (default)" 0 }
 +		rect 240 208 320 11
 =ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
 +		textaligny 9
 +		textscale .20
-=ui/ingame_options.menu 325 331
-=ui/ingame_options.menu 213 214
+@@ 432 436
+=ui/ingame_options.menu 327 330
+@@ 438 439
 +		name advanced
-=ui/options.menu 260 262
-=ui/ingame_system.menu 238 240
+@@ 440 443
+=ui/ingame_system.menu 237 240
 +		cvarFloatList { "High (default)" 0 "Medium" 1 "Low" 2 }
 +		rect 240 219 320 11
 =ui/ingame_options.menu 81 82
@@ -448,13 +418,25 @@
 =ui/ingame_options.menu 325 331
 =ui/ingame_options.menu 213 214
 +		name advanced
+=ui/options.menu 260 262
++		text "Specular Highlights:"
++		cvar "r_codSpecular"
++		cvarFloatList { "Off" 0 "On (default)" 1 }
++		rect 240 230 320 11
+=ui/ingame_options.menu 81 82
+=ui/error.menu 217 218
++		textaligny 9
++		textscale .20
+=ui/ingame_options.menu 325 331
+=ui/ingame_options.menu 213 214
++		name advanced
 =ui/ingame_options.menu 216 217
 +		text "Restore recommended defaults"
 +		type 1
 +		textscale .20
 =ui/ingame_options.menu 38 39
-+		rect 240 236 320 11
-=ui/ingame_options.menu 443 444
++		rect 240 247 320 11
+@@ 444 446
 =ui/error.menu 217 218
 +		textaligny 9
 =ui/ingame_options.menu 41 42
@@ -468,7 +450,7 @@
 =ui/ingame_options.menu 216 217
 +		rect 350 418 100 16
 =ui/ingame_system.menu 61 63
-=ui/ingame_options.menu 446 448
+@@ 448 450
 +		backcolor .1 .1 .1 .1
 =ui/ingame_options.menu 7 8
 =ui/cdkey.menu 32 34
@@ -476,17 +458,19 @@
 +open in_vid_restart_popmenu ; hide grpOptions }
 =ui/ingame_system.menu 452 453
 +		mouseExit { setitemcolor graphicsapply backcolor .1 .1 .1 .1 }
-+		}
-+
+@@ 452 452
 +////////// QUALITY ////////////////////////////////////////////////////////
 +
 +////////// EFFECTS ////////////////////////////////////////////////////////
 +
 +////////// DRIVER INFO ////////////////////////////////////////////////////
-=ui/ingame_options.menu 212 214
++
+@@ 453 454
 =ui/ingame_system.menu 481 482
-=ui/ingame_options.menu 216 217
+@@ 455 462
 +		rect 240 120 360 300
 =ui/system.menu 560 561
-=ui/ingame_system.menu 485 489
+=ui/ingame_system.menu 485 486
+@@ 464 486
+=ui/ingame_options.menu 44 45
 @@ 490 491

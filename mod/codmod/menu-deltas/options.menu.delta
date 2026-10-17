@@ -247,24 +247,27 @@
 @@ 475 479
 =ui/options.menu 346 349
 +		}
-@@ 480 481
+@@ 480 480
 =ui/ingame_system.menu 71 73
-=ui/options.menu 260 262
-+		text "Specular Highlights:"
-+		cvar "r_codSpecular"
-+		cvarFloatList { "Off (default)" 0 "On" 1 }
+=ui/options.menu 91 92
+=ui/cdkey.menu 276 277
++		text "Gamma:"
++		cvar "r_gamma"
++		maxChars 6
++		maxPaintChars 6
 +		rect 240 140 320 11
 =ui/options.menu 97 98
 =ui/error.menu 217 218
 +		textaligny 9
 +		textscale .20
 =ui/options.menu 345 349
-@@ 483 505
++		}
+@@ 481 481
 =ui/ingame_system.menu 71 73
 =ui/options.menu 91 92
 =ui/cdkey.menu 276 277
-+		text "Gamma:"
-+		cvar "r_gamma"
++		text "Exposure:"
++		cvar "r_cameraExposure"
 +		maxChars 6
 +		maxPaintChars 6
 +		rect 240 151 320 11
@@ -273,32 +276,13 @@
 +		textaligny 9
 +		textscale .20
 =ui/options.menu 345 349
-+		}
-@@ 507 509
-=ui/ingame_system.menu 72 73
-@@ 510 514
-=ui/cdkey.menu 276 277
-+		text "Exposure:"
-+		cvar "r_cameraExposure"
-+		maxChars 6
-+		maxPaintChars 6
-+		rect 240 162 320 11
-@@ 515 518
-=ui/error.menu 217 218
-+		textaligny 9
-+		textscale .20
-@@ 519 520
-=ui/options.menu 102 103
-@@ 522 524
-+		}
-@@ 526 527
-=ui/ingame_system.menu 72 73
-@@ 528 532
+=ui/ingame_system.menu 69 73
+=ui/options.menu 91 92
 =ui/ingame_system.menu 462 464
 +		textscale .20
 =ui/options.menu 76 77
-+		rect 240 173 320 11
-@@ 533 535
++		rect 240 162 320 11
+=ui/options.menu 434 435
 =ui/error.menu 217 218
 +		textaligny 9
 =ui/options.menu 79 80
@@ -311,7 +295,7 @@
 +		type 1
 +		textscale .20
 =ui/options.menu 76 77
-+		rect 240 184 320 11
++		rect 240 173 320 11
 =ui/options.menu 434 435
 =ui/error.menu 217 218
 +		textaligny 9
@@ -327,7 +311,7 @@
 +		cvar "cl_benchSummary"
 +		maxChars 64
 +		maxPaintChars 44
-+		rect 240 195 320 11
++		rect 240 184 320 11
 =ui/options.menu 97 98
 =ui/error.menu 217 218
 +		textaligny 9
@@ -345,7 +329,9 @@
 +		textaligny 8
 +		textscale .17
 =ui/controls.menu 80 81
-=ui/ingame_system.menu 487 492
+=ui/bookp.menu 139 141
+@@ 483 505
+=ui/options.menu 89 90
 +		name advanced
 =ui/options.menu 91 92
 +		text "performance, and may make the game look or run worse."
@@ -355,9 +341,10 @@
 +		textaligny 8
 +		textscale .17
 =ui/controls.menu 80 81
-=ui/ingame_system.menu 487 492
+=ui/ingame_system.menu 487 490
+@@ 507 509
 +		name advanced
-=ui/options.menu 91 92
+@@ 510 514
 +		text "The default values are the recommended ones."
 +		rect 240 133 320 10
 =ui/ingame_save.menu 280 281
@@ -382,14 +369,18 @@
 +		cvar "r_shadowMapSize"
 +		cvarFloatList { "512" 512 "1024" 1024 "2048 (default)" 2048 }
 +		rect 240 153 320 11
-=ui/options.menu 97 98
+@@ 515 518
 =ui/error.menu 217 218
 +		textaligny 9
 +		textscale .20
-=ui/options.menu 345 351
-=ui/options.menu 89 90
+@@ 519 520
+=ui/options.menu 102 103
+@@ 522 524
++	}
+@@ 526 527
 +		name advanced
-=ui/options.menu 260 262
+@@ 528 532
+=ui/options.menu 261 262
 +		text "Soft Shadows:"
 +		cvar "r_shadowFilter"
 +		cvarFloatList { "Off" 0 "Soft" 1 "Softer (default)" 2 }
@@ -469,13 +460,25 @@
 =ui/options.menu 345 351
 =ui/options.menu 89 90
 +		name advanced
+=ui/options.menu 260 262
++		text "Specular Highlights:"
++		cvar "r_codSpecular"
++		cvarFloatList { "Off" 0 "On (default)" 1 }
++		rect 240 230 320 11
+=ui/options.menu 97 98
+=ui/error.menu 217 218
++		textaligny 9
++		textscale .20
+=ui/options.menu 345 351
+=ui/options.menu 89 90
++		name advanced
 =ui/options.menu 91 92
 +		text "Restore recommended defaults"
 +		type 1
 +		textscale .20
 =ui/options.menu 76 77
-+		rect 240 236 320 11
-=ui/options.menu 434 435
++		rect 240 247 320 11
+@@ 533 535
 =ui/error.menu 217 218
 +		textaligny 9
 =ui/options.menu 79 80

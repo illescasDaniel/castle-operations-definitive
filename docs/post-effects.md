@@ -1,10 +1,10 @@
 # Post effects: bloom and colour grade
 
-Both are off by default (`r_bloom 0`, `r_grade 0`), so the image is unchanged until enabled. Code:
+Both are on by default (`r_bloom 2` = Medium, `r_grade 1`); an existing wolfconfig with a saved `seta r_bloom "0"` / `seta r_grade "0"` keeps the user's old choice (archived cvars; only Reset restores the new defaults). Code:
 `RB_PostFx` in `iortcw/SP/code/rend2/tr_postprocess.c`, called from `RB_PostProcess` (`tr_backend.c`) after SMAA and
 sun rays. Shaders: `glsl/bloombright_fp.glsl`, `glsl/grade_fp.glsl`.
 
-Menu: GRAPHICS > Bloom (Off/Low/Medium/High = `r_bloom` 0-3, scales `r_bloomIntensity` x0/0.5/1/1.6) and Color Grade
+Menu: GRAPHICS > Bloom (Off/Low/Medium/High = `r_bloom` 0-3, scales `r_bloomIntensity` x0/1/1.6/2.4 (levels retuned 2026-10-17: Low = old Medium, Medium = old High, High = 1.5x old High)) and Color Grade
 (`r_grade`), live, no restart. Defaults are in code (`tr_init.c`) and reset in `codmod_binds.cfg`.
 
 Pipeline (runs on the tone-mapped 3D scene, so the HUD/2D is untouched):
@@ -20,11 +20,11 @@ Pipeline (runs on the tone-mapped 3D scene, so the HUD/2D is untouched):
 
 | Cvar | Default | Meaning |
 |---|---|---|
-| `r_bloom` | 0 | 0 off, 1-3 low/medium/high |
+| `r_bloom` | 2 | 0 off, 1-3 low/medium/high (default medium) |
 | `r_bloomIntensity` | 2.5 | glow gain (bright excess x this, mip levels normalised, screen-blended) before the level multiplier |
 | `r_bloomThreshold` | 0.6 | brightness (0..1, after tone mapping) where glow starts |
 | `r_bloomRadius` | 1.0 | blur width multiplier |
-| `r_grade` | 0 | grade on/off |
+| `r_grade` | 1 | grade on/off |
 | `r_gradeBrightness` | 1.25 | gamma lift (1 = none); raises shadows/mids, the game is dark |
 | `r_gradeContrast` / `r_gradeSaturation` | 1.06 / 1.10 | |
 | `r_gradeTint` | 0.3 | -1 cool highlights .. +1 warm highlights |

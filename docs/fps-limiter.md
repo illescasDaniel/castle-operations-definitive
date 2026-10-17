@@ -222,3 +222,16 @@ frame clock (`com_frameClockUs`: the pacer schedule, or real time uncapped) and 
 the game clock; it passes the offset to cgame as the frame fraction (can be < 0 or > 999 us now).
 cgame (`cg_subMsecLerp 1`) carries the predicted view by `predictLagMs` + that offset times velocity.
 A/B: `cl_viewSmooth 0` (old clock, keeps the lag fix), `cg_subMsecLerp 0` (vanilla).
+
+### Low FPS (30) stutter (2026-10-17)
+
+Symptom: at `com_maxfps 30` the view looked like heavy online lag; higher caps were smooth. Cause:
+`cg_predict.c` zeroed `predictLagMs` when it exceeded 33 ms. A 30 FPS frame is 33.3 ms, so the lag
+alternates 33/34 ms and the view extrapolation (`cg_view.c`, `velocity * (predictLagMs + timeFracUs)`)
+switched off on every 34 ms frame, moving the camera back and forth by about a frame of travel.
+
+Fix: `predictLagMs` is clamped (never zeroed) to `max(100, 3 * cg.frametime)` ms. Same pass for other
+fixed short-frame thresholds: the `CL_UpdateViewClock` reset threshold is `max(15000 us, 1.5 * frame
+period)`, and the `timeFracUs` validity window in `CG_DrawActiveFrame` is widened to +-100 ms. High FPS
+behaviour is unchanged (lag is far below every limit). Pacer thresholds (`Com_PacedMsec`, `Com_PaceFrame`)
+are already period-relative or only trip on real hitches. Not verified in-game.

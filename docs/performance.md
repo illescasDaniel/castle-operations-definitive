@@ -204,3 +204,19 @@ Fixes (engine `iortcw/SP/code/rend2`):
 
 Bench (escape2 demo, 2561x1601): spec off 274 FPS, spec on before 141, after 267 (0 hitches; batches 3500 -> 517).
 Fix 1 alone gives 266; 2 and 3 add load time and a little GPU. Spec-map VRAM was not the issue (not reduced).
+
+### Camera-following specular hotspot (2026-10-17)
+
+Symptom: close to metal, a bright spot follows the view as if the player held a flashlight (flashlight off).
+Cause: BSP surfaces take their light vector from `R_LightDirForPoint` (`tr_light.c`), which falls back to the surface
+normal when the light-grid direction faces away (dot <= 0.2). `lightall_fp.glsl` normalises that vector into `L` and
+applies `CalcSpecular(..., pow(roughness, r_deluxeSpecular))` to the whole lightmap colour, so with `L == N` and the
+camera looking head-on (`E ~ N`), `H ~ N` and `NH ~ 1`: a tight hotspot exactly where the camera looks. The
+`lightColor /= max(surfNL, 0.25)` compensation boosts it up to 4x. Ambient-dominated grid cells behave the same way.
+
+Fix: `R_LightDirForPoint` now stores the vector with length `0.25 + 0.75 * (directed/(directed+ambient))^r_codSpecDirectional`
+(exactly 0.25 on the normal fallback). The shader reads `|L|` before normalising and scales only the baked-light
+specular by `clamp((|L| - 0.25) / 0.75, 0, 1)`. Diffuse is unchanged (L is still normalised); no new fetches or
+uniforms. Sun/primary light, dynamic lights and the flashlight (`USE_LIGHT_VECTOR` and primary paths) are untouched.
+`r_codSpecDirectional` (non-archived, default 1; read at map load, so reload the map) is the exponent: 0 = old
+behaviour, 1 = linear, 2 = stricter. Cubemap reflections are separate (probe-baked, not camera-dependent).

@@ -257,11 +257,33 @@
 +		textscale .20
 =ui/ingame_options.menu 325 329
 =ui/ingame_system.menu 69 73
+=ui/options.menu 260 262
++		text "Bloom:"
++		cvar "r_bloom"
++		cvarFloatList { "Off" 0 "Low" 1 "Medium" 2 "High" 3 }
++		rect 240 162 320 11
+=ui/ingame_options.menu 81 82
+=ui/error.menu 217 218
++		textaligny 9
++		textscale .20
+=ui/ingame_options.menu 325 329
+=ui/ingame_system.menu 69 73
+=ui/options.menu 260 262
++		text "Color Grade:"
++		cvar "r_grade"
++		cvarFloatList { "Off" 0 "On" 1 }
++		rect 240 173 320 11
+=ui/ingame_options.menu 81 82
+=ui/error.menu 217 218
++		textaligny 9
++		textscale .20
+=ui/ingame_options.menu 325 329
+=ui/ingame_system.menu 69 73
 =ui/ingame_options.menu 216 217
 =ui/ingame_system.menu 462 464
 +		textscale .20
 =ui/ingame_options.menu 38 39
-+		rect 240 162 320 11
++		rect 240 184 320 11
 =ui/ingame_options.menu 443 444
 =ui/error.menu 217 218
 +		textaligny 9

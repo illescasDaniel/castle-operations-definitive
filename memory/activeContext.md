@@ -64,3 +64,6 @@ Earlier session detail (release prep, benchmark, perf investigation, SMAA, fork 
 
 ## Subtitles (2026-10-15)
 Committed and pushed 2026-10-15 (user verified in-game, cutscenes too). `tools/subtitles/` (faster-whisper large-v3: transcribe.py, pack.py, review_page.py), `cg_subtitles.c`, `cod_subtitles` toggle (Game menu + pause Game), pack `run/codmod/codmod_subtitles.pk3` (620 lines, private). Docs: `docs/subtitles.md`. Awaiting user: in-game check (timing, wrapping, cutscene visibility, toggle) and listen to `tools/subtitles/build/review/index.html` (147 CHECK/RECOVERED lines). Known gap: ~250 dropped clips are mostly SFX; a few real barks (e.g. "Schnell", "Danke") got no text.
+
+## Specular + Display tab (2026-10-17)
+Committed and pushed (user tested). `tools/spec-bake/` bakes `_s` maps per material into `run/codmod/codmod_spec.pk3` (git-ignored). Engine: `r_deluxeSpecular 3` + `r_cubeMapping 1` pinned; BSP-baked vertex-lit props now take specular (`tr_shader.c` collapse); `r_codSpecular` (latched, default 0, GRAPHICS tab) gates spec maps, light-grid specular and cubemaps. Options menu now DISPLAY / GRAPHICS / ADVANCED; `r_displayMode` (windowed/borderless/fullscreen) is a view over `r_fullscreen`+`r_noborder` (`CL_ApplyDisplayMode`). Open: specular perf cost still unmeasured; enable by default once cheap.

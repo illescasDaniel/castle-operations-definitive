@@ -74,7 +74,6 @@ documented. **M** = commonly cited, not verified here. **L** = estimate from mem
 | `cod_maxHealth` | 50 | player max HP (packs clamp here too) | Phase 5b / 5d |
 | `cod_flashlightEnable` | 1 | player view flashlight | Phase 5d |
 | `cod_flashlightIntensity` | 500 | scales spot beam reach (forced even if `r_dynamiclight 0`) | Phase 5d |
-| `cod_flashlightMinDist` | 48 | unused (menu leftover; spots don't use close-wall curve) | Phase 5d |
 | `cod_pistolNextShot` | 200 | pistol min ms between shots (vanilla 400) | Phase 5 / 5d tune |
 | `cod_flashlightR/G/B` | 1 / 0.95 / 0.85 | warm white | Phase 5d |
 | `r_dlightMode` | 1 | rend2 ForwardDlight (needed for spot cones); latch | Phase 5d |

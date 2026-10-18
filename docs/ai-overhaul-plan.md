@@ -299,6 +299,66 @@ Not play-tested in a real fight yet.
 - **Opportunism**: player reloading / switching weapons / in a slide or prone → the token holders push or peek
   immediately ("Schnell!").
 
+**Implemented (Phase 3)** (not play-tested in a real fight yet). All of it is gated by `cod_optTactics` and runs only
+for soldiers in `AIFunc_CodCombat`; scripted and special characters stay on vanilla. State is in static stale-checked
+arrays (`codAI[]`, `codSupp[]`, the squad/member tables); no `cast_state_t` fields, no new `AIFunc_*`.
+
+- **Offensive grenades** (`CodGrenadeWanted`). Thrown when the threat stayed within 96 u of one spot for
+  `cod_aiGrenadeHold` ms and nobody had a real shot for 1.5 s, or when it is out of sight behind a known corner (seen
+  there for 1.5 s, no line from the soldier). One thrower per squad (`AICast_CodGrenadeScore`: carries one, 200-1100 u,
+  a cheap lob test; nearest wins), squad cooldown `cod_aiGrenadeCooldown` (+-15 %) with an ATTACK bark, a solo soldier has
+  its own cooldown, nobody while a squad mate pushes for an angle. The throw itself is the vanilla `AIFunc_GrenadeFlush`,
+  which repeats the real trajectory test (`AICast_SafeMissileFire`) before it lets go. It replaces the old
+  `AICast_WantsGrenadeFlush` call in CodCombat; the Phase 2b push fallback uses the same cooldown and thrower choice.
+- **Defensive grenades** (`CodDanger`). A grenade danger is handled here, everything else (flames, dynamite, ...) still
+  goes to the vanilla `AIFunc_AvoidDanger`. Soldiers with `AIFL_CATCH_GRENADE` kick it back with `AIFunc_GrenadeKick`
+  under the vanilla rules (fuse > 1.5 s, reachable in time, one per 3 s, not a friend's). Otherwise: stay when the spot
+  is covered from the landing point or outside the blast; else a `COVER_DODGE` search (hidden from the landing point,
+  urgent, travel capped at the fuse minus 0.5 s, running at the grenade penalised), sprint there, no shooting, and a dive
+  (`AIFunc_BattleDiveStart`, `AIFL_DIVE_ANIM` only) when still in the blast with < 1.2 s left. At the spot it hides until
+  0.5 s after the blast and then replaces the hidden-only spot with an ordinary attack spot. No dodge cover: the vanilla
+  avoid, as before. Each grenade is reacted to once.
+- **Suppression.** `AICast_ProcessBullet` calls `AICast_CodNoteBullet` for AIs already in combat: an enemy bullet passing
+  within 160 u adds 0.12-0.32 to a 0..1 value that decays by `cod_aiSuppressDecay` per second. At
+  `cod_aiSuppressThreshold` the soldier is suppressed: hides up to 80 % longer (and keeps hiding while near misses go on,
+  max 3.5 s), peeks up to 45 % shorter, and `AICast_GetAccuracy` is multiplied by `1 - 0.55 v` (about 0.45-0.72). A
+  suppressed soldier in OPEN does an urgent cover search every 250 ms.
+- **Pain.** Hit in the open: the cover search runs at once and bypasses the ration. Health below `cod_aiRetreatHealth` %
+  and hit within 3 s: an urgent `COVER_RETREAT` search (attack-type spot at least 80 u farther from the threat, up to
+  1.5x the usual travel, prefers a route out of the player's sight), longer hide on arrival, then it fights from there
+  (10 s cooldown).
+- **Morale.** The squad tracks its peak size and losses (kept over regroups). When the dead reach half of a peak of
+  3+ the survivors break for 9 s (squad cooldown 15 s): once each they bark (ORDERS) and retreat like at low health
+  (`COVER_RETREAT`, hide 1.5x), then hide 1.4x longer, aggression x0.35 (hide time, advance chance), no flank, advance or
+  push. A lone survivor of a broken squad is included (the trigger is the death, in `AICast_CodSquadForget`).
+- **Opportunism.** The player reloading, dropping / raising a weapon, sliding, or going prone is noticed by a soldier
+  that saw the player within 1 s (reload: or is within 700 u). For 0.9-1.5 s the squad gets one more attack token, token
+  holders skip the rest of their hide and keep the burst going, an advance hop needs no roll, plus an ORDERS bark
+  (7 s per soldier).
+- **Debug** (`cod_aiDebug 1`, rate limited): `GRENADE player holds cover|behind a corner`, `GRENADE kick it back`,
+  `DODGE grenade fuse= d= -> cover`, `DODGE dive`, `SUPPRESSED v=`, `HIT in the open`, `RETREAT low health|morale broken`,
+  `MORALE broken (lost x of y)`, `OPPORTUNITY player reloads|slides|...`.
+
+**Files:** `bg_cod.h/.c` (cvars), `ai_cast_cod.h`, `ai_cast_cod.c` (reactions), `ai_cast_cod_cover.c` (`COVER_RETREAT`,
+`COVER_DODGE`, one-shot travel cap), `ai_cast_cod_squad.c` (thrower choice, cooldown, morale, opportunity token, solo
+barks), `ai_cast_fight.c` (two gated hooks, `// codmod:`), `ai_cast.h`, `mod/codmod/codmod_tuning.cfg`.
+
+| Cvar | Default | Meaning |
+| --- | --- | --- |
+| `cod_aiGrenadeHold` | 4000 | Ms the player holds one spot before a grenade (0 = no proactive grenades) |
+| `cod_aiGrenadeCooldown` | 8000 | Squad / solo cooldown between thrown grenades (ms) |
+| `cod_aiSuppressDecay` | 0.35 | Suppression lost per second (0 = suppression off) |
+| `cod_aiSuppressThreshold` | 0.5 | Suppression value (0..1) at which a soldier counts as suppressed |
+| `cod_aiRetreatHealth` | 35 | Health % below which a hit soldier retreats (0 = off) |
+| `cod_aiOpportunity` | 1 | React to a reloading / weapon-switching / sliding / prone player |
+| `cod_aiMorale` | 1 | Squad morale break after losing half |
+
+**Deviations / risks:** the throw is the vanilla flush, which also walks towards the last known position while it aims, so a
+thrower may leave cover; the very close "nearly stopped grenade" pickup of the vanilla avoid is not copied (only the
+predicted kick); the retreat is an attack-type spot (so PEEK works there), not a pure `COVER_HIDE` spot; a dodge that
+finds no cover falls back to the vanilla avoid; the player's weapon state (reload) is read directly, with the sight and
+hearing limits above as the only fairness rule.
+
 ### Phase 4 – Search and hunt (lost contact)
 
 - Replace the hand-over to vanilla chase: the squad moves to the last known position cover-to-cover, with one

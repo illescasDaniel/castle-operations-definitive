@@ -67,7 +67,7 @@ the GL context SIGSEGVs. `CL_Vid_Restart_f` therefore splits:
 |---|---|---|
 | FS in-place | Only `r_fullscreen` latched | `IN_ToggleFullscreenInPlace` → `SDL_SetWindowFullscreen`; no restart |
 | Soft | Mode / custom size / FBO MSAA / bare `vid_restart` | `re.Shutdown(qfalse)` + `GLimp_SetModeInPlace` + UI/cgame reload; **keeps** window/GL/`renderer.so` |
-| Hard | Context attrs: `r_ext_multisample`, `r_colorbits`/`depthbits`/`stencilbits`, `r_stereoEnabled`, `cl_renderer` | Full `CL_ShutdownRef` destroy/recreate (still fragile under MangoHud) |
+| Hard | Context attrs: `r_ext_multisample`, `r_colorbits`/`depthbits`/`stencilbits`, `r_stereoEnabled` | Full `CL_ShutdownRef` destroy/recreate (still fragile under MangoHud) |
 
 Smoke (agent): mangohud + mode change should print `vid_restart: soft (keep GL context)` and
 `GLimp_SetModeInPlace: … (no GL recreate)`, then exit cleanly — not SIGSEGV.

@@ -95,7 +95,7 @@ scripts/install.sh [--vanilla] [--build-dir DIR]
 ```
 - Source: `iortcw/SP/build/release-linux-x86_64/` (or `--build-dir`).
 - Always copy (not symlink) the engine into `run/`: `iowolfsp.x86_64`,
-  `renderer_sp_opengl1_x86_64.so`, `renderer_sp_rend2_x86_64.so`. The engine loads
+  `renderer_sp_rend2_x86_64.so`. The engine loads
   renderers from its own directory.
 - Copy `main/{cgame,qagame,ui}.sp.x86_64.so` → `run/codmod/`.
 - `--vanilla`: also copy them → `run/main/`. **Run this only once, in Phase 1**, so `run/main`

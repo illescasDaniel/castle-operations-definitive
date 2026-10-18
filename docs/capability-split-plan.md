@@ -86,8 +86,8 @@ and the script stay in the outer repo for now (RTCW menus are still never commit
 - `cod_subtitles` default `0` (mod default 1).
 
 ### 3b. Renderer (rend2)
-`cl_renderer` engine default becomes `rend2` (`client/cl_main.c`); the opengl1 load fallback stays until
-section 9. `cl_renderer` is removed from `run.sh` and `codmod.cfg`, and the opengl1 choice from the menus.
+`cl_renderer` engine default becomes `rend2` (`client/cl_main.c`); `cl_renderer` itself was removed
+in section 9 (the engine always loads rend2). `cl_renderer` is removed from `run.sh` and `codmod.cfg`, and the opengl1 choice from the menus.
 
 | Cvar | Engine default (new) | codmod sets |
 |---|---|---|
@@ -179,6 +179,10 @@ Steps 2, 3 and 4 touch different files and run in parallel; step 1 runs alongsid
 - `run.sh` bench overrides (`RTCW_STARTUP_SETS`) still need `+set`; keep that path.
 
 ## 9. Phase 2 (separate, after this split is verified by the user): remove opengl1 entirely
+
+**Status: implemented 2026-10-18 (SP only; MP untouched), pending user check.** `code/renderer/` is deleted, shared
+headers live in `code/renderercommon/`, the Makefile builds only rend2, `cl_renderer` is gone (`CL_InitRef`
+always loads `renderer_sp_rend2`), and the graphics presets no longer set it.
 
 Rip the opengl1 renderer out of the fork and the project completely: delete `code/renderer/` opengl1 sources, its
 Makefile targets and the `CL_InitRef` fallback, `install.sh` entry, menu/doc mentions. Shared headers the client and

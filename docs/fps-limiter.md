@@ -133,7 +133,7 @@ Acceptance (laptop, 1440p-ish, cap 120 so GPU has headroom):
 1. **Clock/waiter** — `Sys_WaitUntil` (unix + win32), timer slack, adaptive spin. Unit check via a
    `waittest <us> <n>` console command printing overshoot stats.
 2. **Scheduler** — `com_maxfpsPrecise` path in `Com_Frame`, mode 0 only. Bench: compare vs old.
-3. **Present hook** — `refimport_t.Sys_PresentWait`, mode 1. Build both renderers (opengl1 + rend2).
+3. **Present hook** — `refimport_t.Sys_PresentWait`, mode 1. rend2 is the only renderer (opengl1 was removed).
    *User verifies HUD/pause in-game before going further.*
 4. **Predictive mode 2** + optional fence sync.
 5. **Game-time accumulator + `cg_subMsecLerp`** in cgame.

@@ -38,7 +38,6 @@ mkdir -p "$ROOT/run/main" "$ROOT/run/codmod" "$ROOT/run/home"
 
 ENGINE_FILES=(
 	iowolfsp.x86_64
-	renderer_sp_opengl1_x86_64.so
 	renderer_sp_rend2_x86_64.so
 )
 GAME_SOS=(

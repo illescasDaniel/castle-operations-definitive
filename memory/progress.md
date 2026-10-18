@@ -21,8 +21,8 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 - [x] Phase 5.5: quick knife on V + snappy switch/return (confirmed in-game 2026-10-08)
 
 ### Open
-- [ ] **Separate the capability from the config that enables it** (2026-10-18: phase 1 implemented, uncommitted,
-  awaiting user check; plan and status in `docs/capability-split-plan.md`). Phase 2: remove opengl1 entirely. Goal: the iortcw engine/game modules only *support* the new mechanics, HUD and renderer features;
+- [ ] **Separate the capability from the config that enables it** (2026-10-18: phase 1 merged in PR #2;
+  plan in `docs/capability-split-plan.md`). Phase 2 (remove opengl1, SP only): implemented on branch `opengl1-removal`, uncommitted, awaiting user check. Goal: the iortcw engine/game modules only *support* the new mechanics, HUD and renderer features;
   `codmod` (the `fs_game` mod: `codmod.cfg`, `codmod_binds.cfg`, menu deltas) is what *activates* them. Running
   without `fs_game codmod` should give vanilla RTCW behavior on the modernized ioRTCW port. Background and current
   coupling: `docs/architecture.md` section 0. Planned steps:

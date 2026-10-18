@@ -1,0 +1,5 @@
+#menu-delta v2 base=ui/play.menu sha256=a588d0fc5985e36554b5ebf2c516b65fe26a837c207c634a9ab2f2e658c1ccb5
+@@ 341 342
++	rect 30 450 60 14 
+@@ 359 360
++	rect 30 450 60 14 

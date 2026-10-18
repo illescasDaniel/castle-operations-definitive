@@ -117,7 +117,7 @@ Default: `~/.local/share/Steam/steamapps/common/Return to Castle Wolfenstein/Mai
 # Codmod + first SP mission (cheats / spdevmap)
 ./scripts/run.sh +spdevmap escape1
 
-# Re-apply default binds from mod/codmod/codmod_binds.cfg
+# Reset binds and settings to the mod defaults (mod/codmod/codmod_defaults.cfg)
 ./scripts/run.sh --reset-binds +spdevmap escape1
 
 # Windowed
@@ -129,9 +129,9 @@ Default: `~/.local/share/Steam/steamapps/common/Return to Castle Wolfenstein/Mai
 
 | Flag | Effect |
 |------|--------|
-| *(default)* | `fs_game codmod`, exec `codmod.cfg` |
+| *(default)* | `fs_game codmod`; the engine then runs `codmod_defaults.cfg` and `codmod.cfg` |
 | `--vanilla` | Play with `main` only (no mod) |
-| `--reset-binds` / `--reset-settings` | Full reset via `codmod_binds.cfg` (binds + AA, frame limit, pacing, vsync defaults; same as `/cod_resetbinds`) |
+| `--reset-binds` / `--reset-settings` | Full reset via `codmod_defaults.cfg` (binds + AA, frame limit, pacing, vsync defaults; same as `/cod_resetbinds`) |
 | `--windowed WxH` | Windowed mode, e.g. `1280x720` |
 
 Configs, saves, and `rtcwconsole.log` go under `run/home/` (not `~/.wolf`).
@@ -246,6 +246,24 @@ These are third-party downloads, not made by or affiliated with this project, an
 Use them at your own risk. Mission text and voices may come out translated while the menus and HUD added by this mod
 stay English. Nothing from them is included in this repo. Real translation support is only planned:
 [`docs/phase-l10n.md`](docs/phase-l10n.md).
+
+## What is in the engine and what is in the mod
+
+Most of the work is code in the [iortcw fork](https://github.com/illescasDaniel/iortcw), not in the `codmod` folder:
+
+- **Engine fork (`iortcw/`, C code):** all the mechanics (movement, ADS, recoil, slide, prone, health regen, AI sprint),
+  the HUD and `cod_menu` tuning overlay, the renderer work (GTAO, SMAA, bloom, colour grade, dynamic lights and
+  flashlight shadows, specular, GPU profiling), controller and gyro input, video playback, frame pacing, and the
+  multi-language and subtitle code. About 31k lines changed against upstream ioRTCW (about half of that is the
+  generated SMAA lookup table).
+- **Mod folder (`mod/codmod/`, no compiled code):** default config and key binds, menu patches (`menu-deltas`),
+  translated strings, and a few small assets (hitmarker sounds, pad glyphs, cursor).
+- **Tools (`tools/`):** optional local pipelines that build the private HD texture, audio and video packs, plus
+  localization, subtitle and specular-map tools. The generated packs are never in this repo.
+
+The engine defaults to vanilla RTCW behaviour (`cod_enable 0`, renderer features off). The mod's config files in
+`mod/codmod/` switch the features on, so `codmod` is the mod and the engine only provides the capabilities. Details:
+[`docs/architecture.md`](docs/architecture.md) section 0.
 
 ## Development
 

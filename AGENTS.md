@@ -23,7 +23,7 @@ note. Full protocol: the `jev-memory` skill.
 
 Never alter the rend2 present/2D path or the user's `wolfconfig.cfg` without user verification; both broke the
 game once (no HUD, wiped binds). Rules and cause in `docs/testing.md` ("Safety rules"). The engine is a separate
-repo in `iortcw/`, a git submodule of the outer repo (fork https://github.com/illescasDaniel/iortcw, branch `main`;
+repo in `iortcw/`, a git submodule of the outer repo (fork https://github.com/illescasDaniel/iortcw, branch `main`; `iortcw/SP/run-sp.sh` runs it standalone as plain RTCW;
 `upstream` remote = ioRTCW). Engine/game-code commits go in the submodule repo and are pushed to the fork; then the
 outer repo commits the bumped submodule pointer (there is no `patches/` any more). Check `git status` in both repos.
 
@@ -34,15 +34,23 @@ leaves stale modules in `run/`, so the game ignores your change; `--install` run
 
 ## Menus
 
-Edit `mod/codmod/ui/*.menu` (git-ignored, generated from RTCW's paks + deltas), then `scripts/build-menus.sh --export` and commit the `menu-deltas/*.delta` files; never commit generated `.menu` files or the menu/hud pk3s (RTCW menus are not redistributable). Rules in `docs/menus.md`.
+Two layers. Engine-feature rows (usable by plain RTCW) go in `iortcw/SP/menus/ui/*.menu` (engine layer and its builder `menudelta.py` live in the fork), the CoD layout and `cod_*` gameplay rows in `mod/codmod/ui/*.menu`; both are git-ignored, generated from RTCW's paks + deltas. Then `scripts/build-menus.sh --export` and commit the `.delta` files (`iortcw/SP/menus/deltas/` in the submodule, `mod/codmod/menu-deltas/codmod/` here); never commit generated `.menu` files or the menu/hud pk3s (RTCW menus are not redistributable). Rules in `docs/menus.md`.
 
 ## User settings vs internal config
 
-A user-facing setting (anything in an options menu) has a default for first launch and for the Reset action, and the
-user's change must persist across launches. Put its default in the code (`bg_cod.c`, with `CVAR_ARCHIVE`) and its
-reset value in `mod/codmod/codmod_binds.cfg`; never `set`/`seta` it in `codmod.cfg` or `run.sh` `+set`, which run
-every launch and silently undo the choice. Internal/pinned config (tuning, forced engine cvars) belongs in
-`codmod.cfg`. Details and latched-cvar handling in `docs/menus.md` ("Settings must persist").
+Three kinds of value, each in one place:
+
+- **User-facing setting** (anything in an options menu, `CVAR_ARCHIVE`): the engine's code default is the **vanilla**
+  value, so a plain RTCW install behaves like RTCW. The mod's first-launch and Reset value is a `seta` in
+  `mod/codmod/codmod_defaults.cfg`. That file runs before `wolfconfig.cfg`, so the user's saved choice wins and
+  persists across launches. Binds are execed from it (`codmod_binds.cfg`).
+- **Internal or pinned config** (forced engine cvars, feature switches): `set` in `mod/codmod/codmod.cfg`, which runs
+  after `wolfconfig.cfg` on every launch. Never a cvar that an options menu changes.
+- **`cod_*` tuning values**: `mod/codmod/codmod_tuning.cfg`, execed by `codmod.cfg`.
+
+Never `set`/`seta` a user-facing setting in `codmod.cfg`, `codmod_tuning.cfg` or `run.sh` `+set`: those run every
+launch and silently undo the choice. `run.sh` passes only paths and `fs_game`. Hook order and latched-cvar handling are
+in `docs/architecture.md` (section 0); menu rules and the "Settings must persist" details in `docs/menus.md`.
 
 ## Running the game
 

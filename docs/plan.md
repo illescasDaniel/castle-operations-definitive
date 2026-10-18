@@ -77,7 +77,9 @@ rtcw-cod/                         ← this folder; its own git repo (docs, scrip
 │   ├── Containerfile             ← optional reproducible build image
 │   └── compose.yaml              ← podman-compose service "builder"
 ├── mod/codmod/                   ← mod files that are NOT compiled (cfg, later pk3 contents)
-│   └── codmod.cfg                ← default binds and cvars for the mod
+│   ├── codmod_defaults.cfg       ← first-launch and Reset values of user settings
+│   ├── codmod.cfg                ← pinned internal values; execs codmod_tuning.cfg (cod_* values)
+│   └── codmod_binds.cfg          ← key binds
 ├── iortcw/                       ← submodule: illescasDaniel/iortcw (branch "main")
 └── run/                          ← runtime tree (git-ignored)
     ├── iowolfsp.x86_64           ← copied from the build

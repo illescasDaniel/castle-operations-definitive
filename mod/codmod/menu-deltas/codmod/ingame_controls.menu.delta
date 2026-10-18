@@ -1,78 +1,74 @@
-#codmod-delta v2 base=ui/controls.menu sha256=988fa4ecc3b5152f3291a3c83b427fd971bd8bb5b8b1ab42cf81e8d6b29f724d
-#src ui/clipboard.menu sha256=1234b5cb59f380ca39fb2c56cbcd82ad2d67d0f1c691aab2a3e49e0d428ba6a0
+#menu-delta v2 base=ui/ingame_controls.menu sha256=2a099aefca2bb16ed2d7eee25358f7f164b0eb70a7f4c1c5e8527e618f70adee layer=engine
+#src ui/controls.menu sha256=988fa4ecc3b5152f3291a3c83b427fd971bd8bb5b8b1ab42cf81e8d6b29f724d
 #src ui/credit.menu sha256=81fe8de5ee0a324483378209b9a9f3f64697f1cce563d1dad60bfdc5eee77b1e
+#src ui/ingame.menu sha256=02281aafbe5025fbfa438f36fc128e9a0e83d2690c2d6fe7dc6ce3b5e1a75cdc
 #src ui/ingame_controls.menu sha256=012cb5b0b443e10d28bfc8d0c0d564a1b45f0f923660fe05a936c7040fbc6150
-#src ui/load.menu sha256=bae9e6f84b8912f5c0b093c13701171591047af887fdac23989af21cc1fbf48a
 #src ui/notebook.menu sha256=7bc854e3ffa6fb56f4036ec3158fc6c0192156d47fd9dc37bbd30240e410c55f
 #src ui/play.menu sha256=a588d0fc5985e36554b5ebf2c516b65fe26a837c207c634a9ab2f2e658c1ccb5
 @@ 3 4
-+\\ CONTROLS HUB (codmod) â CONTROLLER / MOUSE & KEYBOARD \\
-@@ 5 6
++\\ INGAME CONTROLS HUB (codmod) â CONTROLLER / MOUSE & KEYBOARD \\
+@@ 5 18
 +menuDef
-@@ 8 11
-=ui/controls.menu 1396 1397
++{
++	name "ingame_controls"
+=ui/ingame_controls.menu 46 47
 +	fullscreen 1
-=ui/controls.menu 1421 1422
-@@ 12 16
+=ui/ingame.menu 27 29
 +	style 0
 +	border 0
-=ui/load.menu 21 22
-@@ 18 21
-+		setfocus ctr_pad;
-@@ 24 27
-+		close control_menu ; open setup_menu
-@@ 29 98
+@@ 19 19
++	onOpen { setfocus ctr_pad }
++	onEsc {
++		close ingame_controls ; open ingame_settings
++		}
+@@ 20 21
 +////////// CHROME //////////////////////////////////////////////////////////
-@@ 100 114
-+	name menu_select
-=ui/notebook.menu 27 28
+@@ 23 26
++	name backdrop
 =ui/controls.menu 1421 1422
-+	background "menu_select"
-@@ 115 121
-=ui/clipboard.menu 126 128
-@@ 123 136
+@@ 27 31
++	backcolor 0 0 0 .65
+@@ 35 36
+@@ 37 80
 +	name BLACKGRAD
 =ui/notebook.menu 27 28
 +	rect 0 -4 640 132
 +	background "BLACKGRAD"
-=ui/controls.menu 8 9
-@@ 137 138
-@@ 139 301
-@@ 303 319
+@@ 81 1084
+=ui/ingame_controls.menu 32 33
+@@ 1087 1103
 +	name BLACKGRAD2
 =ui/notebook.menu 27 28
 +	rect 0 420 640 -128
 +	background "BLACKGRAD"
-@@ 320 596
-=ui/clipboard.menu 126 128
-@@ 598 614
+=ui/ingame_controls.menu 31 33
+@@ 1106 1143
 +	name FLAME
 =ui/notebook.menu 27 28
 +	rect 210 20 220 67
 +	background "fLAME"
-@@ 615 930
-=ui/clipboard.menu 126 128
-@@ 932 944
+=ui/ingame_controls.menu 31 33
+@@ 1146 1202
 +	name WOLFFLAMELOGO
 =ui/notebook.menu 27 28
 +	rect 200 -5 240 120
 +	background "WOLFFLAMELOGO"
-@@ 945 1045
-@@ 1046 1095
-+}
-@@ 1097 1102
+=ui/ingame_controls.menu 31 34
+@@ 1204 1220
 +	name gold_line_l
 =ui/notebook.menu 27 28
 +	rect 0 76 226 10
 +	background "gold_line"
-=ui/ingame_controls.menu 31 35
-=ui/controls.menu 99 100
+=ui/ingame_controls.menu 31 33
+@@ 1222 1222
+=ui/ingame_controls.menu 22 23
 +	name gold_line_r
 =ui/notebook.menu 27 28
 +	rect 414 76 230 10
 +	background "gold_line"
-=ui/ingame_controls.menu 31 35
-=ui/controls.menu 99 100
+=ui/ingame_controls.menu 31 34
+@@ 1223 1223
+=ui/ingame_controls.menu 22 23
 +	name back
 +	text "BACK"
 =ui/controls.menu 105 106
@@ -84,14 +80,13 @@
 =ui/credit.menu 1548 1549
 +	textaligny 18
 =ui/credit.menu 1508 1509
-=ui/controls.menu 8 9
+=ui/ingame_controls.menu 31 32
 +	action { play "sound/misc/kcaction.wav" ;
-+	close control_menu ; open setup_menu }
++	close ingame_controls ; open ingame_settings }
 +}
 +
 +////////// ENTRIES /////////////////////////////////////////////////////////
-=ui/controls.menu 98 100
-+	name ctr_pad
+@@ 1226 1238
 +	text "CONTROLLER"
 =ui/controls.menu 105 106
 =ui/play.menu 196 198
@@ -102,10 +97,11 @@
 =ui/credit.menu 1548 1549
 +	textaligny 18
 =ui/credit.menu 1508 1509
-=ui/controls.menu 8 9
+@@ 1239 1345
 +	action { play "sound/misc/kcaction.wav" ;
-+	close control_menu ; open controls_pad_menu }
-=ui/clipboard.menu 89 92
++	close ingame_controls ; open ingame_controls_pad }
++}
+@@ 1347 1375
 +	name ctr_kb
 +	text "MOUSE & KEYBOARD"
 =ui/controls.menu 105 106
@@ -117,15 +113,8 @@
 =ui/credit.menu 1548 1549
 +	textaligny 18
 =ui/credit.menu 1508 1509
-=ui/controls.menu 8 9
+=ui/ingame_controls.menu 31 32
 +	action { play "sound/misc/kcaction.wav" ;
-+	close control_menu ; open controls_kb_menu }
-=ui/clipboard.menu 89 92
-+	name fadebox
-=ui/controls.menu 1421 1422
-@@ 1103 1111
-+	background "ui/assets/fadebox.tga"
-=ui/controls.menu 1420 1421
-@@ 1112 1423
-@@ 1424 1438
-@@ 1441 1442
++	close ingame_controls ; open ingame_controls_kb }
++}
+@@ 1377 1379

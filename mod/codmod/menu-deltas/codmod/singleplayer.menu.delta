@@ -1,4 +1,4 @@
-#codmod-delta v2 base=ui/setup.menu sha256=4f53b1b18c372134948cd75574a4e9883752e98d7a1210d2b42d271ccb2b5c9c
+#menu-delta v2 base=ui/setup.menu sha256=4f53b1b18c372134948cd75574a4e9883752e98d7a1210d2b42d271ccb2b5c9c
 #src ui/controls.menu sha256=988fa4ecc3b5152f3291a3c83b427fd971bd8bb5b8b1ab42cf81e8d6b29f724d
 #src ui/ingame_controls.menu sha256=012cb5b0b443e10d28bfc8d0c0d564a1b45f0f923660fe05a936c7040fbc6150
 #src ui/notebook.menu sha256=7bc854e3ffa6fb56f4036ec3158fc6c0192156d47fd9dc37bbd30240e410c55f

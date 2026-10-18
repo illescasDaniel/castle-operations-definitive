@@ -76,6 +76,15 @@ done
 # Menu + HUD pk3s are generated (deltas + your RTCW paks), so build before copying.
 "$ROOT/scripts/build-menus.sh"
 
+# Engine-layer menus (rows for engine features on RTCW's own menus) -> run/main/. Always installed: harmless for
+# plain RTCW, and codmod loads main/ too (its own menus pk3 overrides these). The name must start with sp_ so it
+# sorts after sp_pak4 and overrides RTCW's menus (any other name sorts before the sp_ paks and loses); it must not
+# be sp_pak<N> (checksum checks) nor zz_* (renamed to sp_ by the loader, see below).
+if [[ -f "$ROOT/iortcw/SP/menus/sp_zz_engine_menus.pk3" ]]; then
+	cp -f "$ROOT/iortcw/SP/menus/sp_zz_engine_menus.pk3" "$ROOT/run/main/sp_zz_engine_menus.pk3"
+	echo "installed run/main/sp_zz_engine_menus.pk3"
+fi
+
 # Language packs (flags, lang.info, translations) -> run/codmod/codmod_lang_<code>.pk3
 python3 "$ROOT/tools/l10n/pack.py"
 if [[ -f "$ROOT/mod/codmod/codmod_hud.pk3" ]]; then

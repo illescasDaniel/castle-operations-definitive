@@ -143,5 +143,5 @@ The menu has one **Anti-Aliasing** row on the new cvar `r_aa`: 0 Off, 1-4 SMAA L
 SMAA levels are quality presets (edge threshold, search steps, diagonal/corner detection), all 1 sample per pixel, so
 they are not labelled x1/x2. `R_ApplyAA` (`tr_init.c`) translates `r_aa` into `r_smaa` (live) and
 `r_ext_framebuffer_multisample` (latched, needs Apply/vid_restart); it runs at init and from `RE_BeginFrame` when
-`r_aa` changes. `r_aa -1` (engine default) leaves the two cvars alone. Engine default is `r_aa 3`; the choice persists in wolfconfig (archived) and `codmod_binds.cfg` (menu RESET SETTINGS, `--reset-binds`/`--reset-settings`, first launch) resets it together with `com_maxfps`, `com_maxfpsMode` and `r_vsync`. SMAA works without MSAA
+`r_aa` changes. `r_aa -1` (engine default) leaves the two cvars alone. Engine default is `r_aa 0` (no AA, vanilla); codmod's first-launch value `3` is in `codmod_defaults.cfg`. The choice persists in wolfconfig (archived), and `codmod_defaults.cfg` (menu RESET SETTINGS, `--reset-binds`/`--reset-settings`, first launch) resets it together with `com_maxfps`, `com_maxfpsMode` and `r_vsync`. SMAA works without MSAA
 as long as the render-FBO path is on (`r_hdr 1`, pinned by codmod.cfg).

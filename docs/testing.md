@@ -80,7 +80,7 @@ Smoke (agent): mangohud + mode change should print `vid_restart: soft (keep GL c
 | `god`, `notarget`, `noclip`, `give all`, `nofatigue` | Test without dying or being bothered |
 | `cod_debugHud 1` | Speed / state / stamina / lean / ADS / slide readout |
 | `cod_enable 0/1` | Instant A/B against vanilla behaviour |
-| `cod_dump` | Print all current `cod_*` values (paste into `codmod.cfg`) |
+| `cod_dump` | Print all current `cod_*` values (paste into `codmod_tuning.cfg`) |
 | `cg_showmiss 1` | Print client prediction errors. **Must stay silent** during our new mechanics |
 | `com_maxfps 60` / `125` / `250` | Frame-rate independence checks |
 | `timescale 0.25` | Slow motion to inspect transitions (cheat) |

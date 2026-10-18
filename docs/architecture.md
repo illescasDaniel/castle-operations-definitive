@@ -3,6 +3,70 @@
 Everything here applies to phases 2–5b. Line numbers refer to ioRTCW commit `438e7d4`
 (`iortcw/SP/code/...`). They will drift as we edit, so **always re-grep** before patching.
 
+## 0. Engine fork vs mod folder: who does what
+
+Measured 2026-10-18 from the fork's diff against upstream ioRTCW (`438e7d4` to HEAD): 120 files, +31,305 / -663 lines.
+About 15k of those lines are the generated SMAA lookup table (`rend2/smaa_areatex.h`), not hand-written code.
+
+**Short version:** nearly all behavior (mechanics, HUD, renderer features, input, menus' code) is C code in the
+`iortcw` fork. `mod/codmod/` holds configuration and content only; nothing in it is compiled.
+
+### What upstream ioRTCW is (not ours)
+A modernized RTCW source port: 64-bit builds, SDL2, OpenAL, the `rend2` renderer, platform and bug fixes. On its own it
+plays vanilla RTCW.
+
+### What the iortcw fork adds
+
+| Area | Lines changed | What it does |
+|---|---|---|
+| Renderer (`rend2/`) | ~19.8k (~5k without the SMAA table) | GTAO/SSAO, SMAA, bloom and colour grade; per-pixel dynamic lights on models, specular, flashlight shadow map; GPU pass profiler; no per-frame `glFinish`, occlusion-query flares (bench 183 to 303 FPS) |
+| cgame (`cgame/`) | ~4.7k | `cg_cod.c` (ADS view, gait/bob, recoil, sway, HUD), `cg_cod_menu.c` (`/cod_menu` tuning overlay), `cg_subtitles.c` |
+| Shared + server game (`game/`) | ~2.5k | `bg_pmove.c` (CoD speeds, slide, prone, crouch, lean), `bg_cod.c/.h` (~199 `cod_*` cvars), AI sprint and scripted-event AI speeds, health regen |
+| UI (`ui/`) | ~1.9k | `ui_shared.c`, `ui_main.c`, `ui_lang.c` (multi-language), menu fixes (cursor, popups, save list) |
+| client / sdl / qcommon | ~2.6k | Gamepad and gyro input, MJPEG/AVI cutscene playback, FPS pacer and limiter, `cod_skipIntro`, soft `vid_restart` |
+
+### What the outer repo and `mod/codmod/` hold (no compiled code)
+
+| Item | Role |
+|---|---|
+| `codmod_defaults.cfg` | First-launch and Reset values of user-facing settings (`seta`); execs the binds and the graphics subset |
+| `codmod.cfg` | Pinned internal values (`set`), run every launch; execs `codmod_tuning.cfg` |
+| `codmod_tuning.cfg` | Every `cod_*` tuning value (the source of truth) |
+| `codmod_binds.cfg` | Key binds only (keyboard and CoD4 pad) |
+| `codmod_gfxdefaults.cfg` | Recommended GRAPHICS > ADVANCED values (also run by the "restore recommended" button) |
+| `menu-deltas/*.delta` (30) | Patches applied to RTCW's own menus (generated `.menu` files are never committed) |
+| `lang/de`, `lang/es` | Translated strings; subtitles are built by `tools/subtitles` |
+| `codmod_fx.pk3`, `codmod_pad.pk3`, `ui/` assets | Hitmarker sounds, gamepad glyphs, menu cursor |
+| `scripts/` | Build, install, run, menu build, screenshot diff |
+| `tools/` | Local AI pipelines (`hd-textures`, `hd-audio`, `hd-video`), `l10n`, `subtitles`, `spec-bake`; their pk3 outputs are generated per user and stay private |
+| `docs/`, `memory/` | Plan, phase docs, project state |
+
+The original game `.pk3` data is never modified or copied; the Steam install is only symlinked.
+
+### How the mod switches features on
+The engine fork defaults to vanilla RTCW: `cod_enable 0`, renderer features off (`r_bloom`, `r_grade`, `r_ao`, `r_aa`,
+`r_codSpecular`, dynamic light and flashlight shadow cvars), `s_alHRTF 0`, `cod_subtitles 0`. Each feature is a cvar
+that a mod can turn on. `codmod` does that through its config files, loaded by the hooks below.
+
+Engine hooks in `Com_ExecuteCfg` (`qcommon/common.c`), used only when `fs_game` is set and not `main`:
+
+```
+exec default.cfg                 game's own
+exec <fs_game>_defaults.cfg      mod defaults: first launch and Reset; runs before the user config, so saved choices win
+exec wolfconfig.cfg              user config
+exec autoexec.cfg                user
+exec <fs_game>.cfg               mod pinned config: runs after the user config, so it always applies
+```
+
+All of this runs before renderer and input init, so latched cvars (`r_codSpecular`, `in_joystick`, ...) apply on the
+first boot. A command-line `+set` is applied after all of the above and wins (this is how the bench overrides work).
+`execmodcfg` re-runs both mod files; the menu Reset action uses it after `cvar_restart`. `scripts/run.sh` only adds
+`+set fs_game codmod` (and `+exec codmod_defaults.cfg` for `--reset-settings`).
+
+`codmod.cfg` pins internal values (for example `r_deluxeSpecular 3`, `r_cubeMapping 1`, `cod_enable 1`) and execs
+`codmod_tuning.cfg`. The engine's defaults for user-facing settings are vanilla values; the mod's values
+come from `codmod_defaults.cfg`. See `AGENTS.md`, "User settings vs internal config", for the rule.
+
 ## 1. Codebase map (SP only — ignore `iortcw/MP/`)
 
 | Area | Path | Built into | Notes |
@@ -165,11 +229,11 @@ extern const int bg_numCodCvars;
   `cg_main.c` (`CG_RegisterCvars`/`CG_UpdateCvars` ~L537) each loop over `bg_codCvars`,
   keep a local `vmCvar_t` array, and copy values into `bg_cod` every frame. Both modules
   share one cvar system (same process), so values match automatically.
-- **Flags:** `0` for tunables (not archived, so code defaults always apply; user overrides go
-  in `codmod.cfg`). `CVAR_ARCHIVE` only for user preferences (e.g. `cod_debugHud`,
+- **Flags:** `0` for tunables (not archived, so code defaults always apply; codmod's values come
+  from `codmod_tuning.cfg`). `CVAR_ARCHIVE` only for user preferences (e.g. `cod_debugHud`,
   `cod_menuScale`).
 - **Dump command:** cgame command `cod_dump` prints `seta cod_xxx "value"` for every entry, so
-  a tuned feel can be pasted into `codmod.cfg` or back into the defaults table.
+  a tuned feel can be pasted into `codmod_tuning.cfg` (the source of truth) or back into the defaults table.
 - **Per-feature enables:** `cod_enable` (master) plus one per feature (`cod_moveEnable`,
   `cod_leanEnable`, `cod_adsEnable`, `cod_slideEnable`, `cod_proneEnable`). Each check is
   `bg_cod.enable && bg_cod.xxxEnable`. This gives instant A/B comparison with vanilla.

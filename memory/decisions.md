@@ -14,6 +14,28 @@ Cause of 274 -> 141 FPS was ai_marker cubemaps splitting batches (600 -> 3500/fr
 - **Rationale:** <why, and what we rejected>
 -->
 
+## 2026-10-18 Engine menu layer and delta builder live in the iortcw fork
+
+- **Context:** the fork had to run as plain RTCW from its own folder (`SP/run-sp.sh`) without knowing codmod, but its
+  menu rows (display, effects, language popups, the MODS overlay fix) were built by the outer repo.
+- **Decision:** move the engine-layer deltas to `iortcw/SP/menus/deltas/` and the delta machinery to
+  `iortcw/SP/menus/menudelta.py` (library + engine CLI); `scripts/menus.py` imports it and adds only the codmod layer.
+  Delta header renamed `#menu-delta v2` (old `#codmod-delta` still read). The engine pk3 ships the fork's GPL `menudef.h`.
+- **Why:** one implementation of the delta format, and the fork stays self-contained; codmod menus pk3s are byte-identical.
+
+## 2026-10-18: Engine fork = vanilla capabilities, codmod = config that turns them on
+
+- **Context:** codmod features were on by default in the fork's code (`cod_enable 1`, bloom/AO/specular...), and
+  the mod only worked when launched through `run.sh` (+set latches, +exec codmod.cfg).
+- **Decision:** engine defaults are vanilla (rend2 is the default renderer); generic engine hooks exec
+  `<fs_game>_defaults.cfg` (before wolfconfig) and `<fs_game>.cfg` (after it), before renderer/input init;
+  `execmodcfg` re-runs them for menu Reset. Master `cod_enable 0` with per-feature sub-switches; all cod_* tuning
+  lives in `codmod_tuning.cfg`; `cod_*`/`r_cod*` names kept. Menus split into engine and codmod delta layers.
+  opengl1 removal is a separate phase 2 after the user verifies this.
+- **Rationale:** a mod that works without our launch script, a fork usable as a modern vanilla port, one source
+  per value. Rejected: detecting `fs_game codmod` in code, renaming cvars now (breaks saved configs and menus).
+
+
 ## 2026-10-16: Multiply AO before translucents
 
 - **Context:** SSAO/GTAO multiply in post darkened curtains/glass with the AO of walls behind them.

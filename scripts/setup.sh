@@ -51,7 +51,7 @@ if [[ "$missing" -ne 0 ]]; then
 fi
 
 # --- 4. Symlink mod cfgs into run/codmod ---
-for cfg in codmod.cfg codmod_binds.cfg codmod_gfxdefaults.cfg; do
+for cfg in codmod.cfg codmod_defaults.cfg codmod_tuning.cfg codmod_binds.cfg codmod_gfxdefaults.cfg; do
 	src="$ROOT/mod/codmod/$cfg"
 	dst="$ROOT/run/codmod/$cfg"
 	if [[ ! -f "$src" ]]; then

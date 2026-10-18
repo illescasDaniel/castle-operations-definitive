@@ -174,7 +174,7 @@ vblank (4 consecutive intervals outside +-12% of the refresh period) it falls ba
 using the mode-2 scheduler. `r_swapInterval` is no longer used by the SDL path.
 
 User-facing settings (`r_vsync`, `com_maxfps`, `com_maxfpsMode`) have first-launch defaults in
-`mod/codmod/codmod_binds.cfg`, not `codmod.cfg` (which is exec'd every launch and would overwrite menu
+`mod/codmod/codmod_defaults.cfg`, not `codmod.cfg` (which is exec'd every launch and would overwrite menu
 choices). Menu rows: GRAPHICS (+ ingame copy); frame pacing lives in GRAPHICS > ADVANCED. They are reset to these defaults (together with
 `r_aa`) by the menu RESET SETTINGS button, `scripts/run.sh --reset-binds` / `--reset-settings` and `/cod_resetbinds`.
 
@@ -198,7 +198,7 @@ Docs and code comments use these names; the numeric values are what the cvars st
 
 ### Menu frame rate limit (2026-10-13)
 
-`com_maxfpsMenu` (engine default -1, `CVAR_ARCHIVE`; reset value in `codmod_binds.cfg`): cap applied only while
+`com_maxfpsMenu` (engine default -1, `CVAR_ARCHIVE`; reset value in `codmod_defaults.cfg`): cap applied only while
 `CL_InMenuOnly()` is true (main menu, intro/cinematics, pause menu = `KEYCATCH_UI` while `CA_ACTIVE`). Loading screens
 and normal play use `com_maxfps` only. -1 = Auto (monitor refresh from `r_displayRefreshActual`, 60 if unknown),
 0 = Off, otherwise fps; the effective cap is the lower of it and `com_maxfps`. `com_maxfps -1` also means Auto

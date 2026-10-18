@@ -1,7 +1,7 @@
 # SSAO (rend2): GTAO + depth-aware upsample
 
-Engine-side only (`iortcw/SP/code/rend2/`). `r_ssao` (latched, 0/1, default 1 via `codmod_gfxdefaults.cfg`) still
-turns the effect on; everything below is internal tuning with defaults in code.
+Engine-side only (`iortcw/SP/code/rend2/`). `r_ssao` (0/1) is derived from `r_ao` (see below), so it is the on/off
+switch for the effect; everything below is internal tuning with defaults in code.
 
 ## Pipeline (`RB_DrawSurfs` -> `RB_PostProcess`)
 
@@ -40,7 +40,7 @@ screen radius helps more. Depth mips (XeGTAO style) would be the next step if mo
 
 ## In-game setting (`r_ao`)
 
-GRAPHICS > Ambient Occlusion sets `r_ao` (archived, default 2, reset in `codmod_binds.cfg`). `R_ApplyAO()` (called from
+GRAPHICS > Ambient Occlusion sets `r_ao` (archived; engine default 0, codmod default 2 in `codmod_defaults.cfg`, reset with it). `R_ApplyAO()` (called from
 `RE_BeginFrame` when `r_ao` changes) derives `r_ssao`/`r_ssaoMode`/`r_ssaoSlices`/`r_ssaoSteps`; changes apply live with
 no restart (SSAO images are always allocated; the depth copy only runs when AO or shadow blur is on).
 

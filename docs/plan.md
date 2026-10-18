@@ -98,7 +98,7 @@ rtcw-cod/                         ← this folder; its own git repo (docs, scrip
   with no extra packages: it uses bundled headers and libs and links at runtime against the host's
   `sdl2-compat`, `openal`, and `libglvnd`. Output lands in
   `iortcw/SP/build/release-linux-x86_64/`:
-  `iowolfsp.x86_64`, `renderer_sp_opengl1_x86_64.so`, `renderer_sp_rend2_x86_64.so`,
+  `iowolfsp.x86_64`, `renderer_sp_rend2_x86_64.so`,
   `main/{cgame,qagame,ui}.sp.x86_64.so`.
   → **No container is strictly required.** Phase 1 still adds a small optional podman
   build container for reproducibility. It needs only gcc, make, and git (see phase 1).

@@ -369,6 +369,77 @@ hearing limits above as the only fairness rule.
 - Search sweep over nearby AAS areas the player could have reached (travel time from last known position), then a
   heightened-alert return (query state, faster reaction) instead of forgetting.
 
+**Implemented (Phase 4)** (builds warning-free and loads/quits cleanly on escape2; **not play-tested in a fight yet**). Gated
+by `cod_optTactics` (`bg_cod.enable && aiTactics`) plus `cod_aiHunt`; with either off the old vanilla hand-over to
+`AIFunc_BattleChase` runs unchanged. It stays inside `AIFunc_CodCombat` (no new `AIFunc_*`, no `cast_state_t` field); the
+state is in `ai_cast_cod_hunt.c` as static stale-checked arrays: one record per enemy (sighting track, target, phase,
+hop slots, sweep points, participants) and one state per soldier.
+
+- **Entry.** `CodEligibility` returning LOST (enemy unseen for `cod_aiMemoryTime`) calls `AICast_CodHuntThink` instead of
+  the chase hand-over. A PEEK that did not see the enemy for 2.5 s drops its cover state and falls into the same LOST
+  path. A dodging or retreating MOVE finishes first. Squad membership is unchanged (hunters still run `AIFunc_CodCombat`
+  with an enemy), so squads keep regrouping. Any soldier of the tactical combat that sees the enemy feeds the track
+  (`AICast_CodHuntTrack`: position, velocity); a sighting ends the hunt, and the next loss starts a new one from it.
+- **Target.** Last seen position + last velocity x time since (capped at 3 s) clamped to `cod_aiHuntPredict` u, stopped
+  by a hull trace, dropped to the floor (`AICast_CodDropToFloor`, exported from the cover file) and checked for an AAS area.
+  An enemy only heard (no sighting) uses the vanilla `visible_pos`; no position or area at all: vanilla chase.
+- **HUNT phase** (leapfrog). Soldiers start in HOLD (staggered 0.4-0.9 s + 350 ms per entity mod 4). A soldier whose
+  hold time (`cod_aiHoldTime`, +-25 %) is over asks for a hop slot: at most 1 mover (2 with 4+ hunters) and always at least
+  one holder; the one that has waited longest goes first. A hop goes to a `COVER_ADVANCE` spot against the target when
+  the target is more than 320 u away and one exists (claimed in the cover table, travel-time based timeout), else it runs
+  along the AAS route to the target for 4.5 s (7 s when close), which still leapfrogs by time. Cover searches use the
+  existing `AICast_CodCoverSearchAllowed` ration; the route/vis queries share a 2-per-frame budget. The phase ends when a
+  hop gets within 135 u of the target, or after `cod_aiHuntTime`.
+- **Hold angles.** A holder does not fire; it stands (crouches behind LOW cover) and aims at the first point on the AAS
+  route from the target that it can see (`trap_AAS_GetRouteFirstVisPos`: the door, corridor mouth or corner the player
+  would come out of), odd-numbered entities alternate with the last seen point. Re-aimed about twice a second. Reaction
+  time is halved while hunting (`AICast_CodAlertActive`, hook in `AICast_EntityVisible`), so a holder shoots as soon as
+  the vision code reports the player and the soldier is back in the normal combat that same think.
+- **Corner clearing.** While hopping the view stays on the same route-first-visible point (the corner edge), independent
+  of the movement direction (strafing look), and within 190 u of it, or 170 u of the target, the soldier slows to 0.55 and
+  crouch-walks (`cs->attackcrouch_time`, honoured through `AICast_CodWantsCrouch`; only characters with `ATTACK_CROUCH`).
+- **SWEEP phase.** At the end of the hunt phase up to `min(hunters + 1, 5)` points are chosen: ring points around the
+  sighting (4 radii up to `cod_aiSearchRadius`, 10 bearings), dropped to the floor, kept when the AAS travel time from the
+  sighting's area is positive and below `0.4 * cod_aiSearchRadius` (1/100 s), taken nearest first and at least 200 u
+  apart. Each soldier walks (0.8 speed) to the nearest point nobody else claimed, looks around for 2-3 s, then takes the
+  next one; an unreachable or stuck point counts as visited. With nothing left it keeps looking around. After
+  `cod_aiSweepTime` it is over.
+- **Heightened alert.** `enemyNum` and `lastEnemy` are cleared (so the vanilla idle does not re-chase after 5 s) and the
+  soldier goes to `AIFunc_DefaultStart`, whose idle drops the aiState to ALERT (vanilla alert/query rules, full field of
+  view once the enemy was seen); reaction time is halved for `cod_aiAlertTime`. A sighting returns to the normal
+  combat through the vanilla scan.
+- **Exits.** Contact at any time; sweep timeout -> alert; a lone soldier with 3 path failures -> the vanilla chase with its
+  usual 3 s back-off, after which it goes to alert (the finished hunt is remembered for 15 s). No ping-pong with vanilla
+  otherwise: the hunt never hands over except on those paths.
+- **Barks.** `COD_BARK_ORDERS` when a hunt and when a sweep starts, `COD_BARK_ATTACK` when a hop starts with 2+ hunters, all
+  through `AICast_CodSquadBark` (squad / solo rate limit `cod_aiBarkMs`).
+- **Debug** (`cod_aiDebug 1`): `HUNT start: last seen x ms ago, target ...`, `HUNT hop -> cover|target`, `HOP end (...)`,
+  `HOP CLEAR corner`, `HOLD angle -> corridor|last seen point|target`, `SEARCH sweep starts`, `SEARCH area n/m ...`, `ALERT hunt
+  over`, `HUNT over: contact again`, `PEEK lost the enemy: hunt`; prefixed `[ai] <name> sqN/<MODE>`.
+
+**Files:** `ai_cast_cod_hunt.c` (new, in the Makefile `Q3GOBJ_` list), `ai_cast_cod.c` (LOST / PEEK-lost entry, track and leave
+calls, crouch hook), `ai_cast_cod.h`, `ai_cast_cod_cover.c` (`AICast_CodDropToFloor` wrapper), `ai_cast_fight.c` (one gated
+reaction-time hook in `AICast_EntityVisible`, `// codmod:`), `ai_cast.h`, `bg_cod.h/.c`, `mod/codmod/codmod_tuning.cfg`.
+
+| Cvar | Default | Meaning |
+| --- | --- | --- |
+| `cod_aiHunt` | 1 | Hunt after losing the enemy (0 = the old vanilla chase hand-over) |
+| `cod_aiHuntTime` | 30000 | Ms of hopping toward the target before the sweep starts anyway |
+| `cod_aiSweepTime` | 20000 | Ms of sweeping before the soldiers go to heightened alert |
+| `cod_aiSearchRadius` | 700 | U; sweep points lie in areas reachable within about this far of the sighting |
+| `cod_aiHuntPredict` | 256 | U; maximum distance of the predicted position from the last sighting |
+| `cod_aiHoldTime` | 3500 | Ms a soldier holds an angle before it may take its own hop |
+| `cod_aiAlertTime` | 20000 | Ms of halved reaction time after the sweep found nothing |
+
+**Deviations / risks:** "approach wide" is not implemented as a separate arc: the path is the AAS route, the soldier only
+looks at the corner and slows down / crouches close to it; the sweep points come from ring samples, not from a full
+walk of the AAS area graph, and are not filtered by "hidden from the target"; hunters outside any squad are handled the
+same way (a squad is not required, only a shared enemy); the alert state is the vanilla ALERT reached through idle, not
+the QUERY state (QUERY needs an animation and a sighting timer of its own); the reaction-time hook also applies to
+hunters that are still hopping. Untested: how it plays in a real fight (hold angles that stare at a wall, hops that
+run past the player's line of sight, sweeps that leave soldiers standing in the open), AAS cost with many hunters, and
+savegame load in the middle of a hunt (the arrays are stale-checked like the earlier phases, but this is unverified).
+
 ### Phase 5 – Movement and aim polish
 
 - Backpedal while firing when the player charges (`firing_bk_*`), crouch-walk between low covers, short jinks

@@ -1,6 +1,8 @@
-_Last updated: 2026-10-16_
+_Last updated: 2026-10-18_
 
 ## Current focus
+
+**Next task (2026-10-18, docs only so far): separate capability from config.** Engine/game modules should only provide the mechanics, HUD and renderer features; `codmod` (cfg, binds, menu deltas) should activate them. Today they are on by default in code (`cod_enable` 1, `r_codSpecular`, `r_bloom`, ...). Plan and steps: `progress.md` (Open, first item); breakdown of engine vs mod: `docs/architecture.md` section 0. No code written yet.
 
 **Flashlight not lighting objects (2026-10-17): fixed, built/installed, uncommitted, awaiting user check.** Cause: `ForwardDlight` (tr_shade.c) did not enable the specular map (`u_EnableTextures.z`), so with specular on by default `diffuse *= 1 - specular` zeroed albedo on every `_s`-mapped surface (wood, metal, doors, chains); walls fine. Also fixed brush-model dlight culling in tr_world.c (`r_dlightModelSpace`). Details in `docs/flashlight-shadows.md`. Metal bands glare strongly (`r_deluxeSpecular 3`); tune if the user dislikes it.
 

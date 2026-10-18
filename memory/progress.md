@@ -21,6 +21,25 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 - [x] Phase 5.5: quick knife on V + snappy switch/return (confirmed in-game 2026-10-08)
 
 ### Open
+- [ ] **NEXT TASK: separate the capability from the config that enables it** (decided 2026-10-18; docs only so far,
+  no code yet). Goal: the iortcw engine/game modules only *support* the new mechanics, HUD and renderer features;
+  `codmod` (the `fs_game` mod: `codmod.cfg`, `codmod_binds.cfg`, menu deltas) is what *activates* them. Running
+  without `fs_game codmod` should give vanilla RTCW behavior on the modernized ioRTCW port. Background and current
+  coupling: `docs/architecture.md` section 0. Planned steps:
+  - [ ] 1. Audit: list every cvar and hard-coded behavior that turns a codmod feature on by default in code
+    (`bg_cod.c` table, `cod_enable` default 1, cgame HUD/crosshair, `r_codSpecular`, `r_bloom`, `r_grade`, `r_ao`,
+    SMAA, `cl_viewSmooth`, `cod_skipIntro`, ...). Mark each as capability (keep in code) or opinion (move to mod).
+  - [ ] 2. Decide the activation mechanism (candidates: engine default 0 and `codmod.cfg` sets 1; or one gate cvar
+    such as `cod_enable` set from the mod; or detect `fs_game codmod`). Record it in `decisions.md` and jevmem.
+  - [ ] 3. Flip code defaults to vanilla-safe values and move the "on" values to `codmod.cfg`. Respect the
+    settings rule in AGENTS.md: user-facing options keep their code default (`CVAR_ARCHIVE`) and reset value in
+    `codmod_binds.cfg`; only internal/pinned tuning goes in `codmod.cfg`. Watch latched cvars and savegame load.
+  - [ ] 4. Check what must stay engine-side regardless of mod: pmove prediction (`bg_pmove.c` runs for client and
+    server and must match), renderer fixes that are bug fixes (sync stalls, flare queries, soft `vid_restart`).
+  - [ ] 5. Verify both modes: `fs_game codmod` identical to today (use `scripts/shots.sh` + `shots-diff.py` and the
+    bench demo), and without the mod vanilla feel (HUD, movement, menus intact). Do not touch the rend2 present/2D
+    path or `wolfconfig.cfg` without user verification (safety rules, `docs/testing.md`).
+  - [ ] 6. Update `docs/architecture.md` section 0 ("Current coupling") and README once done.
 - [x] **Cutscene lite + Exposure menu** (2026-10-16): `r_cutsceneFx` default 3 (sun+dlights); GRAPHICS Gamma (`r_gamma`) + Exposure (`r_cameraExposure`); awaiting user confirm on escape1 + menus (`docs/testing.md`)
 - [x] **Soft vid_restart (MangoHud)** (2026-10-16): mode/FS Apply keeps GL context; hard only for context-attr latches; smoke OK under mangohud Wayland (`vid_restart: soft`, `GLimp_SetModeInPlace`); docs in `docs/testing.md`
 - [x] **Video Mode scrollable popup** (2026-10-16): `vidmode_popmenu` / `FEEDER_VIDMODES`; engine `7f342afe`, outer `40f36c7`; also fixed load.menu fadebox missing `}` (delete-confirm parse error)

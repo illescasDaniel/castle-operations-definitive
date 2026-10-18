@@ -247,6 +247,24 @@ Use them at your own risk. Mission text and voices may come out translated while
 stay English. Nothing from them is included in this repo. Real translation support is only planned:
 [`docs/phase-l10n.md`](docs/phase-l10n.md).
 
+## What is in the engine and what is in the mod
+
+Most of the work is code in the [iortcw fork](https://github.com/illescasDaniel/iortcw), not in the `codmod` folder:
+
+- **Engine fork (`iortcw/`, C code):** all the mechanics (movement, ADS, recoil, slide, prone, health regen, AI sprint),
+  the HUD and `cod_menu` tuning overlay, the renderer work (GTAO, SMAA, bloom, colour grade, dynamic lights and
+  flashlight shadows, specular, GPU profiling), controller and gyro input, video playback, frame pacing, and the
+  multi-language and subtitle code. About 31k lines changed against upstream ioRTCW (about half of that is the
+  generated SMAA lookup table).
+- **Mod folder (`mod/codmod/`, no compiled code):** default config and key binds, menu patches (`menu-deltas`),
+  translated strings, and a few small assets (hitmarker sounds, pad glyphs, cursor).
+- **Tools (`tools/`):** optional local pipelines that build the private HD texture, audio and video packs, plus
+  localization, subtitle and specular-map tools. The generated packs are never in this repo.
+
+Today the new mechanics are on by default in the engine code (`cod_enable 0` restores vanilla feel), so the engine and
+the mod are not cleanly separated. The goal is for the engine to only provide the capabilities and for `codmod` to be
+the mod that switches them on. Details: [`docs/architecture.md`](docs/architecture.md) section 0.
+
 ## Development
 
 Contributor docs start at [`docs/plan.md`](docs/plan.md). Engine changes live in the

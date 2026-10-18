@@ -1,9 +1,11 @@
-#codmod-delta v2 base=ui/setup.menu sha256=4f53b1b18c372134948cd75574a4e9883752e98d7a1210d2b42d271ccb2b5c9c
+#menu-delta v2 base=ui/setup.menu sha256=2b0b2ae707a532347f0b158ad00468486ed7934f98784e7571266e41a8b296a1 layer=engine
 #src ui/controls.menu sha256=988fa4ecc3b5152f3291a3c83b427fd971bd8bb5b8b1ab42cf81e8d6b29f724d
 #src ui/multiplayer_pop.menu sha256=6362c2d44016cc48669ca7d8e7f9e9603a9678c426d5f2580ea2e2eb778e15c4
-@@ 19 20
+#src ui/setup.menu sha256=4f53b1b18c372134948cd75574a4e9883752e98d7a1210d2b42d271ccb2b5c9c
+@@ 19 21
 +		hide grpmessage ;
 +		setfocus controls }
+=ui/setup.menu 20 21
 @@ 150 150
 +////////// OPTIONS HUB (codmod CoD-style vertical) //////////////////////////
 +
@@ -113,90 +115,91 @@
 +	close options_menu ;
 +	close sound_menu ;
 +	close game_menu ;
-@@ 395 397
+@@ 385 386
+@@ 396 398
 +	style 0
 +	// Bottom hint strip - right of BACK, full remaining width
 +	rect 90 452 530 22
-@@ 398 399
+@@ 399 400
 =ui/setup.menu 157 158
-@@ 400 402
+@@ 401 403
 =ui/multiplayer_pop.menu 73 74
 +	textscale .20
-@@ 411 414
+@@ 412 415
 +	style 0
 +	// Bottom hint strip - right of BACK, full remaining width
 +	rect 90 452 530 22
-@@ 415 415
+@@ 416 416
 =ui/setup.menu 157 158
-@@ 416 418
+@@ 417 419
 =ui/multiplayer_pop.menu 73 74
 +	textscale .20
-@@ 427 430
+@@ 428 431
 +	style 0
 +	// Bottom hint strip - right of BACK, full remaining width
 +	rect 90 452 530 22
-@@ 431 431
+@@ 432 432
 =ui/setup.menu 157 158
-@@ 432 434
+@@ 433 435
 =ui/multiplayer_pop.menu 73 74
 +	textscale .20
-@@ 443 446
+@@ 444 447
 +	style 0
 +	// Bottom hint strip - right of BACK, full remaining width
 +	rect 90 452 530 22
-@@ 447 447
+@@ 448 448
 =ui/setup.menu 157 158
-@@ 448 450
+@@ 449 451
 =ui/multiplayer_pop.menu 73 74
 +	textscale .20
-@@ 459 462
+@@ 460 463
 +	style 0
 +	// Bottom hint strip - right of BACK, full remaining width
 +	rect 90 452 530 22
-@@ 463 463
+@@ 464 464
 =ui/setup.menu 157 158
-@@ 464 466
+@@ 465 467
 =ui/multiplayer_pop.menu 73 74
 +	textscale .20
-@@ 475 478
+@@ 476 479
 +	style 0
 +	// Bottom hint strip - right of BACK, full remaining width
 +	rect 90 452 530 22
-@@ 479 479
+@@ 480 480
 =ui/setup.menu 157 158
-@@ 480 482
+@@ 481 483
 =ui/multiplayer_pop.menu 73 74
 +	textscale .20
-@@ 491 494
+@@ 492 495
 +	style 0
 +	// Bottom hint strip - right of BACK, full remaining width
 +	rect 90 452 530 22
-@@ 495 495
+@@ 496 496
 =ui/setup.menu 157 158
-@@ 496 498
+@@ 497 499
 =ui/multiplayer_pop.menu 73 74
 +	textscale .20
-@@ 506 509
+@@ 507 510
 +	style 0
 +	// Bottom hint strip - right of BACK, full remaining width
 +	rect 90 452 530 22
-@@ 510 510
+@@ 511 511
 =ui/setup.menu 157 158
-@@ 511 513
+@@ 512 514
 =ui/multiplayer_pop.menu 73 74
 +	textscale .20
-@@ 514 529
-@@ 536 539
+@@ 515 530
+@@ 537 540
 +	style 0
 +	// Bottom hint strip - right of BACK, full remaining width
 +	rect 90 452 530 22
-@@ 540 540
+@@ 541 541
 =ui/setup.menu 157 158
-@@ 541 544
+@@ 542 545
 =ui/multiplayer_pop.menu 73 74
 +	textscale .20
 +	text "Display, quality, and visual effects"
-@@ 550 550
+@@ 551 551
 +	name message_soundoptions
 =ui/setup.menu 394 395
 +	style 0
@@ -234,30 +237,30 @@
 +	text "Select to manage installed mods"
 =ui/controls.menu 1044 1046
 =ui/setup.menu 580 585
-@@ 552 555
+@@ 553 556
 +	style 0
 +	// Bottom hint strip - right of BACK, full remaining width
 +	rect 90 452 530 22
-@@ 556 556
+@@ 557 557
 =ui/setup.menu 157 158
-@@ 557 559
+@@ 558 560
 =ui/multiplayer_pop.menu 73 74
 +	textscale .20
-@@ 569 572
+@@ 570 573
 +	style 0
 +	// Bottom hint strip - right of BACK, full remaining width
 +	rect 90 452 530 22
-@@ 573 573
+@@ 574 574
 =ui/setup.menu 157 158
-@@ 574 576
+@@ 575 577
 =ui/multiplayer_pop.menu 73 74
 +	textscale .20
-@@ 587 590
+@@ 588 591
 +	style 0
 +	// Bottom hint strip - right of BACK, full remaining width
 +	rect 90 452 530 22
-@@ 591 591
+@@ 592 592
 =ui/setup.menu 157 158
-@@ 592 594
+@@ 593 595
 =ui/multiplayer_pop.menu 73 74
 +	textscale .20

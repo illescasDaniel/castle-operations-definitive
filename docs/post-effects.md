@@ -5,7 +5,7 @@ Both are on by default (`r_bloom 2` = Medium, `r_grade 1`); an existing wolfconf
 sun rays. Shaders: `glsl/bloombright_fp.glsl`, `glsl/grade_fp.glsl`.
 
 Menu: GRAPHICS > Bloom (Off/Low/Medium/High = `r_bloom` 0-3, scales `r_bloomIntensity` x0/1/1.6/2.4 (levels retuned 2026-10-17: Low = old Medium, Medium = old High, High = 1.5x old High)) and Color Grade
-(`r_grade`), live, no restart. Defaults are in code (`tr_init.c`) and reset in `codmod_binds.cfg`.
+(`r_grade`), live, no restart. The engine default is off (`tr_init.c`); codmod's on values and the reset value are in `codmod_defaults.cfg`.
 
 Pipeline (runs on the tone-mapped 3D scene, so the HUD/2D is untouched):
 1. Bright pass into a half-resolution RGBA16F image (`bloomImage[0]`): 4 bilinear taps, each soft-knee thresholded

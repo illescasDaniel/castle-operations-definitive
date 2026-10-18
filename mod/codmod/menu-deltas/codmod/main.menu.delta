@@ -1,4 +1,4 @@
-#codmod-delta v2 base=ui/main.menu sha256=71f8bce2eb58a8ec26a46a11554e9a0f369222d49cd45cbb17810ce5e3ba0ae9
+#menu-delta v2 base=ui/main.menu sha256=71f8bce2eb58a8ec26a46a11554e9a0f369222d49cd45cbb17810ce5e3ba0ae9
 #src ui/bookp.menu sha256=dc708a0c6d09dddca120d7664d2a905c5cb7269128447fa81956bdc9051dc994
 #src ui/cdkey.menu sha256=96745cb143d3a0d91da1fe5f1b7ac2db26addce0ec675e919ea7ed0050b33bda
 #src ui/ingame_player.menu sha256=df21847e0c423290071f14a69192438bc6bc4e9cd9aeb4e3c9787bad7645a0ad

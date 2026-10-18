@@ -28,7 +28,7 @@ Player only where relevant. AI unchanged.
 
 Applied on: first launch (no `wolfconfig.cfg`), `scripts/run.sh --reset-binds`, menu Defaults when `fs_game` is `codmod`, and console `/cod_resetbinds` / `/exec codmod_binds.cfg`.
 
-Every-launch [`codmod.cfg`](../mod/codmod/codmod.cfg) still `unbind CTRL` as a safety net.
+[`codmod.cfg`](../mod/codmod/codmod.cfg) sets no binds (since the 2026-10-18 capability split), so CTRL and pad rebinds persist; a pre-split `wolfconfig.cfg` with CTRL=+attack is fixed by menu Defaults.
 
 ### 5d.2 Toggle crouch (`C`)
 

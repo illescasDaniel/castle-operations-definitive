@@ -1,4 +1,4 @@
-#codmod-delta v2 base=ui/ingame_system.menu sha256=f652269329ca270062eb23c24696bd61dbcb4b20d29518d6dd872fb60a661491
+#menu-delta v2 base=ui/ingame_system.menu sha256=e9c4c8c90da81c4f3db14dc93446a40a68bfe2895a1e18f5022928b545455548 layer=engine
 #src ui/clipboard.menu sha256=1234b5cb59f380ca39fb2c56cbcd82ad2d67d0f1c691aab2a3e49e0d428ba6a0
 #src ui/controls.menu sha256=988fa4ecc3b5152f3291a3c83b427fd971bd8bb5b8b1ab42cf81e8d6b29f724d
 @@ 3 4
@@ -8,5 +8,5 @@
 =ui/clipboard.menu 7 9
 =ui/controls.menu 1421 1422
 +	onOpen { close ingame_system ; open ingame_options }
-@@ 31 611
-@@ 614 617
+@@ 31 952
+@@ 955 958

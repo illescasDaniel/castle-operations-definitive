@@ -17,7 +17,7 @@ Usage: scripts/run.sh [--vanilla] [--reset-binds|--reset-settings] [--windowed W
 
   (default)       Run with fs_game codmod
   --vanilla       Run with fs_game main (no codmod)
-  --reset-binds   Full reset via codmod_binds.cfg: binds plus AA, frame limit, pacing and vsync defaults
+  --reset-binds   Full reset via codmod_defaults.cfg: binds plus every user-facing setting (AA, frame limit, vsync, ...)
   --reset-settings  Same as --reset-binds
   --windowed WxH  Windowed mode, e.g. 1280x720
 EOF
@@ -67,56 +67,21 @@ ARGS=(
 )
 
 if [[ "$VANILLA" -eq 0 ]]; then
-	# Latch renderer cvars: +set before InitRef so the first boot matches codmod.cfg.
-	# Never force r_mode/resolution (user's wolfconfig wins).
-	ARGS+=(
-		+set fs_game codmod
-		+set cl_renderer rend2
-		+set r_dlightMode 1
-		+set r_ext_framebuffer_multisample 0
-		+set r_floatLightmap 1
-		+set r_deluxeSpecular 3
-		+set r_cubeMapping 1
-		+set r_forceSun 1
-		+set r_sunShadows 1
-		+set r_sunlightMode 1
-		+set r_depthPrepass 1
-		+set s_useOpenAL 1
-		# Joystick is CVAR_LATCH — set before IN_Init so pads work on first boot.
-		+set in_joystick 1
-		+set in_joystickUseAnalog 1
-		+exec codmod.cfg
-	)
-	# ADVANCED graphics cvars are latched: +set the recommended value only while wolfconfig has no saved
-	# choice, so menu changes persist (otherwise codmod_binds.cfg -> codmod_gfxdefaults.cfg sets them).
-	for kv in r_ext_texture_filter_anisotropic=16 r_shadowFilter=2 r_shadowMapSize=2048 r_codSpecular=1; do
-		grep -qs "^seta ${kv%%=*} " "$HOME_PATH/codmod/wolfconfig.cfg" || ARGS+=(+set "${kv%%=*}" "${kv#*=}")
-	done
-	# Not a menu setting any more: always pinned (latched, so +set before video init).
-	ARGS+=(+set r_drawSunRays 1)
-	# Apply default binds on first launch (no saved wolfconfig yet) or when requested.
-	if [[ "$RESET_BINDS" -eq 1 || ! -f "$HOME_PATH/codmod/wolfconfig.cfg" ]]; then
-		# Native desktop resolution (r_mode -2) + fullscreen; r_mode is latched, so set it before video init.
-		ARGS+=(+set r_mode -2 +set r_fullscreen 1 +exec codmod_binds.cfg)
+	# Everything else comes from the engine's mod hooks (Com_ExecuteCfg): codmod_defaults.cfg before
+	# wolfconfig.cfg (first-launch values), codmod.cfg after it (pinned values), both before video/input init.
+	ARGS+=(+set fs_game codmod)
+	# Reset: re-apply the user-facing defaults. Startup "+exec" runs after wolfconfig.cfg (the "+set" lines
+	# are consumed earlier), so it overwrites the saved choices; latched ones (r_mode...) apply on vid_restart.
+	if [[ "$RESET_BINDS" -eq 1 ]]; then
+		ARGS+=(+exec codmod_defaults.cfg)
 	fi
 fi
 
-# RTCW_STARTUP_SETS="cvar=value ..." (used by bench.sh --set): override a startup +set in place, or
-# append it. The engine drops command-line "+" commands beyond 32 (MAX_CONSOLE_LINES), so never add
-# extra lines here; latched cvars must be set on the command line to take effect at renderer init.
+# RTCW_STARTUP_SETS="cvar=value ..." (used by bench.sh/shots.sh --set): force cvars for this launch. The engine
+# applies startup +set after all configs (codmod_defaults.cfg, wolfconfig.cfg, codmod.cfg) and before renderer
+# init, so they win, latched cvars included. The engine drops "+" commands beyond MAX_CONSOLE_LINES.
 if [[ -n "${RTCW_STARTUP_SETS:-}" ]]; then
-	declare -A OVR=()
-	for kv in $RTCW_STARTUP_SETS; do OVR[${kv%%=*}]=${kv#*=}; done
-	NEW=()
-	for ((i = 0; i < ${#ARGS[@]}; i++)); do
-		if [[ "${ARGS[i]}" == "+set" && -n "${OVR[${ARGS[i+1]:-}]+x}" ]]; then
-			NEW+=(+set "${ARGS[i+1]}" "${OVR[${ARGS[i+1]}]}"); unset "OVR[${ARGS[i+1]}]"; i=$((i + 2))
-		else
-			NEW+=("${ARGS[i]}")
-		fi
-	done
-	for k in "${!OVR[@]}"; do NEW+=(+set "$k" "${OVR[$k]}"); done
-	ARGS=("${NEW[@]}")
+	for kv in $RTCW_STARTUP_SETS; do ARGS+=(+set "${kv%%=*}" "${kv#*=}"); done
 fi
 
 if [[ -n "$WINDOWED" ]]; then

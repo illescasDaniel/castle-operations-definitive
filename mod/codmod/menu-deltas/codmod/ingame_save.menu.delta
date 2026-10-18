@@ -1,0 +1,5 @@
+#menu-delta v2 base=ui/ingame_save.menu sha256=e5bd6c9984f8f361bc2d87d1514864a6711a2203b000df0f315dc3de9cf9012f
+@@ 201 202
++		rect 196 3.5 53 20
+@@ 203 204
++		textalignx 26

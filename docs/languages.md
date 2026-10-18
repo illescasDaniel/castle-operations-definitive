@@ -12,7 +12,7 @@ menus. Change it only together with the code that reads it.
 | `cod_subtitleScale` | `1.0` | Subtitle text size multiplier, 0.5 to 2.5. |
 
 All three are `CVAR_ARCHIVE`, registered in the engine (`qcommon/common.c`, so the UI and cgame both see them), with
-reset values in `mod/codmod/codmod_binds.cfg`. Never set them in `codmod.cfg` or `run.sh`.
+first-launch and reset values in `mod/codmod/codmod_defaults.cfg`. Never set them in `codmod.cfg` or `run.sh`.
 
 ## Pack layout
 

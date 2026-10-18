@@ -1,9 +1,0 @@
-#codmod-delta v2 base=ui/multiplayer_pop.menu sha256=6362c2d44016cc48669ca7d8e7f9e9603a9678c426d5f2580ea2e2eb778e15c4
-@@ 70 71
-+	rect 47 60 46 16
-@@ 72 73
-+	textalignx 23
-@@ 97 98
-+	rect 140 60 46 16
-@@ 99 100
-+	textalignx 23

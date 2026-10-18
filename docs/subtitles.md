@@ -18,7 +18,7 @@ generated locally from the game's own audio, so the pack is derived from game as
   `cg_sound.c`). `CG_DrawSubtitles` runs in `CG_Draw2D`; the rend2 present path is untouched. Voices farther than
   1200 units are skipped, except during camera cutscenes.
 - Setting: `cod_subtitles` (archived, default 1), row "Subtitles" in Settings > Game and the pause menu's Game page;
-  reset value in `codmod_binds.cfg`. Without the pack nothing is drawn.
+  first-launch and reset value in `codmod_defaults.cfg`. Without the pack nothing is drawn.
 
 ## Usage
 

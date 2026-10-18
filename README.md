@@ -117,7 +117,7 @@ Default: `~/.local/share/Steam/steamapps/common/Return to Castle Wolfenstein/Mai
 # Codmod + first SP mission (cheats / spdevmap)
 ./scripts/run.sh +spdevmap escape1
 
-# Re-apply default binds from mod/codmod/codmod_binds.cfg
+# Reset binds and settings to the mod defaults (mod/codmod/codmod_defaults.cfg)
 ./scripts/run.sh --reset-binds +spdevmap escape1
 
 # Windowed
@@ -129,9 +129,9 @@ Default: `~/.local/share/Steam/steamapps/common/Return to Castle Wolfenstein/Mai
 
 | Flag | Effect |
 |------|--------|
-| *(default)* | `fs_game codmod`, exec `codmod.cfg` |
+| *(default)* | `fs_game codmod`; the engine then runs `codmod_defaults.cfg` and `codmod.cfg` |
 | `--vanilla` | Play with `main` only (no mod) |
-| `--reset-binds` / `--reset-settings` | Full reset via `codmod_binds.cfg` (binds + AA, frame limit, pacing, vsync defaults; same as `/cod_resetbinds`) |
+| `--reset-binds` / `--reset-settings` | Full reset via `codmod_defaults.cfg` (binds + AA, frame limit, pacing, vsync defaults; same as `/cod_resetbinds`) |
 | `--windowed WxH` | Windowed mode, e.g. `1280x720` |
 
 Configs, saves, and `rtcwconsole.log` go under `run/home/` (not `~/.wolf`).
@@ -261,9 +261,9 @@ Most of the work is code in the [iortcw fork](https://github.com/illescasDaniel/
 - **Tools (`tools/`):** optional local pipelines that build the private HD texture, audio and video packs, plus
   localization, subtitle and specular-map tools. The generated packs are never in this repo.
 
-Today the new mechanics are on by default in the engine code (`cod_enable 0` restores vanilla feel), so the engine and
-the mod are not cleanly separated. The goal is for the engine to only provide the capabilities and for `codmod` to be
-the mod that switches them on. Details: [`docs/architecture.md`](docs/architecture.md) section 0.
+The engine defaults to vanilla RTCW behaviour (`cod_enable 0`, renderer features off). The mod's config files in
+`mod/codmod/` switch the features on, so `codmod` is the mod and the engine only provides the capabilities. Details:
+[`docs/architecture.md`](docs/architecture.md) section 0.
 
 ## Development
 

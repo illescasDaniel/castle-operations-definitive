@@ -1,4 +1,4 @@
-#codmod-delta v2 base=ui/hud.menu sha256=d2808313be14d72edee505a48cf1461714294c47df29285c994e1c31ab451ff9
+#menu-delta v2 base=ui/hud.menu sha256=d2808313be14d72edee505a48cf1461714294c47df29285c994e1c31ab451ff9
 #src ui/briefing.menu sha256=a7fae3125a9b966c56c0481a8f92c1960030deb5e344776397d3df47ee1606f5
 @@ 2 17
 +// codmod: Phase 5c â CoD-style HUD (clip/reserve ammo, no health/stamina/heat bars).

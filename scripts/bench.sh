@@ -20,7 +20,7 @@ Usage: scripts/bench.sh [--label NAME] [--runs N] [--mangohud] [--windowed WxH]
   --runs N       Runs (default 3); run 1 is a warm-up, excluded from the median
   --mangohud     Launch via game_run.sh (MangoHud + gamemode) for a cross-check
   --windowed WxH Pass through to run.sh
-  --set C V      Extra "+set C V" after run.sh's defaults (repeatable; wins over codmod.cfg)
+  --set C V      Extra "+set C V" (repeatable; wins over codmod.cfg and saved settings)
   --env K=V      Environment variable for the game process (repeatable)
   --gpumon       Sample GPU/memory utilisation with nvidia-smi during each run
 USAGE

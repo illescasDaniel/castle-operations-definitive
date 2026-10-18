@@ -1,8 +1,0 @@
-#codmod-delta v2 base=ui/system.menu sha256=fe28a0c578e2569bc374f20ba969f3711deef4bf2b219904d1b743cf78698acb
-@@ 3 7
-+\\ SYSTEM MENU stub â redirects to merged options_menu \\
-@@ 12 699
-@@ 700 706
-+	onOpen { close system_menu ; open options_menu }
-+}
-@@ 709 712

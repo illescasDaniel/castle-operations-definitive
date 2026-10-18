@@ -14,6 +14,12 @@ Cause of 274 -> 141 FPS was ai_marker cubemaps splitting batches (600 -> 3500/fr
 - **Rationale:** <why, and what we rejected>
 -->
 
+## 2026-10-18 Tactical AI: game-side sampled cover + new AIFunc, state in static arrays
+
+- **Context:** vanilla RTCW cast AI stands in the open; its only cover query (`AAS_NearestHideArea`) returns fully hidden spots it cannot shoot from, and `cast_state_t` is saved as a raw struct.
+- **Decision:** a game-side cover finder (hull traces: wall-hug rays + ring samples, classified LOW/CORNER/FULL against the threat eye, AAS travel time last) and a new `AIFunc_CodCombat` that vanilla Battle/TakeCover/Chase hand over to after their danger/door checks. All new per-soldier state in static `codAI[]` arrays (stale-checked against `level.startTime`), new AIFuncs registered in `g_funcs.h`/`g_func_decs.h`.
+- **Why:** no botlib/AAS changes or map data, savegames stay compatible, scripted/special characters keep vanilla code (strict eligibility, back-off on hand-over). Rejected: patching botlib hide-area search (wrong kind of cover), adding fields to `cast_state_t` (breaks saves).
+
 ## 2026-10-18 Engine menu layer and delta builder live in the iortcw fork
 
 - **Context:** the fork had to run as plain RTCW from its own folder (`SP/run-sp.sh`) without knowing codmod, but its

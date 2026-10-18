@@ -72,6 +72,26 @@ the GL context SIGSEGVs. `CL_Vid_Restart_f` therefore splits:
 Smoke (agent): mangohud + mode change should print `vid_restart: soft (keep GL context)` and
 `GLimp_SetModeInPlace: … (no GL recreate)`, then exit cleanly — not SIGSEGV.
 
+Fullscreen fix (2026-10-18): the old "FS in-place" row only called `SDL_SetWindowFullscreen` and patched
+`cls.glconfig.vidWidth/Height`; the renderer's FBOs, viewport and 2D projection stayed at the old size, so the
+menu drew in the bottom-left corner of the fullscreen window until restart. Now a real FS change always goes through
+the soft path (`IN_ToggleFullscreenInPlace` only skips the restart when the window is already toggled and the size
+matches). `GLimp_SetModeInPlace` waits (`GLimp_WaitForWindowSize`, pumps SDL events, 1 s max) for the compositor size
+before `glConfig` is set; the Alt+Enter toggle in `GLimp_EndFrame` queues a soft `vid_restart` when the size changed.
+Scripted check: `+r_displayMode 2 +vid_restart` (note `+set r_displayMode` on the command line is overridden at
+startup; use the bare cvar form) and read `GLimp_WaitForWindowSize` / `GLimp_SetModeInPlace` in `rtcwconsole.log`.
+Known: fullscreen reports 2561x1601 on the 2560x1600 desktop (compositor window size); borderless sets `r_mode -2`
+and switching back to windowed keeps the desktop size.
+
+## Low resolution in fullscreen (findings, not implemented)
+
+On Wayland `GLimp_SetModeInPlace` / `GLimp_StartDriver` use `SDL_WINDOW_FULLSCREEN_DESKTOP` (Wayland has no mode
+setting), so `r_mode` only applies to windowed. Fullscreen always renders at desktop resolution. On X11 the exclusive
+`SDL_WINDOW_FULLSCREEN` + `SDL_SetWindowDisplayMode` path would really change mode. Recommended: a render-scale /
+internal-resolution option: allocate the scene FBO (`tr_fbo.c`) at the chosen size while the window stays at desktop
+size, and upscale in the final present blit (touches `RB_SwapBuffers`/post-process: needs user verification of HUD and
+pause menu with MSAA). Cheap alternative: run the game under gamescope (`-w 1280 -h 720 -W 2560 -H 1600 -f`).
+
 ## Console toolbox
 
 | Command | Use |

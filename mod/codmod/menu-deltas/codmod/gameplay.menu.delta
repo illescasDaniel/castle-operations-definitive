@@ -255,6 +255,18 @@
 +		mouseenter { show hint_opt_enemy }
 +		mouseexit { hide hint_opt_enemy }
 =ui/options.menu 176 179
++		name opt_tactics
++		group grpopts
+=ui/options.menu 129 130
++		text "Tactical Enemies:"
++		cvar "cod_optTactics"
++		rect 240 389 320 14
+=ui/options.menu 97 98
+=ui/error.menu 217 218
+=ui/options.menu 207 213
++		mouseenter { show hint_opt_tactics }
++		mouseexit { hide hint_opt_tactics }
+=ui/options.menu 176 179
 +		name hint_opt_move
 +		group grphint
 +		style 0
@@ -392,7 +404,20 @@
 +		textscale .20
 +		text "Enemy soldiers run and sprint at boosted speeds. Off = original RTCW. Applies on map load."
 @@ 537 538
-@@ 539 552
+@@ 539 540
+=ui/options.menu 348 350
+@@ 542 551
++		name hint_opt_tactics
++		group grphint
++		style 0
++		rect 90 452 530 22
+=ui/cdkey.menu 68 69
+=ui/system.menu 561 563
++		textaligny 16
++		textscale .20
++		text "Enemy soldiers fight from cover: peek, duck, reload hidden, strafe. Off = original RTCW AI."
+@@ 552 552
+=ui/options.menu 82 83
 @@ 553 555
 +	}
 @@ 563 564

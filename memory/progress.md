@@ -21,6 +21,13 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 - [x] Phase 5.5: quick knife on V + snappy switch/return (confirmed in-game 2026-10-08)
 
 ### Open
+- [ ] **Low resolution in fullscreen looks like native (TODO, investigated 2026-10-18, not implemented):** on Wayland SDL
+  uses `SDL_WINDOW_FULLSCREEN_DESKTOP` (compositors cannot change video modes), so `r_mode` is ignored in fullscreen and
+  `glConfig.vidWidth/Height` become the desktop size. Proper low-res = render at the chosen size into a smaller FBO and
+  upscale in the final blit (render-scale option; touches the rend2 present path, needs user verification), or run under
+  gamescope. Details in `docs/testing.md` ("Low resolution in fullscreen").
+- [x] **Fullscreen switch from the menu rendered in a corner (2026-10-18, user-confirmed, uncommitted):** root cause and fix in `docs/testing.md` ("Soft vs hard vid_restart").
+- [ ] **Tactical AI overhaul** (`docs/ai-overhaul-plan.md`): [x] Phase 1 cover + OPEN/MOVE/HIDE/PEEK (2026-10-18, user-confirmed, uncommitted); [x] 2 squads/flank/suppress (2026-10-18, user-confirmed); [x] 2b push for an angle (user-confirmed); [ ] 3 grenades/morale; [ ] 4 search/hunt; [ ] 5 movement polish; [ ] 6 difficulty/perf/docs
 - [x] **Gameplay options menu (2026-10-18, uncommitted, awaiting in-game check):** MODS > GAMEPLAY, 11 `cod_opt*` toggles (`docs/gameplay-options.md`)
 - [x] **Separate the capability from the config that enables it** (2026-10-18: phase 1 merged in PR #2;
   plan in `docs/capability-split-plan.md`). Phase 2 (remove opengl1, SP only): done, merged in PR #3. Goal: the iortcw engine/game modules only *support* the new mechanics, HUD and renderer features;

@@ -21,6 +21,7 @@ end of every `BG_CodUpdateCvars()` in qagame and cgame and clears the feature fl
 | `cod_optAmmo` | More Ammo | ammoScale 1 |
 | `cod_optHitMarkers` | Hit Markers | hitMarkerEnable |
 | `cod_optEnemy` | Fast Enemies | aiSpeedMode 0, aiSprint 0 |
+| `cod_optTactics` | Tactical Enemies | aiTactics 0 (vanilla AI fight functions run; applies live on the next think) |
 
 Notes: health and enemy-speed changes apply on the next map load (max health is set at spawn, AI speeds when the
 actor spawns). `cod_*` tuning values (speeds, scales) are unchanged; they stay in `codmod_tuning.cfg`.

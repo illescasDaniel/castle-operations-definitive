@@ -94,6 +94,21 @@
 =ui/credit.menu 1508 1509
 =ui/ingame_controls.menu 31 35
 =ui/bookp.menu 62 63
++	name gameplay_btn
++	text "GAMEPLAY"
+=ui/controls.menu 105 106
+=ui/play.menu 196 198
++	textscale .30
++	style 0
++	rect 40 170 180 22
+=ui/credit.menu 1504 1505
+=ui/credit.menu 1548 1549
++	textaligny 18
+=ui/credit.menu 1508 1509
+=ui/controls.menu 8 9
++	action { play "sound/misc/kcaction.wav" ;
++	close mods_menu ; open gameplay_menu }
+=ui/clipboard.menu 89 92
 +	name back
 +	text "BACK"
 =ui/controls.menu 105 106

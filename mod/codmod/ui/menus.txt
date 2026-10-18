@@ -12,6 +12,7 @@
 	loadMenu { "ui/options.menu" }
 	loadMenu { "ui/sound.menu" }
 	loadMenu { "ui/game.menu" }
+	loadMenu { "ui/gameplay.menu" }
 	loadMenu { "ui/credit.menu" }
 	loadMenu { "ui/connect.menu" }
 	loadMenu { "ui/quit.menu" }

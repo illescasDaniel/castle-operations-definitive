@@ -21,6 +21,7 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 - [x] Phase 5.5: quick knife on V + snappy switch/return (confirmed in-game 2026-10-08)
 
 ### Open
+- [x] **Gameplay options menu (2026-10-18, uncommitted, awaiting in-game check):** MODS > GAMEPLAY, 11 `cod_opt*` toggles (`docs/gameplay-options.md`)
 - [x] **Separate the capability from the config that enables it** (2026-10-18: phase 1 merged in PR #2;
   plan in `docs/capability-split-plan.md`). Phase 2 (remove opengl1, SP only): done, merged in PR #3. Goal: the iortcw engine/game modules only *support* the new mechanics, HUD and renderer features;
   `codmod` (the `fs_game` mod: `codmod.cfg`, `codmod_binds.cfg`, menu deltas) is what *activates* them. Running

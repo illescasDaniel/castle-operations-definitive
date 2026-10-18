@@ -1,0 +1,404 @@
+#menu-delta v2 base=ui/options.menu sha256=b33b7f4a1186399f52986fa9e56f200bf8c2e516433cb394645186569a035c1b
+#src ui/cdkey.menu sha256=96745cb143d3a0d91da1fe5f1b7ac2db26addce0ec675e919ea7ed0050b33bda
+#src ui/clipboard.menu sha256=1234b5cb59f380ca39fb2c56cbcd82ad2d67d0f1c691aab2a3e49e0d428ba6a0
+#src ui/controls.menu sha256=988fa4ecc3b5152f3291a3c83b427fd971bd8bb5b8b1ab42cf81e8d6b29f724d
+#src ui/credit.menu sha256=81fe8de5ee0a324483378209b9a9f3f64697f1cce563d1dad60bfdc5eee77b1e
+#src ui/error.menu sha256=d8082e15dc125112689b431f799d17958025389efe435cb8f64a39e68cf4223c
+#src ui/ingame_controls.menu sha256=012cb5b0b443e10d28bfc8d0c0d564a1b45f0f923660fe05a936c7040fbc6150
+#src ui/notebook.menu sha256=7bc854e3ffa6fb56f4036ec3158fc6c0192156d47fd9dc37bbd30240e410c55f
+#src ui/play.menu sha256=a588d0fc5985e36554b5ebf2c516b65fe26a837c207c634a9ab2f2e658c1ccb5
+#src ui/system.menu sha256=fe28a0c578e2569bc374f20ba969f3711deef4bf2b219904d1b743cf78698acb
+@@ 3 4
++\\ GAMEPLAY OPTIONS (codmod â classic vs modern mechanics toggles) \\
+@@ 6 7
++	name "gameplay_menu"
+@@ 8 10
++	fullscreen 1
+=ui/controls.menu 1421 1422
+@@ 11 14
++	style 0
++	border 0
++	onOpen { setitemcolor fadebox backcolor 0 0 0 1 ;
+@@ 15 16
++	onEsc { close gameplay_menu ; open mods_menu }
+@@ 17 17
++////////// CHROME /////////////////////////////////////////////////////////
+@@ 18 29
+=ui/options.menu 55 56
++	name menu_select
+=ui/notebook.menu 27 28
+=ui/controls.menu 1421 1422
++	background "menu_select"
+@@ 31 54
++}
+@@ 56 69
++	name BLACKGRAD
+=ui/notebook.menu 27 28
++	rect 0 -4 640 132
++	background "BLACKGRAD"
+=ui/options.menu 29 30
+@@ 71 84
+@@ 85 85
+=ui/options.menu 55 56
++	name BLACKGRAD2
+=ui/notebook.menu 27 28
++	rect 0 420 640 -128
++	background "BLACKGRAD"
+=ui/ingame_controls.menu 31 34
+@@ 86 86
+=ui/options.menu 55 56
++	name FLAME
+=ui/notebook.menu 27 28
++	rect 210 20 220 67
++	background "fLAME"
+=ui/ingame_controls.menu 31 34
+@@ 87 87
+=ui/options.menu 55 56
++	name WOLFFLAMELOGO
+=ui/notebook.menu 27 28
++	rect 200 -5 240 120
++	background "WOLFFLAMELOGO"
+=ui/ingame_controls.menu 31 34
+@@ 88 88
+=ui/options.menu 55 56
++	name gold_line_l
+=ui/notebook.menu 27 28
++	rect 0 76 226 10
++	background "gold_line"
+=ui/ingame_controls.menu 31 35
+=ui/options.menu 55 56
++	name gold_line_r
+=ui/notebook.menu 27 28
++	rect 414 76 230 10
++	background "gold_line"
+=ui/ingame_controls.menu 31 35
+=ui/options.menu 55 56
++	name content_panel
++	rect 220 110 380 320
+=ui/options.menu 24 25
+=ui/options.menu 28 29
+=ui/options.menu 12 13
++	bordercolor .5 .5 .5 .35
+=ui/ingame_controls.menu 31 35
+=ui/options.menu 55 56
++	name back
++	text "BACK"
+=ui/controls.menu 105 106
+=ui/play.menu 196 198
++	textscale .30
++	style 0
++	rect 40 420 180 22
+=ui/credit.menu 1504 1505
+=ui/credit.menu 1548 1549
++	textaligny 18
+=ui/options.menu 67 68
+=ui/options.menu 29 30
++	action { play "sound/misc/kcaction.wav" ;
++	close gameplay_menu ; open mods_menu }
+=ui/clipboard.menu 89 92
++	name gameplay_label
++	text "GAMEPLAY"
+=ui/play.menu 195 198
++	textscale .30
++	style 0
++	rect 40 140 180 22
+=ui/credit.menu 1504 1505
+=ui/credit.menu 1548 1549
++	textaligny 18
+=ui/options.menu 67 68
+=ui/ingame_controls.menu 31 35
++////////// VALUES /////////////////////////////////////////////////////////
+@@ 90 97
++		name opt_move
++		group grpopts
+=ui/options.menu 129 130
++		text "Movement:"
++		cvar "cod_optMovement"
++		rect 240 125 320 14
+@@ 98 207
+=ui/error.menu 217 218
+@@ 213 216
++		mouseenter { show hint_opt_move }
++		mouseexit { hide hint_opt_move }
++	}
+@@ 218 220
++		name opt_slide
++		group grpopts
+@@ 221 224
++		text "Slide:"
++		cvar "cod_optSlide"
++		rect 240 149 320 14
+@@ 225 226
+=ui/error.menu 217 218
+@@ 231 233
+=ui/options.menu 81 82
++		mouseenter { show hint_opt_slide }
++		mouseexit { hide hint_opt_slide }
++	}
+@@ 235 246
++		name opt_prone
++		group grpopts
+=ui/options.menu 129 130
++		text "Prone:"
++		cvar "cod_optProne"
++		rect 240 173 320 14
+@@ 247 248
+=ui/error.menu 217 218
+@@ 249 250
+=ui/options.menu 100 101
+@@ 253 257
+=ui/options.menu 81 82
++		mouseenter { show hint_opt_prone }
++		mouseexit { hide hint_opt_prone }
++	}
+@@ 259 268
++		name opt_aim
++		group grpopts
+=ui/options.menu 129 130
++		text "Aim Down Sights:"
++		cvar "cod_optAiming"
++		rect 240 197 320 14
+@@ 269 270
+=ui/error.menu 217 218
+@@ 271 272
+=ui/options.menu 100 101
+@@ 275 300
+=ui/options.menu 81 82
++		mouseenter { show hint_opt_aim }
++		mouseexit { hide hint_opt_aim }
+@@ 302 332
+@@ 333 339
++		name opt_recoil
++		group grpopts
+=ui/options.menu 129 130
++		text "Weapon Recoil:"
++		cvar "cod_optRecoil"
++		rect 240 221 320 14
+@@ 340 343
+=ui/error.menu 217 218
+@@ 344 345
+=ui/options.menu 100 101
+@@ 348 348
+=ui/options.menu 81 82
++		mouseenter { show hint_opt_recoil }
++		mouseexit { hide hint_opt_recoil }
+=ui/options.menu 176 179
++		name opt_weapon
++		group grpopts
+=ui/options.menu 129 130
++		text "Weapon Handling:"
++		cvar "cod_optWeapon"
++		rect 240 245 320 14
+=ui/options.menu 97 98
+=ui/error.menu 217 218
+=ui/options.menu 207 213
++		mouseenter { show hint_opt_weapon }
++		mouseexit { hide hint_opt_weapon }
+=ui/options.menu 176 179
++		name opt_regen
++		group grpopts
+=ui/options.menu 129 130
++		text "Health Regeneration:"
++		cvar "cod_optRegen"
++		rect 240 269 320 14
+=ui/options.menu 97 98
+=ui/error.menu 217 218
+=ui/options.menu 207 213
++		mouseenter { show hint_opt_regen }
++		mouseexit { hide hint_opt_regen }
+=ui/options.menu 176 179
++		name opt_stamina
++		group grpopts
+=ui/options.menu 129 130
++		text "Stamina Changes:"
++		cvar "cod_optStamina"
++		rect 240 293 320 14
+=ui/options.menu 97 98
+=ui/error.menu 217 218
+=ui/options.menu 207 213
++		mouseenter { show hint_opt_stamina }
++		mouseexit { hide hint_opt_stamina }
+=ui/options.menu 176 179
++		name opt_ammo
++		group grpopts
+=ui/options.menu 129 130
++		text "More Ammo:"
++		cvar "cod_optAmmo"
++		rect 240 317 320 14
+=ui/options.menu 97 98
+=ui/error.menu 217 218
+=ui/options.menu 207 213
++		mouseenter { show hint_opt_ammo }
++		mouseexit { hide hint_opt_ammo }
+=ui/options.menu 176 179
++		name opt_hit
++		group grpopts
+=ui/options.menu 129 130
++		text "Hit Markers:"
++		cvar "cod_optHitMarkers"
++		rect 240 341 320 14
+=ui/options.menu 97 98
+=ui/error.menu 217 218
+=ui/options.menu 207 213
++		mouseenter { show hint_opt_hit }
++		mouseexit { hide hint_opt_hit }
+=ui/options.menu 176 179
++		name opt_enemy
++		group grpopts
+=ui/options.menu 129 130
++		text "Fast Enemies:"
++		cvar "cod_optEnemy"
++		rect 240 365 320 14
+=ui/options.menu 97 98
+=ui/error.menu 217 218
+=ui/options.menu 207 213
++		mouseenter { show hint_opt_enemy }
++		mouseexit { hide hint_opt_enemy }
+=ui/options.menu 176 179
++		name hint_opt_move
++		group grphint
++		style 0
++		rect 90 452 530 22
+=ui/cdkey.menu 68 69
+=ui/system.menu 561 563
++		textaligny 16
++		textscale .20
++		text "Faster speeds, gravity, jump, sprint, lean and crouch easing. Off = original RTCW movement."
+=ui/options.menu 79 80
+=ui/options.menu 82 83
+@@ 351 355
+@@ 356 373
++		name hint_opt_slide
++		group grphint
++		style 0
++		rect 90 452 530 22
+=ui/cdkey.menu 68 69
+=ui/system.menu 561 563
++		textaligny 16
++		textscale .20
++		text "Sprint, then crouch to slide. Needs Movement on."
+=ui/options.menu 79 80
+=ui/credit.menu 413 416
+@@ 375 392
++		name hint_opt_prone
++		group grphint
++		style 0
++		rect 90 452 530 22
+=ui/cdkey.menu 68 69
+=ui/system.menu 561 563
++		textaligny 16
++		textscale .20
++		text "Go prone and crawl. Off = no prone stance."
+=ui/options.menu 79 80
+=ui/credit.menu 413 416
+@@ 394 410
++		name hint_opt_aim
++		group grphint
++		style 0
++		rect 90 452 530 22
+=ui/cdkey.menu 68 69
+=ui/system.menu 561 563
++		textaligny 16
++		textscale .20
++		text "ADS, hipfire spread, ADS sway and the modern crosshair. Off = original RTCW aiming."
+=ui/options.menu 79 80
+=ui/credit.menu 413 416
+@@ 412 427
++		name hint_opt_recoil
++		group grphint
++		style 0
++		rect 90 452 530 22
+=ui/cdkey.menu 68 69
+=ui/system.menu 561 563
++		textaligny 16
++		textscale .20
++		text "Your view kicks up with each shot."
+=ui/options.menu 79 80
+=ui/credit.menu 413 416
+@@ 429 438
++		name hint_opt_weapon
++		group grphint
++		style 0
++		rect 90 452 530 22
+=ui/cdkey.menu 68 69
+=ui/system.menu 561 563
++		textaligny 16
++		textscale .20
++		text "One shot per click on pistols/rifles, quick knife, stronger kick. Off = original RTCW."
+@@ 439 440
+@@ 441 442
+=ui/options.menu 348 350
+@@ 444 453
++		name hint_opt_regen
++		group grphint
++		style 0
++		rect 90 452 530 22
+=ui/cdkey.menu 68 69
+=ui/system.menu 561 563
++		textaligny 16
++		textscale .20
++		text "Health recovers after a few seconds out of combat. Off = health packs only. Applies on map load."
+@@ 454 454
+=ui/options.menu 82 83
+@@ 455 456
++	}
+@@ 458 481
++		name hint_opt_stamina
++		group grphint
++		style 0
++		rect 90 452 530 22
+=ui/cdkey.menu 68 69
+=ui/system.menu 561 563
++		textaligny 16
++		textscale .20
++		text "Longer sprint with a short recharge delay. Off = original RTCW stamina bar."
+=ui/options.menu 79 80
+=ui/credit.menu 413 415
+@@ 483 505
+=ui/options.menu 89 90
++		name hint_opt_ammo
++		group grphint
++		style 0
++		rect 90 452 530 22
+=ui/cdkey.menu 68 69
+=ui/system.menu 561 563
++		textaligny 16
++		textscale .20
++		text "Double ammo from pickups and a higher carry limit. Off = original RTCW amounts."
+=ui/options.menu 79 80
+=ui/credit.menu 413 416
+@@ 507 520
++		name hint_opt_hit
++		group grphint
++		style 0
++		rect 90 452 530 22
+=ui/cdkey.menu 68 69
+=ui/system.menu 561 563
++		textaligny 16
++		textscale .20
++		text "X flash and a sound when you hit an enemy."
+@@ 521 521
+=ui/options.menu 82 83
+@@ 522 524
++	}
+@@ 526 536
++		name hint_opt_enemy
++		group grphint
++		style 0
++		rect 90 452 530 22
+=ui/cdkey.menu 68 69
+=ui/system.menu 561 563
++		textaligny 16
++		textscale .20
++		text "Enemy soldiers run and sprint at boosted speeds. Off = original RTCW. Applies on map load."
+@@ 537 538
+@@ 539 552
+@@ 553 555
++	}
+@@ 563 564
+=ui/options.menu 81 82
+@@ 565 571
++	}
+@@ 574 574
++}
++

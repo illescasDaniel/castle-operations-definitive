@@ -14,6 +14,11 @@ Cause of 274 -> 141 FPS was ai_marker cubemaps splitting batches (600 -> 3500/fr
 - **Rationale:** <why, and what we rejected>
 -->
 
+## 2026-10-20: Player kick back to vanilla strength
+
+- **Context:** `cod_kickDamage` had been raised to 50 (vanilla 15) early on. User finds the player kick too powerful.
+- **Decision:** `cod_kickDamage` set to 15 in `codmod_tuning.cfg` (cvar kept, tunable). Damage was the only kick change; range, door kick and knockback were never modified. AI kick untouched.
+
 ## 2026-10-18 Tactical AI: game-side sampled cover + new AIFunc, state in static arrays
 
 - **Context:** vanilla RTCW cast AI stands in the open; its only cover query (`AAS_NearestHideArea`) returns fully hidden spots it cannot shoot from, and `cast_state_t` is saved as a raw struct.

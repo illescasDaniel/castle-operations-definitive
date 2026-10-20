@@ -106,7 +106,7 @@ RTCW has no separate melee mode: only `WP_KNIFE` (inventory) and unrelated foot 
 | Switch speed | `cod_knifeSwitchTime` (default **75** ms drop/raise; 0 = vanilla 250). Return starts as soon as the swing registers (no wait for knife READY) |
 | Enable | `cod_quickKnifeEnable` (default 1), gated on `cod_enable` |
 | Pad R3 | `+quickkick`: tap = `quickknife`, hold ≥250 ms = pulsed `+kick` (`CG_QuickKickDown_f`/`CG_CodUpdateQuickKick`) |
-| Kick damage | `cod_kickDamage` (default **50**, vanilla 15) in `Cmd_WolfKick_f`; keyboard `+kick` unchanged otherwise |
+| Kick damage | `cod_kickDamage` (default **15** = vanilla; was 50 until 2026-10-20) in `Cmd_WolfKick_f`; keyboard `+kick` unchanged otherwise |
 
 **Abort / edges:** dead, no knife bit, already mid-quickknife, manual weapon change mid-sequence (don't force return), death clears state. Optional `-ads` if sticky ADS was on.
 

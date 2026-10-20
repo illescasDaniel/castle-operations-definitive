@@ -4,6 +4,8 @@ Goal: human enemies that use cover, pop out to shoot, crouch, move around corner
 flush the player out with grenades and search intelligently when they lose contact. Monsters, bosses and scripted
 sequences keep their original behaviour.
 
+Finished-system overview, cvar reference and difficulty table: [ai-tactics.md](ai-tactics.md).
+
 Phase gating as usual: each phase is built, smoke-tested, reported, and **waits for the user's in-game check**
 before the next starts. Status is tracked in `memory/progress.md`.
 
@@ -481,6 +483,30 @@ slide under fire (accuracy drops, jinks), crouch-walk between low covers, find a
 - Full-campaign regression: every map's scripted sequences, friendly AIs (partisans, village), MG42 gunners,
   snipers, bosses untouched, save/load mid-fight, `cod_optTactics 0` A/B.
 - Final docs (`docs/ai-tactics.md`) and tuning values.
+
+**Implemented (Phase 6)** (builds warning-free; every SP map loads and quits cleanly; a scripted fight on escape2 incl.
+save/load mid-fight ran without errors; not play-tested by a human). Overview and the full cvar table: [ai-tactics.md](ai-tactics.md).
+
+- **Difficulty.** One table `codSkillTable` / `AICast_CodSkill( COD_SK_* )` in `ai_cast_cod.c` (easy / medium / hard):
+  reaction time x1.35 / 1 / 0.75 (hook in `AICast_EntityVisible`, tactical soldier types only, `// codmod:`), peek burst
+  x0.8 / 1 / 1.25, hide time x1.3 / 1 / 0.8, flank hold x1.6 / 1 / 0.7, push no-shot time x1.5 / 1 / 0.75, grenade hold and
+  cooldown x1.5 / 1 / 0.75, accuracy warm-up x1.4 / 1 / 0.7 (Phase 5, now from the same table), hunt / sweep / alert
+  durations x0.7 / 1 / 1.3. Attack tokens stay 2 / 3 / 4. `cod_aiSkillScale` (default 1) switches all factors to 1.0.
+- **Performance counters.** `ai_cast_cod.h` wraps `trap_Trace`, `trap_AAS_AreaTravelTimeToGoalArea` and
+  `trap_AAS_GetRouteFirstVisPos` in the tactical files with counting macros; cover searches are counted in the ration.
+  `cod_aiDebug 2` prints `[ai] perf: ...` once per second. Measured on escape2 (nazi1-3 in a real fight, god mode, skill
+  easy and hard): 10 tactical frames/s; mean traces per frame about 2.5, a cover search costs 150-480 traces in its frame
+  (one search per frame at most); AAS queries at most 7 per frame, usually 0; at most 2-3 soldiers in combat at a time.
+  No hot spot found that justified a behaviour-neutral change (the per-think strafe check is 3 traces), so no code was
+  changed for performance. A big fight (6+ soldiers) was not reachable in the automated runs.
+- **Regression (automated).** All 32 SP maps (including cutscenes) loaded with tactics on and quit via `+quit`, no
+  ai/cast/script/AAS errors; `cod_optTactics 0` on escape2 loads, nothing tactical runs; `savegame` / `loadgame` in the
+  middle of a three-soldier fight worked and the fight continued after the load.
+
+Human checklist: scripted sequences (cell guard, cutscene soldiers, `gotomarker` patrols) unchanged; friendly AIs (partisans,
+village); MG42 gunners and snipers keep their posts; bosses and monsters unchanged; flank / push / grenade / hunt behaviour
+in a real 4+ soldier fight on each skill; backpedal, kick, jinks, campers; mid-fight save/load while hunting or dodging a
+grenade; `cod_optTactics 0` A/B in the menu.
 
 ## 5. Implementation process
 

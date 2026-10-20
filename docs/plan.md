@@ -61,6 +61,7 @@ ioRTCW fork and in a separate `fs_game` mod folder named **`codmod`**.
 | 6 | [phase-6-slide.md](phase-6-slide.md) | Sprint+crouch slide with boost, linear decay, crouch hand-off, camera feel | User confirms the slide |
 | 6b | [phase-6b-prone.md](phase-6b-prone.md) | Prone ported from Enemy Territory's GPL code. Tier A: gameplay (stance, bbox, view, speed, transitions, fire/ADS rules). Tier B (optional, cosmetic): ET prone animations retargeted onto BJ's model | User confirms prone (tier A). Tier B only if the user asks |
 | 7 (optional) | [phase-7-extras.md](phase-7-extras.md) | Optional polish: ADS sway, recoil, UI extras, etc. | Only if the user asks |
+| AI (post-7) | [ai-tactics.md](ai-tactics.md) | Tactical enemy AI (cover, squads, flanking, grenades, hunt, polish, difficulty); design and phase history in [ai-overhaul-plan.md](ai-overhaul-plan.md) | User confirms in game, phase by phase |
 | L0-L2 (optional) | [phase-l10n.md](phase-l10n.md) | Localization: translate menus and game data (L0), AI-transcribe dialogue into subtitles (L1), AI-translate them (L2) | Only if the user asks |
 
 ## 4. Project layout (target, created in Phase 1)

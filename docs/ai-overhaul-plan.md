@@ -450,6 +450,30 @@ savegame load in the middle of a hunt (the arrays are stale-checked like the ear
 - Optional: fake lean for AIs (torso roll in cgame driven by a small entityState field) if the step-out peek looks
   too stiff. Optional: new voice lines ("Granate!", "Flankieren!").
 
+**Implemented (Phase 5)** (builds warning-free and loads/quits cleanly on escape2; **not play-tested in a fight at all**).
+New file `ai_cast_cod_polish.c` (static `polish_t` records, stale-checked, nothing in `cast_state_t`), hooked from
+`ai_cast_cod.c`. Gated by `bg_cod.enable && aiTactics && cod_aiPolish` plus one switch per feature; `cod_optTactics 0`
+leaves vanilla untouched.
+
+| cvar | default | meaning |
+|---|---|---|
+| `cod_aiPolish` | 1 | master switch for all Phase 5 features |
+| `cod_aiBackpedal` / `cod_aiBackpedalSpeed` | 1 / 150 | back away while firing when the enemy closes fast within ~400 u (AAS + ledge checked) |
+| `cod_aiCrouchWalk` | 1 | crouch-walk low cover to low cover (< ~300 u, route mostly hidden), via `attackcrouch_time` |
+| `cod_aiJink` | 1 | 0.3-0.6 s sideways direction changes when hit or suppressed (OPEN strafe legs, MOVE walking legs) |
+| `cod_aiKick` / `cod_aiKickDamage` / `cod_aiKickCooldown` | 1 / 15 / 2500 | melee kick at ~64 u, `MOD_KICKED`, not in scripted states |
+| `cod_aiAccuracy` / `cod_aiWarmup` / `cod_aiWarmupAcc` | 1 / 800 / 0.4 | first-shots warm-up, growth with time in sight, drop for sprint/slide target and moving shooter, scaled by `g_gameskill`, clamped; 1.0 for non-tactical AI |
+| `cod_aiCamper` | 1 | CAMPER soldiers hold a post |
+
+Behaviour: backpedal and jink act in OPEN/PEEK/MOVE of `AIFunc_CodCombat`; the kick runs before the grenade check and
+is skipped while dodging. Campers get a fake LOW cover at their remembered anchor, so the normal MOVE/HIDE/PEEK cycle
+makes them crouch-peek in place; the third compromise within 8 s drives them to ordinary cover (new anchor on
+arrival). Campers are excluded from squads, pushes, hunts and chases (a lost enemy hands over to vanilla).
+Deviations: no fake lean and no new voice lines (future work); only characters whose animation set has `kick` kick;
+`BG_COD_MAX_CVARS` raised to 288.
+Untested: everything. Check on escape2: charge a soldier (backpedal), get to ~64 u (kick), first shots miss, sprint or
+slide under fire (accuracy drops, jinks), crouch-walk between low covers, find a camper (stays crouched at its post).
+
 ### Phase 6 – Difficulty, performance, regression
 
 - Scale tokens, reaction times, peek lengths and flanking frequency by `g_gameskill`.

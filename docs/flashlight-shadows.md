@@ -23,3 +23,11 @@ Engine side lives in `iortcw/` (see `iortcw/CODMOD.md`, "rend2 additions").
   Found by shader debug output (flat colour per factor) after ruling out culling, depth-EQUAL and the shadow mask.
 - **Debugging tip:** the issue was found with temporary prints (shader names along the crosshair ray, `tess.dlightBits`
   per draw). Load with `+devmap <map>` (cheats on) and `noclip` out of the `escape1` cell.
+
+## One-time key tip
+
+After the player has had control in a level for 4 s, a center print "Toggle Flashlight with <key>" (key from the
+`toggleflashlight` bind) is shown once per install (`CG_CodUpdateTips`, cg_cod.c). State: archived cvar
+`cod_tipFlashlightShown` (default 0, saved in wolfconfig.cfg; not in the mod cfgs). Toggling the flashlight first also
+marks it shown; an unbound key leaves it armed. `cod_tipFlashlightShown 0` in the console re-arms it. The text is
+translated as a template (see docs/languages.md).

@@ -650,6 +650,7 @@
 "Breakable" "Zerbrechlich"
 "Hold to interact" "Halten zum Interagieren"
 "Press F to interact" "F: Interagieren"
+"Toggle Flashlight with %s" "Taschenlampe mit %s umschalten"
 
 // ---- UI literals (ui_main.c)
 "VENDOR: %s" "VENDOR: %s"

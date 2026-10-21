@@ -63,6 +63,9 @@ One entry per line: the exact English string as the game draws it, then the tran
 - Lookup is an exact, case-sensitive match on the whole string after the game's own processing (the string passed to
   the text draw function). Colour codes (`^1` etc.) are part of the key and must be kept in the translation.
 - Lines starting with `//` are comments. `\n` inside a string is a line break. Use `\"` for a literal quote.
+- Strings with a variable part (a key name, a number) are translated as a template: the code looks up the English
+  format string (e.g. `"Toggle Flashlight with %s"`) with `Lang_Translate` first, then formats it with `va`. Keep the
+  format specifier in the translation. (Example: the one-time flashlight tip in `CG_CodUpdateTips`.)
 - A missing entry draws the English string, so partial packs are fine.
 
 ### `subtitles.txt`

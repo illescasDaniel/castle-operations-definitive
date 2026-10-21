@@ -650,6 +650,7 @@
 "Breakable" "Rompible"
 "Hold to interact" "Mantén para interactuar"
 "Press F to interact" "Pulsa F para interactuar"
+"Toggle Flashlight with %s" "Usa la linterna con %s"
 
 // ---- UI literals (ui_main.c)
 "VENDOR: %s" "FABRICANTE: %s"

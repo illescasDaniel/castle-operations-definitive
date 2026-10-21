@@ -22,6 +22,7 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 - [x] Phase 5.5: quick knife on V + snappy switch/return (confirmed in-game 2026-10-08)
 
 ### Open
+- [ ] **SMAA on moving objects (planned 2026-10-21, not implemented):** plan in `docs/smaa-motion-plan.md` (Phase 0 in-game diagnosis at escape1 cages, 1 depth-predicated edges, 2 SMAA+MSAA2x menu option, 3 SMAA T2x with velocity buffer). Awaiting user choice of phases.
 - [ ] **Low resolution in fullscreen looks like native (TODO, investigated 2026-10-18, not implemented):** on Wayland SDL
   uses `SDL_WINDOW_FULLSCREEN_DESKTOP` (compositors cannot change video modes), so `r_mode` is ignored in fullscreen and
   `glConfig.vidWidth/Height` become the desktop size. Proper low-res = render at the chosen size into a smaller FBO and

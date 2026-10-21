@@ -1,0 +1,12 @@
+name = "WorldBevel"
+uuid = "5d1c3a7e-8b64-4f0e-9a52-2c7e1f0b6d31"
+version = "0.1.0"
+authors = ["codmod"]
+
+[deps]
+Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Zlib_jll = "83775a58-1f1d-513f-b197-d71354ab007a"
+
+[compat]
+julia = "1.10"

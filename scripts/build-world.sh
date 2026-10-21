@@ -12,12 +12,17 @@ import world_bevel as w
 print('\n'.join(w.all_maps()))")
 fi
 mkdir -p "$ROOT/benchmarks"
+if command -v julia >/dev/null; then
+	RUN=(julia -O2 --project="$ROOT/tools/world-bevel-jl" "$ROOT/tools/world-bevel-jl/world_bevel.jl")
+else
+	echo "julia not found: using the Python tool (about 80-110 s per map instead of ~8 s; see tools/world-bevel-jl/README.md)" >&2
+	RUN=(python3 -I "$ROOT/tools/world-bevel/world_bevel.py")
+fi
 fail=()
 for m in "${maps[@]}"; do
 	echo "== $m"
 	tmp="$OUT/codmod_bevel_$m.pk3.tmp"
-	if julia -O2 --project="$ROOT/tools/world-bevel-jl" "$ROOT/tools/world-bevel-jl/world_bevel.jl" --map "$m" \
-		--uv-mode align --min-angle 15 --smooth-models --pk3 "$tmp" >"$ROOT/benchmarks/world-$m.log" 2>&1; then
+	if "${RUN[@]}" --map "$m" --uv-mode align --min-angle 15 --smooth-models --pk3 "$tmp" >"$ROOT/benchmarks/world-$m.log" 2>&1; then
 		mv -f "$tmp" "$OUT/codmod_bevel_$m.pk3"
 	else
 		echo "   FAILED (see benchmarks/world-$m.log)"

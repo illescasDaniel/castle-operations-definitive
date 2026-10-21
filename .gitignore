@@ -49,3 +49,7 @@ mod/codmod/codmod_spec.pk3
 # Asset fixes are derived from RTCW textures: private
 mod/codmod/codmod_zfix.pk3
 **/codmod_zfix.pk3
+
+# World bevel pack is derived from RTCW maps: private
+mod/codmod/codmod_bevel.pk3
+**/codmod_bevel.pk3

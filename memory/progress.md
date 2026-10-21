@@ -22,6 +22,24 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 - [x] Phase 5.5: quick knife on V + snappy switch/return (confirmed in-game 2026-10-08)
 
 ### Open
+- [ ] **Character smoothing experiment (2026-10-21, uncommitted; user approved the v2 look on 2026-10-21, commit when asked):** `tools/model-smooth`
+  (numpy, no Blender) does one Loop subdivision on all 32 MDS bodies with exact skin weights (linear stencil commutes
+  with skinning), pinned boundaries, crease angle, rebuilt LOD collapse map -> private `run/codmod/codmod_smooth.pk3`
+  (installed, 90° crease). Verified: byte-identical round trip, no cracks, LOD ok, loads in game. In-game A/B (BJ third
+  person, escape1): rounder shoulders/back. v1 sheared the texture (flag patch is painted in the sleeve UV island,
+  not a decal mesh); v2 (installed) keeps only the normal part of the Loop displacement, stored as a bone-local offset
+  correction, plus decal-shell displacement transfer: flag/chevron/patch now match the original, texture-distortion
+  metric halved. Bench demo shows no MDS characters (avg FPS same; 1% low 157 -> 140, inconclusive). Heads (MDC)
+  untouched. Next: user verdict in-game; then commit tool, README, docs/plan.md line.
+- [ ] **World corner bevel prototype (2026-10-21, uncommitted, awaiting user verdict):** `tools/world-bevel`
+  rounds convex planar-face corners in BSPs (visual only, collision untouched) -> private `run/codmod/codmod_bevel.pk3`
+  (escape1 only; radius 5 adaptive, segments 3, min-length 4, box-corner patches, uv-mode seam). Also writes
+  `maps/<map>*.aas` with the AAS header bspchecksum patched (MD4 Com_BlockChecksum of the whole BSP) or bots get
+  "aas not loaded". Needs uncommitted rend2 changes in `iortcw/`: ParseFace vert cap 64 -> 1024 and no plane cull on
+  non-coplanar faces (tr_bsp.c); VAO cache buffers 65k -> 1M verts (tr_vbo.c, else FPS halves) + `r_vaoCacheStats`.
+  In game: FPS within ~5% of stock, AI ok. 199 small strip cracks unresolved. UV morph rejected (squeezed blocks).
+  Open: user wants "connected textures" (realign faces vs shader blend); then all maps.
+  Curve test: r_subdivisions 1 vs 4 = no visible change, keep default.
 - [ ] **SMAA on moving objects (planned 2026-10-21, not implemented):** plan in `docs/smaa-motion-plan.md` (Phase 0 in-game diagnosis at escape1 cages, 1 depth-predicated edges, 2 SMAA+MSAA2x menu option, 3 SMAA T2x with velocity buffer). Phases 1 (`r_smaaPredication`, depth-predicated edges) and 1b (`r_specularAA`, geometric specular AA in lightall_fp) user-checked 2026-10-21 ("good, not game-changing"; may try r_specularAA 2), committed. Flashlight shadow map default 2048 (`codmod_gfxdefaults.cfg`) + "Flashlight Shadow Size" row in GRAPHICS > ADVANCED and engine Effects tab, committed. Next, when the user decides: SMAA T2x phase 3a (camera-only). Sun-shadow ideas (stable cascades + texel snapping, noise-free PCF, cascade blend) analysed in chat, not planned in a doc yet.
 - [ ] **Low resolution in fullscreen looks like native (TODO, investigated 2026-10-18, not implemented):** on Wayland SDL
   uses `SDL_WINDOW_FULLSCREEN_DESKTOP` (compositors cannot change video modes), so `r_mode` is ignored in fullscreen and
@@ -157,3 +175,15 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 
 - 2026-10-16: Jack's glasses floating above his face in cutscenes fixed (awaiting user in-game check). Cause: the AO apply blit (`FBO_Blit` in `RB_...` between the opaque and translucent draw lists, rend2 `tr_backend.c`) left the GL viewport at full screen while the cutscene view was letterboxed, so translucents (sort 5 glasses) were drawn offset from the opaques. Fix: `SetViewportAndScissor()` after the blit.
 - 2026-10-16: Cutscene letterbox bars removed (`cg_view.c` no longer shrinks refdef for `cg_letterbox`; black bar fill dropped from `cg_draw.c`). Awaiting user check.
+
+- World bevel round 7 (2026-10-21, uncommitted): wall-end caps + mitred L bends (`--wall-ends`, `--mitre`, default on) and `--min-angle 15` pack installed as run/codmod/codmod_bevel.pk3 (previous round-6 pack backed up in session scratchpad). Cracks 197-223. Run ends still tapering: 5667 no_plane, 2547 no_hole; thin-face (1-unit sliver) rejects near start plinths. Next: user verdict, then connected textures, then cracks. Perf idea: vectorise match_edges in numpy (6-7x on that stage), profile whole tool before any Go/Julia port.
+- World bevel connected textures (2026-10-21): measured on escape1 (min-angle 15): 5582 same-shader seams (mean phase mismatch 0.27 texture period), 2681 different-shader seams (cannot align), 102 scale-mismatch. Morph over the 5-unit strip squeezes blocks (rejected); realigning whole faces cascades across each face's other edges. Dropped as not worth it. White-slit fix (match_edges seam trimming) verified in game; `--min-angle 15` pack installed. Corner spots near the start left as-is. Next: round other 3D assets (weapons, props).
+- World bevel `--uv-mode align` prototype (2026-10-21): shifts whole coplanar face components' st by the non-integer seam mismatch (greedy forest, longest runs first); 3265 components shifted, 2126 other-shader/561 drifting/75 scale skipped. In-game A/B on 4 escape1 views (benchmarks/shots/align_cmp.png): barely visible. Not made default; installed pack stays fix_ma15 (seam mode).
+- World bevel align v2 (2026-10-21): strip st now unfolded by arc length from each face's cut line (not plane projection) and align measured at the unfolded points; stone courses wrap continuously at user's 3 spots. Installed.
+- MDC smoothing (2026-10-21, uncommitted): tools/model-smooth/mdc_smooth.py smooths weapons (models/weapons2/*) into run/codmod/codmod_smooth_mdc.pk3 (installed). Viewmodels checked on banks 2-7: rounder scopes/grenade, no artifacts. Next: heads (head.mdc), props, perf check, user verdict.
+- MDC pack widened (2026-10-21): weapons + heads (helpers ride on main surface) + player acc + powerups + mapobjects + furniture + ammo + flags (481 files) installed as codmod_smooth_mdc.pk3. BJ head and escape1 views checked, no artifacts seen; FPS not benchmarked yet. Not covered: gibs, shards, players/*/armor.
+- MDC pack now covers every .mdc in pak0 except foliage/sky/UI/shards (638 files, 17.7 MB) as codmod_smooth_mdc.pk3; default --exclude in mdc_smooth.py. Torches/cage lights etc. are baked misc_model surfaces in the BSP (not covered): next = trisoup smoothing in world tool.
+- MDC pack fix (2026-10-21): smoothed pistol viewmodels (Colt/Luger/Colt2 `v_*`) and all `models/weapons2/*/v_*_barrel*` parts looked ragged at the rear sight (small overlapping parts displaced independently, not a texture problem). Now in `DEFAULT_EXCLUDE` of `mdc_smooth.py`; pack rebuilt (572 models) and verified in ADS with `give Luger`/`give Colt`. Next: baked-model (BSP trisoup) work, then FPS benchmark.
+- Baked models (2026-10-21): `world_bevel.py --smooth-models` Loop-smooths trisoup misc_model surfaces (escape1: 208 surfaces, 17k->69k tris) with the bevel in one BSP. Checked in game on chandelier, cage light, pendant lamp: rounder, no artifacts. Installed `run/codmod/codmod_bevel.pk3` = align + min-angle 15 + smooth-models for escape1. Not yet run on other maps; FPS benchmark still pending.
+- Brush props (2026-10-21): the escape1 torch is brush faces (type 1), not trisoup, so the first baked pass missed it. `smooth_brush_props` in `world_bevel.py` smooths them (102 props). Installed `codmod_bevel.pk3` = bevel + trisoup + brush props; torch geometry confirmed 256 -> 676 tris, visual check by the user pending (my screenshot camera was not repeatable).
+- FPS benchmark (2026-10-21, bench demo, 2561x1601): smoothing packs on 211.8 avg / 131 1%-low vs off 213.5 / 135 (median of runs 2-3). No measurable cost; a one-off slow first launch after swapping a pk3 is a cold-cache effect, not geometry. Torch spot on escape1 181-190 FPS with and without.

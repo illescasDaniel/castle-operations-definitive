@@ -15,6 +15,7 @@ from PIL import Image, ImageFilter
 ROOT = Path(__file__).resolve().parents[2]
 PAKS = [ROOT / "run/main" / n for n in ("pak0.pk3", "sp_pak1.pk3", "sp_pak2.pk3", "sp_pak3.pk3", "sp_pak4.pk3")]
 HD = ROOT / "run/codmod/codmod_hd.pk3"
+ZFIX = ROOT / "run/codmod/codmod_zfix.pk3"  # tools/asset-fixes output: highest priority
 
 # material: (F0 base, F0 luma gain, tint toward diffuse colour, gloss base, gloss luma gain)
 MATERIALS = {
@@ -96,9 +97,9 @@ def material_for(stem):
 
 
 def collect():
-    """stem -> (zip path, member); HD pack wins over originals, later paks over earlier."""
+    """stem -> (zip path, member); zfix wins over HD, HD over originals, later paks over earlier."""
     found = {}
-    for pk in [p for p in PAKS if p.exists()] + ([HD] if HD.exists() else []):
+    for pk in [p for p in PAKS if p.exists()] + [p for p in (HD, ZFIX) if p.exists()]:
         with zipfile.ZipFile(pk) as z:
             for n in z.namelist():
                 stem, dot, ext = n.rpartition(".")
@@ -118,11 +119,14 @@ def bake(img, mat):
     # keep crevices dull: low detail luminance kills the highlight
     blur = np.asarray(Image.fromarray((luma * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(6)), np.float32) / 255
     cav = np.clip(0.75 + (luma - blur) * 4.0, 0.3, 1.0)
-    f0 = (f0b + f0g * l) * cav
+    # near-black texels (noise, unused atlas space): no tint, and F0/gloss fade to ~0 (absolute luma)
+    ss = lambda a, b, x: (lambda t: t * t * (3 - 2 * t))(np.clip((x - a) / (b - a), 0, 1))
+    dark = ss(0.006, 0.035, luma)
+    f0 = (f0b + f0g * l) * cav * dark
     colour = rgb / np.maximum(luma[..., None], 1e-3)
-    colour = np.clip(colour, 0.4, 2.0)
+    colour = 1 + (np.clip(colour, 0.4, 2.0) - 1) * ss(0.02, 0.12, luma)[..., None]
     f0rgb = f0[..., None] * ((1 - tint) + tint * colour)
-    gloss = np.clip((glb + glg * l) * cav, 0, 1)
+    gloss = np.clip((glb + glg * l) * cav * dark, 0, 1)
     out = np.dstack([np.clip(f0rgb, 0, 1), gloss])
     return Image.fromarray((out * 255 + 0.5).astype(np.uint8), "RGBA")
 

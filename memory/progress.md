@@ -5,6 +5,7 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 ## RTCW remaster (`codmod`) — CoD4 feel + HD presentation
 
 ### Done
+- [x] **Knight statue pink specular + black pauldron (2026-10-21, user-confirmed, uncommitted; auto-built via build-derived-packs.sh):** spec-bake near-black tint/F0 fade; new `tools/asset-fixes` -> private `codmod_zfix.pk3` (knt.tga dump-diamond painted dull steel).
 - [x] **Bloom + colour grade (2026-10-17, committed, verified in-game by user):** `RB_PostFx`, cvars `r_bloom*`/`r_grade*` on by default (bloom Medium, grade on), `docs/post-effects.md`. GRAPHICS menu rows done; FPS cost measured (docs/post-effects.md).
 - [x] **Specular perf fix (2026-10-17, uncommitted, awaiting in-game check):** 141 -> 267 FPS on bench; cubemap batch splitting removed/clustered (`docs/performance.md` "Specular cost")
 - [x] **Specular highlights (2026-10-16, user-approved direction; full rollout awaiting in-game check):** `tools/spec-bake` bakes `_s` maps for ~76 hand-tagged textures into private `codmod_spec.pk3`. Finding: engine `r_deluxeSpecular 0.1` hides them; with `1.0` armor/weapon metal shows. Cubemaps (`r_cubeMapping 1`) render from ai_marker/misc_cubemap at runtime, effect mild. Waiting for user in-game A/B before touching defaults.

@@ -2,6 +2,9 @@
 
 Append-only log, newest first. Never rewrite history: if a decision is reversed, add a new entry that says so.
 
+## 2026-10-21 Private asset fixes as a derived pack, auto-built with the specular pack
+Knight statue (escape2) glowed pink: knight_anim.mdc dumps cap/shoulder faces into a black atlas diamond of knt.tga, and spec-bake's `rgb/luma` tint amplified the black noise. Chose a generic spec-bake fix (fade tint/F0/gloss on near-black texels, narrow ramp so dark metals keep spec) plus `tools/asset-fixes` writing `codmod_zfix.pk3` (sorts after codmod_hd) with a per-texture registry, over editing the HD pack. Both derived packs are built incrementally by `scripts/build-derived-packs.sh` from setup/install (warn and continue without numpy/Pillow).
+
 <!-- Copy this block to the top for each new decision.
 
 ## 2026-10-17 Specular perf: group draw batches by cubemap, cluster ai_marker probes, probes only on spec-mapped shaders

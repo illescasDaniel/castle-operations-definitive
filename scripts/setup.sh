@@ -66,6 +66,9 @@ done
 # --- 5. Build menu/HUD pk3s from deltas + your RTCW paks (menus are not redistributed)
 "$ROOT/scripts/build-menus.sh"
 
+# --- 5a. Texture fixes + specular pack from your paks (incremental; warns and continues without numpy/Pillow)
+"$ROOT/scripts/build-derived-packs.sh"
+
 # --- 5b. Copy HUD override pk3 (phase 5b). Real file, not symlink — and never name it
 # zz_*: ioRTCW's FS_AddGameDirectory rewrites zz_→sp_ when opening pak paths.
 if [[ -f "$ROOT/mod/codmod/codmod_hud.pk3" ]]; then

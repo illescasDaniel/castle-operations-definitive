@@ -200,6 +200,8 @@ uv run hd-textures pack --from samples/full --pk3 ../../run/codmod/codmod_hd.pk3
 
 `codmod.cfg` already sets `r_picmip 0` / `r_picmip2 0`. Restart or `/vid_restart` after rebuilding the pk3.
 
+The texture fixes (`codmod_zfix.pk3`) and specular maps (`codmod_spec.pk3`) are derived from your paks and built automatically by `scripts/setup.sh` / `scripts/install.sh` (needs numpy + Pillow); after regenerating `codmod_hd.pk3` the next install rebuilds them. Force with `scripts/build-derived-packs.sh --force`.
+
 ## HD audio (optional, local only)
 
 SP audio can be AI-remastered to 48 kHz into a local `run/codmod/codmod_hd_audio.pk3`.

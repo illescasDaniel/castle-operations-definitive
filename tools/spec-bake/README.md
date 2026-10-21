@@ -4,6 +4,9 @@ Bakes rend2 `<texture>_s.png` maps (rgb = reflectance at normal incidence, alpha
 materials (weapon metal, armor, `textures/metal_misc/*`, a few wood/marble floors) into `run/codmod/codmod_spec.pk3`.
 rend2 picks them up automatically while `r_specularMapping 1`. The pk3 is derived from RTCW textures: git-ignored,
 never redistribute. Rules live in `RULES` / `MATERIALS` at the top of `spec_bake.py`.
+Source priority: `codmod_zfix.pk3` (tools/asset-fixes, run it first) > `codmod_hd.pk3` > game paks.
+
+Built automatically (when stale) by `scripts/setup.sh` / `scripts/install.sh` via `scripts/build-derived-packs.sh [--force]`.
 
 ```bash
 python3 -I tools/spec-bake/spec_bake.py --list   # what matches

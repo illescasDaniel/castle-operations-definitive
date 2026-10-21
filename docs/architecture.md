@@ -38,7 +38,7 @@ plays vanilla RTCW.
 | `lang/de`, `lang/es` | Translated strings; subtitles are built by `tools/subtitles` |
 | `codmod_fx.pk3`, `codmod_pad.pk3`, `ui/` assets | Hitmarker sounds, gamepad glyphs, menu cursor |
 | `scripts/` | Build, install, run, menu build, screenshot diff |
-| `tools/` | Local AI pipelines (`hd-textures`, `hd-audio`, `hd-video`), `l10n`, `subtitles`, `spec-bake`; their pk3 outputs are generated per user and stay private |
+| `tools/` | Local AI pipelines (`hd-textures`, `hd-audio`, `hd-video`), `l10n`, `subtitles`, `asset-fixes` (run after hd-textures, before spec-bake), `spec-bake`; their pk3 outputs are generated per user and stay private |
 | `docs/`, `memory/` | Plan, phase docs, project state |
 
 The original game `.pk3` data is never modified or copied; the Steam install is only symlinked.

@@ -86,6 +86,9 @@ fi
 
 # Language packs (flags, lang.info, translations) -> run/codmod/codmod_lang_<code>.pk3
 python3 "$ROOT/tools/l10n/pack.py"
+
+# Texture fixes + specular pack (incremental, no-op when up to date; warns and continues without numpy/Pillow)
+"$ROOT/scripts/build-derived-packs.sh"
 if [[ -f "$ROOT/mod/codmod/codmod_hud.pk3" ]]; then
 	cp -f "$ROOT/mod/codmod/codmod_hud.pk3" "$ROOT/run/codmod/codmod_hud.pk3"
 	rm -f "$ROOT/run/codmod/zz_codmod_hud.pk3"

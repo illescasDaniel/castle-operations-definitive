@@ -1,6 +1,8 @@
-_Last updated: 2026-10-20_
+_Last updated: 2026-10-21_
 
 ## Current focus
+
+**SMAA motion (2026-10-21): phases 1 (`r_smaaPredication`) and 1b (`r_specularAA`) done and committed, user says modest gain; flashlight shadow map 2048 default + menu row committed. User will decide when to start SMAA T2x (plan `docs/smaa-motion-plan.md`, phase 3a camera-only first). Sun shadows swim on camera motion (`lightViewIndependentOfCameraView = qfalse` in `R_RenderSunShadowMaps`, no texel snapping) and PCF uses screen-fixed random rotation; candidate follow-up.**
 
 **One-time flashlight tip (2026-10-21): user-confirmed in-game (shows once), committed and pushed.** Flashlight ON/OFF print removed; `CG_CodUpdateTips` (cg_cod.c) center-prints "Toggle Flashlight with <key>" (de/es via template in strings.txt) once after 4 s of control in a level; archived cvar `cod_tipFlashlightShown` (cg_main.c) marks it shown (also set on first manual toggle). New cgame trap `CG_KEY_KEYNUMTOSTRING` (engine change, cl_cgame.c).
 

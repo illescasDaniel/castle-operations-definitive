@@ -34,6 +34,24 @@ viewmodel and enemies.
   - The vendored `smaa_lib.glsl` already has `SMAA_PREDICATION`, `SMAA_REPROJECTION`, `subsampleIndices` and
     `SMAAResolvePS`.
 
+## Phase 0 result (user screenshots, 2026-10-21)
+
+The user took screenshots at the cage with and without `r_smaaDebug 1`.
+- The outer silhouettes are found: the near-vertical bars show long, unbroken red lines.
+- Some edges are broken into dashes: the near-horizontal diagonals (green) and the bar sides with low contrast.
+- The edge map is full of speckle from texture and lighting detail, on the stone wall on the right and on the bar
+  faces. SMAA's pattern search stops where these false edges cross a real one, so long diagonals get the wrong
+  pattern length and blend in short, uneven steps. That is the "imperfect diagonals", and it also softens the HD
+  textures.
+- The cage's shadow on the wall has no depth edge. Its stair steps come from the shadow-map texels and are several
+  pixels wide, which SMAA cannot rebuild. That is shadow filtering, not anti-aliasing.
+- The thin gold specular lines on the bar edges are specular aliasing: they shimmer when the cage swings, and no
+  post-process AA fixes that.
+
+So Phase 1 should use the library's **default** `SMAA_PREDICATION_SCALE` (2). It raises the threshold away from
+depth edges, which removes the speckle, and lowers it on depth edges, which closes the dashes. Phase 1b
+(specular AA) and the shadow item cover the rest.
+
 ## Plan (phase-gated, user checks in game after each phase)
 
 ### Phase 0 — Diagnose (no code changes)
@@ -58,6 +76,38 @@ lowered, so dark bars against a far wall get AA even with little luma contrast.
   texture, so texture detail would get less AA. Start at 1.0 with strength 0.4 and A/B on HD textures.
 - Cvar `r_smaaPredication` (internal, pinned in `codmod.cfg`). Not a menu row.
 
+**Implemented (2026-10-21).** `SMAA_PREDICATION` is on in the edge shaders (`tr_glsl.c` SMAA header, `smaa_edge_fp.glsl`). Input is
+`tr.hdrDepthImage` (R32F copy of the main-view depth, same size as the SMAA targets, bound to `TB_LEVELSMAP`). The depth copy
+in `tr_backend.c` now also runs when `r_smaa && r_smaaPredication`. The edge shader linearizes it and takes `-log2(z/zFar)`
+through a small hook in the vendored lib (`SMAA_PREDICATION_FETCH`), so the threshold is a relative depth jump:
+`r_smaaPredThreshold` 0.06 (about 4%), `r_smaaPredScale` 2.0, `r_smaaPredStrength` 0.4 (library defaults; the three are
+non-archived tuning cvars passed through `u_ViewInfo`). `r_smaaPredication` 0/1 (engine default 0, pinned 1 in `codmod.cfg`) is
+live: "off" is scale 1 / strength 0 on a white dummy texture, giving the plain threshold, so there is still one edge program
+per preset. Predication also stays off without a depth prepass or for no-world frames. Checked on the bench demo with
+`r_smaaDebug 1`: texture/wall speckle is gone and silhouettes remain (interior armour edges of the knight thin out, as intended).
+Cost not measured.
+
+### Phase 1b — Specular anti-aliasing (small)
+
+In `lightall_fp.glsl`, widen roughness where the normal changes quickly across a pixel (Kaplanyan/Tokuyoshi
+geometric specular AA from `dFdx`/`dFdy` of the normal, or Toksvig from normal-map mip length). This stops
+one-pixel-wide highlights on thin metal from flickering while it moves. Internal cvar `r_specularAA`.
+
+**Implemented (2026-10-21, uncommitted).** Kaplanyan 2016 / Tokuyoshi-Kaplanyan 2019 in `lightall_fp.glsl`, right after
+the final normal `N` is normalized (uniform flow, before any branch): `var = dot(dFdx(N)) + dot(dFdy(N))` (squared
+lengths); `alpha2 = roughness^4 + min(0.5 * r_specularAA * var, 0.18)` (SIGMA2 0.25 and a 2x factor, KAPPA 0.18, all at
+strength 1), then `specRoughness = alpha2^(1/4)` because `CalcSpecular` squares roughness itself. `specRoughness` feeds
+the direct deluxe/light-grid specular, the dynamic-light (flashlight) specular, the primary-light specular, and the
+cubemap mip + `EnvironmentBRDF`; diffuse keeps the original roughness. Cvar `r_specularAA` (float, engine default 0,
+live): passed in the spare `u_AoParams.w` (set in the lightall stage block and `SetDlightShadowMask` in `tr_shade.c`);
+0 skips the math. The mod pins it to 1 in `codmod.cfg`. No menu row. Smoke test (`shots.sh`, bench demo): 1-2% of
+pixels differ, on and off; no GLSL errors.
+
+### Shadow edges (separate item, not AA)
+
+The stair steps on the cage's shadow come from shadow-map texels. Options: a wider PCF kernel for `r_shadowFilter 2`,
+or a tighter sun cascade split. Look at this separately if the user wants.
+
 ### Phase 2 — "SMAA + MSAA 2x" menu option (tiny; costs about what MSAA 2x does)
 
 `R_ApplyAA` (`tr_init.c:1366`) only offers SMAA *or* MSAA. Add `r_aa 8` = SMAA High on the MSAA 2x-resolved
@@ -70,6 +120,14 @@ sub-pixel crawl. Menu row value "SMAA + MSAA 2x". It stays opt-in and is not the
 Alternate a sub-pixel camera jitter each frame and blend with the reprojected previous frame. Each pixel then gets
 two samples over time at about the cost of SMAA 1x plus a velocity buffer. It only works on moving objects if they
 have correct motion vectors. Without them their history is rejected and they fall back to today's 1x look.
+
+**Staging (decided after the screenshots).** Phase 3 can ship in two steps:
+- **3-cam (~1 session):** jitter, resolve and history, with motion worked out from depth and the previous frame's
+  `viewProj` inside the resolve pass. No velocity buffer and no prepass changes. The whole static world gets
+  2-sample temporal AA while the player moves or turns, which is when most crawling shows. Moving objects get wrong motion, so
+  the clamp mostly rejects their history and they look about the same as today. Check them for faint ghosting.
+- **3-obj (~1-2 sessions):** the velocity buffer below. This is what makes the cages, doors and the viewmodel
+  benefit.
 
 **3a. Velocity buffer**
 - New `tr.velocityImage` (RG16F, render size) attached as a second color target of `renderFbo` (and of

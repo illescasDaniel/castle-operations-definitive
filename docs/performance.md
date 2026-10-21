@@ -187,6 +187,8 @@ sync is suspended, and retried after 64 frames, doubling (up to 2048) while retr
 
 ## Specular cost (2026-10-17)
 
+Geometric specular AA (`r_specularAA`, live, mod pins 1): a few ALU ops per lightall pixel (two `dFdx`/`dFdy` of N, one sqrt chain), skipped when 0. Details in `docs/smaa-motion-plan.md` (Phase 1b). Not benchmarked.
+
 `r_codSpecular 1` (spec maps + light-grid specular + cubemaps) took the bench demo from 274 to 141 FPS (median frame
 unchanged, p95 3.8 -> 13 ms, hundreds of hitches). `r_speeds 1` showed batches/frame 600 -> 3500 with the same
 surfaces and verts: with no `misc_cubemap` entities rend2 uses every `ai_marker` as a probe (164 on escape2), and the

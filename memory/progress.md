@@ -22,7 +22,7 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 - [x] Phase 5.5: quick knife on V + snappy switch/return (confirmed in-game 2026-10-08)
 
 ### Open
-- [ ] **SMAA on moving objects (planned 2026-10-21, not implemented):** plan in `docs/smaa-motion-plan.md` (Phase 0 in-game diagnosis at escape1 cages, 1 depth-predicated edges, 2 SMAA+MSAA2x menu option, 3 SMAA T2x with velocity buffer). Awaiting user choice of phases.
+- [ ] **SMAA on moving objects (planned 2026-10-21, not implemented):** plan in `docs/smaa-motion-plan.md` (Phase 0 in-game diagnosis at escape1 cages, 1 depth-predicated edges, 2 SMAA+MSAA2x menu option, 3 SMAA T2x with velocity buffer). Phases 1 (`r_smaaPredication`, depth-predicated edges) and 1b (`r_specularAA`, geometric specular AA in lightall_fp) user-checked 2026-10-21 ("good, not game-changing"; may try r_specularAA 2), committed. Flashlight shadow map default 2048 (`codmod_gfxdefaults.cfg`) + "Flashlight Shadow Size" row in GRAPHICS > ADVANCED and engine Effects tab, committed. Next, when the user decides: SMAA T2x phase 3a (camera-only). Sun-shadow ideas (stable cascades + texel snapping, noise-free PCF, cascade blend) analysed in chat, not planned in a doc yet.
 - [ ] **Low resolution in fullscreen looks like native (TODO, investigated 2026-10-18, not implemented):** on Wayland SDL
   uses `SDL_WINDOW_FULLSCREEN_DESKTOP` (compositors cannot change video modes), so `r_mode` is ignored in fullscreen and
   `glConfig.vidWidth/Height` become the desktop size. Proper low-res = render at the chosen size into a smaller FBO and

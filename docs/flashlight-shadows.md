@@ -6,7 +6,7 @@ Engine side lives in `iortcw/` (see `iortcw/CODMOD.md`, "rend2 additions").
   optional albedo lift for near-black materials (`r_dlightAlbedoLift`, default 1 = off; <1 lifts, tested 0.6-0.7 with little effect on dark iron bars).
 - **Shadows:** one spot shadow map from the flashlight (`REF_SHADOW_DLIGHT` set in `CG_CodAddFlashlight`), screen-space
   mask, sampled by the dlight shaders. `r_flashlightShadow` 0/1 (2 = show mask inset, debug), `r_flashlightShadowSize`
-  (latched, default 1024). Needs `r_depthPrepass 1`. The player's own body/weapon are excluded from the map.
+  (latched, engine default 1024; codmod default 2048 via `codmod_gfxdefaults.cfg`, row "Flashlight Shadow Size" in GRAPHICS > ADVANCED and the engine Effects tab). Needs `r_depthPrepass 1`. The player's own body/weapon are excluded from the map.
 - **Why not `r_dlightMode 2`:** its cube shadows are broken (cubemap bound to a sampler2D, `pvsOrigin` never set);
   one perspective map is also 6x cheaper.
 - **Static models (cages, iron gates) were unlit (fixed 2026-10-13):** these are MD3 props drawn from GPU buffers

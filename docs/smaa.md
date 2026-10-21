@@ -145,3 +145,10 @@ they are not labelled x1/x2. `R_ApplyAA` (`tr_init.c`) translates `r_aa` into `r
 `r_ext_framebuffer_multisample` (latched, needs Apply/vid_restart); it runs at init and from `RE_BeginFrame` when
 `r_aa` changes. `r_aa -1` (engine default) leaves the two cvars alone. Engine default is `r_aa 0` (no AA, vanilla); codmod's first-launch value `3` is in `codmod_defaults.cfg`. The choice persists in wolfconfig (archived), and `codmod_defaults.cfg` (menu RESET SETTINGS, `--reset-binds`/`--reset-settings`, first launch) resets it together with `com_maxfps`, `com_maxfpsMode` and `r_vsync`. SMAA works without MSAA
 as long as the render-FBO path is on (`r_hdr 1`, pinned by codmod.cfg).
+
+## Depth predication (`r_smaaPredication`)
+
+The luma edge pass can use scene depth (`tr.hdrDepthImage`, log of linear depth) to lower the threshold on depth edges and
+raise it elsewhere, which removes texture speckle and closes broken silhouette edges. Pinned on in `codmod.cfg`; tuning cvars
+`r_smaaPredThreshold` / `r_smaaPredScale` / `r_smaaPredStrength`. `r_smaaDebug 1` shows the predicated edges. See
+[smaa-motion-plan.md](smaa-motion-plan.md) Phase 1.

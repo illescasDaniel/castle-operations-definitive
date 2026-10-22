@@ -22,6 +22,7 @@ decision, stop and say so instead of guessing.
     `refactor:`, `test:`, `docs:`, `chore:`, `memory:`), imperative subject under ~70 chars, short body if needed. Add
     any trailer lines the brief gives.
   - Never push, force-push, rebase, reset, amend or delete branches unless the brief explicitly says to.
+- Builds: `scripts/build.sh --game-only --install` (drop `--game-only` when engine files changed). Never launch the game, run benchmarks, or kill processes (`kill`/`pkill`/`killall`).
 - Checks: run the command given, or the project's documented quality gate (`CLAUDE.md` / `AGENTS.md`).
 
 ## Report

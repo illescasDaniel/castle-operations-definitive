@@ -25,6 +25,7 @@ symbol search, diagnostics), prefer them over grep and whole-file reads when loc
   say so and leave it.
 - Never write to `memory/` or jevmem, commit, push, create branches or add dependencies unless the brief says to.
 - Delete files with `trash <path>`, never `rm`.
+- Never launch the game, run benchmarks, or kill processes (`kill`/`pkill`/`killall`); only the orchestrator runs the game. Build with `scripts/build.sh --game-only --install` (drop `--game-only` when engine files changed).
 
 ## Report
 Keep it short; the orchestrator reads the diff.

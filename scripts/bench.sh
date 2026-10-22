@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Benchmark: replay mod/codmod/demos/codmod_bench at real time and report frame-time stats.
 # Uses the user's own resolution/graphics settings; wolfconfig.cfg is restored afterwards.
+# Always runs off-screen in a headless gamescope (no window on the desktop, GPU rendering kept).
+# BENCH_ONSCREEN=1 opts out (e.g. for --mangohud overlays); BENCH_HEADLESS_W/H set the size (1920x1200).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -51,6 +53,13 @@ if [[ ! -f "$DEMO" ]]; then
 	exit 1
 fi
 
+WRAP=()
+if [[ "${BENCH_ONSCREEN:-0}" != 1 ]]; then
+	HW="${BENCH_HEADLESS_W:-1920}"; HH="${BENCH_HEADLESS_H:-1200}"
+	WRAP=(gamescope --backend headless -W "$HW" -H "$HH" --)
+	[[ ${#RUN_ARGS[@]} -gt 0 ]] || RUN_ARGS=(--windowed "${HW}x${HH}")
+fi
+
 mkdir -p "$OUT"
 CFG="$HOME_CFG/wolfconfig.cfg"
 SAVED="$(mktemp)"
@@ -84,7 +93,7 @@ for ((i = 1; i <= RUNS; i++)); do
 	# so everything bench-specific goes into this one cfg instead of extra +set arguments.
 	printf 'set com_maxfps 0\nset cl_benchDemo 1\nset nextdemo quit\n' > "$HOME_CFG/bench_override.cfg"
 	for kv in "${SET_ARGS[@]}"; do echo "seta ${kv%%=*} \"${kv#*=}\"" >> "$HOME_CFG/bench_override.cfg"; done
-	env "${ENV_ARGS[@]}" RTCW_STARTUP_SETS="${SET_ARGS[*]}" "$LAUNCHER" "${RUN_ARGS[@]}" +exec bench_override.cfg +demo codmod_bench >/dev/null 2>&1 || true
+	env "${ENV_ARGS[@]}" RTCW_STARTUP_SETS="${SET_ARGS[*]}" "${WRAP[@]}" "$LAUNCHER" "${RUN_ARGS[@]}" +exec bench_override.cfg +demo codmod_bench >/dev/null 2>&1 || true
 	gpuinfo=""
 	if ((GPUMON)); then
 		kill "$MONPID" 2>/dev/null || true; wait "$MONPID" 2>/dev/null || true

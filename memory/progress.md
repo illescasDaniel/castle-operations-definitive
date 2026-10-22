@@ -5,6 +5,7 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 ## RTCW remaster (`codmod`) — CoD4 feel + HD presentation
 
 ### Done
+- [x] **Mouse-motion perf drop fixed (2026-10-22, user-confirmed):** rend2 VAO cache re-uploaded ~50 MB/frame on view change; now static vertex+index store with `glMultiDrawElements` (turning GPU 6.7-12.6 -> 3.4-3.6 ms). `scripts/spin-test.sh` smoke test added; `bench.sh` now always runs off-screen (headless gamescope). `docs/performance.md` "View-motion smoke test".
 - [x] **Knight statue pink specular + black pauldron (2026-10-21, user-confirmed, committed 5ce0539; auto-built via build-derived-packs.sh):** spec-bake near-black tint/F0 fade; new `tools/asset-fixes` -> private `codmod_zfix.pk3` (knt.tga dump-diamond painted dull steel).
 - [x] **Bloom + colour grade (2026-10-17, committed, verified in-game by user):** `RB_PostFx`, cvars `r_bloom*`/`r_grade*` on by default (bloom Medium, grade on), `docs/post-effects.md`. GRAPHICS menu rows done; FPS cost measured (docs/post-effects.md).
 - [x] **Specular perf fix (2026-10-17, uncommitted, awaiting in-game check):** 141 -> 267 FPS on bench; cubemap batch splitting removed/clustered (`docs/performance.md` "Specular cost")

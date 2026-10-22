@@ -57,3 +57,11 @@ in `docs/architecture.md` (section 0); menu rules and the "Settings must persist
 Never kill the game forcefully (`kill`, `pkill`, `killall`) unless it is stuck or not responding. A forced exit makes
 the system show a "launch with safe options" popup on the next start, which blocks automatic launches and that I
 may not be able to dismiss. Quit cleanly (`quit` command / in-game menu) and only kill a genuinely hung process.
+
+## Benchmarks run off-screen
+
+Always run benchmarks and scripted measurement runs off-screen, never as a visible window: `scripts/bench.sh` (headless
+gamescope by default; `BENCH_ONSCREEN=1` opts out), `SHOT_HEADLESS=1 scripts/shots.sh ...` / `shot-at.sh`, and
+`scripts/spin-test.sh`; for ad-hoc scripted runs use
+`gamescope --backend headless -W 1920 -H 1200 -- scripts/run.sh --windowed 1920x1200 ...`. Back up and restore
+`wolfconfig.cfg` around them (`set` of archived cvars is saved on quit).

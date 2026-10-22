@@ -2,6 +2,12 @@
 
 Append-only log, newest first. Never rewrite history: if a decision is reversed, add a new entry that says so.
 
+## 2026-10-22: VAO cache = static vertex/index store + multi-draw; benchmarks always off-screen
+
+- **Context:** FPS dropped when moving the mouse a lot. The stock rend2 VAO cache re-memcpy'd and re-uploaded ~50 MB of vertexes whenever the visible surface set was new (every frame while turning), mostly in the sun-shadow cascades.
+- **Decision:** Upload each static world surface's vertexes and rebased indexes once (pointer-keyed hash tables, reset in `RE_LoadWorldMap`, recycled when full) and draw batches with `glMultiDrawElements`. Added `scripts/spin-test.sh` (still vs turning GPU time ratio) as a smoke test. `bench.sh` runs in a headless gamescope by default (`BENCH_ONSCREEN=1` opts out); rule recorded in `AGENTS.md`.
+- **Rationale:** Turning now costs the same as a still view (3.4-3.6 ms GPU), bench and screenshots unchanged. Off-screen runs do not disturb the desktop and need no window focus.
+
 ## 2026-10-22: Revisit parallax with AI heights (DeepBump), escape1 first
 
 - **Context:** The 2026-10-09 luma-from-diffuse POM was dropped (weak look, props floated). An Opus architect found rend2 already has POM/relief; missing are real height maps and a robust shader.

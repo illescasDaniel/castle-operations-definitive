@@ -14,7 +14,9 @@ collapses into ~500 frames in a few seconds, which is too few for 1% lows and un
 
 ## Running
 
-CLI (3 runs by default; run 1 is a warm-up and excluded from the median; quits by itself):
+CLI (3 runs by default; run 1 is a warm-up and excluded from the median; quits by itself). It always runs
+**off-screen** in a headless gamescope (1920x1200, `BENCH_HEADLESS_W/H` to change, `BENCH_ONSCREEN=1` to opt out, e.g.
+for `--mangohud`):
 
 ```bash
 ./scripts/bench.sh --label baseline [--runs N] [--mangohud] [--windowed 1280x720]
@@ -222,3 +224,18 @@ specular by `clamp((|L| - 0.25) / 0.75, 0, 1)`. Diffuse is unchanged (L is still
 uniforms. Sun/primary light, dynamic lights and the flashlight (`USE_LIGHT_VECTOR` and primary paths) are untouched.
 `r_codSpecDirectional` (non-archived, default 1; read at map load, so reload the map) is the exponent: 0 = old
 behaviour, 1 = linear, 2 = stricter. Cubemap reflections are separate (probe-baked, not camera-dependent).
+
+## View-motion smoke test: VAO cache (2026-10-22)
+
+Symptom: turning the view fast (mouse) cost 2-4x the GPU time of a still view, independent of flashlight/parallax.
+Cause: the rend2 world VAO cache (`tr_vbo.c`) matched batches by surface sequence; any new visible set memcpy'd and
+re-uploaded every batch's vertexes (~50 MB/frame on escape1), mostly felt in the sun-shadow cascades, which re-draw the
+world each frame. Fix: vertexes and rebased indexes are uploaded once per surface (pointer-keyed hash tables, reset in
+`RE_LoadWorldMap`) and batches are drawn with `glMultiDrawElements` (`tess.numMultiDraws`, `VaoCache_MultiDraw`).
+escape1, 1920x1200: sunshadow pass while turning 4.3-9.9 -> 1.25 ms, GPU frame 6.7-12.6 -> 3.4-3.6 ms, worst frame
+26 -> 4.1 ms; bench demo and the 6 `shots.sh` images unchanged.
+
+Regression guard: `scripts/spin-test.sh [--max-ratio R]` (off-screen, ~12 s) loads escape1, skips the cutscene, measures
+GPU frame time (`r_gpuProfile`) for a still view and for `+left` at `cl_yawspeed` 5/100/700, prints the ratio to the
+still view and exits 1 if any exceeds R (default 1.25). Healthy: ~0.95-1.07. Re-run it after touching the world
+rendering path (VAO cache, draw batching, shadow passes). It restores `wolfconfig.cfg`.

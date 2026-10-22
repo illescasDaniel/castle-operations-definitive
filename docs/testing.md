@@ -14,6 +14,8 @@ There is no automated test harness for game feel. Testing combines **build check
    `timeout 45 scripts/run.sh --windowed 1280x720 +spdevmap escape1 +set cod_debugHud 1`
    Then scan `run/home/codmod/rtcwconsole.log` for `ERROR`, `WARNING: ... cod_`, crashes, and our
    own `codmod` prints. (ioRTCW names the file `rtcwconsole.log`, not `qconsole.log`.)
+   Performance smoke test (off-screen, ~12 s): `scripts/spin-test.sh` (turning must cost about the same GPU time as a
+   still view; see `docs/performance.md`). Benchmarks always run off-screen.
 4. If the agent has screenshot or computer-use access, it can capture a screenshot of the HUD
    to sanity-check the numbers. Otherwise it leaves the in-game verification to the user.
 

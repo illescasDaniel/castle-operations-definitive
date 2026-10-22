@@ -59,14 +59,14 @@ def pack_list():
     return [p for p in PAKS if p.exists()] + [p for p in (HD, ZFIX) if p.exists()]
 
 
-def collect_images():
+def collect_images(prefix="textures/"):
     """stem(lowercase) -> (pk, member); zfix wins over HD, HD over originals, later paks over earlier."""
     found = {}
     for pk in pack_list():
         with zipfile.ZipFile(pk) as z:
             for n in z.namelist():
                 stem, dot, ext = n.rpartition(".")
-                if dot and ext.lower() in ("tga", "jpg", "png") and n.lower().startswith("textures/"):
+                if dot and ext.lower() in ("tga", "jpg", "png") and n.lower().startswith(prefix):
                     found[stem.lower()] = (pk, n)
     return found
 
@@ -179,8 +179,13 @@ def bsp_shader_counts(mapname):
 def select(a):
     """-> rows (surfaces, class, stem, (pack, member)) ranked by surface count; --map all = union over every SP map
     (surface counts summed). Also fills select.maps: stem -> sorted map names."""
-    imgs = collect_images()
     select.maps = defaultdict(set)
+    if a.models:
+        # model skins (weapons etc.): normals only, the alpha height stays flat so parallax never runs on them
+        imgs = collect_images("models/")
+        rows = [(0, "model", s) for s in sorted(imgs) if re.search(a.models, s) and not s.endswith(("_s", "_n", "_nh", "_h"))]
+        return [(n, m, s, imgs[s]) for n, m, s in rows]
+    imgs = collect_images()
     if a.map:
         shaders = parse_shaders()
         maps = all_maps() if a.map == "all" else [a.map]
@@ -344,7 +349,7 @@ def seam_stats(arr):
     return wrap, nb
 
 
-def bake(rgb, a, force_flat=False, n=None):
+def bake(rgb, a, force_flat=False, n=None, normals_only=False):
     H, W = rgb.shape[:2]
     luma = rgb @ np.array([0.299, 0.587, 0.114], np.float32)
     info = {}
@@ -400,7 +405,7 @@ def bake(rgb, a, force_flat=False, n=None):
         info["gate"] = k
         info["flat"] = k < a.flat_below
         info["lap_raw"] = float(np.abs(4 * h01 - np.roll(h01, 1, 0) - np.roll(h01, -1, 0) - np.roll(h01, 1, 1) - np.roll(h01, -1, 1)).mean() * 255)
-        h01 = 1 - (1 - h01) * k
+        h01 = 1 - (1 - h01) * (0.0 if normals_only else k)
         nh = 1 - (1 - nh) * (a.soft_floor + (1 - a.soft_floor) * k)
         raw = (raw - raw.min()) / max(np.ptp(raw), 1e-9)
     if a.legacy_luma:
@@ -437,6 +442,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=str(ROOT / "run/codmod/codmod_height.pk3"))
     ap.add_argument("--map", help="only textures used by this map (e.g. escape1), ranked by surface count; 'all' = every SP map")
+    ap.add_argument("--models", help="regex on model skin paths (models/...): bake normals-only maps for those instead of world textures, e.g. 'weapons2/(colt|luger)/'")
     ap.add_argument("--only", help="regex on the texture path")
     ap.add_argument("--max", type=int, default=36, help="cap (0 = no cap; --map all usually wants 0)")
     ap.add_argument("--list", action="store_true")
@@ -545,7 +551,7 @@ def main():
 # Cache layout (tools/height-bake/cache, git-ignored): nrm/<key>.npy = DeepBump normals (float16, the slow part, depends
 # only on the source image and the DeepBump input options); nh/<key>.png + .json = final RGBA map and its stats (depends
 # on all bake parameters). Retuning the gate/blur/plateau therefore only redoes the cheap FFT part.
-NONKEY = {"out", "map", "only", "max", "list", "preview", "jobs", "threads", "no_cache", "pack_only", "flatten"}
+NONKEY = {"out", "map", "models", "only", "max", "list", "preview", "jobs", "threads", "no_cache", "pack_only", "flatten"}
 
 
 def _h(*parts):
@@ -596,7 +602,7 @@ def bake_job(a, j):
         n = deepbump_normals(rgb, autolevel=a.autolevel, norm=(a.ln_sigma, a.ln_eps) if use_norm else None)
         npath.parent.mkdir(parents=True, exist_ok=True)
         np.save(npath, n.astype(np.float16))
-    out8, info = bake(rgb, a, ff, n)
+    out8, info = bake(rgb, a, ff, n, m == "model")
     png, js = entry_paths(a, j)
     png.parent.mkdir(parents=True, exist_ok=True)
     buf = io.BytesIO()

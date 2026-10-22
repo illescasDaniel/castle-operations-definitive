@@ -36,6 +36,13 @@ tools/height-bake/.venv/bin/python -I tools/height-bake/height_bake.py --map esc
 
 Without the pack, On has no visible effect (rend2 finds no `_nh` file).
 
+## Weapon skins
+
+`height_bake.py --models 'weapons2/(?!.*(flash|flame|zap_scroll|hand16|arm2|bj_legs|m_shell))' --out run/codmod/codmod_height_weapons.pk3` bakes normals-only `_nh`
+maps for model skins (alpha height flat, so `r_parallaxMinDepth` keeps parallax off them). Default model shaders use
+`rgbGen lightingDiffuse`, so rend2 auto-discovers `<skin>_nh` with no `.mtr`. Pistol A/B approved in-game, then all 27 weapon skins baked. Not baked: effect skins (flash, flame, tesla zap) and
+the hand/arm/leg skins (`mp40/hand16`, `knife/arm2`, `foot/bj_legs`). Remove the pk3 to revert.
+
 ## Known limits
 
 - Only textures baked into the pack get depth; so far escape1 (36 wall/floor textures). Other maps need baking.

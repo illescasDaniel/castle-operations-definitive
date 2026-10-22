@@ -91,3 +91,5 @@ Committed and pushed 2026-10-15 (user verified in-game, cutscenes too). `tools/s
 
 ## Specular + Display tab (2026-10-17)
 Committed and pushed (user tested). `tools/spec-bake/` bakes `_s` maps per material into `run/codmod/codmod_spec.pk3` (git-ignored). Engine: `r_deluxeSpecular 3` + `r_cubeMapping 1` pinned; BSP-baked vertex-lit props now take specular (`tr_shader.c` collapse); `r_codSpecular` (latched, default now 1 since 2026-10-17, ADVANCED tab) gates spec maps, light-grid specular and cubemaps. Options menu now DISPLAY / GRAPHICS / ADVANCED; `r_displayMode` (windowed/borderless/fullscreen) is a view over `r_fullscreen`+`r_noborder` (`CL_ApplyDisplayMode`). Open: specular perf cost still unmeasured; enable by default once cheap.
+
+**Weapon normals (2026-10-22):** pistol A/B approved by the user (small positive); all 27 weapon skins baked into `run/codmod/codmod_height_weapons.pk3` (normals only; hands/arms and effect skins excluded). **Awaiting the user's in-game look** at the other weapons; remove the pk3 to revert. Not committed (pk3 git-ignored; tool + docs changed).

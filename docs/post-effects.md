@@ -52,3 +52,9 @@ walls: the "misplaced lights"). `FBO_Blit` flips Y when a source box is paired w
 bright pass now blits whole texture to whole texture. `FBO_Blit` also overwrites `u_InvTexRes` (texScale / source
 size), so the radius is passed as the texScale. The up chain uses weight 0.8 per level and is normalised by the
 weight sum, so large bright areas no longer get ~9x gain.
+
+## Highlight roll-off (2026-10-22)
+Bright sky/windows used to clip to flat white (tonemap hard clamp + bloom screen-blend on top). `tonemap_fp.glsl` now
+rolls values above `SHOULDER_KNEE` (0.7) off Reinhard-style instead of clamping, and bloom is pinned lower
+(`r_bloomThreshold` 0.8, `r_bloomIntensity` 1.8, was 0.6 / 2.5) so it no longer washes the sky out. Torch/lamp glow is
+a little tighter. Tune in `codmod.cfg`; revert the shoulder by making the knee 1.0.

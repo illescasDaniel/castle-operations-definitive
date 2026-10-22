@@ -2,6 +2,10 @@ _Last updated: 2026-10-21_
 
 ## Current focus
 
+**Highlights (2026-10-22): tonemap soft shoulder + bloom retune (threshold 0.8 / intensity 1.8) built/installed, uncommitted, awaiting user check** (sky/windows no longer flat white; `docs/post-effects.md`). Sun shadows `r_sunShadowStable 7` kept (user: no visible difference, fine).
+
+**Stable sun shadows (2026-10-22): implemented, built/installed, uncommitted, awaiting user in-game check.** `r_sunShadowStable` bitmask (pinned 7 in `codmod.cfg`; 0 = vanilla): 1 sphere-fit texel-snapped cascades, 2 Castano bilinear PCF (no noise), 4 cascade-edge blend. Bench 266 -> 253 fps. Details and open checks in `docs/sun-shadows.md`. User to strafe/turn in the escape2 courtyard, A/B with `r_sunShadowStable 0`; if bad, bisect bits.
+
 **Parallax (2026-10-22): done and committed, perf phases 1-2 in; user approved performance.** All 33 SP maps baked (`run/codmod/codmod_height.pk3`, 293 textures, 72 flattened). Menu: Normal Maps Off/On + Parallax Off/On/On+Self-Shadows (`docs/parallax.md`). Bench 1920x1200: normals-only 261 fps, parallax relief+shadows 258 (was 196). Live cvars `r_parallaxStepDensity` 1, `r_parallaxMarchLod` 0, `r_parallaxShadowFade` 0; latched `r_parallaxMinDepth` 0.15; `r_parallaxMapShadows` is a bitmask. **Mouse-motion perf drop (2026-10-22): fixed, user-confirmed, committed** (VAO cache static store + `glMultiDrawElements`; `docs/performance.md` "View-motion smoke test"). Smoke test: `scripts/spin-test.sh`. Benchmarks always run off-screen (`bench.sh` is headless by default).
 
 **Bevel corners (2026-10-22): connected textures + corner lighting accepted by user as good enough for now; uncommitted (tool in `tools/world-bevel-jl`, `scripts/shot-at.sh`, `scripts/seam-metric.py`, engine `viewpos`/`setviewpos` pitch + `uiclick`). Future ideas listed in `progress.md`.**

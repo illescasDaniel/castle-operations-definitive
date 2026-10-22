@@ -55,10 +55,31 @@ You need your own copy of RTCW (Steam). **No game data is included or modified.*
 ### Graphics
 - Uses the **rend2** renderer with sun shadows, sun rays, per-pixel **dynamic lights** (which also light characters,
   props and items), specular and deluxe mapping, HDR, 16x anisotropic filtering
+- **Parallax occlusion mapping with self-shadowing** and **normal maps** on walls, floors and weapon skins, from
+  AI-generated height/normal maps you bake locally (`tools/height-bake`, private `codmod_height.pk3`). Two menu rows:
+  Normal Maps (Off / On) and Parallax Mapping (Off / On / On + Self-Shadows). Without the pack they have no visible
+  effect. See [docs/parallax.md](docs/parallax.md)
+- **Specular improvements**: per-texture specular maps baked locally (`tools/spec-bake`, private `codmod_spec.pk3`),
+  a fix for the camera-following highlight on baked lighting, and optional geometric specular anti-aliasing
+  (`r_specularAA`). See [docs/performance.md](docs/performance.md) and [tools/spec-bake/README.md](tools/spec-bake/README.md)
+- **Rounder world geometry** (optional, local): convex wall corners are bevelled, with light carried continuously around
+  the bevel and textures realigned across it ("connected textures"); props can be smoothed too. Built per map from your
+  own paks by `scripts/build-geometry.sh`, visual only (collision unchanged). Early: only escape1 and escape2 have been
+  checked closely in game. See [docs/bevel-lighting-plan.md](docs/bevel-lighting-plan.md) and
+  [tools/world-bevel-jl/README.md](tools/world-bevel-jl/README.md)
+- **Stable sun shadows**: texel-snapped cascades, noise-free PCF and cascade blending so shadows no longer swim when the
+  camera moves (`r_sunShadowStable`), see [docs/sun-shadows.md](docs/sun-shadows.md)
 - **Ambient occlusion** with a menu option (Off / SSAO / **GTAO**, GTAO by default), depth-aware upsampling and distance
   fade, see [docs/ssao.md](docs/ssao.md)
+- **Bloom and colour grade**, with a soft highlight roll-off so bright skies and windows no longer clip to flat white,
+  see [docs/post-effects.md](docs/post-effects.md)
 - **SMAA** anti-aliasing (4 quality levels) as the default, ~18% faster than 2x MSAA in our benchmark; MSAA 2/4/8x
-  still available. One `Anti-Aliasing` menu row drives both
+  still available. One `Anti-Aliasing` menu row drives both. Edges also use scene depth (`r_smaaPredication`) to cut
+  texture speckle. **SMAA T2x (test)** adds a temporal resolve with camera jitter and a per-object velocity buffer
+  (animated props, doors, the viewmodel), experimental and not the default. See [docs/smaa.md](docs/smaa.md) and
+  [docs/smaa-motion-plan.md](docs/smaa-motion-plan.md)
+- **Flashlight shadows** (see above), plus renderer performance work: GPU pass profiler, removed sync stalls, and a
+  fix for a frame-time drop while turning with the mouse. See [docs/performance.md](docs/performance.md)
 - **Frame pacing**: an engine-level limiter with absolute deadlines (sleep + spin) for a flat frame-time graph, sub-millisecond
   game-time interpolation so camera motion is even at any cap, and five **VSync** modes (Off / On / Adaptive / Triple /
   Low latency) plus a frame limit slider and a separate menu/cutscene frame cap (Auto = monitor refresh), all in the menu

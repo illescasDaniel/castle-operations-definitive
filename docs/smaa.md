@@ -152,3 +152,24 @@ The luma edge pass can use scene depth (`tr.hdrDepthImage`, log of linear depth)
 raise it elsewhere, which removes texture speckle and closes broken silhouette edges. Pinned on in `codmod.cfg`; tuning cvars
 `r_smaaPredThreshold` / `r_smaaPredScale` / `r_smaaPredStrength`. `r_smaaDebug 1` shows the predicated edges. See
 [smaa-motion-plan.md](smaa-motion-plan.md) Phase 1.
+
+## SMAA T2x (`r_aa 8`, camera-only temporal)
+
+`r_aa 8` selects SMAA High plus a temporal resolve (`r_smaaTemporal 1`, MSAA off). The main world view is rendered with a
++-0.25 px diagonal jitter that alternates each frame; after SMAA 1x and tone mapping, `RB_SMAATemporal` reprojects each
+pixel into the previous resolved frame from its depth and the two frames' unjittered view-projection matrices, clamps the
+history sample to the current 3x3 neighborhood (YCoCg) and blends 50/50. Static geometry thereby gets two samples while
+the camera moves; things that move on their own are rejected by the clamp and look like SMAA 1x. History resets on map
+load, `r_aa` change, pauses, camera cuts and large zoom jumps. Internal cvars (not archived): `r_smaaTemporal`,
+`r_smaaJitter`, `r_smaaTemporalWeight`; `r_smaaDebug 3` shows the clamp. Details and open work (per-object velocity):
+[smaa-motion-plan.md](smaa-motion-plan.md) Phase 3.
+
+### T2x object velocity (`r_smaaVelocity`, `r_smaaDebug 4`)
+
+With `r_aa 8` on the non-MSAA HDR path the depth prepass also writes a per-pixel velocity (`*velocity`, RG16F, colour
+attachment 1 of the render FBO) for animated MD3/MDC props, doors and brush movers, rigid models and the viewmodel. The
+resolve reprojects with it (depth reprojection for pixels without velocity) and lowers the history weight for fast pixels.
+`r_smaaVelocity 0` returns to the camera-only 3-cam behaviour; `r_smaaDebug 4` displays the buffer. Details and limits:
+`docs/smaa-motion-plan.md`, "Implemented (3-obj)". MDS characters (enemies) also get limb motion: the CPU-skinned positions of
+the previous frame are cached per surface and fed to the velocity shader as a second position stream (Phase 4, same doc;
+awaiting in-game confirmation).

@@ -129,6 +129,21 @@ have correct motion vectors. Without them their history is rejected and they fal
 - **3-obj (~1-2 sessions):** the velocity buffer below. This is what makes the cages, doors and the viewmodel
   benefit.
 
+**Implemented (3-cam, 2026-10-22, uncommitted).** `r_aa 8` = "SMAA T2x" (SMAA High + temporal; sets `r_smaa 3`,
+`r_smaaTemporal 1`, MSAA 0). Main world view only (`RE_RenderScene`, not portals/shadows/cubemaps/world-less UI
+scenes; needs `r_depthPrepass`, no MSAA, full-size viewport) gets a diagonal +-`r_smaaJitter` px (0.25) projection
+shift, alternating per rendered frame (`R_RenderView`, after the frustum is built). `viewParms_t` carries the
+unjittered `smaaViewProj` and a translation-free `smaaViewProjRot` (sky). `RB_SMAATemporal` (`tr_postprocess.c`,
+called right after `RB_SMAA` in `RB_PostProcess`) builds `prevVP * inverse(curVP)` in double precision and runs
+`smaa_resolve_{vp,fp}.glsl`: depth from `tr.hdrDepthImage` (copy extended to run for jittered views), reprojected
+history from `tr.smaaHistoryImage` (RGBA8), 3x3 YCoCg min/max clamp, blend with `r_smaaTemporalWeight` (0.5). Own
+resolve shader instead of `SMAAResolvePS` (no velocity buffer to feed it). Result goes back to `renderFbo` and into
+history (`smaaHistoryFbo`, so `MAX_FBOS` went 64 -> 80). History reset (current frame passes through) on: map load
+(`RE_LoadWorldMap`), `r_aa` change, any frame without a resolve (frame-count gap: pause, no-world, vid_restart),
+camera step > 128 units, view turn > 60 degrees in a frame, or projection scale change beyond 2x (scope toggle).
+Gradual zoom is reprojected. Debug: `r_smaaDebug 3` shows the clamp distance (red) over a dimmed image. Cvars
+(`r_smaaTemporal`, `r_smaaJitter`, `r_smaaTemporalWeight`) are not archived. Not done: per-object velocity (3-obj).
+
 **3a. Velocity buffer**
 - New `tr.velocityImage` (RG16F, render size) attached as a second color target of `renderFbo` (and of
   `msaaResolveFbo`'s path when MSAA is on). It is written only during the depth prepass. The prepass keeps the
@@ -196,6 +211,7 @@ MSAA 2x.
 
 Per-entity cache of last frame's skinned vertex positions, uploaded as a second position stream. This gives
 enemies proper T2x instead of the clamped fallback. Do it only if Phase 3 shows enemies still crawling.
+**Implemented 2026-10-22 (needs in-game confirmation), see "Implemented (Phase 4)" below.**
 
 ## Recommendation
 
@@ -214,3 +230,49 @@ enemies proper T2x instead of the clamped fallback. Do it only if Phase 3 shows 
   passes and SMAA per sample. Revisit only after Phase 3.
 - **Higher internal resolution (SSAA / render scale):** fixes everything but costs far too much at 2561x1601.
 - **Thicker LOD geometry for thin props:** asset work for each prop, does not scale.
+
+## Implemented (3-obj), 2026-10-22
+
+Per-pixel velocity buffer for the T2x resolve (`r_aa 8`), built on 3-cam. Uncommitted at the time of writing.
+
+- **Buffer**: `*velocity` RG16F, second colour attachment of `tr.renderFbo` (non-MSAA HDR only, GLSL >= 1.30). Written only in
+  the depth prepass of the main jittered view (`USE_VELOCITY` variants of the generic and lightall depth-fill shaders;
+  draw buffers {NONE, ATT1}). Value = ndc_cur - ndc_prev with jitter removed; exact (0,0) means "no velocity" (world,
+  sky, unwritten), real zero motion of an entity is stored as (1e-4, 0).
+- **Per-entity previous matrix** (`RB_SmaaEntityVelocity`, `tr_postprocess.c`): matched by model handle, entityNum and
+  nearest position; stale or teleported entities fall back to zero object motion. MD3/MDC previous position comes from the
+  lerp delta (uniforms only, no extra vertex stream). First-person viewmodel uses view-space motion (previous entity
+  matrix times the unjittered projection). MDS characters get entity-transform motion only; sky is rotation only;
+  translucents write no velocity (they keep the depth/camera fallback).
+- **Resolve** (`smaa_resolve_fp.glsl`): velocity where written, depth reprojection elsewhere, YCoCg clamp kept, history
+  weight reduced for fast pixels (up to -70% at >= 16 px/frame).
+- **Cvars**: `r_smaaVelocity` (internal, default 1, flags 0). `r_smaaDebug 4` shows the velocity buffer (grey = entity pixel
+  standing still, red/green = x/y motion, dim image = no velocity). 3 stays the clamp view.
+- **Resets**: `RB_SMAAResetMotion()` on map load, `r_aa` change and vid_restart; frames without a resolve invalidate the
+  entity records through the frame-gap test. Budget: no new FBOs (MAX_FBOS unchanged).
+- **Fix found while testing**: the sky-portal scene (escape1 renders one per frame) called `RB_SMAATemporal` before the main
+  view and invalidated the T2x history every frame, and was itself jittered. Sky-portal scenes are no longer jittered and
+  non-jittered views no longer touch the history. This also affects 3-cam on maps with sky portals.
+- **Known limits**: MDS skeletal bone motion (fixed by Phase 4 below), translucent/additive surfaces, particles and
+  decals have no velocity; entities that teleport inside 1 frame fall back to zero motion.
+
+## Implemented (Phase 4: MDS limb motion vectors), 2026-10-22
+
+Uncommitted, built clean, not yet play-tested. Only active in the velocity prepass (`backEnd.depthFill && backEnd.smaaVelocity`),
+so `r_aa 0-7` and `r_smaaVelocity 0` take none of these paths (the only always-on cost is one extra 64 KB-per-4000-vertex
+`tess.xyzPrev` array and a matching slot in the tess VAO, never uploaded unless requested).
+
+- **Cache** (`RB_SmaaMdsPrevPositions`, `tr_postprocess.c`): MDS is skinned on the CPU in `RB_SurfaceAnim`, so the shader cannot
+  rebuild the old pose. Each MDS surface drawn in the prepass stores its skinned model-space positions in a two-generation
+  bump pool (1024 surfaces / 65536 vertices per generation, no allocation), keyed by (entityNum, hModel, surface pointer).
+- **Lookup**: only if the entity's previous-frame transform record matched (`smaaEntVel_t.matched`), the previous frame was
+  exactly `frameCount - 1`, and the surface was drawn then. Vertices beyond the previous LOD count, or any miss, use the
+  current position as "previous" = the old entity-transform-only velocity. LOD collapse keeps vertex indices stable.
+- **Upload**: `RB_SurfaceAnim` fills `tess.xyzPrev` and sets `tess.prevXyzValid`; `RB_CalcShaderVertexAttribs` then requests
+  `ATTR_POSITION2` and `RB_UpdateTessVao` uploads it from the tess VAO's new POSITION2 slot. Skipped for shaders with vertex
+  deforms (the deform runs after skinning).
+- **Shader**: `u_VelParams.w = 1` makes the velocity variants of `generic_vp`/`lightall_vp` use `attr_Position2` as the previous
+  model-space position (then transformed by the previous entity matrix `u_VelPrevMatrix`). `u_VertexLerp` is forced to 0 for
+  that draw. No new shader variants; the non-animated generic velocity variants now also bind `attr_Position2`.
+- **Unverified**: in-game result (enemy limbs, ghosting on fast turns), GLSL only checked with `glslangValidator`
+  (`#version 130`), not on the driver. Shadow/other passes are untouched.

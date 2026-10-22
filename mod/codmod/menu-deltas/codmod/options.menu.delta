@@ -271,7 +271,7 @@
 =ui/options.menu 260 262
 +		text "Color Grade:"
 +		cvar "r_grade"
-+		cvarFloatList { "Off" 0 "On" 1 }
++		cvarFloatList { "Off" 0 "On (default)" 1 }
 +		rect 240 173 320 11
 =ui/options.menu 97 98
 =ui/error.menu 217 218
@@ -482,10 +482,22 @@
 =ui/options.menu 89 90
 +		name advanced
 =ui/options.menu 260 262
++		text "Normal Maps:"
++		cvar "r_normalMapping"
++		cvarFloatList { "Off" 0 "On (default)" 1 }
++		rect 240 252 320 11
+=ui/options.menu 97 98
+=ui/error.menu 217 218
++		textaligny 9
++		textscale .20
+=ui/options.menu 345 351
+=ui/options.menu 89 90
++		name advanced
+=ui/options.menu 260 262
 +		text "Parallax Mapping:"
 +		cvar "r_parallaxMapping"
-+		cvarFloatList { "Off" 0 "On (default)" 2 }
-+		rect 240 252 320 11
++		cvarFloatList { "Off" 0 "On" 2 "On + Self-Shadows (default)" 3 }
++		rect 240 263 320 11
 =ui/options.menu 97 98
 =ui/error.menu 217 218
 +		textaligny 9
@@ -498,7 +510,7 @@
 +		type 1
 +		textscale .20
 =ui/options.menu 76 77
-+		rect 240 269 320 11
++		rect 240 280 320 11
 =ui/options.menu 434 435
 =ui/error.menu 217 218
 +		textaligny 9

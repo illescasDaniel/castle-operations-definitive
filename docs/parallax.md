@@ -6,14 +6,18 @@ Relief parallax (with self-shadowing) on walls and floors, driven by AI-generate
 
 ## Settings
 
-GRAPHICS > ADVANCED > **Parallax Mapping** (Off / On); engine layer too (EFFECTS tab), usable by plain RTCW. It is
-latched: press Apply (vid_restart). One toggle drives the group (`Item_Multi_HandleKey`, `ui_shared.c`):
+GRAPHICS > ADVANCED > **Normal Maps** (Off / On) and **Parallax Mapping** (Off / On / On + Self-Shadows); engine layer
+too (EFFECTS tab), usable by plain RTCW. Both are latched: press Apply (vid_restart). The group logic is in
+`Item_Multi_HandleKey` / `Item_Multi_CvarValue` (`ui_shared.c`). The Parallax row's list values are UI levels (0/2/3),
+derived from two cvars for display:
 
-| cvar | Off | On | Where |
+| Parallax level | `r_parallaxMapping` | `r_parallaxMapShadows` | `r_normalMapping` |
 |---|---|---|---|
-| `r_parallaxMapping` | 0 | 2 (relief) | the row itself |
-| `r_parallaxMapShadows` | 0 | 1 (self-shadow) | set by the row |
-| `r_normalMapping` | unchanged | 1 | set by the row (needed for the `_nh` normals) |
+| Off | 0 | 0 | unchanged |
+| On | 2 | 0 | set to 1 |
+| On + Self-Shadows | 2 | 1 | set to 1 |
+
+Normal Maps Off sets `r_parallaxMapping` 0 and `r_parallaxMapShadows` 0 (parallax needs the `_nh` normals).
 
 Off disables all parallax paths. Engine code defaults are vanilla (0); the mod's first-launch/Reset values are `seta` in
 `mod/codmod/codmod_gfxdefaults.cfg` (On). Internal pins in `mod/codmod/codmod.cfg`: `r_parallaxMapOffset 0`,

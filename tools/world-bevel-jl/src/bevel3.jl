@@ -166,6 +166,18 @@ function thin_rows(bv::Bevel, gr::Group, ts::Vector{Float64}, polys)
     [ts[i] for i in sort!(unique(keep))]
 end
 
+"P9: for a seam between faces with different shaders, the face whose shader (and unfolded mapping) covers the whole curve; nothing otherwise."
+function wrap_owner(bv::Bevel, gr::Group, fa::Face, fb::Face)::Union{Nothing,Face}
+    pref = bv.a.wrap_prefer
+    (pref == "off" || fa.shader == fb.shader) && return nothing
+    (fa.has_lm && fb.has_lm) || return nothing
+    function width(f::Face, w::V3)
+        maximum(vdot(axyz(q) - gr.P0, w) for q in f.A)
+    end
+    wa, wb = width(fa, gr.wA), width(fb, gr.wB)
+    pref == "wide" ? (wa >= wb ? fa : fb) : (wa <= wb ? fa : fb)
+end
+
 function build_strip!(bv::Bevel, gr::Group, gid::Int)
     a = bv.a
     rows = Set{Float64}(round(b, digits=6) for b in gr.bps if gr.te_lo - 1e-6 <= b <= gr.te_hi + 1e-6)
@@ -346,10 +358,23 @@ function build_strip!(bv::Bevel, gr::Group, gid::Int)
         key = (Int64(f.si), Int64(fo.si), round(Int64, x.x * 1e5), round(Int64, x.y * 1e5), round(Int64, x.z * 1e5), Int64(ph))
         v = get(cache, key, nothing)
         if v === nothing
-            if a.uv_mode == "align"
+            if a.uv_mode == "align" || a.uv_mode == "align-greedy"
                 m = eval_map(f, unfold(f, rowpts, ph))
             else
                 m = eval_map(f, x - vdot(x - gr.P0, f.n) * f.n)
+            end
+            if k === nothing && f.shader == fo.shader && a.align_stretch > 0 && a.uv_mode == "align"
+                # leftover texture offset between the faces: spread it over the strip so both halves meet at the centre column
+                fa_, fb_ = f.si in gr.fA ? (f, fo) : (fo, f)
+                ma, mb = eval_map(fa_, unfold(fa_, rowpts, im)), eval_map(fb_, unfold(fb_, rowpts, im))
+                d1, d2 = mb[1] - ma[1], mb[2] - ma[2]
+                d1 -= round(d1); d2 -= round(d2)
+                if max(abs(d1), abs(d2)) <= a.align_stretch && max(abs(d1), abs(d2)) > 1e-4
+                    e = f === fa_ ? phis[ph] / 0.5 : (1 - phis[ph]) / 0.5
+                    sg = f === fa_ ? 0.5 : -0.5
+                    m = (m[1] + sg * d1 * e, m[2] + sg * d2 * e, m[3], m[4])
+                    inc!(bv, "strip_offset_ramped")
+                end
             end
             if k !== nothing
                 fa_, fb_ = f.si in gr.fA ? (f, fo) : (fo, f)
@@ -364,21 +389,61 @@ function build_strip!(bv::Bevel, gr::Group, gid::Int)
     end
 
     added = 0
-    for ri in 1:length(rowsd)-1
+    cur = Any[nothing, nothing]    # per half: (LmBlock, id, partner surface) being extended
+    nint = length(rowsd) - 1
+    cls = get(SEAM_CLS_OF, gid, :none)
+    ROWS_OF[gid] = Float64[r.t for r in rowsd]
+    lmdev = 0.0
+    zero6 = (0f0, 0f0, 0f0, 0f0, 0f0, 0f0)
+    for ri in 1:nint
         ra, rb = rowsd[ri], rowsd[ri+1]
-        (ra.c == 0.0 && rb.c == 0.0) && continue
+        if ra.c == 0.0 && rb.c == 0.0
+            cur[1] = nothing; cur[2] = nothing
+            continue
+        end
         tm = 0.5 * (ra.t + rb.t)
+        fa_, fb_ = pick(gr.fA, tm), pick(gr.fB, tm)
+        diag_step!(bv, fa_, fb_, ra.pts[1], ra.pts[np])
+        if a.lm_blend
+            lmdev = max(lmdev, diag_rows!(bv, fa_, fb_, ra, rb, np))
+        end
+        if a.lm_blend && (ri == 1 || ri == nint) && fa_.has_lm && fb_.has_lm
+            for (isend, e, rw) in ((ri == 1, 0, ra), (ri == nint, 1, rb))
+                isend || continue
+                LA, LB = ab_light(bv, fa_, fb_, rw.pts[1], rw.pts[np])
+                bv.endcol[(gid, e)] = cols_from(LA, LB, phis, 1:np)
+            end
+        end
+        own = wrap_owner(bv, gr, fa_, fb_)
+        own !== nothing && inc!(bv, "wrap_intervals")
         for half in (0, 1)
-            f = pick(half == 0 ? gr.fA : gr.fB, tm)
-            fo = pick(half == 0 ? gr.fB : gr.fA, tm)
+            f = half == 0 ? fa_ : fb_
+            fo = half == 0 ? fb_ : fa_
             kk = half == 0 ? pair_k(f, fo, tm) : pair_k(fo, f, tm)
+            if own !== nothing
+                f = own; fo = own === fa_ ? fb_ : fa_; kk = nothing
+            end
             phs = half == 0 ? (1:im) : (im:np)
+            blk = nothing; bid = 0; rr0 = 0f0; rr1 = 0f0
+            if a.lm_blend && f.has_lm
+                blk, bid, r0_, r1_ = strip_block!(bv, cur, half + 1, fa_, fb_, half, ra, rb, phis, im, np, cls, f)
+                rr0 = Float32(r0_); rr1 = Float32(r1_)
+            else
+                cur[half+1] = nothing
+            end
             for k in first(phs):last(phs)-1
                 q00 = vert(f, ra.pts[k], ra.nms[k], k, fo, kk, ra.pts)
                 q01 = vert(f, ra.pts[k+1], ra.nms[k+1], k + 1, fo, kk, ra.pts)
                 q10 = vert(f, rb.pts[k], rb.nms[k], k, fo, kk, rb.pts)
                 q11 = vert(f, rb.pts[k+1], rb.nms[k+1], k + 1, fo, kk, rb.pts)
-                for T in ((q00, q10, q11), (q00, q11, q01))
+                if blk !== nothing
+                    c0 = Float32(k - first(phs) + 1); c1 = c0 + 1f0
+                    ps = ((rr0, c0, rr1, c0, rr1, c1), (rr0, c0, rr1, c1, rr0, c1))
+                else
+                    ps = (zero6, zero6)
+                end
+                for (ti, T) in enumerate(((q00, q10, q11), (q00, q11, q01)))
+                    p6 = ps[ti]
                     cr = vcross(axyz(T[2]) - axyz(T[1]), axyz(T[3]) - axyz(T[1]))
                     if vnorm(cr) < 1e-6
                         inc!(bv, "strip_tris_degenerate_skipped"); continue
@@ -386,17 +451,19 @@ function build_strip!(bv::Bevel, gr::Group, gid::Int)
                     navg = anrm(T[1]) + anrm(T[2]) + anrm(T[3])
                     if f.winding * vdot(cr, navg) < 0
                         T = (T[1], T[3], T[2])
+                        p6 = (p6[1], p6[2], p6[5], p6[6], p6[3], p6[4])
                     end
-                    push!(f.strip, T)
+                    push_strip!(f, T, 0x01, gid, bid, p6)
                     added += 1
                 end
             end
         end
     end
+    haskey(SEAM_OF, gid) && (SEAM_OF[gid].lmdev = lmdev)
     added
 end
 
-function build_wall_cap!(bv::Bevel, gr::Group, e::Int)
+function build_wall_cap!(bv::Bevel, gr::Group, e::Int, gid::Int=0)
     row = e == 0 ? gr.row_first : gr.row_last
     pts = row.pts
     nW, dW = gr.wall_pl[e+1]
@@ -419,6 +486,9 @@ function build_wall_cap!(bv::Bevel, gr::Group, e::Int)
         end
     end
     vE = vert(E)
+    ec = get(bv.endcol, (gid, e), nothing)
+    ecm = ec === nothing ? nothing : col_mean(ec)
+    bv.a.lm_blend && f.has_lm || (ec = nothing)
     for k in 1:length(pts)-1
         T = (vE, vert(pts[k]), vert(pts[k+1]))
         cr = vcross(axyz(T[2]) - axyz(T[1]), axyz(T[3]) - axyz(T[1]))
@@ -426,10 +496,61 @@ function build_wall_cap!(bv::Bevel, gr::Group, e::Int)
         if f.winding * vdot(cr, anrm(T[1]) + anrm(T[2]) + anrm(T[3])) < 0
             T = (T[1], T[3], T[2])
         end
-        push!(f.strip, T)
+        bid = 0; p6 = (0f0, 0f0, 0f0, 0f0, 0f0, 0f0)
+        if ec !== nothing && ec isa Vector
+            # T may have been reordered: colour by vertex identity
+            colof(a_) = a_ === vE ? ecm : (a_ === vert(pts[k]) ? ec[k] : ec[k+1])
+            bid, p6 = tri_block!(bv, f, (colof(T[1]), colof(T[2]), colof(T[3])))
+        end
+        push_strip!(f, T, 0x03, gid, bid, p6)
         inc!(bv, "wall_cap_tris")
     end
     inc!(bv, "wall_caps")
+end
+
+"Is point x (on the plane of normal n) inside one of the convex polygons (tolerance tol units)?"
+function in_polys(polys::Vector{Poly}, n::V3, x::V3, tol::Float64)
+    for P in polys
+        m = length(P)
+        m < 3 && continue
+        inside = true
+        for i in 1:m
+            a = axyz(P[i]); b = axyz(P[i == m ? 1 : i + 1])
+            e = b - a
+            el = vnorm(e)
+            el < 1e-9 && continue
+            # signed distance to the edge line, positive inside for CCW polys about n (sign fixed by the poly's own winding)
+            c = vdot(vcross(e, x - a), n) / el
+            P_sign = vdot(vcross(axyz(P[2]) - axyz(P[1]), axyz(P[3]) - axyz(P[2])), n) >= 0 ? 1.0 : -1.0
+            if P_sign * c < -tol
+                inside = false; break
+            end
+        end
+        inside && return true
+    end
+    false
+end
+
+"After all cuts: does the (unbuilt) cap fan of end e of gr leave part of the wall plane uncovered by the wall faces' final polygons?"
+function cap_uncovered(bv::Bevel, gr::Group, e::Int)
+    row = e == 0 ? gr.row_first : gr.row_last
+    row === nothing && return false
+    pts = row.pts
+    nW, dW = gr.wall_pl[e+1]
+    E = gr.P0 + gr.d * ((dW - vdot(nW, gr.P0)) / vdot(nW, gr.d))
+    wf = Face[face(bv, si) for si in gr.wall_fi[e+1]]
+    for f in wf
+        ensure_polys!(f)
+    end
+    for k in 1:length(pts)-1
+        a, b, c = E, pts[k], pts[k+1]
+        vnorm(vcross(b - a, c - a)) < 1e-6 && continue
+        for (wa, wb, wc) in ((1/3, 1/3, 1/3), (0.6, 0.2, 0.2), (0.2, 0.6, 0.2), (0.2, 0.2, 0.6), (0.05, 0.475, 0.475), (0.1, 0.8, 0.1), (0.1, 0.1, 0.8))
+            x = wa * a + wb * b + wc * c
+            any(f -> in_polys(f.polys, f.n, x, 0.05), wf) || return true
+        end
+    end
+    false
 end
 
 function build_corner!(bv::Bevel, cr::Corner)
@@ -437,7 +558,8 @@ function build_corner!(bv::Bevel, cr::Corner)
     for (gid, e) in cr.ends
         gr = bv.groups[gid]
         row = e == 0 ? gr.row_first : gr.row_last
-        push!(arcs, (gr.pk[1], gr.pk[2], collect(zip(row.pts, row.nms)), gr))
+        ecl = get(bv.endcol, (gid, e), nothing)
+        push!(arcs, (gr.pk[1], gr.pk[2], [(row.pts[k], row.nms[k], ecl === nothing ? nothing : ecl[k]) for k in 1:length(row.pts)], gr))
     end
     first_ = popfirst!(arcs)
     loop = copy(first_[3])
@@ -450,8 +572,10 @@ function build_corner!(bv::Bevel, cr::Corner)
         cur = ar[1] == cur ? ar[2] : ar[1]
     end
     pop!(loop)
-    X = V3[p for (p, _n) in loop]
-    Nn = V3[n for (_p, n) in loop]
+    X = V3[l[1] for l in loop]
+    Nn = V3[l[2] for l in loop]
+    LC = bv.a.lm_blend && all(l -> l[3] !== nothing, loop) ? NTuple{3,Float64}[l[3] for l in loop] : nothing
+    LCm = LC === nothing ? nothing : col_mean(LC)
     R = sum(bv.groups[g].r * bv.groups[g].R_over_c for (g, _e) in cr.ends) / 3
     s = ZERO3
     for i in 1:length(X)
@@ -505,12 +629,14 @@ function build_corner!(bv::Bevel, cr::Corner)
             mkatt(x, mm, n, nearest_color(f, x))
         end
     end
-    tris = Tuple{Tuple{V3,V3},Tuple{V3,V3},Tuple{V3,V3}}[]
+    tris = Tuple{Tuple{V3,V3,Any},Tuple{V3,V3,Any},Tuple{V3,V3,Any}}[]
+    xc(i) = LC === nothing ? nothing : LC[i]
+    rc(i) = LC === nothing ? nothing : col_lerp(LC[i], LCm, 0.5)
     for i in 1:m
         j = i % m + 1
-        push!(tris, ((X[i], Nn[i]), (X[j], Nn[j]), (ring[j], rn[j])))
-        push!(tris, ((X[i], Nn[i]), (ring[j], rn[j]), (ring[i], rn[i])))
-        push!(tris, ((ring[i], rn[i]), (ring[j], rn[j]), (ctr, u0)))
+        push!(tris, ((X[i], Nn[i], xc(i)), (X[j], Nn[j], xc(j)), (ring[j], rn[j], rc(j))))
+        push!(tris, ((X[i], Nn[i], xc(i)), (ring[j], rn[j], rc(j)), (ring[i], rn[i], rc(i))))
+        push!(tris, ((ring[i], rn[i], rc(i)), (ring[j], rn[j], rc(j)), (ctr, u0, LCm)))
     end
     for tri in tris
         g = (tri[1][1] + tri[2][1] + tri[3][1]) / 3
@@ -523,12 +649,18 @@ function build_corner!(bv::Bevel, cr::Corner)
         end
         f = pf[findfirst(x -> x[1] == bestp, pf)][3]
         T = (vert(f, tri[1][1], tri[1][2]), vert(f, tri[2][1], tri[2][2]), vert(f, tri[3][1], tri[3][2]))
+        cl = (tri[1][3], tri[2][3], tri[3][3])
         c = vcross(axyz(T[2]) - axyz(T[1]), axyz(T[3]) - axyz(T[1]))
         vnorm(c) < 1e-6 && continue
         if f.winding * vdot(c, anrm(T[1]) + anrm(T[2]) + anrm(T[3])) < 0
             T = (T[1], T[3], T[2])
+            cl = (cl[1], cl[3], cl[2])
         end
-        push!(f.strip, T)
+        bid = 0; p6 = (0f0, 0f0, 0f0, 0f0, 0f0, 0f0)
+        if f.has_lm && cl[1] !== nothing
+            bid, p6 = tri_block!(bv, f, cl)
+        end
+        push_strip!(f, T, 0x02, 0, bid, p6)
         inc!(bv, "corner_patch_tris")
     end
     inc!(bv, "corner_patches")
@@ -547,9 +679,15 @@ function good(Q::NTuple{3,Q14})
     vnorm(vcross(x(Q[2]) - x(Q[1]), x(Q[3]) - x(Q[1]))) >= 1e-4
 end
 
+function relo_q(q::Q14, dx::Float64, dy::Float64)::Q14
+    ntuple(i -> i == 6 ? q[6] + Float32(dx / 128) : i == 7 ? q[7] + Float32(dy / 128) : q[i], Val(14))
+end
+
 function assemble!(bv::Bevel)
     a = bv.a
     S = copy(bv.S)
+    plan, npages = a.lm_blend && !isempty(bv.blocks) ? plan_lightmaps!(bv) : (Dict{Int,LmUnit}(), 0)
+    newlm, lm_base, lm_stride = isempty(plan) ? (bv.lm, 0, 1) : build_lightmaps(bv, plan, npages)
     mods = Dict{Int,Tuple{Vector{DrawVert},Vector{Int32}}}()
     for f in bv.flist
         f.polys === nothing && continue
@@ -574,6 +712,28 @@ function assemble!(bv::Bevel)
         inc!(bv, "face_poly_verts", sum(length, polys))
         qc = [quant(T) for T in tris]
         qs = [quant(T) for T in f.strip]
+        lu = get(plan, f.si, nothing)
+        if lu !== nothing
+            s0 = bv.S[f.si+1]
+            ix, iy, _w, _h = lu.items[findfirst(==(0), lu.bids)]
+            dx = Float64(lu.px + ix + 1 - s0.lmx); dy = Float64(lu.py + iy + 1 - s0.lmy)
+            qc = [(relo_q(Q[1], dx, dy), relo_q(Q[2], dx, dy), relo_q(Q[3], dx, dy)) for Q in qc]
+            for (i, Q) in enumerate(qs)
+                bid = Int(f.sblk[i])
+                if bid == 0
+                    qs[i] = (relo_q(Q[1], dx, dy), relo_q(Q[2], dx, dy), relo_q(Q[3], dx, dy))
+                else
+                    b = bv.blocks[bid]
+                    p = f.spos[i]
+                    uv(r, c) = (Float32((b.bx + c - 0.5) / 128), Float32((b.by + r - 0.5) / 128))
+                    qs[i] = ntuple(j -> begin
+                        l1, l2 = uv(p[2j-1], p[2j])
+                        q = Q[j]
+                        ntuple(m -> m == 6 ? l1 : m == 7 ? l2 : q[m], Val(14))
+                    end, Val(3))
+                end
+            end
+        end
         kc, ks = filter(good, qc), filter(good, qs)
         inc!(bv, "tris_dropped_sliver", length(qc) + length(qs) - length(kc) - length(ks))
         vmap = Dict{Q14,Int}()
@@ -600,6 +760,11 @@ function assemble!(bv::Bevel)
         s = S[f.si+1]
         inc!(bv, "verts_orphaned", s.nv)
         mods[f.si] = (arr, idx)
+        if lu !== nothing
+            ix, iy, _w, _h = lu.items[findfirst(==(0), lu.bids)]
+            s = with_lm(s; lmn=lm_base + lm_stride * lu.page, lmx=lu.px + ix + 1, lmy=lu.py + iy + 1)
+            S[f.si+1] = s
+        end
         if a.surface_type == "tri"
             S[f.si+1] = with_geometry(s; typ=MST_TRISOUP)
             inc!(bv, "surfaces_converted_to_trisoup")
@@ -608,7 +773,21 @@ function assemble!(bv::Bevel)
         end
         inc!(bv, "surfaces_modified")
     end
+    if a.debug_shader == "uvgrid"
+        nsh = length(bv.shd)
+        for si in keys(mods)
+            S[si+1] = with_shader(S[si+1], nsh)
+        end
+    end
     out, nv, ni = relayout(bv.bsp, S, bv.V, bv.I, mods)
+    if a.debug_shader == "uvgrid"
+        nm = codeunits(UVGRID_SHADER)
+        nt = ntuple(i -> i <= length(nm) ? nm[i] : 0x00, 64)
+        out.lumps[L_SHADER] = to_bytes(vcat(bv.shd, [Shader(nt, Int32(0), Int32(1))]))
+        push!(EXTRA_FILES, "textures/codmod_debug/uvgrid.tga" => uvgrid_tga())
+        push!(EXTRA_FILES, "scripts/codmod_debug.shader" => Vector{UInt8}(codeunits(UVGRID_SCRIPT)))
+    end
+    isempty(plan) || (out.lumps[L_LM] = newlm)
     bv.stats["verts_before"], bv.stats["verts_after"] = length(bv.V), nv
     bv.stats["indexes_before"], bv.stats["indexes_after"] = length(bv.I), ni
     out
@@ -634,7 +813,8 @@ function run!(bv::Bevel; log=true)
     drop_overlapping!(bv, order); lap("overlap")
     revert_broken_corners!(bv)
     revert_broken_mitres!(bv)
-    bv.a.uv_mode == "align" && align_textures!(bv)
+    bv.a.uv_mode == "align" && (orient_components!(bv); align_textures!(bv); seam_resid!(bv))
+    bv.a.uv_mode == "align-greedy" && align_textures_greedy!(bv)
     lap("align")
     empty!(bv.end_log)
     for (gid, gr) in enumerate(bv.groups)
@@ -669,10 +849,15 @@ function run!(bv::Bevel; log=true)
     for cr in bv.corners
         build_corner!(bv, cr)
     end
-    for gr in bv.groups
+    for (gid, gr) in enumerate(bv.groups)
         gr.ok || continue
         for e in (0, 1)
-            gr.wall[e+1] && gr.wall_cap[e+1] && build_wall_cap!(bv, gr, e)
+            gr.wall[e+1] || continue
+            if !gr.wall_cap[e+1] && !gr.corner[e+1] && cap_uncovered(bv, gr, e)
+                gr.wall_cap[e+1] = true
+                inc!(bv, "wall_caps_postcut")
+            end
+            gr.wall_cap[e+1] && build_wall_cap!(bv, gr, e, gid)
         end
     end
     lap("corners+caps")
@@ -697,6 +882,10 @@ function print_stats(bv::Bevel)
     println("  rejected thin (r < min-radius):", st("rej_thin_face"))
     println("  rejected concave (group):     ", st("rej_concave_group"))
     @printf("  bevelled groups:              %s  total length %.0f units\n", st("groups_bevelled"), stat(bv, "bevelled_length"))
+    if stat(bv, "align_edges") > 0
+        @printf("align (global LS): %s edges, %s skipped as cycle-inconsistent (residual > 0.05 period), %.1f%% of seam length within 0.05 period; other shader %s, scale %s, drifting mapping %s, same component %s\n",
+                st("align_edges"), st("align_cycle_skips"), 100 * stat(bv, "align_len_good") / max(1.0, stat(bv, "align_len_total")), st("align_other_shader"), st("align_scale"), st("align_drift"), st("align_same_component"))
+    end
     if stat(bv, "align_shifted") > 0 || stat(bv, "align_drift") > 0 || stat(bv, "align_scale") > 0
         @printf("align: shifted %s components (%s faces, mean |shift| %.3f period); skipped: other shader %s, scale %s, drifting mapping %s\n", st("align_shifted"), st("align_faces"),
                 stat(bv, "align_shift_sum") / max(1, stat(bv, "align_shifted")), st("align_other_shader"), st("align_scale"), st("align_drift"))
@@ -704,6 +893,7 @@ function print_stats(bv::Bevel)
     println("uv pairs: morph ", st("uv_morph_pairs"), ", seam (different shader) ", st("uv_seam_pairs_other_shader"), ", seam (scale ratio > 1.5 fallback) ", st("uv_seam_pairs_scale_fallback"))
     println("face tris ", st("face_tris"), " from ", st("face_poly_verts"), " polygon verts")
     println("face polygons: ", st("face_polys_before_merge"), " pieces -> ", st("face_polys_after_merge"), " after merging")
+    print_class_table(bv)
     println("strip rows: ", st("strip_rows_candidate"), " candidates, ", st("strip_rows_kept"), " kept")
     println("adaptive radius (smaller than --radius): ", st("groups_adaptive_radius"), " of ", st("groups_bevelled"), " runs")
     println("box corners: found ", st("corners_found"), ", patched ", st("corner_patches"), " (", st("corner_patch_tris"), " tris), reverted to taper ", st("corners_reverted"),
@@ -719,6 +909,7 @@ function print_stats(bv::Bevel)
             "); reverted: overlap ", st("mitres_reverted_overlap"), ", partner ", st("mitres_reverted_partner"), "; failed with mitre: coverage ", st("mitre_fail_rej_face_coverage"), ", overlap ", st("mitre_fail_rej_overlap_run"),
             "; asymmetric ", st("mitre_asymmetric"), ", corner vertex missing ", st("mitre_corner_vertex_missing"))
     println("strip triangles added:          ", st("strip_tris"), "  (degenerate skipped ", st("strip_tris_degenerate_skipped"), ", centre mismatches ", st("strip_center_mismatch"), ")")
+    println("P8/P9: wrapped different-shader intervals ", st("wrap_intervals"), ", offset-ramped strip vertices ", st("strip_offset_ramped"))
     println("  rejected cut region off face: ", st("rej_face_coverage"))
     println("  rejected overlapping runs:    ", st("rej_overlap_run"))
     println("  faces reverted (>1024 verts): ", st("faces_reverted_over_vert_limit"), ", fully cut away (kept stock) ", st("faces_emptied_kept_stock"))

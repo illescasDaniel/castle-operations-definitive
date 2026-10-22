@@ -11,6 +11,8 @@ include("smooth.jl")
 include("bevel1.jl")
 include("bevel2.jl")
 include("bevel3.jl")
+include("diag.jl")
+include("lmblend.jl")
 include("cli.jl")
 
 # compile the whole call tree at package precompile time (cached), so the first run does not spend ~10 s in the JIT

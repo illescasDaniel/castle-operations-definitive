@@ -21,7 +21,18 @@ Base.@kwdef mutable struct Opts
     wall_ends::Bool = true
     mitre::Bool = true
     wall_dot::Float64 = 0.99
+    lm_blend::Bool = true
+    align_stretch::Float64 = 0.15  # max leftover texture offset (periods) between two same-shader faces that is spread over the strip (0 = off)
+    flip::Bool = true               # P7: mirror-flip whole same-shader components so textures continue round corners
+    flip_skip::String = "sign|poster|text|logo|clock|number|map|banner|flag|door|window"
+    soft_width::Float64 = 12.0      # P8: light transition band per face
+    wrap_prefer::String = "narrow"  # P9: which face's shader wraps a different-shader corner (narrow|wide)
+    lm_pitch::Float64 = 12.0        # P6: units between strip lightmap rows (0 = geometry rows only, round-1 behaviour)
+    debug_shader::String = ""       # P5: "uvgrid"
+    debug_lm::String = ""           # P5: "class"
 end
+
+const RGB3 = NTuple{3,Float64}
 
 struct CutVert
     gid::Int
@@ -52,6 +63,20 @@ mutable struct Face
     strip::Vector{Tri}
     cutverts::Vector{CutVert}
     bad::Bool
+    skind::Vector{UInt8}          # per strip triangle: 1 strip, 2 corner patch, 3 wall cap (parallel to `strip`)
+    sgid::Vector{Int32}           # per strip triangle: group id (0 = corner patch)
+    sblk::Vector{Int32}           # per strip triangle: lightmap block id (0 = none, keeps the face's own lightmap UVs)
+    spos::Vector{NTuple{6,Float32}} # per strip triangle: (row, col) in the block for each of its 3 vertices
+end
+
+"A small grid of lightmap texels (one per strip vertex) that is copied to an appended lightmap page."
+mutable struct LmBlock
+    si::Int
+    nr::Int
+    nc::Int
+    col::Vector{NTuple{3,Float64}}   # row-major, 0..255
+    bx::Int; by::Int                 # position inside the new page (set by packing)
+    cls::Symbol                      # seam class (debug colouring)
 end
 
 "Minimum-norm least squares like numpy.linalg.lstsq(rcond=None) (matters for rank-deficient faces)."
@@ -104,7 +129,7 @@ function Face(si::Int, s::Surface, name::String, V::Vector{DrawVert}, I::Vector{
     lo = (Float64(s.lmx) / 128.0, Float64(s.lmy) / 128.0)
     hi = (Float64(s.lmx + s.lmw) / 128.0, Float64(s.lmy + s.lmh) / 128.0)
     Face(si, Int(s.shader), name, A, tris, n, d, planar_err, has_lm, centroid, winding, u, v, Matrix{Float64}(fit), fe_st, fe_lm, lo, hi,
-         nothing, Tri[], CutVert[], false)
+         nothing, Tri[], CutVert[], false, UInt8[], Int32[], Int32[], NTuple{6,Float32}[])
 end
 
 "st, lm for a point x (projected to the plane by the basis), lm clamped to the lightmap rect."
@@ -117,8 +142,13 @@ end
     m3 = a * F[1, 3] + b * F[2, 3] + F[3, 3]
     m4 = a * F[1, 4] + b * F[2, 4] + F[3, 4]
     if f.has_lm
-        m3 = min(max(m3, f.lm_lo[1]), f.lm_hi[1])
-        m4 = min(max(m4, f.lm_lo[2]), f.lm_hi[2])
+        h = 0.5 / 128.0   # keep the sample on texel centres inside the rect (no bleed from the neighbouring rect)
+        l1, h1 = f.lm_lo[1] + h, f.lm_hi[1] - h
+        l2, h2 = f.lm_lo[2] + h, f.lm_hi[2] - h
+        m3 = l1 <= h1 ? min(max(m3, l1), h1) : 0.5 * (f.lm_lo[1] + f.lm_hi[1])
+        m4 = l2 <= h2 ? min(max(m4, l2), h2) : 0.5 * (f.lm_lo[2] + f.lm_hi[2])
+        isfinite(m3) || (m3 = 0.5 * (f.lm_lo[1] + f.lm_hi[1]))
+        isfinite(m4) || (m4 = 0.5 * (f.lm_lo[2] + f.lm_hi[2]))
     end
     (m1, m2, m3, m4)
 end
@@ -180,6 +210,21 @@ mutable struct Mitre
     added::Vector{Int}
 end
 
+"One seam (bevelled run or concave edge) for the report: classes before / after the orientation pass and what was decided."
+mutable struct SeamRec
+    gid::Int                 # group id (0 = concave seam)
+    len::Float64
+    fa::Int; fb::Int         # surfaces
+    shA::String; shB::String
+    cls0::Symbol; cls::Symbol
+    flipA::NTuple{2,Int}; flipB::NTuple{2,Int}
+    resid::Float64           # leftover st offset at the seam centre (period units), NaN = not measured
+    stretch::Float64
+    lmdev::Float64
+    der0::NTuple{8,Float64}; der1::NTuple{8,Float64}   # st derivatives (A along, A across, B along, B across) before / after the flips
+    pm::V3                   # seam midpoint
+end
+
 mutable struct Row
     t::Float64
     c::Float64
@@ -216,11 +261,12 @@ mutable struct Group
     ok::Bool
     row_first::Union{Nothing,Row}
     row_last::Union{Nothing,Row}
+    wall_fi::Vector{Vector{Int}}        # surfaces of the wall plane at each end (for the post-cut coverage check)
 end
 Group(d, P0, nA, nB, lo, hi, pk, fA, fB) =
     Group(d, P0, nA, nB, lo, hi, pk, fA, fB, ZERO3, ZERO3, 0.0, 0.0, 0.0, [false, false], [NaN, NaN],
           Union{Nothing,Mitre}[nothing, nothing], [(ZERO3, 0.0), (ZERO3, 0.0)], [true, true], [false, false],
-          0.0, 0.0, 0.0, Float64[], Float64[], true, nothing, nothing)
+          0.0, 0.0, 0.0, Float64[], Float64[], true, nothing, nothing, [Int[], Int[]])
 
 mutable struct Corner
     ends::Vector{Tuple{Int,Int}}
@@ -251,13 +297,18 @@ mutable struct Bevel
     mitres::Vector{NTuple{4,Int}}
     wall_why::Dict{Tuple{Int,Int},String}
     end_log::Vector{String}
+    lm::Vector{UInt8}             # original lightmap lump (128x128x3 pages)
+    blocks::Vector{LmBlock}
+    endcol::Dict{Tuple{Int,Int},Vector{NTuple{3,Float64}}}   # (group, end) -> colour of each end-row vertex
+    concave::Vector{Tuple{Int,Int,V3,V3}}                    # concave edge pairs (face a, face b, p0, p1) within the bevel angle range
+    seams::Vector{SeamRec}
 end
 
 function Bevel(bsp::Bsp, a::Opts)
     S = surfaces(bsp)
     Bevel(bsp, a, verts(bsp), indexes(bsp), S, shader_names(bsp), shaders(bsp), Dict{String,Float64}(),
           isempty(a.skip_shader) ? nothing : Regex(a.skip_shader, "i"), Face[], zeros(Int, length(S)), Group[], V3[], V3[], V3[], Int[],
-          Set{Tuple{Int,Int}}(), Tuple{Int,Int,V3,V3}[], Corner[], NTuple{4,Int}[], Dict{Tuple{Int,Int},String}(), String[])
+          Set{Tuple{Int,Int}}(), Tuple{Int,Int,V3,V3}[], Corner[], NTuple{4,Int}[], Dict{Tuple{Int,Int},String}(), String[], bsp.lumps[L_LM], LmBlock[], Dict{Tuple{Int,Int},Vector{NTuple{3,Float64}}}(), Tuple{Int,Int,V3,V3}[], SeamRec[])
 end
 
 inc!(bv::Bevel, k::String, v=1) = (bv.stats[k] = get(bv.stats, k, 0.0) + v; nothing)
@@ -503,7 +554,9 @@ function build_groups!(bv::Bevel)
             inc!(bv, "rej_angle"); continue
         end
         if !(vdot(fb.n, fa.centroid) - fb.d < -0.05 && vdot(fa.n, fb.centroid) - fa.d < -0.05)
-            inc!(bv, "rej_concave"); continue
+            inc!(bv, "rej_concave")
+            push!(bv.concave, (fa.si, fb.si, pa, pb))
+            continue
         end
         ia, ib = plane_id(fa), plane_id(fb)
         if ia > ib

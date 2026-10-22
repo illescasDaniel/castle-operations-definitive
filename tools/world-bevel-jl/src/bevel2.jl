@@ -345,6 +345,7 @@ function find_wall_ends!(bv::Bevel, order::Vector{Int})
                 end
             end
             gr.wall[e+1] = true
+            gr.wall_fi[e+1] = Int[fl[i].si for i in m]
             best = m[1]
             bd = vdot(FN[m[1]], u)
             for i in m[2:end]
@@ -594,8 +595,311 @@ function drop_overlapping!(bv::Bevel, order::Vector{Int})
     end
 end
 
+# --- texture orientation (P7) ------------------------------------------------------------------------------------------
+"st derivative of face f along the 3D vector e (in the face plane)."
+@inline function st_deriv(f::Face, e::V3)::NTuple{2,Float64}
+    a = vdot(e, f.u); b = vdot(e, f.v)
+    F = f.fit
+    (a * F[1, 1] + b * F[2, 1], a * F[1, 2] + b * F[2, 2])
+end
+
+der8(c) = (c.a0..., c.c0..., c.a1..., c.c1...)
+
+struct SeamCls
+    cls::Symbol      # :compat :mirror :along :scale :rot :diff
+    ax::Int          # along-edge texture axis (1 = s, 2 = t), 0 = rotated
+    pa::Int          # sign product wanted for the along axis (sigma_A * sigma_B)
+    pc::Int          # same for the across axis
+    ratio::Float64   # worst scale ratio (>= 1)
+    a0::NTuple{2,Float64}; c0::NTuple{2,Float64}; a1::NTuple{2,Float64}; c1::NTuple{2,Float64}
+end
+
+"Classify the texture continuity across the edge (direction d) between faces fa and fb; wA / wB point from the edge into each face."
+function seam_class(fa::Face, fb::Face, d::V3, wA::V3, wB::V3)::SeamCls
+    aA = st_deriv(fa, d); cA = st_deriv(fa, -wA)
+    aB = st_deriv(fb, d); cB = st_deriv(fb, wB)
+    mk(c, ax=0, pa=1, pc=1, r=1.0) = SeamCls(c, ax, pa, pc, r, aA, cA, aB, cB)
+    fa.shader != fb.shader && return mk(:diff)
+    dom(v) = abs(v[1]) >= abs(v[2]) ? 1 : 2
+    axis_ok(v, ax) = abs(v[3-ax]) <= 0.25 * abs(v[ax])
+    ax = dom(aA)
+    if dom(aB) != ax || !axis_ok(aA, ax) || !axis_ok(aB, ax) || !axis_ok(cA, 3 - ax) || !axis_ok(cB, 3 - ax) ||
+       min(abs(aA[ax]), abs(aB[ax]), abs(cA[3-ax]), abs(cB[3-ax])) < 1e-9
+        return mk(:rot)
+    end
+    ax2 = 3 - ax
+    pa = sign(aA[ax]) == sign(aB[ax]) ? 1 : -1
+    pc = sign(cA[ax2]) == sign(cB[ax2]) ? 1 : -1
+    r1 = abs(aA[ax]) / abs(aB[ax]); r2 = abs(cA[ax2]) / abs(cB[ax2])
+    ratio = max(r1, 1 / r1, r2, 1 / r2)
+    cls = pa == -1 ? :along : pc == -1 ? :mirror : ratio > 1.15 ? :scale : :compat
+    mk(cls, ax, pa, pc, ratio)
+end
+
+"Edge frame of a bevelled group for the seam test: faces and the inward directions."
+function group_seam(bv::Bevel, gr::Group)
+    fa, fb = face(bv, gr.fA.keys[1]), face(bv, gr.fB.keys[1])
+    fa, fb, gr.d, gr.wA, gr.wB
+end
+
+"Edge frame of a concave pair."
+function concave_seam(bv::Bevel, sa::Int, sb::Int, p0::V3, p1::V3)
+    fa, fb = face(bv, sa), face(bv, sb)
+    d = unit(p1 - p0)
+    wA = unit(vcross(d, fa.n)); vdot(wA, fa.centroid - p0) < 0 && (wA = -wA)
+    wB = unit(vcross(d, fb.n)); vdot(wB, fb.centroid - p0) < 0 && (wB = -wB)
+    fa, fb, d, wA, wB
+end
+
+"Class table (by seam length) as a Dict, from the seam records (`which` = :cls0 or :cls)."
+function class_table(bv::Bevel, which::Symbol)
+    tab = Dict{Symbol,Float64}()
+    for r in bv.seams
+        tab[getfield(r, which)] = get(tab, getfield(r, which), 0.0) + r.len
+    end
+    tab
+end
+
+function flip_face!(f::Face, flips::NTuple{2,Int})
+    for i in 1:length(f.A)
+        a = f.A[i]
+        f.A[i] = (a[1], a[2], a[3], flips[1] * a[4], flips[2] * a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14])
+    end
+    flips[1] < 0 && (f.fit[:, 1] .*= -1)
+    flips[2] < 0 && (f.fit[:, 2] .*= -1)
+end
+
+function face_area(f::Face)
+    s = 0.0
+    for t in f.tris
+        s += 0.5 * tri_area2(axyz(f.A[t[1]]), axyz(f.A[t[2]]), axyz(f.A[t[3]]))
+    end
+    s
+end
+
+"""
+P7: choose an independent +-1 flip of the s and t axes for every same-shader component so that textures continue (do not mirror)
+across bevelled and concave seams. Signed-graph problem per axis: maximum spanning tree for the initial labelling, then greedy
+single-node improvement; unanchored connected groups keep the larger-area side unflipped. Fills `bv.seams`.
+"""
+function orient_components!(bv::Bevel)
+    empty!(bv.seams)
+    par = Dict{Int,Int}()
+    function find(x)
+        while get!(par, x, x) != x
+            par[x] = par[par[x]]
+            x = par[x]
+        end
+        x
+    end
+    for (a_, b_) in bv.coplanar_pairs
+        face(bv, a_).shader == face(bv, b_).shader && (par[find(a_)] = find(b_))
+    end
+    # seams
+    seams = Any[]   # (gid, kind weight, fa, fb, d, wA, wB, len)
+    for (gid, gr) in enumerate(bv.groups)
+        gr.ok || continue
+        fa, fb, d, wA, wB = group_seam(bv, gr)
+        push!(seams, (gid, 2.0, fa, fb, d, wA, wB, gr.hi - gr.lo, gr.P0 + d * (0.5 * (gr.lo + gr.hi))))
+    end
+    for (sa, sb, p0, p1) in bv.concave
+        face(bv, sa).bad && continue
+        face(bv, sb).bad && continue
+        fa, fb, d, wA, wB = concave_seam(bv, sa, sb, p0, p1)
+        len = vnorm(p1 - p0)
+        len < 1.0 && continue
+        push!(seams, (0, 1.0, fa, fb, d, wA, wB, len, 0.5 * (p0 + p1)))
+    end
+    skip_re = isempty(bv.a.flip_skip) ? nothing : Regex(bv.a.flip_skip, "i")
+    nodes = Dict{Int,Int}()    # component root -> index
+    for f in bv.flist
+        get!(nodes, find(f.si), length(nodes) + 1)
+    end
+    nn = length(nodes)
+    fixed = falses(nn)
+    area = zeros(nn)
+    for f in bv.flist
+        k = nodes[find(f.si)]
+        area[k] += f.bad ? 0.0 : face_area(f)
+        (!bv.a.flip || (skip_re !== nothing && occursin(skip_re, last(split(f.name, '/')))) || f.bad) && (fixed[k] = true)
+    end
+    cls0 = SeamCls[]
+    for sm in seams
+        push!(cls0, seam_class(sm[3], sm[4], sm[5], sm[6], sm[7]))
+    end
+    # edges per axis: (na, nb, p, w)
+    E = [Tuple{Int,Int,Int,Float64}[] for _ in 1:2]
+    for (k, sm) in enumerate(seams)
+        c = cls0[k]
+        c.ax == 0 && continue
+        na, nb = nodes[find(sm[3].si)], nodes[find(sm[4].si)]
+        na == nb && continue
+        w = sm[2] * sm[8]
+        push!(E[c.ax], (na, nb, c.pa, w))
+        push!(E[3-c.ax], (na, nb, c.pc, w))
+    end
+    sig = ones(Int, nn, 2)
+    for ax in 1:2
+        edges = E[ax]
+        isempty(edges) && continue
+        sg = solve_signed(nn, edges, fixed, area)
+        sig[:, ax] = sg
+    end
+    nflip = 0; flen = 0.0
+    byroot = Dict{Int,Vector{Int}}()
+    for f in bv.flist
+        push!(get!(byroot, find(f.si), Int[]), f.si)
+    end
+    for (root, k) in nodes
+        fl = (sig[k, 1], sig[k, 2])
+        fl == (1, 1) && continue
+        nflip += 1
+        for si in byroot[root]
+            flip_face!(face(bv, si), fl)
+            inc!(bv, "flip_faces")
+        end
+    end
+    bv.stats["flip_components"] = nflip
+    empty!(SEAM_CLS_OF); empty!(SEAM_OF)
+    # records with classes after the flips
+    for (k, sm) in enumerate(seams)
+        c1 = seam_class(sm[3], sm[4], sm[5], sm[6], sm[7])
+        na, nb = nodes[find(sm[3].si)], nodes[find(sm[4].si)]
+        push!(bv.seams, SeamRec(sm[1], sm[8], sm[3].si, sm[4].si, sm[3].name, sm[4].name, cls0[k].cls, c1.cls,
+                                (sig[na, 1], sig[na, 2]), (sig[nb, 1], sig[nb, 2]), NaN, 1.0, NaN, der8(cls0[k]), der8(c1), sm[9]))
+    end
+    for r in bv.seams
+        r.gid > 0 && (SEAM_CLS_OF[r.gid] = r.cls; SEAM_OF[r.gid] = r)
+    end
+    nothing
+end
+
+"Leftover st offset (period units, fractional part) at each seam centre after alignment: bevelled seams use the unfolded points like align_textures!."
+function seam_resid!(bv::Bevel)
+    for r in bv.seams
+        fa, fb = face(bv, r.fa), face(bv, r.fb)
+        fa.shader == fb.shader || continue
+        if r.gid > 0
+            gr = bv.groups[r.gid]
+            th = acos(max(-1.0, min(1.0, vdot(fa.n, fb.n))))
+            half = th > 1e-3 ? gr.r * (th / 2) / tan(th / 2) : gr.r
+            ins = V3[]
+            for f_ in (fa, fb)
+                w = vcross(f_.n, gr.d); w = w / vnorm(w)
+                vdot(f_.centroid - gr.P0, w) < 0 && (w = -w)
+                push!(ins, (gr.r - half) * w)
+            end
+            sa = eval_map(fa, r.pm + ins[1]); sb = eval_map(fb, r.pm + ins[2])
+        else
+            sa = eval_map(fa, r.pm); sb = eval_map(fb, r.pm)
+        end
+        d1 = sa[1] - sb[1]; d2 = sa[2] - sb[2]
+        r.resid = max(abs(d1 - round(d1)), abs(d2 - round(d2)))
+    end
+end
+
+"Maximise the weight of satisfied sign constraints sigma_a * sigma_b = p. Fixed nodes keep +1. Returns +-1 per node."
+function solve_signed(nn::Int, edges::Vector{Tuple{Int,Int,Int,Float64}}, fixed::BitVector, area::Vector{Float64})::Vector{Int}
+    adj = [Int[] for _ in 1:nn]
+    for (e, (a, b, _p, _w)) in enumerate(edges)
+        push!(adj[a], e); push!(adj[b], e)
+    end
+    # maximum spanning forest (Kruskal), fixed nodes joined to a virtual anchor so their +1 is honoured
+    par = collect(1:nn + 1)
+    function fnd(x)
+        while par[x] != x
+            par[x] = par[par[x]]; x = par[x]
+        end
+        x
+    end
+    for k in 1:nn
+        fixed[k] && (par[fnd(k)] = fnd(nn + 1))
+    end
+    order = sortperm([-e[4] for e in edges])
+    tree = Vector{Vector{Int}}(undef, nn); for k in 1:nn; tree[k] = Int[]; end
+    for e in order
+        a, b = edges[e][1], edges[e][2]
+        ra, rb = fnd(a), fnd(b)
+        ra == rb && continue
+        par[ra] = rb
+        push!(tree[a], e); push!(tree[b], e)
+    end
+    sg = zeros(Int, nn)
+    # label each tree component starting from fixed nodes, then from the largest-area node
+    function label!(root)
+        sg[root] != 0 && return
+        sg[root] = 1
+        stack = [root]
+        while !isempty(stack)
+            a = pop!(stack)
+            for e in tree[a]
+                x, y, p, _w = edges[e]
+                o = x == a ? y : x
+                sg[o] != 0 && continue
+                sg[o] = sg[a] * p
+                push!(stack, o)
+            end
+        end
+    end
+    for k in 1:nn
+        fixed[k] && sg[k] == 0 && label!(k)
+    end
+    # a tree component with several fixed nodes may conflict: the later fixed ones are reset to +1 below (counted as unsatisfied)
+    for k in sortperm(-area)
+        sg[k] == 0 && label!(k)
+    end
+    for k in 1:nn
+        fixed[k] && (sg[k] = 1)
+    end
+    # greedy improvement
+    for iter in 1:20
+        changed = false
+        for k in 1:nn
+            fixed[k] && continue
+            gain = 0.0
+            for e in adj[k]
+                x, y, p, w = edges[e]
+                o = x == k ? y : x
+                cur = sg[k] * sg[o] == p
+                gain += cur ? -w : w
+            end
+            if gain > 1e-9
+                sg[k] = -sg[k]; changed = true
+            end
+        end
+        changed || break
+    end
+    # unanchored connected groups: flip the side with the smaller area
+    comp = zeros(Int, nn)
+    nc = 0
+    for k in 1:nn
+        (comp[k] != 0 || isempty(adj[k])) && continue
+        nc += 1
+        comp[k] = nc
+        st = [k]; anch = fixed[k]; aneg = 0.0; apos = 0.0
+        members = Int[]
+        while !isempty(st)
+            a = pop!(st)
+            push!(members, a)
+            fixed[a] && (anch = true)
+            sg[a] < 0 ? (aneg += area[a]) : (apos += area[a])
+            for e in adj[a]
+                x, y = edges[e][1], edges[e][2]
+                o = x == a ? y : x
+                comp[o] == 0 && (comp[o] = nc; push!(st, o))
+            end
+        end
+        if !anch && aneg > apos
+            for a in members
+                sg[a] = -sg[a]
+            end
+        end
+    end
+    sg
+end
+
 # --- UV alignment ------------------------------------------------------------------------------------------------------
-function align_textures!(bv::Bevel)
+function align_textures_greedy!(bv::Bevel)
     par = Dict{Int,Int}()
     function find(x)
         while get!(par, x, x) != x
@@ -679,5 +983,168 @@ function align_textures!(bv::Bevel)
         inc!(bv, "align_shifted")
         inc!(bv, "align_shift_sum", max(abs(off[1]), abs(off[2])))
         inc!(bv, "align_faces", length(members[mov]))
+    end
+end
+
+"Global least-squares alignment: one st offset per coplanar-same-shader component, integer lifts from a spanning tree, re-rounded and re-solved."
+function align_textures!(bv::Bevel)
+    par = Dict{Int,Int}()
+    function find(x)
+        while get!(par, x, x) != x
+            par[x] = par[par[x]]
+            x = par[x]
+        end
+        x
+    end
+    for (a_, b_) in bv.coplanar_pairs
+        if face(bv, a_).shader == face(bv, b_).shader
+            par[find(a_)] = find(b_)
+        end
+    end
+    members = Dict{Int,Vector{Int}}()
+    for f in bv.flist
+        push!(get!(members, find(f.si), Int[]), f.si)
+    end
+    function shift!(c, off)
+        for si in members[c]
+            f = face(bv, si)
+            for i in 1:length(f.A)
+                a = f.A[i]
+                f.A[i] = (a[1], a[2], a[3], a[4] + off[1], a[5] + off[2], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14])
+            end
+            f.fit[3, 1] += off[1]
+            f.fit[3, 2] += off[2]
+        end
+    end
+    # edges: (ca, cb, r = st(A) - st(B) at the seam, weight = run length)
+    EA = Int[]; EB = Int[]; ER = NTuple{2,Float64}[]; EW = Float64[]
+    for gr in bv.groups
+        gr.ok || continue
+        fa, fb = face(bv, gr.fA.keys[1]), face(bv, gr.fB.keys[1])
+        ca, cb = find(fa.si), find(fb.si)
+        ca == cb && (inc!(bv, "align_same_component"); continue)
+        if fa.shader != fb.shader
+            inc!(bv, "align_other_shader"); continue
+        end
+        ga = sqrt(abs(fa.fit[1, 1] * fa.fit[2, 2] - fa.fit[1, 2] * fa.fit[2, 1]))
+        gb = sqrt(abs(fb.fit[1, 1] * fb.fit[2, 2] - fb.fit[1, 2] * fb.fit[2, 1]))
+        if min(ga, gb) < 1e-9 || max(ga, gb) / min(ga, gb) > 1.5
+            inc!(bv, "align_scale"); continue
+        end
+        th = acos(max(-1.0, min(1.0, vdot(fa.n, fb.n))))
+        half = th > 1e-3 ? gr.r * (th / 2) / tan(th / 2) : gr.r
+        ins = V3[]
+        for f_ in (fa, fb)
+            w = vcross(f_.n, gr.d)
+            w = w / vnorm(w)
+            vdot(f_.centroid - gr.P0, w) < 0 && (w = -w)
+            push!(ins, (gr.r - half) * w)
+        end
+        res = NTuple{2,Float64}[]
+        for tf in (0.2, 0.5, 0.8)
+            pm = gr.P0 + gr.d * (gr.lo + tf * (gr.hi - gr.lo))
+            sa = eval_map(fa, pm + ins[1])
+            sb = eval_map(fb, pm + ins[2])
+            push!(res, (sa[1] - sb[1], sa[2] - sb[2]))
+        end
+        d = res[2]
+        drift = 0.0
+        for r_ in res, k in 1:2
+            x = r_[k] - d[k]
+            drift = max(drift, abs(x - round(x)))
+        end
+        if drift > 0.15
+            inc!(bv, "align_drift"); continue
+        end
+        push!(EA, ca); push!(EB, cb); push!(ER, d); push!(EW, gr.hi - gr.lo)
+    end
+    ne = length(EA)
+    adj = Dict{Int,Vector{Int}}()
+    for e in 1:ne
+        push!(get!(adj, EA[e], Int[]), e)
+        push!(get!(adj, EB[e], Int[]), e)
+    end
+    off = Dict{Int,NTuple{2,Float64}}()
+    comp = Dict{Int,Int}()    # node -> root of its edge-graph component
+    nodes_of = Dict{Int,Vector{Int}}()
+    for root in sort(collect(keys(adj)))
+        haskey(off, root) && continue
+        off[root] = (0.0, 0.0); comp[root] = root
+        nodes_of[root] = [root]
+        queue = [root]
+        qi = 1
+        while qi <= length(queue)
+            a = queue[qi]; qi += 1
+            for e in adj[a]
+                other = EA[e] == a ? EB[e] : EA[e]
+                haskey(off, other) && continue
+                oa = off[a]; r = ER[e]
+                # want st_A + o_A == st_B + o_B  ->  o_B = o_A + r
+                off[other] = EA[e] == a ? (oa[1] + r[1], oa[2] + r[2]) : (oa[1] - r[1], oa[2] - r[2])
+                comp[other] = root
+                push!(nodes_of[root], other)
+                push!(queue, other)
+            end
+        end
+    end
+    # integer lifts re-rounded; LS solve with Gauss-Seidel
+    kk = [(0.0, 0.0) for _ in 1:ne]
+    EW0 = copy(EW)
+    for iter in 1:10
+        for e in 1:ne
+            oa, ob, r = off[EA[e]], off[EB[e]], ER[e]
+            kk[e] = (round(r[1] + oa[1] - ob[1]), round(r[2] + oa[2] - ob[2]))
+        end
+        for sweep in 1:200
+            for (n, es) in adj
+                sx = sy = sw = 0.0
+                for e in es
+                    w = EW[e]; r = ER[e]; k = kk[e]
+                    # a = EA: o_A - o_B = k - r
+                    if EA[e] == n
+                        ob = off[EB[e]]
+                        sx += w * (ob[1] + k[1] - r[1]); sy += w * (ob[2] + k[2] - r[2])
+                    else
+                        oa = off[EA[e]]
+                        sx += w * (oa[1] - k[1] + r[1]); sy += w * (oa[2] - k[2] + r[2])
+                    end
+                    sw += w
+                end
+                off[n] = (sx / sw, sy / sw)
+            end
+        end
+        # IRLS: edges that stay inconsistent (cycle conflicts) lose weight so they stop dragging the consistent ones
+        for e in 1:ne
+            oa, ob, r = off[EA[e]], off[EB[e]], ER[e]
+            x1 = r[1] + oa[1] - ob[1]; x2 = r[2] + oa[2] - ob[2]
+            rs = max(abs(x1 - round(x1)), abs(x2 - round(x2)))
+            EW[e] = EW0[e] / max(1.0, rs / 0.02)^2
+        end
+    end
+    EW .= EW0
+    tot = 0.0; good = 0.0
+    for e in 1:ne
+        oa, ob, r = off[EA[e]], off[EB[e]], ER[e]
+        x1 = r[1] + oa[1] - ob[1]; x2 = r[2] + oa[2] - ob[2]
+        resid = max(abs(x1 - round(x1)), abs(x2 - round(x2)))
+        tot += EW[e]
+        if resid < 0.05
+            good += EW[e]
+        else
+            inc!(bv, "align_cycle_skips")
+        end
+        inc!(bv, "align_edges")
+    end
+    bv.stats["align_len_total"] = tot
+    bv.stats["align_len_good"] = good
+    for (root, ns) in nodes_of
+        o0 = off[root]
+        for n in ns
+            o = off[n]
+            shift!(n, (o[1] - floor(o[1] + 0.5), o[2] - floor(o[2] + 0.5)))
+            inc!(bv, "align_shifted")
+            inc!(bv, "align_faces", length(members[n]))
+            inc!(bv, "align_shift_sum", max(abs(o[1] - floor(o[1] + 0.5)), abs(o[2] - floor(o[2] + 0.5))))
+        end
     end
 end

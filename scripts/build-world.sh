@@ -22,7 +22,7 @@ fail=()
 for m in "${maps[@]}"; do
 	echo "== $m"
 	tmp="$OUT/codmod_bevel_$m.pk3.tmp"
-	if "${RUN[@]}" --map "$m" --uv-mode align --min-angle 15 --smooth-models --pk3 "$tmp" >"$ROOT/benchmarks/world-$m.log" 2>&1; then
+	if "${RUN[@]}" --map "$m" --uv-mode align --min-angle 15 --smooth-models --stats --pk3 "$tmp" >"$ROOT/benchmarks/world-$m.log" 2>&1; then
 		mv -f "$tmp" "$OUT/codmod_bevel_$m.pk3"
 	else
 		echo "   FAILED (see benchmarks/world-$m.log)"

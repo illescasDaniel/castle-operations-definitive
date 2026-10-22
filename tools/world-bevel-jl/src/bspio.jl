@@ -109,6 +109,12 @@ shader_names(b::Bsp) = [cstr(s.name) for s in shaders(b)]
 with_geometry(s::Surface; typ=s.typ, fv=s.fv, nv=s.nv, fi=s.fi, ni=s.ni) =
     Surface(s.shader, s.fog, Int32(typ), Int32(fv), Int32(nv), Int32(fi), Int32(ni), s.lmn, s.lmx, s.lmy, s.lmw, s.lmh, s.org, s.vecs, s.pw, s.ph)
 
+with_lm(s::Surface; lmn=s.lmn, lmx=s.lmx, lmy=s.lmy) =
+    Surface(s.shader, s.fog, s.typ, s.fv, s.nv, s.fi, s.ni, Int32(lmn), Int32(lmx), Int32(lmy), s.lmw, s.lmh, s.org, s.vecs, s.pw, s.ph)
+
+with_shader(s::Surface, shader) =
+    Surface(Int32(shader), s.fog, s.typ, s.fv, s.nv, s.fi, s.ni, s.lmn, s.lmx, s.lmy, s.lmw, s.lmh, s.org, s.vecs, s.pw, s.ph)
+
 "Copy of `b` whose vertex / index / surface lumps are replaced."
 function replace_lumps(b::Bsp, V::Vector{DrawVert}, I::Vector{Int32}, S::Vector{Surface})
     out = Bsp(copy(b.table), copy(b.lumps), copy(b.order), copy(b.pad))

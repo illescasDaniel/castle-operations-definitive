@@ -252,6 +252,94 @@ def smooth_surface(s, o=Opts):
     return (Pn, Nn, uvn, ot), info
 
 
+LID_TOL = 0.25    # a copy helper's frame-0 vertices lie within this of a skin vertex (vanilla lids sit 2-4/64 off, drz head3 up to 0.13)
+LID_LIFT = 0.03   # copy helpers are lifted this far along the smoothed skin normal (vanilla: ~3/64 along x) so they win the depth test
+
+
+def seg_dist2(p, a, b):
+    ab = b - a
+    t = np.clip(((p - a) * ab).sum(-1) / np.maximum((ab * ab).sum(-1), 1e-18), 0, 1)
+    return ((p - (a + t[..., None] * ab)) ** 2).sum(-1)
+
+
+def point_surface_dist(pts, V, tris):
+    """Min distance from each point (K,3) to the triangle soup (V (nv,3), tris (T,3)); brute force."""
+    A, B, C = (V[tris[:, i]][None] for i in range(3))
+    p = pts[:, None, :]
+    n = np.cross(B - A, C - A)
+    nn = (n * n).sum(-1)
+    t = ((p - A) * n).sum(-1) / np.maximum(nn, 1e-18)
+    proj = p - t[..., None] * n
+    v0, v1, v2 = B - A, C - A, proj - A
+    d00, d01, d11 = (v0 * v0).sum(-1), (v0 * v1).sum(-1), (v1 * v1).sum(-1)
+    d20, d21 = (v2 * v0).sum(-1), (v2 * v1).sum(-1)
+    den = np.maximum(d00 * d11 - d01 * d01, 1e-18)
+    bv, bw = (d11 * d20 - d01 * d21) / den, (d00 * d21 - d01 * d20) / den
+    inside = (bv >= 0) & (bw >= 0) & (bv + bw <= 1) & (nn > 1e-18)
+    d2 = np.minimum(np.minimum(seg_dist2(p, A, B), seg_dist2(p, B, C)), seg_dist2(p, C, A))
+    d2 = np.where(inside, np.minimum(d2, (t * t) * nn), d2)
+    return np.sqrt(d2.min(axis=1))
+
+
+def lid_max_dist(Pl, used, Pm, mt):
+    """Max over frames of the distance of helper vertices `used` (indices into Pl (F,n,3)) to the smoothed main surface."""
+    return max(float(point_surface_dist(Pl[f][used], Pm[f], mt).max()) for f in range(Pl.shape[0]))
+
+
+def copy_helper(s, b, Pm, Nm, ot):
+    """Helper surface `s` whose triangles are copies of triangles of main surface `b` (eyelids 'h_blink'; the vanilla copy
+    sits a few 1/64 off the skin, so vertices are matched to the nearest skin vertex within LID_TOL):
+    emit the 4 Loop children of each parent triangle with the helper's own winding, positions/normals from the smoothed
+    main surface in every frame (lids stay coplanar with the skin, also in the blink frames). UVs: original vertices keep
+    the helper UV, new edge vertices average the helper UVs of the edge ends. None if not an exact copy."""
+    key = lambda p: tuple(np.rint(p * 64.0).astype(np.int64))
+    bq = {}
+    for k, t in enumerate(b.tris):
+        bq.setdefault(frozenset(key(b.P[0][i]) for i in t), []).append(k)
+    near = np.linalg.norm(s.P[0][:, None] - b.P[0][None], axis=2)
+    if near.min(axis=1).max() > LID_TOL:
+        return None
+    hq = [key(b.P[0][j]) for j in near.argmin(axis=1)]   # helper vertex -> position key of the skin vertex under it
+    verts, vpos, vnrm, vuv = {}, [], [], []   # helper-output extras
+    nh = s.nv
+    pos_src = {}   # helper original vertex -> main vertex index
+    mid_src, mid_uv = {}, {}
+    out_tris = []
+    for tri in s.tris:
+        ks = [hq[int(i)] for i in tri]
+        cand = bq.get(frozenset(ks))
+        if not cand or len(set(ks)) != 3:
+            return None
+        k = cand[0]
+        bt = [int(i) for i in b.tris[k]]
+        bk = [key(b.P[0][i]) for i in bt]
+        slot = [bk.index(x) for x in ks]   # main slot of helper corner j
+        hv = [int(i) for i in tri]
+        for j in range(3):
+            pos_src[hv[j]] = bt[slot[j]]
+        m = {frozenset((0, 1)): int(ot[4 * k + 3][0]), frozenset((1, 2)): int(ot[4 * k + 3][1]), frozenset((2, 0)): int(ot[4 * k + 3][2])}
+        mids = []
+        for j in range(3):
+            a, c = hv[j], hv[(j + 1) % 3]
+            ek = (min(a, c), max(a, c))
+            if ek not in mid_src:
+                mid_src[ek] = (nh + len(mid_src), m[frozenset((slot[j], slot[(j + 1) % 3]))])
+            mids.append(mid_src[ek][0])
+        m01, m12, m20 = mids
+        out_tris += [(hv[0], m01, m20), (hv[1], m12, m01), (hv[2], m20, m12), (m01, m12, m20)]
+    F = s.P.shape[0]
+    P, N = np.empty((F, nh + len(mid_src), 3)), np.empty((F, nh + len(mid_src), 3))
+    P[:, :nh], N[:, :nh] = s.P, s.N
+    for h, mv in pos_src.items():
+        P[:, h], N[:, h] = Pm[:, mv] + LID_LIFT * Nm[:, mv], Nm[:, mv]
+    uv = np.empty((nh + len(mid_src), 2))
+    uv[:nh] = s.st
+    for (a, c), (idx, mv) in mid_src.items():
+        P[:, idx], N[:, idx] = Pm[:, mv] + LID_LIFT * Nm[:, mv], Nm[:, mv]
+        uv[idx] = 0.5 * (s.st[a] + s.st[c])
+    return P, N, uv, np.array(out_tris, np.int64), np.array(sorted(pos_src))
+
+
 def smooth_model(m, name=""):
     """Smooth every surface. Heads (name contains '/head'): small helper surfaces (teeth, eyelids, mouth) are not
     subdivided; they ride on the displacement of the nearest vertex of the main surface so they do not poke through."""
@@ -275,9 +363,19 @@ def smooth_model(m, name=""):
             P, N, uv, tris = s.P, s.N, s.st, s.tris
             if head and i != big and infos[i]["reason"].startswith("head helper") and res[big] is not None:
                 b = m.surfs[big]
-                disp = res[big][0][:, :b.nv] - b.P
+                Pm, Nm, _, ot = res[big]
+                disp = Pm[:, :b.nv] - b.P
                 near = np.argmin(((s.P[0][:, None, :] - b.P[0][None]) ** 2).sum(-1), axis=1)
                 P = s.P + disp[:, near]
+                cp = copy_helper(s, b, Pm, Nm, ot)
+                mt = np.asarray(ot)
+                if cp is not None:
+                    infos[i].update(reason="head helper (skin copy of %s)" % b.name, after_v=len(cp[0][0]), after_t=len(cp[3]),
+                                    lid_before=lid_max_dist(P, np.arange(s.nv), Pm, mt))
+                    P, N, uv, tris = cp[:4]
+                    infos[i]["lid_after"] = lid_max_dist(P, cp[4], Pm, mt)
+                else:
+                    infos[i]["lid_before"] = lid_max_dist(P, np.arange(s.nv), Pm, mt)
         out.append(pack_surface(s, P, N, uv, np.asarray(tris)))
     d = m.d
     body = bytearray(d[:m.ofs_s])
@@ -312,6 +410,12 @@ def cmd_stats(pattern):
             tv0 += info["before_v"]; tv1 += info["after_v"]
             print("%-48s %-16s frames %3d verts %5d -> %5d tris %5d -> %5d %s maxdisp %.2f" % (
                 n, s.name[:16], m.nf, info["before_v"], info["after_v"], info["before_t"], info["after_t"], info["reason"], info.get("maxdisp", 0)))
+        if "/head" in n:
+            for s, i in zip(m.surfs, smooth_model(m, n)[1]):
+                if "lid_before" in i:
+                    print("%-48s %-16s HELPER %s: max dist to smoothed main surface over frames: riding %.4f -> %.4f%s" % (
+                        n, s.name[:16], i["reason"], i["lid_before"], i.get("lid_after", i["lid_before"]),
+                        "  WARNING not coplanar" if i.get("lid_after", i["lid_before"]) > 0.05 and "skin copy" in i["reason"] else ""))
     print("%d models, verts %d -> %d" % (len(files), tv0, tv1))
 
 

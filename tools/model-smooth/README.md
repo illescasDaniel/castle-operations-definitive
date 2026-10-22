@@ -54,5 +54,13 @@ Tags, frame bounds, shaders and original UVs are kept. Muzzle flashes (`*flash*`
 Output `run/codmod/codmod_smooth_mdc.pk3` is private (git-ignored). Weapons: 189 files, verts 28.6k -> ~85k.
 
 Head models (`/head` in the path): helper surfaces of at most 40 triangles (teeth, eyelids, mouth) are not subdivided and
-follow the displacement of the nearest vertex of the main surface so they do not poke through. Pack used in game:
+follow the displacement of the nearest vertex of the main surface so they do not poke through. Exception, detected by
+position (not name): a helper whose triangles all sit on triangles of the main surface (eyelids `h_blink`, a copy of the eye
+polygons that rend2 draws on top while blinking) is instead emitted as the 4 Loop children of each parent triangle, with the
+helper's winding and UVs (new edge vertices average the helper UVs of the edge ends) and with positions/normals taken from
+the smoothed main surface in every frame, lifted 0.03 along the normal (`LID_LIFT`, vanilla is ~3/64 off the skin) so the lid
+stays coplanar and wins the depth test (riding left a dark hard-edged bar over the eye during blinks and on corpses).
+Vanilla lids are not bit-exact copies: vertices match the nearest skin vertex within `LID_TOL` 0.25. `--stats` on head models
+prints, per helper, the max distance of its vertices to the smoothed main surface over all frames (riding -> new; skin
+copies should read 0.0300 = the lift). Helpers whose triangulation differs from the skin (inge `head.mdc`) keep riding. Pack used in game:
 `--smooth 'models/weapons2/*,models/players/*/head,models/players/*/head2,models/players/*/acc/*,models/powerups/*,models/mapobjects/*,models/furniture/*,models/ammo/*,models/flags/*'` (481 files, ~30 MB raw).

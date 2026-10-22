@@ -129,7 +129,7 @@ have correct motion vectors. Without them their history is rejected and they fal
 - **3-obj (~1-2 sessions):** the velocity buffer below. This is what makes the cages, doors and the viewmodel
   benefit.
 
-**Implemented (3-cam, 2026-10-22, uncommitted).** `r_aa 8` = "SMAA T2x" (SMAA High + temporal; sets `r_smaa 3`,
+**Implemented (3-cam, 2026-10-22, uncommitted).** `r_aa 8` = "SMAA T2x (Recommended)" in the menu (menu is now Off / SMAA 1x = `r_aa 4` / T2x / MSAA 2-8x; legacy `r_aa 1-3` act as 4) (SMAA High + temporal; sets `r_smaa 3`,
 `r_smaaTemporal 1`, MSAA 0). Main world view only (`RE_RenderScene`, not portals/shadows/cubemaps/world-less UI
 scenes; needs `r_depthPrepass`, no MSAA, full-size viewport) gets a diagonal +-`r_smaaJitter` px (0.25) projection
 shift, alternating per rendered frame (`R_RenderView`, after the frustum is built). `viewParms_t` carries the

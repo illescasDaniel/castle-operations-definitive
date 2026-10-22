@@ -139,11 +139,11 @@ Note GPU idle (earlier noisy numbers came from background GPU work). Take refere
 
 ## Update: single `r_aa` setting (2026-10-12)
 
-The menu has one **Anti-Aliasing** row on the new cvar `r_aa`: 0 Off, 1-4 SMAA Low/Medium/High/Ultra, 5-7 MSAA 2x/4x/8x.
-SMAA levels are quality presets (edge threshold, search steps, diagonal/corner detection), all 1 sample per pixel, so
-they are not labelled x1/x2. `R_ApplyAA` (`tr_init.c`) translates `r_aa` into `r_smaa` (live) and
+The menu has one **Anti-Aliasing** row on the new cvar `r_aa`: 0 Off, 4 SMAA 1x, 8 SMAA T2x (Recommended), 5-7 MSAA 2x/4x/8x.
+Benchmarks showed SMAA Low/Medium/High/Ultra cost the same, so the menu only offers one SMAA 1x level (the Ultra preset,
+`r_smaa 4`). Legacy saved values 1-3 act as 4 and `R_ApplyAA` rewrites them to 4. `R_ApplyAA` (`tr_init.c`) translates `r_aa` into `r_smaa` (live) and
 `r_ext_framebuffer_multisample` (latched, needs Apply/vid_restart); it runs at init and from `RE_BeginFrame` when
-`r_aa` changes. `r_aa -1` (engine default) leaves the two cvars alone. Engine default is `r_aa 0` (no AA, vanilla); codmod's first-launch value `3` is in `codmod_defaults.cfg`. The choice persists in wolfconfig (archived), and `codmod_defaults.cfg` (menu RESET SETTINGS, `--reset-binds`/`--reset-settings`, first launch) resets it together with `com_maxfps`, `com_maxfpsMode` and `r_vsync`. SMAA works without MSAA
+`r_aa` changes. `r_aa -1` (engine default) leaves the two cvars alone. Engine default is `r_aa 0` (no AA, vanilla); codmod's first-launch value `4` is in `codmod_defaults.cfg`. The choice persists in wolfconfig (archived), and `codmod_defaults.cfg` (menu RESET SETTINGS, `--reset-binds`/`--reset-settings`, first launch) resets it together with `com_maxfps`, `com_maxfpsMode` and `r_vsync`. SMAA works without MSAA
 as long as the render-FBO path is on (`r_hdr 1`, pinned by codmod.cfg).
 
 ## Depth predication (`r_smaaPredication`)
@@ -155,7 +155,7 @@ raise it elsewhere, which removes texture speckle and closes broken silhouette e
 
 ## SMAA T2x (`r_aa 8`, camera-only temporal)
 
-`r_aa 8` selects SMAA High plus a temporal resolve (`r_smaaTemporal 1`, MSAA off). The main world view is rendered with a
+`r_aa 8` (menu: SMAA T2x (Recommended)) selects SMAA High (`r_smaa 3`) plus a temporal resolve (`r_smaaTemporal 1`, MSAA off). The main world view is rendered with a
 +-0.25 px diagonal jitter that alternates each frame; after SMAA 1x and tone mapping, `RB_SMAATemporal` reprojects each
 pixel into the previous resolved frame from its depth and the two frames' unjittered view-projection matrices, clamps the
 history sample to the current 3x3 neighborhood (YCoCg) and blends 50/50. Static geometry thereby gets two samples while

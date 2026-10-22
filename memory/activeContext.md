@@ -1,6 +1,10 @@
-_Last updated: 2026-10-21_
+_Last updated: 2026-10-22_
 
 ## Current focus
+
+**SMAA T2x (2026-10-22): done, user-verified in game, committed and pushed (engine 230ce365 + menu follow-up).** `r_aa 8`: jitter + reprojected history + RG16F velocity buffer (props, viewmodel, MDS limbs via `RB_SmaaMdsPrevPositions`). AA menu simplified: Off / SMAA 1x (`r_aa 4`, Ultra, default; saved 1-3 alias to 4) / SMAA T2x (Recommended, 8) / MSAA 2-4-8x (5-7). Bench 2560x1600: SMAA levels cost the same; T2x -5..7% (resolve 0.39 ms; `ssao_apply` 1.3 ms is the biggest pass). Next: decide T2x as default after more play, optional resolve optimisation. Docs: `docs/smaa.md`, `docs/smaa-motion-plan.md`.
+
+**Guard eyes (2026-10-22): fixed, user-confirmed.** `h_blink` eyelids were not coplanar with the Loop-smoothed head; `mdc_smooth.py` now rebuilds skin-copy helpers from the skin subdivision (`copy_helper`, `LID_LIFT` 0.03). Leftover: `inge/head.mdc` still rides (4 lid tris triangulated differently).
 
 **Highlights (2026-10-22): tonemap soft shoulder + bloom retune (threshold 0.8 / intensity 1.8) built/installed, uncommitted, awaiting user check** (sky/windows no longer flat white; `docs/post-effects.md`). Sun shadows `r_sunShadowStable 7` kept (user: no visible difference, fine).
 

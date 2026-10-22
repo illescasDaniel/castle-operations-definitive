@@ -124,7 +124,7 @@ Runs from `run/`:
     or it would overwrite the user's own rebinds every time the game starts.
   - `codmod_binds.cfg` is a **full** bind reset (`unbindall` → `default.cfg` → codmod deltas)
     on first launch, `--reset-binds` (alias `--reset-settings`), menu Defaults / RESET SETTINGS (codmod), or
-    `/cod_resetbinds` (phase 5d). The same file also resets the user-facing display defaults: `r_aa` (SMAA High),
+    `/cod_resetbinds` (phase 5d). The same file also resets the user-facing display defaults: `r_aa` (SMAA 1x),
     `com_maxfps`, `com_maxfpsMode`, `r_vsync`.
 
 ### 1.8 `mod/codmod/codmod.cfg` (initial)

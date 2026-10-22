@@ -73,10 +73,10 @@ You need your own copy of RTCW (Steam). **No game data is included or modified.*
   fade, see [docs/ssao.md](docs/ssao.md)
 - **Bloom and colour grade**, with a soft highlight roll-off so bright skies and windows no longer clip to flat white,
   see [docs/post-effects.md](docs/post-effects.md)
-- **SMAA** anti-aliasing (4 quality levels) as the default, ~18% faster than 2x MSAA in our benchmark; MSAA 2/4/8x
+- **SMAA** anti-aliasing (1x, one quality level) as the default, ~18% faster than 2x MSAA in our benchmark; MSAA 2/4/8x
   still available. One `Anti-Aliasing` menu row drives both. Edges also use scene depth (`r_smaaPredication`) to cut
-  texture speckle. **SMAA T2x (test)** adds a temporal resolve with camera jitter and a per-object velocity buffer
-  (animated props, doors, the viewmodel), experimental and not the default. See [docs/smaa.md](docs/smaa.md) and
+  texture speckle. **SMAA T2x (Recommended)** adds a temporal resolve with camera jitter and a per-object velocity buffer
+  (animated props, doors, the viewmodel). See [docs/smaa.md](docs/smaa.md) and
   [docs/smaa-motion-plan.md](docs/smaa-motion-plan.md)
 - **Flashlight shadows** (see above), plus renderer performance work: GPU pass profiler, removed sync stalls, and a
   fix for a frame-time drop while turning with the mouse. See [docs/performance.md](docs/performance.md)

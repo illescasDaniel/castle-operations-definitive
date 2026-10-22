@@ -1,8 +1,8 @@
-#menu-delta v2 base=ui/system.menu sha256=d47d104834644b5938e758e00fdf87c9fd6dc9eb7ef57347651e946af1e4f191 layer=engine
+#menu-delta v2 base=ui/system.menu sha256=39a53a9b922017aac1662de901493588ba17756a5b832522beae2457365d7629 layer=engine
 @@ 3 7
 +\\ SYSTEM MENU stub â redirects to merged options_menu \\
-@@ 12 1060
-@@ 1061 1067
+@@ 12 1078
+@@ 1079 1085
 +	onOpen { close system_menu ; open options_menu }
 +}
-@@ 1070 1073
+@@ 1088 1091

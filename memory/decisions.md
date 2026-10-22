@@ -2,6 +2,12 @@
 
 Append-only log, newest first. Never rewrite history: if a decision is reversed, add a new entry that says so.
 
+## 2026-10-22: Revisit parallax with AI heights (DeepBump), escape1 first
+
+- **Context:** The 2026-10-09 luma-from-diffuse POM was dropped (weak look, props floated). An Opus architect found rend2 already has POM/relief; missing are real height maps and a robust shader.
+- **Decision:** DeepBump normals -> FFT height integration with plateau normalisation (75th-95th percentile = 1.0, recess only); rewrite the lightall POM (dynamic steps, grazing clamp, distance fade, floor scale, self-shadow, no gl_FragDepth); walls and floors; quality over performance for now; evaluate on a small escape1 batch (`tools/height-bake`, `codmod_height.pk3`) before any other map; the pack's normals may replace plain `_n` if they look good.
+- **Rationale:** Height normalisation was the real cause of floating props; flat depth buffer keeps prepass/shadows/SSAO consistent.
+
 ## 2026-10-22: Adopt agent-guild 1.2.1 without SDD
 
 - **Context:** The repo only had the memory-bank and jev-memory skills. agent-guild adds architect/coder/utility subagents, orchestrator rules (`.claude/development-workflow.md`) and optional SDD (specs, wireframes, `code-grader`).

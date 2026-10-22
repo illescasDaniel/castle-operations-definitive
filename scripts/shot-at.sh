@@ -54,6 +54,8 @@ find "$HOME_CFG/screenshots" -name 'codmod_spot*.tga' -delete
 
 # one command line: the engine's "wait N" defers the rest of the buffer by N frames
 line="wait $SETTLE; uiclick 612 466; wait 5; uiclick; wait 30; god; notarget; set cg_drawGun 0; set cg_draw2D 0"
+# SHOT_PRE: extra console commands before the first teleport (e.g. skip a map's intro cutscene)
+[[ -n "${SHOT_PRE:-}" ]] && line+="; $SHOT_PRE"
 i=0
 for s in "${SPOTS[@]}"; do
 	i=$((i + 1))
@@ -64,7 +66,13 @@ done
 line+="; wait 5; quit"
 echo "$line" > "$HOME_CFG/shotat.cfg"
 
-RTCW_STARTUP_SETS="${SET_ARGS[*]:-}" "$ROOT/scripts/run.sh" "${WINDOWED[@]}" +spdevmap "$MAP" +exec shotat.cfg >/dev/null 2>&1 || true
+# SHOT_HEADLESS=1: run inside a headless gamescope (no window on the desktop, GPU rendering kept)
+WRAP=()
+if [[ "${SHOT_HEADLESS:-0}" == 1 ]]; then
+	WRAP=(gamescope --backend headless -W "${SHOT_HEADLESS_W:-1920}" -H "${SHOT_HEADLESS_H:-1200}" --)
+	[[ ${#WINDOWED[@]} -gt 0 ]] || WINDOWED=(--windowed "${SHOT_HEADLESS_W:-1920}x${SHOT_HEADLESS_H:-1200}")
+fi
+RTCW_STARTUP_SETS="${SET_ARGS[*]:-}" "${WRAP[@]}" "$ROOT/scripts/run.sh" "${WINDOWED[@]}" +spdevmap "$MAP" +exec shotat.cfg >/dev/null 2>&1 || true
 
 n=0
 for f in "$HOME_CFG"/screenshots/codmod_spot*.tga; do

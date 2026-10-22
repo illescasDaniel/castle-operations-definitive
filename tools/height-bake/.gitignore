@@ -1,0 +1,5 @@
+.venv/
+models/
+preview/
+__pycache__/
+cache/

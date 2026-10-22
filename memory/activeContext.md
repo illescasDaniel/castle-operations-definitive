@@ -2,6 +2,8 @@ _Last updated: 2026-10-21_
 
 ## Current focus
 
+**Parallax revisit (2026-10-22): built/installed, uncommitted (both repos), awaiting user in-game check on escape1.** Plan from architect (see decisions.md 2026-10-22). Done: engine POM rewrite (`lightall_fp.glsl`, `u_ParallaxParams`, cvars `r_parallaxMaxSteps` 48 / `FadeDist` 1200 / `FloorScale` 0.35 / `Cavity` 0.5), eligibility in `tr_shader.c` (no alpha-test/rotate/turb/tcgen; `_nh` works with `r_normalMapping 0`), `tools/height-bake` (DeepBump `deepbump256.onnx` in git-ignored `models/`) -> `run/codmod/codmod_height.pk3` with 36 escape1 textures. Test: `r_normalMapping 1`, `r_parallaxMapping 1` (latched, restart; 2 = relief), `r_parallaxMapShadows 1` optional. If bricks look dented under side light, rebake with `--flip-y`. Not done: mod defaults, menu row, docs/parallax.md, other maps.
+
 **Bevel corners (2026-10-22): connected textures + corner lighting accepted by user as good enough for now; uncommitted (tool in `tools/world-bevel-jl`, `scripts/shot-at.sh`, `scripts/seam-metric.py`, engine `viewpos`/`setviewpos` pitch + `uiclick`). Future ideas listed in `progress.md`.**
 
 **SMAA motion (2026-10-21): phases 1 (`r_smaaPredication`) and 1b (`r_specularAA`) done and committed, user says modest gain; flashlight shadow map 2048 default + menu row committed. User will decide when to start SMAA T2x (plan `docs/smaa-motion-plan.md`, phase 3a camera-only first). Sun shadows swim on camera motion (`lightViewIndependentOfCameraView = qfalse` in `R_RenderSunShadowMaps`, no texel snapping) and PCF uses screen-fixed random rotation; candidate follow-up.**

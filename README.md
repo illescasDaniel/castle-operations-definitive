@@ -282,7 +282,7 @@ described in [`docs/menus.md`](docs/menus.md).
 
 ### AI-assistant files (optional, can be disabled)
 
-The repo includes the author's AI-assistant setup: `AGENTS.md` / `CLAUDE.md`, the `memory/` notes, `.claude/` and
+The repo includes the author's AI-assistant setup: `AGENTS.md` / `CLAUDE.md`, the `memory/` notes, `.claude/` (subagents from [agent-guild](https://github.com/illescasDaniel/agent-guild), workflow rules and skills) and
 `.cursor/` skills, and a project MCP server (`jevmem`, a long-term memory tool launched with `uvx`). If you open the
 repo in Claude Code or Cursor, these may run automatically (the `SessionStart` / `UserPromptSubmit` hooks in
 `.claude/settings.json` call `uvx jevmem`). You do not need any of it to build or mod the game. To turn it off:

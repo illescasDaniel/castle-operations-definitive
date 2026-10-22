@@ -2,6 +2,12 @@
 
 Append-only log, newest first. Never rewrite history: if a decision is reversed, add a new entry that says so.
 
+## 2026-10-22: Adopt agent-guild 1.2.1 without SDD
+
+- **Context:** The repo only had the memory-bank and jev-memory skills. agent-guild adds architect/coder/utility subagents, orchestrator rules (`.claude/development-workflow.md`) and optional SDD (specs, wireframes, `code-grader`).
+- **Decision:** Installed with defaults, then removed `sdd-feature`, `code-grader` and the Phase Gate Protocol section. Kept subagents, workflow file, project model `sonnet`, `autoMemoryEnabled: false`. Added "Project specifics for delegation" to `CLAUDE.md`.
+- **Rationale:** SDD targets UI/API features with BDD tests; this is a C engine/game mod already phase-gated by in-game user play-tests (`docs/plan.md` §2). `coder-python` skipped (tools/ scripts are small). Re-running the installer won't restore the removed parts only if run with `--without sdd`.
+
 ## 2026-10-21 Private asset fixes as a derived pack, auto-built with the specular pack
 Knight statue (escape2) glowed pink: knight_anim.mdc dumps cap/shoulder faces into a black atlas diamond of knt.tga, and spec-bake's `rgb/luma` tint amplified the black noise. Chose a generic spec-bake fix (fade tint/F0/gloss on near-black texels, narrow ramp so dark metals keep spec) plus `tools/asset-fixes` writing `codmod_zfix.pk3` (sorts after codmod_hd) with a per-texture registry, over editing the HD pack. Both derived packs are built incrementally by `scripts/build-derived-packs.sh` from setup/install (warn and continue without numpy/Pillow).
 

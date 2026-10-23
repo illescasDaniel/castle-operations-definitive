@@ -26,7 +26,7 @@ uv sync
 
 ## Generate the current texture pack (recommended)
 
-Current choice: **world textures `general-wdn` at 2×**, **fonts `general-wdn` at 4×**, JPEG quality **90**.
+Current choice: **world textures `general-wdn` at 2×** with the anti-halo settings, which are the defaults (`--blend 0.85 --ring-clamp 0.02 --ring-radius 1 --downsample box`, see "Gentle world textures" below), **fonts `general-wdn` at 4×**, JPEG quality **90**.
 
 Weights: [`realesr-general-wdn-x4v3.pth`](https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-general-wdn-x4v3.pth) from [Real-ESRGAN v0.2.5.0](https://github.com/xinntao/Real-ESRGAN/releases/tag/v0.2.5.0) by [xinntao/Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN) — excellent upscaler; credit to the authors.
 
@@ -50,6 +50,21 @@ uv run hd-textures pack \
   --from samples/full \
   --pk3 ../../run/codmod/codmod_hd.pk3
 ```
+
+### Gentle world textures (anti-halo, default)
+
+The plain `general-wdn` result rings around high-contrast edges (dark halos, thickened black outlines, pale
+fringes; visible on officer/infantry uniform badges and on text/stone outlines). The 4x network output is then
+downsampled to 2x with Lanczos, which adds its own ringing, and the network also darkens edges. `batch` therefore
+applies these world-texture settings by default (fonts are never touched):
+
+- `--downsample box` (default) box filter for 4x -> 2x (no ringing); `lanczos`, `bicubic` are the alternatives.
+- `--ring-clamp 0.02 --ring-radius 1` (default) limit each output pixel to the local min/max of a bicubic 2x of the
+  source (3x3 window, +-0.02) so no overshoot beyond the source's own edges survives; `--no-ring-clamp` turns it off.
+- `--blend 0.85` (default) mix 85% AI with 15% bicubic (keeps ~1.2-1.3x the source's high-frequency energy vs ~1.4x
+  for pure AI; the blend also fixes the darkening). Use `--blend 0.7` for even less halo, `--blend 1` for pure AI.
+
+The old pure-AI look is `--blend 1 --no-ring-clamp --downsample lanczos`.
 
 ### Refresh fonts only (merge into an existing pk3)
 

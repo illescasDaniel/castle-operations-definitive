@@ -210,7 +210,7 @@ SP textures can be AI-upscaled into a local `run/codmod/codmod_hd.pk3`. The **to
 
 Full steps: [`tools/hd-textures/README.md`](tools/hd-textures/README.md).
 
-Quick regenerate (current pack: **general-wdn @ 2×**, JPEG 90; needs NVIDIA CUDA + [uv](https://github.com/astral-sh/uv)):
+Quick regenerate (current pack: **general-wdn @ 2×**, JPEG 90, anti-halo settings are the default; needs NVIDIA CUDA + [uv](https://github.com/astral-sh/uv)):
 
 ```bash
 cd tools/hd-textures

@@ -44,7 +44,7 @@ They report memory candidates and friction back to you; you decide what to recor
 | Small, local change or a question | Do it yourself. |
 | Commit, branch, move/rename, build | `utility` (commits only when the user asked). |
 
-Parallel `coder`s must touch different files. Only you launch or test the game.
+Parallel `coder`s must touch different files. The game is driven only through the `rtcw` MCP tools (`mcp__rtcw__*`); say so in briefs that need screenshots, coverage, logs or benchmarks.
 
 ## Writing briefs
 

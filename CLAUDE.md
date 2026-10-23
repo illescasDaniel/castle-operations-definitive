@@ -14,7 +14,8 @@ You are the orchestrator: delegate to the `architect`, `coder` and `utility` sub
 - **Briefs always carry the safety rules** from `AGENTS.md` (never touch the rend2 present/2D path or `wolfconfig.cfg`;
   `!ps->aiChar` gating in `bg_pmove.c`; tunables behind `cod_*` cvars; user settings vs internal config) and the
   build command (`scripts/build.sh --game-only --install`).
-- **Only you launch the game**, never subagents (no forced kills, no benchmarks; see "Running the game" in `AGENTS.md`).
+- **Game runs go through the `rtcw` MCP server** (rules in "Driving the game from an agent", `AGENTS.md`). Briefs for
+  work that needs a visual or runtime check must tell the subagent to use `mcp__rtcw__*`.
   `utility` may run builds and `git`.
 - **Two repos.** Engine and game code live in the `iortcw/` submodule: coders edit and you commit there, push to the
   fork, then commit the bumped pointer in the outer repo. Tell `utility` which repo to commit in. Commit only when asked.

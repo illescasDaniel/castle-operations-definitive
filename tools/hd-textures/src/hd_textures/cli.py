@@ -15,7 +15,7 @@ from .inventory import is_font_path, list_images, summarize
 from .models import DEFAULT_PILOT_MODELS, parse_model_ids
 from .pack import merge_into_pk3, pack_directory
 from .paths import resolve_data_dir, tool_root
-from .upscale import load_model, upscale_image
+from .upscale import PostProcess, load_model, upscale_image
 
 console = Console()
 
@@ -97,6 +97,32 @@ def main(argv: list[str] | None = None) -> None:
 		"--only-fonts",
 		action="store_true",
 		help="Process only font atlases / menu prop fonts",
+	)
+	p_batch.add_argument(
+		"--blend",
+		type=float,
+		default=0.85,
+		help="World textures: weight of the AI result vs a bicubic upscale (1.0 = pure AI; default 0.85 = anti-halo)",
+	)
+	p_batch.add_argument(
+		"--ring-clamp",
+		type=float,
+		default=0.02,
+		metavar="MARGIN",
+		help="World textures: limit output to the local min/max of the bicubic upscale +- MARGIN "
+		"(0..1 levels, default 0.02); removes dark halos / pale fringes",
+	)
+	p_batch.add_argument(
+		"--no-ring-clamp", action="store_true", help="Disable the ring clamp (old pure-AI look with --blend 1)"
+	)
+	p_batch.add_argument(
+		"--ring-radius", type=int, default=1, help="Ring clamp window radius in output pixels"
+	)
+	p_batch.add_argument(
+		"--downsample",
+		choices=("lanczos", "box", "bicubic"),
+		default="box",
+		help="World textures: filter for 4x network output -> 2x (default box: no ringing; lanczos was the old one)",
 	)
 	p_batch.add_argument("--tile", type=int, default=0, help="Tile size (0=auto for large)")
 	p_batch.add_argument("--allow-cpu", action="store_true")
@@ -288,6 +314,12 @@ def cmd_batch(args: argparse.Namespace) -> None:
 		banner += f" [bold]fonts→{font_spec.id} @ {font_scale}×[/bold]"
 	console.print(f"{banner} on {device.banner()}")
 
+	post = PostProcess(
+		blend=args.blend,
+		clamp=None if args.no_ring_clamp else args.ring_clamp,
+		radius=args.ring_radius,
+		downsample=args.downsample,
+	)
 	rows: list[dict] = []
 	game_root = out / "game"
 	for i, img_meta in enumerate(images, 1):
@@ -299,7 +331,12 @@ def cmd_batch(args: argparse.Namespace) -> None:
 		active_id = font_spec.id if use_font and font_spec else spec.id
 		assert active_model is not None
 		up, up_ms = upscale_image(
-			img, active_model, device, target_scale=active_scale, tile=args.tile
+			img,
+			active_model,
+			device,
+			target_scale=active_scale,
+			tile=args.tile,
+			post=None if use_font else post,
 		)
 		dest = game_root / img_meta.path
 		out_bytes, enc_ms = save_game_format(

@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import time
+from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
 import torch
+import torch.nn.functional as F
 from PIL import Image
 from spandrel import ImageModelDescriptor, ModelLoader
 
@@ -28,6 +30,53 @@ def _from_tensor(tensor: torch.Tensor) -> Image.Image:
 	return Image.fromarray(arr, mode="RGB")
 
 
+@dataclass(frozen=True)
+class PostProcess:
+	"""Anti-halo post-processing applied to the RGB result (not to alpha, not to fonts).
+
+	blend:     weight of the AI result vs a bicubic upscale of the source (1.0 = pure AI).
+	clamp:     ring clamp margin in 0..1 levels (None = off). Each output pixel is limited to
+	           [min - clamp, max + clamp] of the bicubic upscale over a (2*radius+1)^2 window,
+	           which removes overshoot (dark halos / pale fringes) but keeps new detail inside.
+	radius:    ring clamp window radius in output pixels.
+	downsample: filter used to bring the 4x network output down to the target scale.
+	"""
+
+	blend: float = 1.0
+	clamp: float | None = None
+	radius: int = 2
+	downsample: str = "lanczos"
+
+	@property
+	def active(self) -> bool:
+		return self.blend < 1.0 or self.clamp is not None
+
+
+_RESAMPLE = {
+	"lanczos": Image.Resampling.LANCZOS,
+	"bicubic": Image.Resampling.BICUBIC,
+	"box": Image.Resampling.BOX,
+}
+
+
+def _post_process(
+	src: Image.Image, out: Image.Image, device: DeviceInfo, post: PostProcess
+) -> Image.Image:
+	dev = torch.device(device.torch_device)
+	ref = _to_tensor(src, dev)
+	ref = F.interpolate(ref, size=(out.height, out.width), mode="bicubic", align_corners=False)
+	ref = ref.clamp(0.0, 1.0)
+	res = _to_tensor(out, dev)
+	if post.clamp is not None:
+		k = 2 * post.radius + 1
+		hi = F.max_pool2d(ref, k, stride=1, padding=post.radius)
+		lo = -F.max_pool2d(-ref, k, stride=1, padding=post.radius)
+		res = torch.minimum(torch.maximum(res, lo - post.clamp), hi + post.clamp)
+	if post.blend < 1.0:
+		res = res * post.blend + ref * (1.0 - post.blend)
+	return _from_tensor(res)
+
+
 def load_model(spec: ModelSpec, tool_root: Path, device: DeviceInfo) -> ImageModelDescriptor:
 	path = ensure_model(spec, tool_root)
 	model = ModelLoader().load_from_file(path)
@@ -45,6 +94,7 @@ def upscale_image(
 	*,
 	target_scale: int = 2,
 	tile: int = 0,
+	post: PostProcess | None = None,
 ) -> tuple[Image.Image, float]:
 	"""Upscale by target_scale (2 or 4). Cascades native-2× models for 4×. Returns (image, ms)."""
 	if target_scale not in (2, 4):
@@ -60,11 +110,16 @@ def upscale_image(
 		alpha = None
 
 	t0 = time.perf_counter()
-	rgb_out = _run_rgb_to_scale(rgb, model, device, target_scale=target_scale, tile=tile)
+	down = _RESAMPLE[post.downsample] if post else Image.Resampling.LANCZOS
+	rgb_out = _run_rgb_to_scale(
+		rgb, model, device, target_scale=target_scale, tile=tile, down=down
+	)
+	if post is not None and post.active:
+		rgb_out = _post_process(rgb, rgb_out, device, post)
 	if alpha is not None:
 		a_rgb = Image.merge("RGB", (alpha, alpha, alpha))
 		a_up = _run_rgb_to_scale(
-			a_rgb, model, device, target_scale=target_scale, tile=tile
+			a_rgb, model, device, target_scale=target_scale, tile=tile, down=down
 		).getchannel("R")
 		if a_up.size != rgb_out.size:
 			a_up = a_up.resize(rgb_out.size, Image.Resampling.LANCZOS)
@@ -85,6 +140,7 @@ def _run_rgb_to_scale(
 	*,
 	target_scale: int,
 	tile: int,
+	down: Image.Resampling = Image.Resampling.LANCZOS,
 ) -> Image.Image:
 	native = int(model.scale)
 	current = rgb
@@ -102,7 +158,7 @@ def _run_rgb_to_scale(
 
 	wanted = (rgb.width * target_scale, rgb.height * target_scale)
 	if current.size != wanted:
-		current = current.resize(wanted, Image.Resampling.LANCZOS)
+		current = current.resize(wanted, down)
 	return current
 
 

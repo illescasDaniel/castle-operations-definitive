@@ -23,6 +23,22 @@ Model: DeepBump `deepbump256.onnx` (GPLv3, 26.7 MB, sha256 3a2ababc...4d67). `.v
 tools/height-bake/.venv/bin/python -I tools/height-bake/height_bake.py --map all --max 0 > tools/height-bake/preview/all.log
 ```
 
+The defaults are the shipped settings (including `--bright-target 0.30`, which lifts dark albedo before DeepBump so the
+confidence gate does not flatten it; `--bright-target 0` turns it off), so no extra flags are needed. The world pack
+also covers metal, marble, shutters and burnt floors (normals only, see the classes in `RULES`) whose shaders carry a
+fake tinfx environment stage, a lightmap-first order or an ember underlay (`resolve_diffuse`); rend2 needs
+`r_codShaderCollapse 1` (set in `codmod.cfg`) to give those shaders lightall + `_nh`.
+
+Model packs (normals only, shipped presets; `--preset NAME` fills `--models`, `--exclude`, `--models-opaque` and `--out`):
+
+```bash
+... height_bake.py --preset props      # models/(mapobjects|powerups|ammo|flags|furniture) -> run/codmod/codmod_height_models.pk3
+... height_bake.py --preset players    # models/players/* skins                            -> run/codmod/codmod_height_players.pk3
+... height_bake.py --preset weapons    # models/weapons2 viewmodel/world skins            -> run/codmod/codmod_height_weapons.pk3
+```
+
+The regexes live in `PRESETS` at the top of the script; explicit `--models/--exclude/--out` override a preset.
+
 `--map all` unions the textures of every SP map in the paks (assault, baseout, boss1/2, castle, chateau, church,
 crypt1/2, cutscene1/6/9/11/14/19, dam, dark, dig, end, escape1/2, factory, forest, norway, rocket, sfm, swf, trainyard,
 tram, village1/2, xlabs; later paks override earlier ones, `mp_*` excluded), sums the surface counts and bakes each

@@ -21,7 +21,7 @@ Normal Maps Off sets `r_parallaxMapping` 0 and `r_parallaxMapShadows` 0 (paralla
 
 Off disables all parallax paths. Engine code defaults are vanilla (0); the mod's first-launch/Reset values are `seta` in
 `mod/codmod/codmod_gfxdefaults.cfg` (On). Internal pins in `mod/codmod/codmod.cfg`: `r_parallaxMapOffset 0`,
-`r_baseParallax 0.02`, `r_parallaxFloorScale 0.5` (all CVAR_LATCH except floor scale). Engine defaults kept:
+`r_baseParallax 0.02` (0.06 tried 2026-10-23: better on crypt1, but trainyard walls looked bad, so kept at 0.02), `r_parallaxFloorScale 0.5` (all CVAR_LATCH except floor scale). Engine defaults kept:
 `r_parallaxMaxSteps 48`, `r_parallaxFadeDist 1200`, `r_parallaxCavity 0.5` (live, not latched).
 
 ## Height pack

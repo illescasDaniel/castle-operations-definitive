@@ -2,6 +2,12 @@
 
 Append-only log, newest first. Never rewrite history: if a decision is reversed, add a new entry that says so.
 
+## 2026-10-23: Normals everywhere (wide classifier, brightening, MDS tangents) and gentler HD upscale
+
+- **Context:** only 17% of trainyard (40% of all SP) surfaces had a `_nh`; characters had none; walls and characters showed dark outlines/halos.
+- **Decision:** (1) `height_bake.py` classifies every opaque lit diffuse (metal, props and the catch-all class get normals only) and lifts dark albedo with `--bright-target 0.30` before DeepBump; (2) props and character skins get `codmod_height_models.pk3` / `codmod_height_players.pk3`, with MDS tangents computed at runtime in `RB_SurfaceAnim`; (3) `r_baseParallax` stays 0.02 (0.06 looked bad on trainyard); (4) the halos were in the HD diffuse, so `tools/hd-textures` got `--blend/--ring-clamp/--downsample` and the pack is regenerated with `--blend 0.85 --ring-clamp 0.02 --ring-radius 1 --downsample box`.
+- **Rationale:** the halo persists with `r_normalMapping 0`, so it was never the normals; Lanczos 4x->2x downsampling adds ringing and the network darkens edges. User confirmed characters and the gentler pack look better in game.
+
 ## 2026-10-22: VAO cache = static vertex/index store + multi-draw; benchmarks always off-screen
 
 - **Context:** FPS dropped when moving the mouse a lot. The stock rend2 VAO cache re-memcpy'd and re-uploaded ~50 MB of vertexes whenever the visible surface set was new (every frame while turning), mostly in the sun-shadow cascades.

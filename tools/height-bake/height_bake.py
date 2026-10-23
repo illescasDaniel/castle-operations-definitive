@@ -32,14 +32,46 @@ TILE = 256
 
 # Ordered regex rules on the lowercase texture stem; first match wins. "skip" = no map.
 RULES = [
-    ("skip", r"(decals|/sfx/|sky|skies|glass|window|/alpha/|/lights/|light_|fog|flame|ember|torch|terrain|/tree/|"
-             r"/common/|/props/|castle_props|metal|carpet|chat/|/sign|flag|picture|haze|/models/|^models)"),
+    ("skip", r"(decals|/sfx/|sky|skies|glass|window(?!/shudder)|/alpha/|/lights/|light_|fog|flame|ember|torch|/tree/|"
+             r"/common/|/sign|flag|picture|haze|/models/|^models)"),
+    # props (crates, barrels, train parts) are shared with free-standing brushes: normals only, never parallax
+    ("prop", r"/props/|castle_props|/barrel|/box_|/crate"),
     ("floor", r"floor"),
-    ("wood", r"castle_wood|town_wood|textures/wood/|s_cwood|castle_door|door_c"),
-    ("rock", r"textures/rock/"),
+    ("wood", r"castle_wood|town_wood|textures/wood/|s_cwood|castle_door|shudder|door_c|chwood|chat_wood|mdoor|plank|board"),
+    ("rock", r"textures/rock/|terrain|mountain"),
     ("concrete", r"concrete"),
-    ("brick", r"castle_wall|cathedrale_wall|/s_castle|/s_cathedrale|/s_roof|chateau|town_wall|brick|cobble|mortar|plaster|stone"),
+    # metal wants clean specular, not relief: normals only (see docs/normals-coverage-plan.md)
+    # painted/riveted sheet steel (xlab panels): smooth in reality, DeepBump invents pitting, so a weak normal strength
+    ("panel", r"xmetal|x_metalwall"),
+    ("metal", r"metal|atool|/xlab_m|pipe|rivet|steel|iron|grate|vent"),
+    # marble is stone-like but polished: normals only for now
+    ("marble", r"marble"),
+    # burnt floors: an ember underlay shows through, rend2 lights only the blended top stage; normals only, no parallax
+    ("burnt", r"burn_flr"),
+    ("brick", r"castle_wall|cathedrale_wall|/s_castle|/s_cathedrale|/s_roof|chateau|town_wall|brick|cobble|mortar|plaster|stone|"
+              r"wall|crypt|debri|rubble|gy_|vill_c|dirt|trim|step|stair|pillar|column|arch|roof|tile"),
+    # everything else that is an opaque lit diffuse: normals only (safe default)
+    ("other", r".*"),
 ]
+# classes baked normals-only (alpha height flat, so parallax never runs on them)
+NORMALS_ONLY = {"model", "prop", "metal", "panel", "marble", "burnt", "other"}
+# multiplier on the normal relief (pixels) for smooth-surface classes
+CLASS_STRENGTH = {"panel": 0.25, "marble": 0.5}
+# `--preset NAME` = the model packs as shipped: (--models regex, --exclude regex, --models-opaque, default --out)
+PRESETS = {
+    "props": (r"^models/(mapobjects|powerups|ammo|flags|furniture)/",
+              r"/(tree|snow_tree|plants|bush|sky|shards|shard)/|glass|/(light|lamps|lamp|flares|lightning|gratelamp|colua0|xlab_props)/|"
+              r"flare|shadow|beam|water|goo|bpblood|gibs|radarbeeps|radarsweep|/fire|propeller|parachute|hologirl|portal|scoreboard|"
+              r"arenalogo|_ui_|bjui/|letters/|c_bibbles|/cin$|skull_spirit|/test/|/test2?/|characters/test|temphead|templower|"
+              r"tempupper|ghost|elec[0-9]|cagelight|cage_light|camplt|sconce|chandlier|bel_lamp|pendant|light_m4|desklamp|dirt|blink|end/castle",
+              True, "run/codmod/codmod_height_models.pk3"),
+    "players": (r"^models/players/",
+                r"blink|glass|glow|zom_hair|hein_hair|helgrass|ghost|elec[0-9]|/eyes?|_eye|flash|/hand16$|/arm2$|/bj_legs$|/g_bitterman|"
+                r"anarki_board|/doom/|brandon/|_stim|dh_mon|beast/mouth|beast/skulls2|/spark$|/fire$|/goo1$|escape_env",
+                True, "run/codmod/codmod_height_players.pk3"),
+    "weapons": (r"weapons2/(?!.*(flash|flame|zap_scroll|hand16|arm2|bj_legs|m_shell))", None, False,
+                "run/codmod/codmod_height_weapons.pk3"),
+}
 # shader scripts with these surfaceparms / keywords are never baked (not an opaque lit diffuse surface)
 BAD_PARMS = {"sky", "water", "fog", "trans", "nodraw", "alphashadow", "nolightmap_x", "slime", "lava"}
 
@@ -135,13 +167,22 @@ def resolve_diffuse(name, shaders):
     if sh["parms"] & BAD_PARMS or "deformvertexes" in sh["flags"] or "polygonoffset" in sh["flags"]:
         return None
     diff = [s for s in sh["stages"] if s.get("map") != "$lightmap"]
+    # fake environment shine (tinfx, tcgen environment, one_minus_dst_alpha): rend2 drops it (r_codShaderCollapse)
+    shine = [s for s in diff if s.get("tcgen", [""])[0] == "environment" and "tinfx" in s.get("map", "")
+             and s.get("blendfunc", [""])[0] == "gl_one_minus_dst_alpha"]
+    if shine and len(diff) == 2:
+        diff = [s for s in diff if s not in shine]
+    # ember underlay (opaque rotating glow) with the vertex-lit diffuse alpha-blended on top: rend2 lights the top stage
+    elif (len(diff) == 2 and "ember" in diff[0].get("map", "") and "blendfunc" not in diff[0]
+          and diff[1].get("blendfunc", [""])[0] == "blend"):
+        diff = diff[1:]
     if len(diff) != 1:
         return None
     s = diff[0]
     if s.get("anim") or "alphafunc" in s or "tcgen" in s or "tcmod" in s or "map" not in s or s["map"].startswith("$"):
         return None
     bf = s.get("blendfunc", [""])[0]
-    if bf and bf not in ("filter", "gl_dst_color", "blend"):
+    if bf and bf not in ("filter", "gl_dst_color", "blend") and not (shine and bf == "gl_one"):
         return None
     return re.sub(r"\.(tga|jpg|png)$", "", s["map"])
 
@@ -184,6 +225,28 @@ def select(a):
         # model skins (weapons etc.): normals only, the alpha height stays flat so parallax never runs on them
         imgs = collect_images("models/")
         rows = [(0, "model", s) for s in sorted(imgs) if re.search(a.models, s) and not s.endswith(("_s", "_n", "_nh", "_h"))]
+        if a.exclude:
+            rows = [r for r in rows if not re.search(a.exclude, r[2])]
+        if a.models_opaque:
+            # drop skins whose shader script is not a plain opaque lit diffuse (alpha-tested cards, blended overlays,
+            # animated/scrolling, transparent, unlit): a normal map would be wrong or never used
+            shaders = parse_shaders()
+            def plain(stem):
+                sh = shaders.get(stem)
+                if sh is None:
+                    return True
+                if sh["parms"] & {"trans", "nolightmap"}:
+                    return False
+                st = sh["stages"]
+                if any("alphafunc" in x for x in st):
+                    # alpha-tested: fine when only a sliver is cut away (damage/gib masks on bodies), wrong for cards
+                    pk, mem = imgs[stem]
+                    with zipfile.ZipFile(pk) as z:
+                        im = Image.open(io.BytesIO(z.read(mem)))
+                    if "A" not in im.convert("RGBA").getbands() or np.mean(np.asarray(im.convert("RGBA"))[..., 3] < 128) > 0.15:
+                        return False
+                return not (st and any(k in st[0] for k in ("blendfunc", "anim", "tcgen", "tcmod", "alphagen")))
+            rows = [r for r in rows if plain(r[2])]
         return [(n, m, s, imgs[s]) for n, m, s in rows]
     imgs = collect_images()
     if a.map:
@@ -233,6 +296,19 @@ def local_normalise(gray, sigma_frac, eps, pre_blur=1.0):
     sd = np.sqrt(np.maximum(periodic_blur(d * d, s), 0))
     out = d / (sd + eps)
     return np.clip(0.5 + 0.22 * out, 0, 1).astype(np.float32)
+
+
+def brighten(rgb, a):
+    """Exposure-lift dark albedo before the relief stats and DeepBump see it (only the _nh map is derived from it, the
+    shown diffuse is untouched): linear gain bright_target / mean luma, capped at bright_max, clipped to 1."""
+    if a.bright_target <= 0:
+        return rgb
+    luma = rgb @ np.array([0.299, 0.587, 0.114], np.float32)
+    m = float(luma.mean())
+    if m >= a.bright_target:
+        return rgb
+    gain = min(a.bright_target / max(m, 1e-4), a.bright_max)
+    return np.clip(rgb * gain, 0, 1).astype(np.float32)
 
 
 def texture_stats(rgb, a):
@@ -349,7 +425,7 @@ def seam_stats(arr):
     return wrap, nb
 
 
-def bake(rgb, a, force_flat=False, n=None, normals_only=False):
+def bake(rgb, a, force_flat=False, n=None, normals_only=False, rel_scale=1.0):
     H, W = rgb.shape[:2]
     luma = rgb @ np.array([0.299, 0.587, 0.114], np.float32)
     info = {}
@@ -411,6 +487,7 @@ def bake(rgb, a, force_flat=False, n=None, normals_only=False):
     if a.legacy_luma:
         nh = h01
         info.update(spike=0.0, conf=1.0, gate=1.0, flat=False, coh=1.0, lap_raw=0.0, normed=False, stats=texture_stats(rgb, a))
+    relief *= rel_scale
     info["relief_px"] = relief
     info["pct"] = dict(zip((1, 5, 25, 50, 75, 90, 95, 99), np.percentile(raw, (1, 5, 25, 50, 75, 90, 95, 99)).round(3)))
     info["at1"] = float((h01 >= 0.999).mean())
@@ -443,6 +520,9 @@ def main():
     ap.add_argument("--out", default=str(ROOT / "run/codmod/codmod_height.pk3"))
     ap.add_argument("--map", help="only textures used by this map (e.g. escape1), ranked by surface count; 'all' = every SP map")
     ap.add_argument("--models", help="regex on model skin paths (models/...): bake normals-only maps for those instead of world textures, e.g. 'weapons2/(colt|luger)/'")
+    ap.add_argument("--exclude", help="--models only: regex on the skin path to drop")
+    ap.add_argument("--models-opaque", action="store_true", help="--models only: drop skins whose shader is alpha-tested (more than 15%% of texels cut), blended, animated or unlit")
+    ap.add_argument("--preset", choices=sorted(PRESETS), help="model pack as shipped (fills --models/--exclude/--models-opaque/--out unless given);")
     ap.add_argument("--only", help="regex on the texture path")
     ap.add_argument("--max", type=int, default=36, help="cap (0 = no cap; --map all usually wants 0)")
     ap.add_argument("--list", action="store_true")
@@ -473,6 +553,8 @@ def main():
     ap.add_argument("--dark-range", type=float, default=0.12, help="auto norm: 5-95 luma range below this")
     ap.add_argument("--ln-sigma", type=float, default=0.06, help="local normalisation window sigma, fraction of texture size")
     ap.add_argument("--ln-eps", type=float, default=0.015, help="local normalisation std floor (stops featureless areas turning into noise)")
+    ap.add_argument("--bright-target", type=float, default=0.30, help="lift textures darker than this mean luma (0..1) to it before stats + DeepBump (0 = off); only the _nh map sees the lift")
+    ap.add_argument("--bright-max", type=float, default=4.0, help="maximum gain of --bright-target")
     ap.add_argument("--autolevel", action="store_true", help="contrast-stretch the grey fed to DeepBump (mixed results on dark textures)")
     ap.add_argument("--flip-y", action="store_true", help="flip the green channel convention")
     ap.add_argument("--max-side", type=int, default=MAX_SIDE, help="cap on the longest side of the diffuse used for DeepBump and the output (px)")
@@ -481,6 +563,13 @@ def main():
     ap.add_argument("--no-cache", action="store_true", help="ignore and overwrite the cache")
     ap.add_argument("--pack-only", action="store_true", help="only write the pk3 from the cache (skip missing textures)")
     a = ap.parse_args()
+    if a.preset:
+        pm, pe, po, pout = PRESETS[a.preset]
+        a.models = a.models or pm
+        a.exclude = a.exclude or pe
+        a.models_opaque = a.models_opaque or po
+        if a.out == ap.get_default("out"):
+            a.out = str(ROOT / pout)
     global THREADS
     ncpu = os.cpu_count() or 4
     if a.jobs <= 0:
@@ -551,7 +640,7 @@ def main():
 # Cache layout (tools/height-bake/cache, git-ignored): nrm/<key>.npy = DeepBump normals (float16, the slow part, depends
 # only on the source image and the DeepBump input options); nh/<key>.png + .json = final RGBA map and its stats (depends
 # on all bake parameters). Retuning the gate/blur/plateau therefore only redoes the cheap FFT part.
-NONKEY = {"out", "map", "models", "only", "max", "list", "preview", "jobs", "threads", "no_cache", "pack_only", "flatten"}
+NONKEY = {"preset", "out", "map", "models", "only", "max", "list", "preview", "jobs", "threads", "no_cache", "pack_only", "flatten", "exclude", "models_opaque"}
 
 
 def _h(*parts):
@@ -569,7 +658,7 @@ def nrm_key(a, j):
 
 def nh_key(a, j):
     prm = {k: v for k, v in vars(a).items() if k not in NONKEY}
-    return _h(VERSION, src_id(j[2], j[3]), prm, j[4])
+    return _h(VERSION, src_id(j[2], j[3]), prm, j[4], CLASS_STRENGTH.get(j[0]))
 
 
 def entry_paths(a, j):
@@ -591,7 +680,7 @@ def init_worker(threads):
 def bake_job(a, j):
     m, stem, pk, member, ff = j
     t = time.time()
-    rgb = load_albedo(pk, member, a.max_side)
+    rgb = brighten(load_albedo(pk, member, a.max_side), a)
     npath = CACHE / "nrm" / (stem.replace("/", "__") + "." + nrm_key(a, j) + ".npy")
     n = None
     if npath.exists() and not a.no_cache:
@@ -602,7 +691,7 @@ def bake_job(a, j):
         n = deepbump_normals(rgb, autolevel=a.autolevel, norm=(a.ln_sigma, a.ln_eps) if use_norm else None)
         npath.parent.mkdir(parents=True, exist_ok=True)
         np.save(npath, n.astype(np.float16))
-    out8, info = bake(rgb, a, ff, n, m == "model")
+    out8, info = bake(rgb, a, ff, n, m in NORMALS_ONLY, CLASS_STRENGTH.get(m, 1.0))
     png, js = entry_paths(a, j)
     png.parent.mkdir(parents=True, exist_ok=True)
     buf = io.BytesIO()

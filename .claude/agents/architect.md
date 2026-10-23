@@ -46,3 +46,6 @@ Use the sections below that apply, skipping empty ones. No preamble, no restatin
 7. **Memory candidates**: decisions or gotchas worth remembering long-term, each as one literal sentence with an
    absolute date and explicit names, with the reason in the same sentence. The orchestrator decides whether to store
    them.
+
+## Investigating the game
+You are read-only, but you may use the `rtcw` MCP tools that only observe (`mcp__rtcw__screenshot`, `texture_coverage`, `console_log`, `compare_shots`, `known_spots`, `game_status`, `list_maps`; headless, one instance at a time, `tools/rtcw-mcp/README.md`) to confirm a root cause. Don't run `build` or `benchmark`, and never launch the game any other way.

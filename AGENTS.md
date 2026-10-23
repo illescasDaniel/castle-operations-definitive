@@ -65,3 +65,7 @@ gamescope by default; `BENCH_ONSCREEN=1` opts out), `SHOT_HEADLESS=1 scripts/sho
 `scripts/spin-test.sh`; for ad-hoc scripted runs use
 `gamescope --backend headless -W 1920 -H 1200 -- scripts/run.sh --windowed 1920x1200 ...`. Back up and restore
 `wolfconfig.cfg` around them (`set` of archived cvars is saved on quit).
+
+## Driving the game from an agent
+
+Game runs go through the `rtcw` MCP server (`mcp__rtcw__*`, `tools/rtcw-mcp/README.md`): `screenshot`, `texture_coverage`, `console_log`, `load_times`, `compare_shots`, `build`, `benchmark`, `known_spots`, `game_status`. It runs the game headless, one instance at a time, and refuses while the user is playing; don't start the game any other way. Details, spots and gotchas: `tools/rtcw-mcp/README.md`. Prefer it to `scripts/shot-at.sh` and `bench.sh`, which it wraps. If it refuses (the user is playing), wait; don't work around it.

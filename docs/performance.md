@@ -166,6 +166,14 @@ Bench demo, 2561x1601, SMAA 3, `r_ao 4`, `r_vsync 3`, RTX 4070 Laptop:
 sun cascades 0.42, sun shadow mask 0.27, ssao_apply 0.20, smaa_blend 0.18, tone-map 0.13, smaa_edges 0.13, depth
 prepass 0.12, ssao_depth 0.13, depth copy 0.10, 2 AO blurs 0.10 each, present 0.07.
 
+**Profiler bucket fix (2026-10-23).** `RB_GpuMark` charges the time since the previous mark to the named bucket. After the
+2026-10-16 move of the AO multiply between the opaque and translucent lists, no mark followed the opaque draw, so
+`ssao_apply` read ~1.33 ms at 2560x1600 while the real AO blit is ~0.25 ms. A `scene_opaque` mark now follows the opaque
+draw; `ssao_apply` is the blit only and `scene` is fog defer + translucents. Rule: when moving passes in `RB_DrawSurfs` /
+`RB_PostProcess`, check every expensive draw is followed by its own mark. Current profile (2560x1600, 165 fps): scene_opaque
+1.18, sunshadow 0.64, ssao_ao 0.49, smaa_t2x 0.41, ssao_apply 0.27. One-at-a-time A/B of `scene_opaque`: parallax off
+-0.59 ms (needs normal mapping, same figure), `r_codSpecular 0` -0.30, cubemaps -0.03, `r_dlightMode 0` in the noise.
+
 Left as is: the remaining passes are the visual features doing real work. Removing the full-res depth copy
 (`hdrDepth`, 0.1 ms) would mean sampling the depth texture while it is attached to the FBO being drawn (a GL
 feedback loop). Cascade 3 (whole level) is already cached until the sun moves.

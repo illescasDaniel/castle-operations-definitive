@@ -108,6 +108,35 @@ pause menu with MSAA). Cheap alternative: run the game under gamescope (`-w 1280
 | `timescale 0.25` | Slow motion to inspect transitions (cheat) |
 | `cg_thirdPerson 1` | See the player's body / bbox behaviour (cheat) |
 | `savegame t1` / `loadgame t1` | Savegame robustness |
+| `viewpos` | Prints the position and a ready `setviewpos x y z yaw pitch` line (a "spot" for the scripts below) |
+| `normalcov` | Next rendered frame: visible shaders with surface count, diffuse image and normal/height status (`parallax`, `_nh found, parallax off`, `normal map`, `NO NORMAL MAP`, `not lightall`, `normals off (cvars)`) plus the covered % of lit surfaces (rend2, 2026-10-23) |
+| `gpuprof` / `gpuprof reset` | Per-pass GPU timing table (needs `r_gpuProfile 1`; see `docs/performance.md`) |
+
+## Scripted headless runs (`tools/rtcw-mcp`, `shot-at.sh`)
+
+`scripts/shot-at.sh`, `shots.sh`, `bench.sh`, `load-test.sh` and `spin-test.sh` run the game off-screen (headless
+gamescope, `SHOT_HEADLESS=1` for the shot scripts) and restore `wolfconfig.cfg`. `tools/rtcw-mcp/` is an MCP server
+(README there) that wraps them as tools (`screenshot`, `texture_coverage`, `console_log`, `load_times`, `benchmark`,
+`compare_shots`, `build`) with a lock file and a refusal when a game is already running.
+
+Gotchas the scripts and the server handle:
+
+- **Intro cutscenes** must be skipped with `cmd cameraInterrupt` (`SHOT_PRE` in `shot-at.sh`) or the shot shows the
+  cutscene camera / comes out black:
+
+  | Map | Needs skip | Why |
+  |---|---|---|
+  | `escape1` | yes | starts with a cutscene |
+  | `crypt1` | yes | screenshots are black until the intro is skipped |
+  | others (e.g. `trainyard`) | no | |
+
+  The table lives in `INTRO_SKIP_MAPS` in `tools/rtcw-mcp/rtcw_core.py`; add maps there when found.
+- Waits (`wait N`) count frames, not ms. End scripted runs with `quit` after generous waits: a `+quit` during a map
+  load segfaults, and SIGINT/kill triggers the "safe options" popup on the next start.
+- Console output goes to `run/home/codmod/rtcwconsole.log` (`run.sh` sets `logfile 2`).
+- A fresh, empty `fs_homepath` crashes at start; always use the real `run/home`.
+- `con_notifytime -1` keeps console echoes out of screenshots (`cg_draw2D 0` does not hide them).
+- Image diffs: `scripts/shots-diff.py A B` handles both `shotNN.tga` (`shots.sh`) and `spotNN.tga` (`shot-at.sh`).
 
 ## Good test spots
 
@@ -121,6 +150,8 @@ pause menu with MSAA). Cheap alternative: run the game under gamescope (`-w 1280
 - Speeds: read the HUD's horizontal speed while holding the input for >1 s. Tolerance ±2%.
 - Durations: HUD timers (stamina, slide ms) or `cg_drawTimer`.
 - Distances: `viewpos` (or `where`) before and after a slide. Compute the planar distance.
+- Normal/height coverage at a spot: `normalcov` (or the `texture_coverage` tool). Trainyard stone wall
+  `-1012.1 481.6 88.1 -143.3 9.5` should report `textures/town_wall/town_c22a1burn` as `parallax`.
 - Spread: 20 shots at a wall from a fixed `setviewpos`, compare hip vs ADS decal spread.
 
 ## Regression list (run before each phase report)

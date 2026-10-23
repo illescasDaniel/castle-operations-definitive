@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compare two scripts/shots.sh runs: per shot, the share of differing pixels and the largest
+"""Compare two scripts/shots.sh or shot-at.sh runs: per shot, the share of differing pixels and the largest
 per-channel difference (0-255). Writes an amplified diff image next to the second set."""
 import sys
 from pathlib import Path
@@ -15,7 +15,8 @@ def main() -> int:
         print("usage: scripts/shots-diff.py LABEL_A LABEL_B", file=sys.stderr)
         return 2
     a_dir, b_dir = ROOT / sys.argv[1], ROOT / sys.argv[2]
-    shots = sorted(p.name for p in a_dir.glob("shot*.tga"))
+    # shot*.tga = scripts/shots.sh (bench demo), spot*.tga = scripts/shot-at.sh (fixed camera spots)
+    shots = sorted(p.name for pat in ("shot*.tga", "spot*.tga") for p in a_dir.glob(pat))
     if not shots:
         print(f"no shots in {a_dir}", file=sys.stderr)
         return 1

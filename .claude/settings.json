@@ -1,6 +1,7 @@
 {
   "enabledMcpjsonServers": [
-    "jevmem"
+    "jevmem",
+    "rtcw"
   ],
   "hooks": {
     "SessionStart": [

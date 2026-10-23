@@ -127,12 +127,13 @@ uncapped, so uncapped input latency can be a frame or two higher; a cap or `r_vs
 `r_gpuProfile 1` (`tr_gpuprof.c`) times each render pass with GPU timestamp queries, read a few frames later without
 blocking. The table prints with the `gpuprof` command (`gpuprof reset` clears it) and at renderer shutdown, so a
 `bench.sh --set r_gpuProfile 1` run leaves it at the end of `run/home/codmod/rtcwconsole.log`
-(`grep "codmod gpuprof"`). Columns: average ms per 3D frame, share of GPU frame time, worst frame, % of frames that
+(`grep "codmod gpuprof"`). `bench.sh --gpuprof` does this for you: it prints each run's table (`gpu:` lines) and saves it as
+`benchmarks/STAMP-LABEL-runN.gpuprof.txt` (the `benchmark` MCP tool returns it parsed). Columns: average ms per 3D frame, share of GPU frame time, worst frame, % of frames that
 ran the pass.
 
 Image checks: `scripts/shots.sh --label NAME [--set CVAR VALUE]` takes 6 deterministic screenshots of the bench demo
 (`timedemo` steps 50 ms of game time per frame; the same build and settings gives bit-identical shots), and
-`scripts/shots-diff.py A B` prints per-shot differing pixels and max difference, and writes amplified diff PNGs.
+`scripts/shots-diff.py A B` (also for `shot-at.sh`'s `spotNN.tga`) prints per-shot differing pixels and max difference, and writes amplified diff PNGs.
 Caveat: with `r_ssaoDepthMips 0`, shot 1 reproducibly lands on a different demo frame (cause unknown; other cvars do
 not do this), so compare shots 2-6 for that cvar.
 

@@ -16,7 +16,7 @@ LAUNCHER="$ROOT/scripts/run.sh"
 usage() {
 	cat <<'USAGE'
 Usage: scripts/bench.sh [--label NAME] [--runs N] [--mangohud] [--windowed WxH]
-                        [--set CVAR VALUE]... [--env KEY=VAL]... [--gpumon]
+                        [--set CVAR VALUE]... [--env KEY=VAL]... [--gpumon] [--gpuprof]
 
   --label NAME   Tag for results.csv and saved frame-time logs (default: run)
   --runs N       Runs (default 3); run 1 is a warm-up, excluded from the median
@@ -24,6 +24,8 @@ Usage: scripts/bench.sh [--label NAME] [--runs N] [--mangohud] [--windowed WxH]
   --windowed WxH Pass through to run.sh
   --set C V      Extra "+set C V" (repeatable; wins over codmod.cfg and saved settings)
   --env K=V      Environment variable for the game process (repeatable)
+  --gpuprof      Set r_gpuProfile 1 and print the per-pass GPU timing table of each run (also saved as
+                 benchmarks/STAMP-LABEL-runN.gpuprof.txt)
   --gpumon       Sample GPU/memory utilisation with nvidia-smi during each run
 USAGE
 }
@@ -33,6 +35,7 @@ SET_ARGS=()
 ENV_ARGS=()
 SET_DESC=""
 GPUMON=0
+GPUPROF=0
 while [[ $# -gt 0 ]]; do
 	case "$1" in
 		--label) LABEL="$2"; shift 2 ;;
@@ -42,6 +45,7 @@ while [[ $# -gt 0 ]]; do
 		--set) SET_ARGS+=("$2=$3"); SET_DESC+=" $2=$3"; shift 3 ;;
 		--env) ENV_ARGS+=("$2"); SET_DESC+=" $2"; shift 2 ;;
 		--gpumon) GPUMON=1; shift ;;
+		--gpuprof) GPUPROF=1; SET_ARGS+=("r_gpuProfile=1"); SET_DESC+=" r_gpuProfile=1"; shift ;;
 		-h|--help) usage; exit 0 ;;
 		*) echo "unknown arg: $1" >&2; usage >&2; exit 1 ;;
 	esac
@@ -115,6 +119,11 @@ for ((i = 1; i <= RUNS; i++)); do
 	printf '   frames=%s  %ss  avg %s fps  1%%low %s fps  P99 %s ms  max %s ms  hitches %s\n' \
 		"${kv[frames]}" "${kv[seconds]}" "${kv[avg_fps]}" "${kv[low1_fps]}" "${kv[p99_ms]}" "${kv[max_ms]}" "${kv[hitches]}"
 	echo "$STAMP,$LABEL,$i,$SHA_OUTER,$SHA_ENGINE,${kv[frames]},${kv[seconds]},${kv[avg_fps]},${kv[low1_fps]},${kv[median_ms]},${kv[p95_ms]},${kv[p99_ms]},${kv[max_ms]},${kv[hitches]},\"$cfgline${SET_DESC:+ |$SET_DESC} $gpuinfo\"" >> "$OUT/results.csv"
+	if ((GPUPROF)); then
+		# the table is printed at renderer shutdown: take the last block of "codmod gpuprof:" lines
+		grep -a 'codmod gpuprof:' "$LOG" | sed 's/^.*codmod gpuprof: //' | awk '/^frames=/{buf=""} {buf=buf $0 "\n"} END{printf "%s", buf}' > "$OUT/$STAMP-$LABEL-run$i.gpuprof.txt"
+		sed 's/^/   gpu: /' "$OUT/$STAMP-$LABEL-run$i.gpuprof.txt"
+	fi
 	cp -f "$HOME_CFG/benchmarks/last_frametimes.txt" "$OUT/$STAMP-$LABEL-run$i.txt" 2>/dev/null || true
 	if ((i > 1 || RUNS == 1)); then
 		AVGS+=("${kv[avg_fps]}"); LOWS+=("${kv[low1_fps]}"); P99S+=("${kv[p99_ms]}")

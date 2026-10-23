@@ -3,7 +3,18 @@
     "jevmem": {
       "type": "stdio",
       "command": "uvx",
-      "args": ["--from", "jevmem", "jevmem-mcp"]
+      "args": [
+        "--from",
+        "jevmem",
+        "jevmem-mcp"
+      ]
+    },
+    "rtcw": {
+      "type": "stdio",
+      "command": "tools/rtcw-mcp/.venv/bin/python",
+      "args": [
+        "tools/rtcw-mcp/server.py"
+      ]
     }
   }
 }

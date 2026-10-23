@@ -2,6 +2,7 @@
 
 Measures per-frame cost on a fixed, recorded route. Benchmark only: it does not change rendering,
 the present path, or any saved cvar (see "Safety rules" in `docs/testing.md`).
+Loading-screen smoothness (present gaps during map loads) is a separate topic: [loading-screen.md](loading-screen.md).
 
 ## How it works
 

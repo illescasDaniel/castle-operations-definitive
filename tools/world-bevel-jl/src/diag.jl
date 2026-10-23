@@ -64,12 +64,16 @@ end
 
 "Lightmap related statistics after run!: non-finite lm, strips/caps without lightmap, halves on different pages."
 function lm_diag!(bv::Bevel)
-    nonfinite = 0; nolm = 0; nolm_cap = 0; ntri = 0
+    nonfinite = 0; badgeo = 0; nolm = 0; nolm_cap = 0; ntri = 0
     for f in bv.flist
         isempty(f.strip) && continue
         for (k, T) in enumerate(f.strip)
             ntri += 1
             all(q -> isfinite(q[6]) && isfinite(q[7]), T) || (nonfinite += 1)
+            if !all(q -> all(i -> isfinite(q[i]), 1:5) && abs(q[4]) < 1e4 && abs(q[5]) < 1e4, T)
+                badgeo += 1
+                badgeo <= 20 && @printf("  bad geometry/st tri: shader=%s face=%d kind=%d xyz (%.1f %.1f %.1f) st (%g %g)\n", f.name, f.si, f.skind[k], T[1][1], T[1][2], T[1][3], T[1][4], T[1][5])
+            end
             if !f.has_lm
                 nolm += 1
                 f.skind[k] == 0x03 && (nolm_cap += 1)

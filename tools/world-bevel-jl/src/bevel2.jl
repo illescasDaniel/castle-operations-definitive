@@ -537,6 +537,112 @@ function covered(bv::Bevel, gr::Group, store::Store, w::V3, side::Int)
     true
 end
 
+"""
+Rounding a convex edge removes a wedge of solid at its tip. If another surface (not on the run's two faces, not coplanar
+with them) has a vertex sitting on the edge line strictly inside the run, e.g. a plinth or stair block touching the
+corner, grazing views through the wedge reach a spot with no drawn surface and show the clear colour (white holes).
+Leave such runs un-bevelled.
+"""
+function reject_touched_edges!(bv::Bevel, order::Vector{Int})
+    ps = V3[]; ns = V3[]; sf = Int[]
+    for (si, sr) in enumerate(bv.S)
+        sr.typ == MST_PLANAR || continue
+        for k in 0:sr.nv-1
+            v = bv.V[sr.fv+k+1]
+            push!(ps, V3(v.x, v.y, v.z)); push!(ns, V3(v.nx, v.ny, v.nz)); push!(sf, si - 1)
+        end
+    end
+    for gid in order
+        gr = bv.groups[gid]
+        gr.ok || continue
+        len = gr.hi - gr.lo
+        len > 2 * gr.r || continue
+        m = 0.25 + 0.0 * gr.r
+        hit = false
+        for i in eachindex(ps)
+            w = ps[i] - gr.P0
+            t = vdot(w, gr.d)
+            (t > gr.lo + 0.5 && t < gr.hi - 0.5) || continue
+            q = w - t * gr.d
+            vdot(q, q) <= m * m || continue
+            (sf[i] in gr.fA || sf[i] in gr.fB) && continue
+            n = ns[i]
+            # a surface continuing one of the run's planes (same facing) is just part of that wall; an opposite-facing one
+            # means a second solid touches the edge (diagonal contact), so it counts
+            (vdot(n, gr.nA) > 0.99 || vdot(n, gr.nB) > 0.99) && continue
+            hit = true
+            break
+        end
+        if hit
+            gr.ok = false
+            inc!(bv, "rej_touched_edge")
+        end
+    end
+    # Two solids touching along the same edge line (diagonal contact, a checkerboard in plan): rounding either one opens
+    # a slit between them. Reject every run that shares its line and an overlapping range with a run of other faces.
+    lines = Dict{NTuple{6,Int},Vector{Int}}()
+    for gid in order
+        gr = bv.groups[gid]
+        gr.ok || continue
+        d = gr.d
+        sg = (d.x != 0 ? d.x : d.y != 0 ? d.y : d.z) < 0 ? -1.0 : 1.0
+        d = d * sg
+        q = gr.P0 - gr.d * vdot(gr.P0, gr.d)
+        key = (round(Int, q.x * 4), round(Int, q.y * 4), round(Int, q.z * 4), round(Int, d.x * 64), round(Int, d.y * 64), round(Int, d.z * 64))
+        push!(get!(Vector{Int}, lines, key), gid)
+    end
+    for ids in values(lines)
+        length(ids) > 1 || continue
+        drop = Int[]
+        for (i, a) in enumerate(ids), b in ids[i+1:end]
+            ga, gb = bv.groups[a], bv.groups[b]
+            isempty(intersect(ga.fA.keys, gb.fA.keys)) && isempty(intersect(ga.fA.keys, gb.fB.keys)) &&
+                isempty(intersect(ga.fB.keys, gb.fA.keys)) && isempty(intersect(ga.fB.keys, gb.fB.keys)) || continue
+            # ranges along the shared direction
+            ta0, ta1 = sort([vdot(ga.P0 + ga.d * ga.lo, ga.d), vdot(ga.P0 + ga.d * ga.hi, ga.d)])
+            tb0, tb1 = sort([vdot(gb.P0 + gb.d * gb.lo, ga.d), vdot(gb.P0 + gb.d * gb.hi, ga.d)])
+            min(ta1, tb1) - max(ta0, tb0) > 1.0 || continue
+            # diagonal contact: the solids sit in opposite quadrants, i.e. each run's open side faces the other's solid
+            vdot(ga.nA + ga.nB, gb.nA + gb.nB) < -0.5 || continue
+            push!(drop, a, b)
+        end
+        for g in unique(drop)
+            bv.groups[g].ok = false
+            inc!(bv, "rej_diagonal_contact")
+        end
+    end
+    # Box vertex whose third edge (e.g. a low step riser) was not bevelled: a mitre of the two other edges leaves a
+    # hole at the vertex, so revert those mitres to plain tapers.
+    for gid in order
+        gr = bv.groups[gid]
+        gr.ok || continue
+        for e in (0, 1)
+            m = gr.mitre[e+1]
+            m === nothing && continue
+            pg = bv.groups[m.partner[1]]
+            # the two non-shared face normals
+            shared = abs(vdot(gr.nB, pg.nB)) > 0.99 || abs(vdot(gr.nB, pg.nA)) > 0.99 ? gr.nB : gr.nA
+            n1 = shared === gr.nB ? gr.nA : gr.nB
+            n2 = abs(vdot(shared, pg.nA)) > 0.99 ? pg.nB : pg.nA
+            abs(vdot(n1, n2)) < 0.1 || continue
+            t3 = vcross(n1, n2); t3 = t3 / sqrt(vdot(t3, t3))
+            pe = gr.P0 + gr.d * (e == 0 ? gr.lo : gr.hi)
+            found = false
+            for g3 in bv.groups
+                g3.ok && abs(abs(vdot(g3.d, t3)) - 1) < 1e-3 || continue
+                w = pe - g3.P0
+                t = vdot(w, g3.d)
+                q = w - t * g3.d
+                (vdot(q, q) < 0.09 && t > g3.lo - 0.3 && t < g3.hi + 0.3) && (found = true; break)
+            end
+            if !found
+                clear_mitre!(bv, gr, e)
+                inc!(bv, "mitre_reverted_box_vertex")
+            end
+        end
+    end
+end
+
 function drop_overlapping!(bv::Bevel, order::Vector{Int})
     placed = Dict{Int,Vector{Tuple{Vector{P2},Int}}}()
     for gid in sort(order, by=g -> -(bv.groups[g].hi - bv.groups[g].lo), alg=MergeSort)

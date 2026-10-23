@@ -19,6 +19,15 @@ nothing has to be installed. The first run precompiles the package (~5 s, cached
 --[no-]mitre --wall-dot --smooth-models [REGEX] --no-bevel --stats`. Not ported: `--validate --roundtrip --obj
 --dump-rej --region --all`. Paks are read from `run/main/*.pk3`; nothing under `run/` is written.
 
+## Build all maps
+
+    scripts/build-world.sh            # all maps, JOBS=8 in parallel (~25 s total); or name maps: scripts/build-world.sh escape1
+
+Use this Julia tool, not the Python one: it has the white-hole fixes (`reject_touched_edges!` in `bevel2.jl`: a convex
+edge is left un-rounded when a foreign surface touches it mid-run, when two solids touch diagonally along one edge line,
+and box-vertex mitres whose third edge is sharp become tapers). Pack deflate level is 6 (level 9 cost most of the build
+time for ~1% size). `--hole-scan` is an unfinished debug option (ray based, many false positives).
+
 ## Check against the Python output
 
     python3 -I tools/world-bevel-jl/compare_bsp.py PY.pk3 JL.pk3 escape1

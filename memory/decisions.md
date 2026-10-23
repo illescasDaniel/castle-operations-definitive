@@ -2,6 +2,13 @@
 
 Append-only log, newest first. Never rewrite history: if a decision is reversed, add a new entry that says so.
 
+## 2026-10-23: Bevel white holes fixed in the Julia tool; build-world.sh is Julia-only and parallel
+Rounding a convex edge removes a wedge; rays then hit no surface (white) when a foreign surface touches the edge
+mid-run, when two solids touch diagonally along one edge line, or at a box-vertex mitre whose third edge is sharp.
+`reject_touched_edges!` (bevel2.jl) leaves those runs un-rounded / tapers the mitre. Pack deflate 9 -> 6 (7 of 12.5 s),
+`build-world.sh` runs 8 maps in parallel (all 32 maps ~23 s) and no longer falls back to the Python tool (no fixes there).
+`--hole-scan` is unfinished (ray based, false positives). Also: `cod_optRegen` defaults to 0 (health regen off).
+
 ## 2026-10-23: Normals everywhere (wide classifier, brightening, MDS tangents) and gentler HD upscale
 
 - **Context:** only 17% of trainyard (40% of all SP) surfaces had a `_nh`; characters had none; walls and characters showed dark outlines/halos.

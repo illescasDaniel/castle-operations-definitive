@@ -17,7 +17,7 @@ function main(args::Vector{String}; root=nothing)
     root === nothing && (root = normpath(joinpath(@__DIR__, "..", "..", "..")))
     a = Opts()
     map = "escape1"; pk3 = nothing; smooth = nothing; nobevel = false; stats = false; dump = nothing
-    probe = nothing; fan = 0.0; report = nothing
+    probe = nothing; fan = 0.0; report = nothing; scan = false
     i = 1
     nxt() = (i += 1; i > length(args) && error("missing value for $(args[i-1])"); args[i])
     while i <= length(args)
@@ -66,19 +66,24 @@ function main(args::Vector{String}; root=nothing)
         elseif x == "--probe-spot"; probe = Tuple(parse.(Float64, split(replace(nxt(), "," => "."))))
         elseif x == "--probe-fan"; fan = parse(Float64, nxt())
         elseif x == "--seam-report"; report = nxt()
+        elseif x == "--hole-scan"; scan = true
         elseif x == "--no-bevel"; nobevel = true
         elseif x == "--stats"; stats = true
         elseif x == "--dump-near"
             dump = (V3(parse(Float64, nxt()), parse(Float64, nxt()), parse(Float64, nxt())), parse(Float64, nxt()))
         else
-            error("unknown option $x (supported: --map --pk3 --radius --segments --taper --min-angle --max-angle --row-tol --min-length --min-radius --skip-shader --surface-type --uv-mode --[no-]merge-polys --[no-]wall-ends --[no-]mitre --wall-dot --[no-]lm-blend --smooth-models [REGEX] --no-bevel --stats --dump-near X Y Z R --probe-spot \"x y z yaw pitch\" --probe-fan DEG --seam-report FILE --[no-]flip --flip-skip RE --soft-width --wrap-prefer --lm-pitch --debug-shader uvgrid --debug-lm class)")
+            error("unknown option $x (supported: --map --pk3 --radius --segments --taper --min-angle --max-angle --row-tol --min-length --min-radius --skip-shader --surface-type --uv-mode --[no-]merge-polys --[no-]wall-ends --[no-]mitre --wall-dot --[no-]lm-blend --smooth-models [REGEX] --no-bevel --stats --dump-near X Y Z R --probe-spot \"x y z yaw pitch\" --probe-fan DEG --seam-report FILE --hole-scan --[no-]flip --flip-skip RE --soft-width --wrap-prefer --lm-pitch --debug-shader uvgrid --debug-lm class)")
         end
         i += 1
     end
     t0 = time()
     orig = Bsp(find_bsp(root, map))
+    @printf("  [%6.2fs] load bsp\n", time() - t0)
     bv = Bevel(orig, a)
+    @printf("  [%6.2fs] init bevel\n", time() - t0)
     new = nobevel ? orig : run!(bv)
+    @printf("  [%6.2fs] run! done\n", time() - t0)
+    new_prelim = new
     t1 = time()
     if smooth !== nothing
         new = smooth_trisoup(new, smooth)
@@ -90,9 +95,14 @@ function main(args::Vector{String}; root=nothing)
         dump !== nothing && dump_near(bv, dump[1], dump[2])
         probe !== nothing && (length(probe) == 5 || error("--probe-spot needs \"x y z yaw pitch\"")) && probe_spot(bv, probe, fan)
         report !== nothing && write_seam_report(bv, report)
+        scan && hole_scan(bv, orig, new_prelim)
     end
     (!nobevel && (stats || pk3 === nothing)) && (print_stats(bv); print_lm_diag(bv))
-    pk3 !== nothing && write_pk3(root, pk3, map, write_bsp(new))
+    tw = time()
+    bspdata = pk3 !== nothing ? write_bsp(new) : UInt8[]
+    pk3 !== nothing && @printf("  [%6.2fs] write_bsp\n", time() - tw)
+    pk3 !== nothing && write_pk3(root, pk3, map, bspdata)
+    pk3 !== nothing && @printf("  [%6.2fs] write_pk3 incl. zip\n", time() - tw)
     @printf("total %.2fs\n", time() - t0)
     return 0
 end

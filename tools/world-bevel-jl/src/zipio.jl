@@ -36,7 +36,8 @@ function raw_inflate(src::AbstractVector{UInt8}, usize::Integer)
     out
 end
 
-function raw_deflate(src::AbstractVector{UInt8}; level=9)
+# level 6: ~6x faster than 9 for a ~1% larger pack (the BSP deflate was 60% of a map build at level 9)
+function raw_deflate(src::AbstractVector{UInt8}; level=6)
     zs = Ref(ZStream())
     rc = ccall((:deflateInit2_, Zlib_jll.libz), Cint, (Ref{ZStream}, Cint, Cint, Cint, Cint, Cint, Cstring, Cint),
                zs, level, 8, -15, 8, 0, zlib_version(), sizeof(ZStream))

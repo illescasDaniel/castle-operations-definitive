@@ -3,7 +3,7 @@
 #   run/codmod/codmod_smooth.pk3       character bodies (MDS), tools/model-smooth/model_smooth.py
 #   run/codmod/codmod_smooth_mdc.pk3   weapons, heads, props (MDC),  tools/model-smooth/mdc_smooth.py
 #   run/codmod/codmod_bevel_MAP.pk3    rounded wall corners, connected textures and smoothed baked props for every map
-#                                      (tools/world-bevel-jl with Julia, about 3 min for all 32; the Python tool is the fallback, ~1 h)
+#                                      (tools/world-bevel-jl with Julia, about 25 s for all 32 in parallel; Julia is required)
 # Optional: not run by setup/install. Delete a pack to turn that part off.
 #   ./scripts/build-geometry.sh              everything
 #   ./scripts/build-geometry.sh --models     only the model packs

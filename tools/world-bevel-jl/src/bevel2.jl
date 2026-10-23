@@ -115,20 +115,24 @@ function find_corners!(bv::Bevel, order::Vector{Int})
         normals[gr.pk[2]] = gr.nB
     end
     bv.corners = Corner[]
+    empty!(bv.rej_log)
     seen = Set{Int}()
     for (k, (_g, _e, p)) in enumerate(ends)
         k in seen && continue
         near = near_ends(grid, ends, p)
         union!(seen, near)
-        length(near) < 3 && continue
+        if length(near) < 3
+            length(near) == 2 && push!(bv.rej_log, ("two", p))
+            continue
+        end
         if length(near) != 3
-            inc!(bv, "corner_rej_not_three_runs"); continue
+            inc!(bv, "corner_rej_not_three_runs"); push!(bv.rej_log, ("n$(length(near))", p)); continue
         end
         gids = [ends[j][1] for j in near]
         pks = [bv.groups[g].pk for g in gids]
         planes = Set(x for pk in pks for x in pk)
         if length(Set(gids)) != 3 || length(planes) != 3 || length(Set(pks)) != 3
-            inc!(bv, "corner_rej_not_a_box_vertex"); continue
+            inc!(bv, "corner_rej_not_a_box_vertex"); push!(bv.rej_log, ("nobox", p)); continue
         end
         ok = true
         for j in near
@@ -139,7 +143,7 @@ function find_corners!(bv::Bevel, order::Vector{Int})
             vdot(u, n3) > -0.985 && (ok = false)
         end
         if !ok
-            inc!(bv, "corner_rej_not_orthogonal"); continue
+            inc!(bv, "corner_rej_not_orthogonal"); push!(bv.rej_log, ("nonorth", p)); continue
         end
         pos = ZERO3
         for j in near
@@ -164,7 +168,7 @@ function find_corners!(bv::Bevel, order::Vector{Int})
     for cr in bv.corners
         te = corner_extents(bv, cr)
         if te === nothing
-            inc!(bv, "corner_rej_skewed"); continue
+            inc!(bv, "corner_rej_skewed"); push!(bv.rej_log, ("skewed", cr.pos)); continue
         end
         for ((g, e), t) in zip(cr.ends, te)
             bv.groups[g].corner[e+1] = true
@@ -611,8 +615,13 @@ function reject_touched_edges!(bv::Bevel, order::Vector{Int})
             inc!(bv, "rej_diagonal_contact")
         end
     end
-    # Box vertex whose third edge (e.g. a low step riser) was not bevelled: a mitre of the two other edges leaves a
-    # hole at the vertex, so revert those mitres to plain tapers.
+    revert_box_vertex_mitres!(bv, order)
+end
+
+# Box vertex whose third edge (e.g. a low step riser) was not bevelled: a mitre of the two other edges leaves a
+# hole at the vertex, so revert those mitres to plain tapers. Runs again after `drop_overlapping!`, which can drop the
+# third edge after the first check accepted the mitre.
+function revert_box_vertex_mitres!(bv::Bevel, order::Vector{Int})
     for gid in order
         gr = bv.groups[gid]
         gr.ok || continue

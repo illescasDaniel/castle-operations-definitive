@@ -18,6 +18,7 @@ function main(args::Vector{String}; root=nothing)
     a = Opts()
     map = "escape1"; pk3 = nothing; smooth = nothing; nobevel = false; stats = false; dump = nothing
     probe = nothing; fan = 0.0; report = nothing; scan = false
+    validate_ = false; roundtrip = false; all = false; obj = nothing; region = nothing; dumprej = nothing
     i = 1
     nxt() = (i += 1; i > length(args) && error("missing value for $(args[i-1])"); args[i])
     while i <= length(args)
@@ -28,7 +29,8 @@ function main(args::Vector{String}; root=nothing)
             x = args[i]
         end
         if x == "--map"; map = nxt()
-        elseif x == "--pk3"; pk3 = nxt()
+        elseif x == "--pk3"
+            pk3 = (i < length(args) && !startswith(args[i+1], "--")) ? nxt() : joinpath(root, "run/codmod/codmod_bevel.pk3")
         elseif x == "--radius"; a.radius = parse(Float64, nxt())
         elseif x == "--segments"; a.segments = parse(Int, nxt())
         elseif x == "--taper"; a.taper = parse(Float64, nxt())
@@ -67,15 +69,23 @@ function main(args::Vector{String}; root=nothing)
         elseif x == "--probe-fan"; fan = parse(Float64, nxt())
         elseif x == "--seam-report"; report = nxt()
         elseif x == "--hole-scan"; scan = true
+        elseif x == "--no-reject-touched"; a.reject_touched = false
+        elseif x == "--validate"; validate_ = true
+        elseif x == "--roundtrip"; roundtrip = true
+        elseif x == "--all"; all = true
+        elseif x == "--obj"; obj = nxt()
+        elseif x == "--region"; region = ntuple(_ -> parse(Float64, nxt()), 6)
+        elseif x == "--dump-rej"; dumprej = ntuple(_ -> parse(Float64, nxt()), 6)
         elseif x == "--no-bevel"; nobevel = true
         elseif x == "--stats"; stats = true
         elseif x == "--dump-near"
             dump = (V3(parse(Float64, nxt()), parse(Float64, nxt()), parse(Float64, nxt())), parse(Float64, nxt()))
         else
-            error("unknown option $x (supported: --map --pk3 --radius --segments --taper --min-angle --max-angle --row-tol --min-length --min-radius --skip-shader --surface-type --uv-mode --[no-]merge-polys --[no-]wall-ends --[no-]mitre --wall-dot --[no-]lm-blend --smooth-models [REGEX] --no-bevel --stats --dump-near X Y Z R --probe-spot \"x y z yaw pitch\" --probe-fan DEG --seam-report FILE --hole-scan --[no-]flip --flip-skip RE --soft-width --wrap-prefer --lm-pitch --debug-shader uvgrid --debug-lm class)")
+            error("unknown option $x (supported: --map --pk3 --radius --segments --taper --min-angle --max-angle --row-tol --min-length --min-radius --skip-shader --surface-type --uv-mode --[no-]merge-polys --[no-]wall-ends --[no-]mitre --wall-dot --[no-]lm-blend --smooth-models [REGEX] --no-bevel --stats --validate --roundtrip --all --obj OUT.obj --region X0 Y0 Z0 X1 Y1 Z1 --dump-rej X0 Y0 Z0 X1 Y1 Z1 --dump-near X Y Z R --probe-spot \"x y z yaw pitch\" --probe-fan DEG --seam-report FILE --hole-scan --no-reject-touched --[no-]flip --flip-skip RE --soft-width --wrap-prefer --lm-pitch --debug-shader uvgrid --debug-lm class)")
         end
         i += 1
     end
+    roundtrip && return cmd_roundtrip(root, all, map) ? 0 : 1
     t0 = time()
     orig = Bsp(find_bsp(root, map))
     @printf("  [%6.2fs] load bsp\n", time() - t0)
@@ -83,7 +93,6 @@ function main(args::Vector{String}; root=nothing)
     @printf("  [%6.2fs] init bevel\n", time() - t0)
     new = nobevel ? orig : run!(bv)
     @printf("  [%6.2fs] run! done\n", time() - t0)
-    new_prelim = new
     t1 = time()
     if smooth !== nothing
         new = smooth_trisoup(new, smooth)
@@ -95,14 +104,31 @@ function main(args::Vector{String}; root=nothing)
         dump !== nothing && dump_near(bv, dump[1], dump[2])
         probe !== nothing && (length(probe) == 5 || error("--probe-spot needs \"x y z yaw pitch\"")) && probe_spot(bv, probe, fan)
         report !== nothing && write_seam_report(bv, report)
-        scan && hole_scan(bv, orig, new_prelim)
+        scan && hole_scan(bv)
     end
-    (!nobevel && (stats || pk3 === nothing)) && (print_stats(bv); print_lm_diag(bv))
+    (!nobevel && (stats || !(pk3 !== nothing || obj !== nothing || validate_))) && (print_stats(bv); print_lm_diag(bv))
+    dumprej !== nothing && !nobevel && dump_rej(bv, dumprej)
+    ok = true
+    if validate_ && !nobevel
+        res, gaps = validate(orig, new, bv)
+        for (name, pass, det) in res
+            println("[", pass ? "PASS" : "FAIL", "] ", name, "  ", det)
+            ok &= pass
+        end
+        for (pa, pb) in gaps[1:min(end, haskey(ENV, "WB_GAPS") ? 100000 : 10)]
+            @printf("   unmatched strip edge [%.3f %.3f %.3f] [%.3f %.3f %.3f]\n", pa.x, pa.y, pa.z, pb.x, pb.y, pb.z)
+        end
+    end
+    if obj !== nothing
+        base = endswith(obj, ".obj") ? obj[1:end-4] : obj
+        write_obj(base * "_before.obj", orig, region)
+        write_obj(base * "_after.obj", new, region)
+    end
     tw = time()
     bspdata = pk3 !== nothing ? write_bsp(new) : UInt8[]
     pk3 !== nothing && @printf("  [%6.2fs] write_bsp\n", time() - tw)
     pk3 !== nothing && write_pk3(root, pk3, map, bspdata)
     pk3 !== nothing && @printf("  [%6.2fs] write_pk3 incl. zip\n", time() - tw)
     @printf("total %.2fs\n", time() - t0)
-    return 0
+    return ok ? 0 : 1
 end

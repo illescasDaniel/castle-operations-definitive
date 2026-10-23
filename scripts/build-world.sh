@@ -1,20 +1,22 @@
 #!/usr/bin/env bash
-# Build the private world packs (corner bevel + baked-prop smoothing) for all maps, or the named ones, with the Julia
-# port. Output: run/codmod/codmod_bevel_MAP.pk3 (git-ignored, derived from RTCW maps). See tools/world-bevel-jl/README.md.
+# Build the private world packs (corner bevel + baked-prop smoothing) for all maps, or the named ones, with
+# tools/world-bevel-jl. Output: run/codmod/codmod_bevel_MAP.pk3 (git-ignored, derived from RTCW maps). See tools/world-bevel-jl/README.md.
 set -uo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OUT="$ROOT/run/codmod"
 maps=("$@")
 if [[ ${#maps[@]} -eq 0 ]]; then
 	mapfile -t maps < <(python3 -I -c "
-import sys; sys.path.insert(0, '$ROOT/tools/world-bevel')
-import world_bevel as w
-print('\n'.join(w.all_maps()))")
+import glob, zipfile
+names = set()
+for p in glob.glob('$ROOT/run/main/*.pk3'):
+    with zipfile.ZipFile(p) as z:
+        names.update(n[5:-4] for n in z.namelist() if n.startswith('maps/') and n.endswith('.bsp') and '/' not in n[5:])
+print('\\n'.join(sorted(names)))")
 fi
 mkdir -p "$ROOT/benchmarks"
-# Julia only: the Python tool lacks the hole fixes (reject_touched_edges!), so it is no longer a fallback.
 if ! command -v julia >/dev/null; then
-	echo "julia not found (1.10+ required): the Python world_bevel.py leaves white holes, see tools/world-bevel-jl/README.md" >&2
+	echo "julia not found (1.10+ required), see tools/world-bevel-jl/README.md" >&2
 	exit 1
 fi
 RUN=(julia -O2 --project="$ROOT/tools/world-bevel-jl" "$ROOT/tools/world-bevel-jl/world_bevel.jl")

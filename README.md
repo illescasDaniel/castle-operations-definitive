@@ -226,9 +226,9 @@ The texture fixes (`codmod_zfix.pk3`) and specular maps (`codmod_spec.pk3`) are 
 **Optional "more geometry" packs** (rounder characters, weapons, props and wall corners; visual only, off unless built):
 `scripts/build-geometry.sh` builds them all from your own paks into private, git-ignored packs in `run/codmod/` (`--models` or
 `--world [MAP ...]` for a part). Character bodies and MDC models need python3 + numpy (about a minute); the world packs
-(`codmod_bevel_MAP.pk3`, corner bevel + connected textures + smoothed props for all 32 maps) use the Julia port, about 3 minutes
-(install Julia 1.10+, e.g. `sudo pacman -S julia`; without it the slow Python tool is used). Delete a pack to turn it off. Details:
-`tools/world-bevel-jl/README.md`, `tools/world-bevel/README.md`, `tools/model-smooth/README.md`.
+(`codmod_bevel_MAP.pk3`, corner bevel + connected textures + smoothed props for all 32 maps) use the Julia tool, about 30 seconds
+(install Julia 1.10+, e.g. `sudo pacman -S julia`; the world packs need it). Delete a pack to turn it off. Details:
+`tools/world-bevel-jl/README.md`, `tools/model-smooth/README.md`.
 
 ## HD audio (optional, local only)
 

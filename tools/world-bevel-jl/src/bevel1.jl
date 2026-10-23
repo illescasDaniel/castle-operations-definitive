@@ -1,5 +1,5 @@
 # World bevel, part 1: data types, candidate faces, boundary edges, collinear edge matching, run (group) construction.
-# This is a line-by-line port of tools/world-bevel/world_bevel.py; names are kept so the two can be compared side by side.
+# Ported line by line from the original Python prototype (since removed); names are kept so old notes still match.
 # Surface indexes (`si`) stay 0-based like in the BSP/Python; Julia array positions are 1-based.
 
 const DEFAULT_SKIP = "sky|caulk|nodraw|clip|trigger|hint|fog|water|glass|decal|slime|lava|portal|skip|origin|window|" *
@@ -21,6 +21,7 @@ Base.@kwdef mutable struct Opts
     wall_ends::Bool = true
     mitre::Bool = true
     wall_dot::Float64 = 0.99
+    reject_touched::Bool = true     # debug: false skips reject_touched_edges! (to test --hole-scan)
     lm_blend::Bool = true
     align_stretch::Float64 = 0.15  # max leftover texture offset (periods) between two same-shader faces that is spread over the strip (0 = off)
     flip::Bool = true               # P7: mirror-flip whole same-shader components so textures continue round corners
@@ -302,13 +303,18 @@ mutable struct Bevel
     endcol::Dict{Tuple{Int,Int},Vector{NTuple{3,Float64}}}   # (group, end) -> colour of each end-row vertex
     concave::Vector{Tuple{Int,Int,V3,V3}}                    # concave edge pairs (face a, face b, p0, p1) within the bevel angle range
     seams::Vector{SeamRec}
+    end_pos::Vector{V3}                                     # position of each end_log entry (--dump-rej)
+    rej_log::Vector{Tuple{String,V3}}                       # rejected box-vertex corner candidates (--dump-rej)
+    cap_edges::Vector{Tuple{V3,V3}}                         # wall-end edges lying on/in a wall face (--validate)
+    tagged::Vector{Tuple{Int,Int,Int}}                      # (surface index, clipped tris, strip tris) per modified surface (--validate)
 end
 
 function Bevel(bsp::Bsp, a::Opts)
     S = surfaces(bsp)
     Bevel(bsp, a, verts(bsp), indexes(bsp), S, shader_names(bsp), shaders(bsp), Dict{String,Float64}(),
           isempty(a.skip_shader) ? nothing : Regex(a.skip_shader, "i"), Face[], zeros(Int, length(S)), Group[], V3[], V3[], V3[], Int[],
-          Set{Tuple{Int,Int}}(), Tuple{Int,Int,V3,V3}[], Corner[], NTuple{4,Int}[], Dict{Tuple{Int,Int},String}(), String[], bsp.lumps[L_LM], LmBlock[], Dict{Tuple{Int,Int},Vector{NTuple{3,Float64}}}(), Tuple{Int,Int,V3,V3}[], SeamRec[])
+          Set{Tuple{Int,Int}}(), Tuple{Int,Int,V3,V3}[], Corner[], NTuple{4,Int}[], Dict{Tuple{Int,Int},String}(), String[], bsp.lumps[L_LM], LmBlock[], Dict{Tuple{Int,Int},Vector{NTuple{3,Float64}}}(), Tuple{Int,Int,V3,V3}[], SeamRec[],
+          V3[], Tuple{String,V3}[], Tuple{V3,V3}[], Tuple{Int,Int,Int}[])
 end
 
 inc!(bv::Bevel, k::String, v=1) = (bv.stats[k] = get(bv.stats, k, 0.0) + v; nothing)

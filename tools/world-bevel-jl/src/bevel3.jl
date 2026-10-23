@@ -505,6 +505,7 @@ function build_wall_cap!(bv::Bevel, gr::Group, e::Int, gid::Int=0)
         push_strip!(f, T, 0x03, gid, bid, p6)
         inc!(bv, "wall_cap_tris")
     end
+    isempty(pts) || (push!(bv.cap_edges, (E, pts[1])); push!(bv.cap_edges, (E, pts[end])))
     inc!(bv, "wall_caps")
 end
 
@@ -760,6 +761,7 @@ function assemble!(bv::Bevel)
         s = S[f.si+1]
         inc!(bv, "verts_orphaned", s.nv)
         mods[f.si] = (arr, idx)
+        push!(bv.tagged, (f.si, length(kc), length(ks)))
         if lu !== nothing
             ix, iy, _w, _h = lu.items[findfirst(==(0), lu.bids)]
             s = with_lm(s; lmn=lm_base + lm_stride * lu.page, lmx=lu.px + ix + 1, lmy=lu.py + iy + 1)
@@ -810,19 +812,21 @@ function run!(bv::Bevel; log=true)
     find_corners!(bv, order); lap("corners")
     find_wall_ends!(bv, order); lap("wall ends")
     find_mitres!(bv, order); lap("mitres")
-    reject_touched_edges!(bv, order); lap("touched edges")
+    bv.a.reject_touched && reject_touched_edges!(bv, order); lap("touched edges")
     drop_overlapping!(bv, order); lap("overlap")
+    bv.a.reject_touched && revert_box_vertex_mitres!(bv, order)
     revert_broken_corners!(bv)
     revert_broken_mitres!(bv)
     bv.a.uv_mode == "align" && (orient_components!(bv); align_textures!(bv); seam_resid!(bv))
     bv.a.uv_mode == "align-greedy" && align_textures_greedy!(bv)
     lap("align")
-    empty!(bv.end_log)
+    empty!(bv.end_log); empty!(bv.end_pos); empty!(bv.cap_edges); empty!(bv.tagged)
     for (gid, gr) in enumerate(bv.groups)
         gr.ok || continue
         for e in (0, 1)
             kind = gr.corner[e+1] ? "corner" : gr.mitre[e+1] !== nothing ? "mitre" : gr.wall[e+1] ? "wall" : "taper:" * get(bv.wall_why, (gid, e), "reverted")
             push!(bv.end_log, kind)
+            push!(bv.end_pos, gr.P0 + gr.d * (e == 0 ? gr.lo : gr.hi))
         end
     end
     for (gid, gr) in enumerate(bv.groups)
@@ -858,7 +862,14 @@ function run!(bv::Bevel; log=true)
                 gr.wall_cap[e+1] = true
                 inc!(bv, "wall_caps_postcut")
             end
-            gr.wall_cap[e+1] && build_wall_cap!(bv, gr, e, gid)
+            if gr.wall_cap[e+1]
+                build_wall_cap!(bv, gr, e, gid)
+            else  # end row lies inside the wall face drawn under the ledge: not a crack
+                pts = (e == 0 ? gr.row_first : gr.row_last).pts
+                for k in 1:length(pts)-1
+                    push!(bv.cap_edges, (pts[k], pts[k+1]))
+                end
+            end
         end
     end
     lap("corners+caps")

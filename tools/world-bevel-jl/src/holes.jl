@@ -1,154 +1,192 @@
-# --hole-scan: ray-based hole finder. Around every bevelled run, rays aimed at points of the ORIGINAL faces next to the
-# edge are cast against the original and the rewritten triangle sets (front faces only, like the renderer). A ray that
-# hits the original at its target but whose new hit is missing or far from the edge line goes through a gap.
+# --hole-scan: topological post-check of the final rounded runs. Rounding a convex edge removes a wedge of solid at the
+# edge; the wedge is only invisible-safe when nothing else needs it. This pass is independent of the rejection rules in
+# `reject_touched_edges!` (it works on triangles, not vertices, and on the final state of `bv.groups`), so it can catch
+# their gaps. Categories:
+#   touched   the boundary edge of a foreign original surface (not on the run's faces, not continuing one of its planes) lies on
+#             the edge line strictly inside a rounded run (a surface merely passing through the line leaves no slit)
+#   tee       same, but the foreign boundary edge crosses the line without a vertex on it (a T junction; whether this opens
+#             a visible slit is unverified, the rejection rules do not cover it)
+#   diagonal  two rounded runs on one edge line, overlapping, with unrelated faces (two solids touching diagonally)
+#   overlap   two rounded runs on one edge line, overlapping, sharing a face (double cut)
+#   mitre3    a mitred run end whose vertex has no third rounded run through it (box vertex with a sharp third edge)
+#   corner3   a box-corner run end with fewer than three rounded runs through the vertex
+# Debug: `--no-reject-touched` (Opts.reject_touched = false) skips the rejection rules so the detector can be tested.
 
-struct TriSet
-    a::Vector{V3}; e1::Vector{V3}; e2::Vector{V3}
-    cell::Float64
-    grid::Dict{NTuple{3,Int},Vector{Int32}}
+struct ScanHit
+    cat::Symbol
+    gid::Int
+    p::V3
+    note::String
 end
 
-function triset(b::Bsp; cell=32.0)
-    V = verts(b); I = indexes(b); S = surfaces(b); Sh = shaders(b)
-    A = V3[]; E1 = V3[]; E2 = V3[]
+# distance between segments [p0,p1] and [q0,q1] (closest points), plus the parameter on the first one
+function seg_seg(p0::V3, p1::V3, q0::V3, q1::V3)
+    u = p1 - p0; v = q1 - q0; w = p0 - q0
+    a = vdot(u, u); b = vdot(u, v); c = vdot(v, v); d = vdot(u, w); e = vdot(v, w)
+    D = a * c - b * b
+    sN = D < 1e-12 ? 0.0 : b * e - c * d
+    sD = D < 1e-12 ? 1.0 : D
+    tN = D < 1e-12 ? e : a * e - b * d
+    tD = D < 1e-12 ? c : D
+    if D >= 1e-12
+        if sN < 0; sN = 0.0; tN = e; tD = c
+        elseif sN > sD; sN = sD; tN = e + b; tD = c end
+    end
+    if tN < 0
+        tN = 0.0
+        if -d < 0; sN = 0.0 elseif -d > a; sN = sD else sN = -d; sD = a end
+    elseif tN > tD
+        tN = tD
+        if (-d + b) < 0; sN = 0.0 elseif (-d + b) > a; sN = sD else sN = -d + b; sD = a end
+    end
+    sc = abs(sN) < 1e-12 ? 0.0 : sN / sD
+    tc = abs(tN) < 1e-12 ? 0.0 : tN / tD
+    vnorm(w + u * sc - v * tc), sc
+end
+
+function hole_scan(bv::Bevel; maxprint=12)
+    cell = 32.0; eps = 0.25
+    # Boundary edges of all drawn planar original surfaces (edges used by one triangle of the surface), in a grid. Only a
+    # surface BOUNDARY on the edge line leaves a slit when the wedge is removed; a surface passing through the line does not.
+    ea = V3[]; eb = V3[]; en = V3[]; esf = Int[]
     grid = Dict{NTuple{3,Int},Vector{Int32}}()
-    for s in S
-        (s.typ == MST_PLANAR || s.typ == MST_TRISOUP) || continue
-        sh = Sh[s.shader+1]
-        (sh.sf & SURF_NODRAW) != 0 && continue
+    q16(p::V3) = (round(Int, p.x * 16), round(Int, p.y * 16), round(Int, p.z * 16))
+    for (si, s) in enumerate(bv.S)
+        s.typ == MST_PLANAR || continue
+        (bv.shd[s.shader+1].sf & SURF_NODRAW) != 0 && continue
+        cnt = Dict{Tuple{NTuple{3,Int},NTuple{3,Int}},Tuple{Int,V3,V3,V3}}()
         for k in 0:3:s.ni-3
-            v = ntuple(j -> V[s.fv+I[s.fi+k+j]+1], 3)
+            v = ntuple(j -> bv.V[s.fv+bv.I[s.fi+k+j]+1], 3)
             p = ntuple(j -> V3(v[j].x, v[j].y, v[j].z), 3)
-            e1 = p[2] - p[1]; e2 = p[3] - p[1]
-            vnorm(vcross(e1, e2)) < 1e-9 && continue
-            push!(A, p[1]); push!(E1, e1); push!(E2, e2)
-            id = Int32(length(A))
-            lo = (min(p[1].x, p[2].x, p[3].x), min(p[1].y, p[2].y, p[3].y), min(p[1].z, p[2].z, p[3].z))
-            hi = (max(p[1].x, p[2].x, p[3].x), max(p[1].y, p[2].y, p[3].y), max(p[1].z, p[2].z, p[3].z))
+            vnorm(vcross(p[2] - p[1], p[3] - p[1])) < 1e-9 && continue
+            nn = V3(v[1].nx, v[1].ny, v[1].nz)
+            for (u, w) in ((p[1], p[2]), (p[2], p[3]), (p[3], p[1]))
+                ku, kw = q16(u), q16(w)
+                ku == kw && continue
+                key = ku < kw ? (ku, kw) : (kw, ku)
+                c0 = get(cnt, key, (0, u, w, nn))
+                cnt[key] = (c0[1] + 1, c0[2], c0[3], c0[4])
+            end
+        end
+        for (c, u, w, nn) in values(cnt)
+            c == 1 || continue
+            push!(ea, u); push!(eb, w); push!(en, nn); push!(esf, si - 1)
+            id = Int32(length(ea))
+            lo = (min(u.x, w.x), min(u.y, w.y), min(u.z, w.z)) .- eps
+            hi = (max(u.x, w.x), max(u.y, w.y), max(u.z, w.z)) .+ eps
             c0 = floor.(Int, lo ./ cell); c1 = floor.(Int, hi ./ cell)
             for x in c0[1]:c1[1], y in c0[2]:c1[2], z in c0[3]:c1[3]
                 push!(get!(Vector{Int32}, grid, (x, y, z)), id)
             end
         end
     end
-    TriSet(A, E1, E2, cell, grid)
-end
-
-# nearest hit distance along o + t*dir, t in (0, tmax] (front faces only, or any face with anyface=true, which then
-# also returns whether the hit was a front face); Inf when none. Cells are walked with a 3D DDA.
-function cast(ts::TriSet, o::V3, dir::V3, tmax::Float64; anyface=false)
-    best = Inf; bfront = true
-    cs = ts.cell
-    ix = floor(Int, o.x / cs); iy = floor(Int, o.y / cs); iz = floor(Int, o.z / cs)
-    sx = dir.x > 0 ? 1 : -1; sy = dir.y > 0 ? 1 : -1; sz = dir.z > 0 ? 1 : -1
-    nxt(i, s, p, dd) = dd == 0 ? Inf : (((s > 0 ? i + 1 : i) * cs) - p) / dd
-    tx = nxt(ix, sx, o.x, dir.x); ty = nxt(iy, sy, o.y, dir.y); tz = nxt(iz, sz, o.z, dir.z)
-    dx = dir.x == 0 ? Inf : cs / abs(dir.x); dy = dir.y == 0 ? Inf : cs / abs(dir.y); dz = dir.z == 0 ? Inf : cs / abs(dir.z)
-    while true
-        lst = get(ts.grid, (ix, iy, iz), nothing)
-        if lst !== nothing
-            for id in lst
-                e1 = ts.e1[id]; e2 = ts.e2[id]
-                pv = vcross(dir, e2)
-                det = vdot(e1, pv)
-                (anyface ? abs(det) < 1e-12 : det >= -1e-12) && continue
-                inv = 1 / det
-                tv = o - ts.a[id]
-                u = vdot(tv, pv) * inv
-                (u < -1e-9 || u > 1 + 1e-9) && continue
-                q = vcross(tv, e1)
-                v = vdot(dir, q) * inv
-                (v < -1e-9 || u + v > 1 + 1e-9) && continue
-                t2 = vdot(e2, q) * inv
-                t2 > 1e-6 && t2 < best && (best = t2; bfront = det < 0)
-            end
-        end
-        tn = min(tx, ty, tz)
-        (best <= tn || tn > tmax) && break
-        if tx == tn
-            ix += sx; tx += dx
-        elseif ty == tn
-            iy += sy; ty += dy
-        else
-            iz += sz; tz += dz
-        end
-    end
-    anyface ? (best <= tmax ? best : Inf, bfront) : (best <= tmax ? best : Inf)
-end
-
-function hole_scan(bv::Bevel, orig::Bsp, new::Bsp; step=5.0, maxprint=100000)
-    to = triset(orig); tn = triset(new)
-    # orientation sanity check: a front-facing hit on a stock planar face from along its normal must exist
-    res = Tuple{Int,V3,V3,Float64,String}[]       # gid, target, origin, new hit dist, note
-    nrays = 0; nbad = 0
-    badg = Dict{Int,Int}()
-    allbad = Tuple{Int,V3,V3,Int,Float64,String}[]
-    first_bad = Dict{Int,Tuple{Int,V3,V3,Float64,String}}()
-    for (gid, gr) in enumerate(bv.groups)
-        gr.ok || continue
-        r = gr.r
-        bis = unit(gr.nA + gr.nB)
-        for t in (gr.lo+gr.tap+1.0):step:(gr.hi-gr.tap-1.0)
-            e = gr.P0 + gr.d * t
-            for (w, n, other, wo) in ((gr.wA, gr.nA, gr.nB, gr.wB), (gr.wB, gr.nB, gr.nA, gr.wA))
-                for s in (0.15, 0.5, 1.0, 1.4)
-                    T = e + w * (s * r) + n * 0.02
-                    for (u0, L) in ((n, 14.0), (bis, 14.0), (unit(n + w * 0.58), 20.0), (unit(n + w * 1.43), 30.0), (unit(n + w * 3.7), 40.0),
-                                    (unit(n + w * 0.58 + gr.d * 0.4), 20.0), (unit(n + w * 0.58 - gr.d * 0.4), 20.0))
-                        O = T + u0 * L
-                        dir = unit(T - O)
-                        dist = vnorm(T - O)
-                        d0 = cast(to, O, dir, dist + 1.0)
-                        (d0 > dist - 0.5 && d0 < dist + 0.5) || continue   # original must show this face point
-                        nrays += 1
-                        d1 = cast(tn, O, dir, dist + 200.0)
-                        ok = false
-                        if d1 < Inf
-                            H = O + dir * d1
-                            ok = vnorm(H - T) < 1.5 * r + 1.0
-                        end
-                        kind = "ok"
-                        if !ok
-                            # The ray passes the removed tip. That is legal (silhouette) when the air it enters is the same
-                            # air as the viewer's: P1 (before T) and P2 (where it leaves the original solid) must be joined
-                            # in the ORIGINAL by an unobstructed path around the tip via C on the edge bisector.
-                            # A ray that misses the rounded surface near T is fine when it then runs through air (silhouette
-                            # past the rounded tip): it meets a front face next. If the next hit is a back face, or nothing, the
-                            # ray went through solid: a gap.
-                            d2, fr = cast(tn, T + dir * 0.01, dir, 6000.0; anyface=true)
-                            ok = d2 < Inf && fr
-                            kind = d2 == Inf ? "void" : "back"
-                        end
-                        if !ok
-                            nbad += 1
-                                badg[gid] = get(badg, gid, 0) + 1
-                            push!(allbad, (gid, T, O, 0, s, kind)); haskey(first_bad, gid) || (first_bad[gid] = (gid, T, O, d1, kind))
-                                                    end
-                    end
-                end
-            end
-        end
-    end
-    @printf("hole-scan: %d rays at original face points near %d bevelled runs; %d go through gaps (%d runs)\n", nrays, count(g -> g.ok, bv.groups), nbad, length(badg))
-    # report: worst runs, with a camera that reproduces the ray
-    byg = sort!(collect(badg), by=x -> -x[2])
-    for (gid, n) in first(byg, maxprint)
+    hits = ScanHit[]
+    oks = [gid for (gid, g) in enumerate(bv.groups) if g.ok]
+    # --- touched: boundary edge of a foreign surface on the edge line, strictly inside the run
+    for gid in oks
         gr = bv.groups[gid]
-        _, T, O, d1, kind = first_bad[gid]
-        dir = unit(T - O)
-        yaw = rad2deg(atan(dir.y, dir.x)); pitch = rad2deg(-asin(clamp(dir.z, -1, 1)))
-        @printf("  group %d: %d bad rays; run %.0f..%.0f along d=(%.2f %.2f %.2f) at (%.1f %.1f %.1f) r=%.2f ends[corner %s mitre %s wall %s]; new hit %s (%s) target (%.1f %.1f %.1f)\n    setviewpos %.1f %.1f %.1f %.1f %.1f\n",
-                gid, n, gr.lo, gr.hi, gr.d.x, gr.d.y, gr.d.z, gr.P0.x, gr.P0.y, gr.P0.z, gr.r,
-                string(gr.corner), string(map(m -> m !== nothing, gr.mitre)), string(gr.wall), isfinite(d1) ? @sprintf("%.1f", d1) : "none", kind, T.x, T.y, T.z,
-                O.x, O.y, O.z, yaw, pitch)
+        gr.hi - gr.lo > 2 * gr.r || continue
+        a = gr.P0 + gr.d * (gr.lo + 0.5); b = gr.P0 + gr.d * (gr.hi - 0.5)
+        seen = Set{Int32}()
+        L = vnorm(b - a)
+        found = false
+        for t in 0.0:4.0:L
+            pt = a + gr.d * t
+            for id in get(grid, (floor(Int, pt.x / cell), floor(Int, pt.y / cell), floor(Int, pt.z / cell)), Int32[])
+                id in seen && continue
+                push!(seen, id)
+                sf = esf[id]
+                (sf in gr.fA.keys || sf in gr.fB.keys) && continue
+                n = en[id]
+                (vdot(n, gr.nA) > 0.99 || vdot(n, gr.nB) > 0.99) && continue
+                ev = eb[id] - ea[id]
+                hp = nothing
+                if vnorm(vcross(ev, gr.d)) < 1e-6 * vnorm(ev)       # parallel: collinear overlap
+                    w = ea[id] - a
+                    q = w - gr.d * vdot(w, gr.d)
+                    if vdot(q, q) <= eps * eps
+                        t0 = vdot(ea[id] - a, gr.d); t1 = vdot(eb[id] - a, gr.d)
+                        lo_, hi_ = max(min(t0, t1), 0.0), min(max(t0, t1), L)
+                        hi_ - lo_ > 0.5 && (hp = a + gr.d * (0.5 * (lo_ + hi_)))
+                    end
+                else
+                    dd, sc = seg_seg(a, b, ea[id], eb[id])
+                    dd <= eps && sc > 1e-6 && sc < 1 - 1e-6 && (hp = a + (b - a) * sc)
+                end
+                hp === nothing && continue
+                onl(p) = (w = p - a; t = vdot(w, gr.d); q = w - gr.d * t; vdot(q, q) <= eps * eps && t > 0 && t < L)
+                vtx = onl(ea[id]) || onl(eb[id])
+                push!(hits, ScanHit(vtx ? :touched : :tee, gid, hp, @sprintf("surf %d boundary edge %s, %.1f from run start (run length %.1f)", sf, vtx ? "with a vertex on the line" : "crossing the line", vdot(hp - gr.P0, gr.d) - gr.lo, gr.hi - gr.lo)))
+                found = true
+                break
+            end
+            found && break
+        end
+    end
+    # --- diagonal / overlap: runs on one line
+    for (i, ia) in enumerate(oks), ib in oks[i+1:end]
+        ga, gb = bv.groups[ia], bv.groups[ib]
+        abs(vdot(ga.d, gb.d)) > 0.9999 || continue
+        w = gb.P0 - ga.P0
+        q = w - ga.d * vdot(w, ga.d)
+        vdot(q, q) < 0.25 || continue
+        ta0, ta1 = sort([vdot(ga.P0 + ga.d * ga.lo, ga.d), vdot(ga.P0 + ga.d * ga.hi, ga.d)])
+        tb0, tb1 = sort([vdot(gb.P0 + gb.d * gb.lo, ga.d), vdot(gb.P0 + gb.d * gb.hi, ga.d)])
+        ov = min(ta1, tb1) - max(ta0, tb0)
+        ov > 1.0 || continue
+        share = !isempty(intersect(ga.fA.keys, gb.fA.keys)) || !isempty(intersect(ga.fA.keys, gb.fB.keys)) ||
+                !isempty(intersect(ga.fB.keys, gb.fA.keys)) || !isempty(intersect(ga.fB.keys, gb.fB.keys))
+        pm = ga.P0 + ga.d * (0.5 * (max(ta0, tb0) + min(ta1, tb1)) - vdot(ga.P0, ga.d))
+        share || vdot(unit(ga.nA + ga.nB), unit(gb.nA + gb.nB)) < -0.05 || continue   # same-side wedges: not a touch
+        push!(hits, ScanHit(share ? :overlap : :diagonal, ia, pm, "with run $ib, overlap $(round(ov, digits=1))"))
+    end
+    # --- mitre3 / corner3: run ends that rely on other rounded runs at the vertex
+    for gid in oks
+        gr = bv.groups[gid]
+        for e in (0, 1)
+            mt = gr.mitre[e+1]
+            (mt !== nothing || gr.corner[e+1]) || continue
+            pe = gr.P0 + gr.d * (e == 0 ? gr.lo : gr.hi)
+            if mt !== nothing
+                # only box vertices (three mutually orthogonal faces) need a third rounded edge; other bends are geometry dependent
+                pg = bv.groups[mt.partner[1]]
+                shared = abs(vdot(gr.nB, pg.nB)) > 0.99 || abs(vdot(gr.nB, pg.nA)) > 0.99 ? gr.nB : gr.nA
+                n1 = shared === gr.nB ? gr.nA : gr.nB
+                n2 = abs(vdot(shared, pg.nA)) > 0.99 ? pg.nB : pg.nA
+                abs(vdot(n1, n2)) < 0.1 || continue
+            end
+            dirs = V3[]
+            for g3i in oks
+                g3 = bv.groups[g3i]
+                w = pe - g3.P0
+                t = vdot(w, g3.d)
+                q = w - t * g3.d
+                (vdot(q, q) < 0.09 && t > g3.lo - 0.3 && t < g3.hi + 0.3) || continue
+                any(d -> abs(vdot(d, g3.d)) > 0.999, dirs) || push!(dirs, g3.d)
+            end
+            if length(dirs) < 3
+                push!(hits, ScanHit(mt !== nothing ? :mitre3 : :corner3, gid, pe, "end $e, $(length(dirs)) rounded edge direction(s) at the vertex"))
+            end
+        end
+    end
+    cats = (:touched, :tee, :diagonal, :overlap, :mitre3, :corner3)
+    @printf("hole-scan: %d rounded runs checked; uncovered wedges: %s\n", length(oks),
+            join(["$c $(count(h -> h.cat == c, hits))" for c in cats], ", "))
+    for c in cats
+        sel = filter(h -> h.cat == c, hits)
+        for h in first(sel, maxprint)
+            @printf("  %s run %d at (%.1f %.1f %.1f): %s\n", h.cat, h.gid, h.p.x, h.p.y, h.p.z, h.note)
+        end
+        length(sel) > maxprint && @printf("  ... %d more %s (WB_SCAN_DUMP=file.tsv lists all)\n", length(sel) - maxprint, c)
     end
     dump = get(ENV, "WB_SCAN_DUMP", "")
     if !isempty(dump)
         open(dump, "w") do io
-            for (gid, T, O, ui, s, kind) in allbad
-                @printf(io, "%d\t%.2f %.2f %.2f\t%.2f %.2f %.2f\t%d\t%.2f\t%s\n", gid, T.x, T.y, T.z, O.x, O.y, O.z, ui, s, kind)
+            println(io, "category\trun\tx\ty\tz\tnote")
+            for h in hits
+                @printf(io, "%s\t%d\t%.2f\t%.2f\t%.2f\t%s\n", h.cat, h.gid, h.p.x, h.p.y, h.p.z, h.note)
             end
         end
     end
-    badg
+    hits
 end

@@ -8,13 +8,13 @@
 #   ./scripts/build-geometry.sh              everything
 #   ./scripts/build-geometry.sh --models     only the model packs
 #   ./scripts/build-geometry.sh --world [MAP ...]   only the world packs (all maps, or the named ones)
-# Needs python3 with numpy; Julia 1.10+ for fast world packs (docs: tools/world-bevel-jl/README.md).
+# Needs python3 with numpy for the model packs; Julia 1.10+ for the world packs (docs: tools/world-bevel-jl/README.md).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 mode=all
 case "${1:-}" in --models) mode=models; shift ;; --world) mode=world; shift ;; esac
-python3 -c 'import numpy' 2>/dev/null || { echo "build-geometry: python3 + numpy required" >&2; exit 1; }
 if [[ $mode != world ]]; then
+	python3 -c 'import numpy' 2>/dev/null || { echo "build-geometry: python3 + numpy required for the model packs" >&2; exit 1; }
 	echo "== character bodies"
 	python3 -I "$ROOT/tools/model-smooth/model_smooth.py" --smooth '' --pk3 "$ROOT/run/codmod/codmod_smooth.pk3"
 	echo "== weapons, heads, props"

@@ -1,6 +1,10 @@
+**Loading-screen Phase 2c (2026-10-23): committed + pushed. Fixes: BSP read offloaded, replay ticks in fs_restart/gameprogs/SV game syscalls, idle connect-handshake frames tick the replay (was a ~175 ms no-present gap). All 32 maps load headless, no crashes; p95 23-29 ms, 1-8 gaps > 33 ms, dominated by the first gameplay frame (120-310 ms, up to 810). Optional later: first-frame warm-up (see docs/loading-screen.md). User still to play-check level change, save/load, HUD/ESC menu after a load.**
+
 _Last updated: 2026-10-22_
 
 ## Current focus
+
+**Normals for models + wall coverage (2026-10-23): plan written, `docs/normals-coverage-plan.md`, nothing implemented.** Only 17% of trainyard and 40% of all SP surfaces get a `_nh` (RULES in `height_bake.py` skip metal and many wall names; confidence gate flattens dark concrete). MDC props/heads need only a bake; MDS characters need tangents in `RB_SurfaceAnim`. Next: user picks start (diagnostic cvar for the spot, then widen the classifier) and answers the open questions in the doc.
 
 **Loading-screen update (2026-10-23, later): Phase 0/1/2a committed (engine 5d311d92, outer 1044e90, not pushed). Phase 2b (offload with keepalive, `com_loadingThread`, `cl_loadthread.c`, targets R_LoadImage / S_CodecLoad / CM_LoadMap, docs/loading-screen.md) built/installed, uncommitted, load-test: 214-253 presents, p95 23 ms, 5-6 gaps > 33 ms (170 ms unexplained between sv:frame_end and cl:gs_parsed; sizzle.wav 92-145 ms probably alBufferData; first gameplay frame 134-382 ms; fs_restart/gameprogs 34-69 ms). Awaiting user in-game check of 2b, then Phase 2c.**
 

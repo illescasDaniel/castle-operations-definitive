@@ -111,6 +111,29 @@ load segfaulting independently is a separate known issue.)
 Cost: one hand-off is two semaphore operations (tens of microseconds); thousands of small images add up to tens
 of ms of total load time at most.
 
+## Phase 2c: the last gaps (instrumented, partly unmeasured)
+
+Phase 2b left 5-6 gaps above 33 ms per map, the same on every map. Phase 2c could not be run by the agent (only the
+orchestrator launches the game), so causes below are marked **measured** (from the 2b logs) or **static** (reasoned,
+to be confirmed with the new marks).
+
+| Gap | Where | Finding | Change |
+|---|---|---|---|
+| 35-69 ms @sv:fs_restart | `FS_Restart` (21 -> 69 ms) | **measured**: one block, nothing ticks inside; it reads the central directory of every pk3 (many HD/audio paks) | `CL_LoadingReplayTick()` after `FS_Shutdown`, after each `FS_LoadZipFile` in `FS_AddGameDirectory`, after `FS_Startup` (replay touches no FS state) |
+| 34-54 ms @sv:gameprogs | `SV_InitGameProgs` = `G_InitGame` | **measured** as one block; no tick inside | `SV_LOADING_TICK()` (replay, `sv.state == SS_LOADING` only) in `SV_GameSystemCalls` for `G_FS_FOPEN_FILE`, `G_FS_FCLOSE_FILE`, `G_LINKENTITY`, `G_SET_BRUSH_MODEL`, `G_SET_CONFIGSTRING`, `BOTLIB_LOAD_MAP`. The AAS load itself stays one block (botlib imports reach the VM) |
+| 145-204 ms @cl:sd_sound t~435-483 | between `sv:frame_end` (~315) and `cl:gs_parsed` (~483) | **measured** that the 168 ms are unmarked and are not the savegame (`sv:savegame` is at 21 ms) and not FS (marked separately); culprit **not yet known** | new budgeted marks `Com_LoadProfileFrameMark` (48 marks, armed by `sv:end`): `f:writecfg f:wait f:events f:cbuf f:sv f:events2 f:cbuf2 f:cl` per `Com_Frame`, and `gs:begin gs:clearstate gs:strings gs:sysinfo` in `CL_ParseGamestate`. `LP_MAXMARKS` 128 -> 192. Suspects in order: `S_StopAllSounds` inside `CL_ClearState` (AL calls, main thread only), `Com_WriteConfiguration`, the server frame tail, `Sys_Sleep` in the pacer |
+| 92-145 ms @cg:world_begin t~1370-1412 | start of `RE_LoadWorldMap` | **measured**: the gap starts at `cg:world_begin`, not at sizzle.wav. The `hint=sizzle.wav` is stale (the last sound announced, the world load announces nothing). `alBufferData` is not the cause. The BSP `FS_ReadFile` (multi-MB pk3 inflate) runs before the first tick in `tr_bsp.c` | BSP read offloaded (`R_ReadBspJob` via `R_RUN_OFFLOADED`, then a replay), hints `bsp:read/entities/shaders/lightmaps/surfaces/nodes/lightgrid` so the stale hint is gone |
+| 134-382 ms @cl:first_snap, at the End | first `CA_ACTIVE` frame | **static**: all GLSL programs are compiled eagerly in `R_Init` (with ticks), so the cost is the first real scene frame (driver-side lazy work, cold shadow/SSAO/FBO paths, `CL_FirstSnapshot` activeAction) | new mark `cl:first_frame_begin` right before the first `SCR_UpdateScreen` in `CA_ACTIVE`, so the End gap is attributed to the frame render. `com_loadingWarmup` **not implemented**: a dummy scene frame blocks the main thread as one block and cannot be split without touching the present path; measure the first-frame cost first (`gpuprof`, gap = `cl:first_frame_begin` -> End) |
+
+`sizzle.wav` aside: `alBufferData` stays on the main thread (the context is made current globally with
+`alcMakeContextCurrent`; uploading from the worker is not verified safe and no gap points at it).
+
+### Reading the new marks
+
+Run `scripts/load-test.sh` (profile level 2). `LOADPROFILE_MARK` now lists `f:*` and `gs:*` lines for the first six
+frames after `sv:end`. The jump between two consecutive marks is the guilty step; a large `gs:clearstate` means
+`S_StopAllSounds`, a large `f:sv` the server frame, `f:writecfg` the config write.
+
 ## Cvars
 
 | Cvar | Code default | Pinned in | Meaning |
@@ -129,7 +152,8 @@ None are archived or in a menu. Rollback: `set com_loadingThread "0"` and/or `se
 | Baseline (vanilla) | 36 | max gap 1.7 s | 11-14 |
 | Phase 1 tick | 115-128 | ~110 ms | ~35 |
 | Phase 2a replay | 163-188 | 55-59 ms | 24-28 |
-| Phase 2b offload | to be measured with `scripts/load-test.sh` | | |
+| Phase 2b offload | 214-253 (escape1 5251 ms / 253, escape2 4726 ms / 229, village1 4558 ms / 214) | 23 ms | 5-6 (escape1 5, escape2 6, village1 6) |
+| Phase 2c | 231-256 (escape1 4876 ms / 246, escape2 5007 ms / 256, village1 4612 ms / 231) | 24-25 ms | 4-5 |
 
 ## Known unsplittable items
 
@@ -141,3 +165,11 @@ VM init, AAS load, the first server frames. Remaining unmarked stretches are now
 
 Load-test run, then: a corrupt/missing asset during a load (error screen, no hang), quit during a load, `vid_restart`,
 save/load, level change, HUD and ESC menu after the load (present path untouched, but verify).
+
+## Later: first-frame warm-up (not done)
+
+After 2c the biggest remaining gap on every map (all 32 load cleanly headless; 115-810 ms, usually 120-310 ms) is the first
+gameplay frame, `cl:first_frame_begin`: the first full scene render (shadow maps, cubemaps, buffers on first use) is one
+main-thread block. Idea: render one hidden scene frame (`com_loadingWarmup`, off by default) while the spinner still
+animates, so the first real frame is cheap. It touches the render path, so it needs user verification and its own
+measurement round. The idle connect-handshake frames now tick the replay (`CL_LoadingReplayTick` in `Com_Frame`).

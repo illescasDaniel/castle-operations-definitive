@@ -2,6 +2,11 @@
 
 Append-only log, newest first. Never rewrite history: if a decision is reversed, add a new entry that says so.
 
+## 2026-10-24: Frame warp redesign: late-latch first, then "compositor in the main thread"
+- **Context:** Stage 1 (fixed-k pacer) gives a real frame only T, not kT, on one thread (warp slots sit between real deadlines), so `lead>T` suspensions at 240/120, 120/60, 60/30 are structural; capped GPU also downclocks. User's real case: ~150 fps uncapped on escape1 maxed at native res, wants a steady display-Hz on any machine.
+- **Decision:** (1) `r_frameWarp 1` late-latch: one warp per real frame at the end of `RB_PostProcess` with the freshest input, no pacer; (2) `r_frameWarp 2` adaptive pacer: real frames uncapped and skipping their own present, every present a warp of the newest capture at refresh slots, cooperative checkpoints + fence-bounded backlog (spike first); (3) depth-based 6-DoF reprojection; (4) entity motion last. Fixed-k Stage 1 becomes dev-only mode 3.
+- **Rationale:** one in-order GL context cannot be preempted; uniform input age avoids judder; late-latch needs no pacer and leaves the 2D/present path untouched. Waiting before swap must not enter `pacer.ring`. Awaiting user go-ahead.
+
 ## 2026-10-23: Bevel white holes fixed in the Julia tool; build-world.sh is Julia-only and parallel
 Rounding a convex edge removes a wedge; rays then hit no surface (white) when a foreign surface touches the edge
 mid-run, when two solids touch diagonally along one edge line, or at a box-vertex mitre whose third edge is sharp.

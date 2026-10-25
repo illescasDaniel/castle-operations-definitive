@@ -444,6 +444,18 @@
 +		textscale .20
 =ui/ingame_options.menu 325 331
 =ui/ingame_options.menu 213 214
++		name display
+=ui/options.menu 260 262
++		text "Frame Warp (Experimental):"
++		cvar "r_frameWarp"
++		cvarFloatList { "Off" 0 "Late latch" 1 }
++		rect 240 184 320 11
+=ui/ingame_options.menu 81 82
+=ui/error.menu 217 218
++		textaligny 9
++		textscale .20
+=ui/ingame_options.menu 325 331
+=ui/ingame_options.menu 213 214
 +		name advanced
 =ui/options.menu 260 262
 +		text "Specular Highlights:"

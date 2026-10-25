@@ -78,3 +78,9 @@ no-VRR case (oversample ~0.8T).
 - Translation extrapolates from the last two captures (about one real frame of lag when acceleration changes). If visible: optional renderer import fed with cgame's predicted velocity; do not extend `refdef_t`.
 - Go/no-go unchanged: `r_warpTestMove` synthetic `compare_shots`, warp GPU mark <= 0.5 ms. Oversample default ~1.25 only when no VRR (windowed/borderless); fullscreen VRR uses refresh-3%.
 - VRR (fullscreen only): AP slots at ~0.97 x refresh, no oversampling; slot-completion jitter shows directly as display jitter (go/no-go: GPU-completion-to-slot error P98 < 0.5 ms). Windowed/borderless: oversample ~1.25. `r_frameWarpOversample` 0 = auto from fullscreen state, re-evaluated on `vid_restart`. The engine cannot detect whether KWin enabled VRR; the user checks the monitor's refresh readout. Open: does KWin keep VRR with `r_vsync 3` (mailbox) in fullscreen?
+
+## Possible later changes (not needed now; user, 2026-10-25)
+
+Late-latch with `r_frameWarpEdgeBlur 1` looks fine at a 60 FPS cap when flicking fast; edges are unnoticeable. Parked, in case they are wanted later:
+- Lower `r_frameWarpMaxDeg` (default 20) to about 8-10 as a low-FPS fallback: clips only extreme corrections (60 FPS cap P98 was 13 deg; uncapped P98 3.4 deg), costs a little of the latency gain on those frames.
+- Adaptive overscan (`r_frameWarpOverscan`): render wider only when the measured correction is large; costs ~10% pixels (0.3-0.6 ms at 150 FPS) if always on, so never flat-on by default.

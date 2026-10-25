@@ -201,3 +201,4 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 - SMAA T2x + velocity + MDS limb motion + simplified AA menu (2026-10-22): committed and pushed; READMEs refreshed with the graphics features. Guard eyes (h_blink lid) fixed in `mdc_smooth.py` (supersedes 'helpers ride on main surface' for skin-copy lids).
 
 - Frame warp: [x] Stage 0 verified; [x] Stage 1 (now mode 3, non-viable); [x] `r_frameWarp` menu toggle; [x] stage LL late-latch (user-verified 2026-10-25); [ ] AP-0 timing spike; [ ] AP; [ ] mesh 6-DoF; [ ] entity motion. Details: docs/frame-warp.md.
+- Frame warp parked options (docs/frame-warp.md, 'Possible later changes'): lower `r_frameWarpMaxDeg`, adaptive overscan. Not needed now.

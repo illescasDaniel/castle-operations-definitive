@@ -81,6 +81,6 @@ no-VRR case (oversample ~0.8T).
 
 ## Possible later changes (not needed now; user, 2026-10-25)
 
-Late-latch with `r_frameWarpEdgeBlur 1` looks fine at a 60 FPS cap when flicking fast; edges are unnoticeable. Parked, in case they are wanted later:
+Late-latch with `r_frameWarpEdgeBlur 2` (default) looks fine at a 60 FPS cap when flicking fast; edges are unnoticeable. Parked, in case they are wanted later:
 - Lower `r_frameWarpMaxDeg` (default 20) to about 8-10 as a low-FPS fallback: clips only extreme corrections (60 FPS cap P98 was 13 deg; uncapped P98 3.4 deg), costs a little of the latency gain on those frames.
 - Adaptive overscan (`r_frameWarpOverscan`): render wider only when the measured correction is large; costs ~10% pixels (0.3-0.6 ms at 150 FPS) if always on, so never flat-on by default.

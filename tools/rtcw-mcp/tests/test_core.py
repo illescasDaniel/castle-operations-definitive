@@ -118,6 +118,9 @@ class TestParsing(unittest.TestCase):
         b = ("   frames=900  20.1s  avg 165.2 fps  1%low 120.0 fps  P99 9.1 ms  max 20.0 ms  hitches 1\n"
              "   avg 165.2 fps | 1% low 120.0 fps | P99 9.1 ms\n   cfg: foo\n")
         self.assertEqual(server.parse_bench(b)["median"]["avg_fps"], 165.2)
+        pr = server.parse_bench(b.replace("hitches 1\n", "hitches 1\n   pace: mode=2 q=1 T=8333 miss%=0.4 tag=x\n", 1))["runs"]
+        self.assertEqual(pr[0]["pace"], {"mode": 2.0, "q": 1.0, "T": 8333.0, "miss%": 0.4, "tag": "x"})
+        self.assertNotIn("pace", server.parse_bench(b)["runs"][0])
         g = ("   gpu: frames=900 gpu_avg_ms=3.410 gpu_max_ms=6.100\n"
              "   gpu: sunshadow        avg_ms= 1.300  pct= 38.1  max_ms= 2.000  hit= 99.0%\n")
         gp = server.parse_bench(b + g)["gpu_passes_last_run"]

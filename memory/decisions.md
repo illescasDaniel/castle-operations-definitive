@@ -2,6 +2,9 @@
 
 Append-only log, newest first. Never rewrite history: if a decision is reversed, add a new entry that says so.
 
+## 2026-10-26 Pacer `com_maxfpsGpuSync 2` (fence pipeline) default in codmod.cfg
+Replaces the glFinish serialisation with a GL_TIMESTAMP+fence per frame, a bounded GPU queue (`com_maxfpsGpuQueue` 1) and deadlines timed from GPU completion; mode 1 stays the old code. Headless bench: avg FPS unchanged, 1% low +4% (cap 170) / +11% (cap 237), fewer hitches; report in docs/pacer-option3-report.md. User chose it as default; `r_frameWarpEdgeBlur` default 2; edge darkening tried and rejected (looked worse).
+
 ## 2026-10-24: Frame warp redesign: late-latch first, then "compositor in the main thread"
 - **Context:** Stage 1 (fixed-k pacer) gives a real frame only T, not kT, on one thread (warp slots sit between real deadlines), so `lead>T` suspensions at 240/120, 120/60, 60/30 are structural; capped GPU also downclocks. User's real case: ~150 fps uncapped on escape1 maxed at native res, wants a steady display-Hz on any machine.
 - **Decision:** (1) `r_frameWarp 1` late-latch: one warp per real frame at the end of `RB_PostProcess` with the freshest input, no pacer; (2) `r_frameWarp 2` adaptive pacer: real frames uncapped and skipping their own present, every present a warp of the newest capture at refresh slots, cooperative checkpoints + fence-bounded backlog (spike first); (3) depth-based 6-DoF reprojection; (4) entity motion last. Fixed-k Stage 1 becomes dev-only mode 3.

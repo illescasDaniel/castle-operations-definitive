@@ -118,6 +118,8 @@ for ((i = 1; i <= RUNS; i++)); do
 	grep -a 'WARNING vsync' "$LOG" | tail -1 || true
 	printf '   frames=%s  %ss  avg %s fps  1%%low %s fps  P99 %s ms  max %s ms  hitches %s\n' \
 		"${kv[frames]}" "${kv[seconds]}" "${kv[avg_fps]}" "${kv[low1_fps]}" "${kv[p99_ms]}" "${kv[max_ms]}" "${kv[hitches]}"
+	paceline="$(grep -a 'codmod pace:' "$LOG" | tail -1 | sed 's/.*codmod pace: //' || true)"
+	[[ -n "$paceline" ]] && echo "   pace: $paceline"
 	echo "$STAMP,$LABEL,$i,$SHA_OUTER,$SHA_ENGINE,${kv[frames]},${kv[seconds]},${kv[avg_fps]},${kv[low1_fps]},${kv[median_ms]},${kv[p95_ms]},${kv[p99_ms]},${kv[max_ms]},${kv[hitches]},\"$cfgline${SET_DESC:+ |$SET_DESC} $gpuinfo\"" >> "$OUT/results.csv"
 	if ((GPUPROF)); then
 		# the table is printed at renderer shutdown: take the last block of "codmod gpuprof:" lines

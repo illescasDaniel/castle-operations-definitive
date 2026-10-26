@@ -275,10 +275,28 @@ def parse_gpuprof(text: str) -> list[dict]:
     return runs
 
 
+def parse_pace(rest: str) -> dict:
+    """`key=value key=value ...` from a `codmod pace:` line; numeric values become floats, keys kept as given."""
+    out: dict = {}
+    for tok in rest.split():
+        k, sep, v = tok.partition("=")
+        if not sep:
+            continue
+        try:
+            out[k] = float(v)
+        except ValueError:
+            out[k] = v
+    return out
+
+
 def parse_bench(text: str) -> dict:
-    runs = [{"frames": int(m[1]), "seconds": float(m[2]), "avg_fps": float(m[3]), "low1_fps": float(m[4]),
-             "p99_ms": float(m[5]), "max_ms": float(m[6]), "hitches": int(m[7])}
-            for m in _BENCH_RUN.finditer(text)]
+    runs: list[dict] = []
+    for ln in text.splitlines():
+        if (m := _BENCH_RUN.search(ln)):
+            runs.append({"frames": int(m[1]), "seconds": float(m[2]), "avg_fps": float(m[3]), "low1_fps": float(m[4]),
+                         "p99_ms": float(m[5]), "max_ms": float(m[6]), "hitches": int(m[7])})
+        elif runs and "pace" not in runs[-1] and (m := re.search(r"pace: (.*)", ln)):
+            runs[-1]["pace"] = parse_pace(m[1])
     s = _BENCH_SUM.search(text)
     res: dict = {"runs": runs}
     if (g := parse_gpuprof(text)):

@@ -56,3 +56,12 @@ Bigger lever if granularity fails: second shared GL context on the same thread (
 ## Open questions
 1 lock real frames at slotRate/k; 2 is 116 Hz world + 233 Hz look better than VRR uncapped 150; 3 windowed: AP off (recommended)
 or oversample x1.25 (about 12% GPU); 4 slot rate 0.97 x refresh (232.8) or 237; 5 does KWin keep VRR with `r_vsync 3`; 6 ship rotation-only AP as experimental or wait for mesh 6-DoF.
+
+## User answers (2026-10-27)
+1 yes, lock real frames at slotRate/k. 2 windowed/borderless: fall back to late-latch. 3 slot rate: advised 0.97 x refresh
+(about 233 on 240 Hz) with VRR; caps at 240/120/60 are for fixed-refresh sync and are not needed with VRR. 4 rotation-only AP
+is independent of the mesh 6-DoF warp, so build it now as experimental; 6-DoF follows (it fixes translation/entity judder
+on warp frames). 5 assume KWin keeps VRR with `r_vsync 3` fullscreen (unverified; user sees no tearing).
+Housekeeping 2026-10-27: main merged into frame-warp in both repos (iortcw 68df2504, outer dad535e); feature/geometry
+verified fully merged in main and deleted locally; `run/codmod/codmod.cfg` was a stale regular copy pinning
+`com_maxfpsGpuSync "1"`, re-symlinked to `mod/codmod/codmod.cfg` (pins 2) as `setup.sh` does.

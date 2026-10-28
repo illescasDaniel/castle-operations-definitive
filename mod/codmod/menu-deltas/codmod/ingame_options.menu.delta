@@ -446,9 +446,9 @@
 =ui/ingame_options.menu 213 214
 +		name display
 =ui/options.menu 260 262
-+		text "Frame Warp (Experimental):"
++		text "Frame Warp:"
 +		cvar "r_frameWarp"
-+		cvarFloatList { "Off" 0 "Late latch" 1 }
++		cvarFloatList { "Off" 0 "Low latency" 1 "Smooth (Experimental)" 2 }
 +		rect 240 184 320 11
 =ui/ingame_options.menu 81 82
 =ui/error.menu 217 218

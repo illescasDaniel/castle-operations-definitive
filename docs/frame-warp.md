@@ -18,9 +18,21 @@ rendering every k-th refresh, re-projecting the last real frame to the latest lo
   frame every k*T, k-1 warp presents in the slots between; suspends with backoff when real frames do not fit in T.
 
 ## Cvars and commands
-`r_frameWarp` (`CVAR_ARCHIVE | CVAR_LATCH`, default 0; user setting: GRAPHICS > DISPLAY row "Frame Warp (Experimental)" Off/On in both layers, main and in-game variants; applies through the menu's Apply button = soft `vid_restart`, which re-runs `R_Init` -> `R_WarpInitTargets`; codmod first-launch/Reset value `seta r_frameWarp "0"` in `codmod_defaults.cfg`; Off is exactly the old behaviour and the row never writes `com_maxfps`/`com_maxfpsMode`/`r_vsync`), `r_frameWarpHz` (0 = auto refresh; test override),
+`r_frameWarp` (`CVAR_ARCHIVE | CVAR_LATCH`, default 0; user setting: GRAPHICS > DISPLAY row "Frame Warp" with three levels, Off (0) / Low latency (1, late-latch) / Smooth (Experimental) (2, compositor "AP"), in both layers, main and in-game variants; applies through the menu's Apply button = soft `vid_restart`, which re-runs `R_Init` -> `R_WarpInitTargets`; codmod first-launch/Reset value `seta r_frameWarp "0"` in `codmod_defaults.cfg`; Off is exactly the old behaviour and the row never writes `com_maxfps`/`com_maxfpsMode`/`r_vsync`), `r_frameWarpHz` (0 = auto refresh; test override),
 `r_frameWarpMaxDeg` 20, `r_frameWarpGunDepth` 0.3, `r_frameWarpGunDilate` 1, debug `r_warpDebug` 1/2/3 +
 `r_warpDebugPitch/Yaw`. Commands `warpstats`, `warprstats`.
+
+## Levels, AP requirements and setting conflicts
+- Levels of the one `r_frameWarp` row: 0 Off, 1 Low latency (late-latch), 2 Smooth (Experimental) = AP compositor
+  (`docs/frame-warp-ap-plan.md`).
+- AP runs only with: fullscreen, `r_vsync` 0-3 (3 recommended), `com_maxfpsGpuSync 2`, `com_maxfpsPrecise 1`. When a
+  requirement is missing AP denies itself with a printed reason and falls back to late-latch (windowed is not
+  auto-changed).
+- Conflicts, last change wins, each with a console line (`Com_FrameWarpConflicts`, `common.c`, checked every frame
+  against the pending latched `r_frameWarp` value): `r_frameWarp` set to 2 while `r_vsync` is 4 sets `r_vsync` 3;
+  `r_vsync` set to 4 while `r_frameWarp` is 2 sets `r_frameWarp` 1. A saved 2 + 4 combination at startup keeps AP
+  and sets `r_vsync` 3. The change is only in the archived cvars (normal saving); `r_frameWarp` still applies with the
+  menu's Apply (vid_restart).
 
 ## Limits
 Stage 1 is synchronous: a real frame must fit in T minus the warp cost, so by itself it does not make 80 FPS feel like

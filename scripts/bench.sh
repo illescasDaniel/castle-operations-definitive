@@ -120,6 +120,10 @@ for ((i = 1; i <= RUNS; i++)); do
 		"${kv[frames]}" "${kv[seconds]}" "${kv[avg_fps]}" "${kv[low1_fps]}" "${kv[p99_ms]}" "${kv[max_ms]}" "${kv[hitches]}"
 	paceline="$(grep -a 'codmod pace:' "$LOG" | tail -1 | sed 's/.*codmod pace: //' || true)"
 	[[ -n "$paceline" ]] && echo "   pace: $paceline"
+	apline="$(grep -a 'codmod ap:' "$LOG" | tail -1 | sed 's/.*codmod ap: //' || true)"
+	[[ -n "$apline" ]] && echo "   ap: $apline"
+	histline="$(grep -a 'codmod ap hist\|codmod ap kinds' "$LOG" | tail -2 | sed 's/.*codmod ap /ap /' || true)"
+	[[ -n "$histline" ]] && echo "   $histline"
 	echo "$STAMP,$LABEL,$i,$SHA_OUTER,$SHA_ENGINE,${kv[frames]},${kv[seconds]},${kv[avg_fps]},${kv[low1_fps]},${kv[median_ms]},${kv[p95_ms]},${kv[p99_ms]},${kv[max_ms]},${kv[hitches]},\"$cfgline${SET_DESC:+ |$SET_DESC} $gpuinfo\"" >> "$OUT/results.csv"
 	if ((GPUPROF)); then
 		# the table is printed at renderer shutdown: take the last block of "codmod gpuprof:" lines

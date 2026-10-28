@@ -65,3 +65,26 @@ on warp frames). 5 assume KWin keeps VRR with `r_vsync 3` fullscreen (unverified
 Housekeeping 2026-10-27: main merged into frame-warp in both repos (iortcw 68df2504, outer dad535e); feature/geometry
 verified fully merged in main and deleted locally; `run/codmod/codmod.cfg` was a stale regular copy pinning
 `com_maxfpsGpuSync "1"`, re-symlinked to `mod/codmod/codmod.cfg` (pins 2) as `setup.sh` does.
+
+## Cap rule (user, 2026-10-27; overrides the plan's "com_maxfps means the presented rate")
+Slot rate = 0.97 x the display refresh (rounded down, e.g. 233 / 116 / 58 for 240 / 120 / 60 Hz), computed from the actual
+refresh, never hard-coded. Active only while `r_frameWarp 2` is really running: the pacer ignores the in-game `com_maxfps`
+internally without writing the cvar, so the saved menu cap is untouched and applies again as soon as AP is off or falls back
+to late-latch (windowed, `r_vsync 4`, denied). The dev override `r_frameWarpHz` stays. `r_frameWarp 0/1` pacing unchanged.
+
+## Setting conflicts (user, 2026-10-27): last change wins, with a console line
+- `r_frameWarp` set to 2 while `r_vsync` is 4: set `r_vsync` 3.
+- `r_vsync` set to 4 while `r_frameWarp` is 2: set `r_frameWarp` 1 (keep late-latch).
+- Windowed/borderless is not auto-changed: AP denies itself and falls back to late-latch with a printed reason.
+- Implement with the step 7 menu row (both menu layers; rows must reflect the change), in the engine cvar-modified path.
+
+## Rate controller instead of integer k (2026-10-27)
+k is fixed at 2 (`r_frameWarpK` still forces another k and a fixed S). The slot rate S adapts in [60, 0.97 x refresh]
+(real = S/2, 30 real fps minimum): 3 missed real frames in a row (or smoothed interval/period > 1.12) lower S by 8%; after 3 s
+without misses, a probe raises S by 4% when the median frame cost leaves ~10% of the new real period spare, kept after 90
+clean frames, else reverted with a 2/4/8..60 s back-off. S is slewed 1.5% per real frame (warm window of 6 frames after any
+change). At S_min with misses AP denies itself 15 s ("GPU cannot hold compositor budget", late-latch) and restarts mid range.
+One printed line per 2 s at most (`slot rate A -> B (real R)`). Scheduler guard added: at most k-1 warps per real period
+(plus one per overdue slot while the real frame is late); without it, after a load drop the scheduler produced 1.7 warps per
+real frame (about 238 presents/s at S 170). `r_frameWarpEarly` (default 0) lets a warp be placed a fraction of a slot
+early; it did not help served% and stays off.

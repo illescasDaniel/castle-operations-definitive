@@ -297,6 +297,8 @@ def parse_bench(text: str) -> dict:
                          "p99_ms": float(m[5]), "max_ms": float(m[6]), "hitches": int(m[7])})
         elif runs and "pace" not in runs[-1] and (m := re.search(r"pace: (.*)", ln)):
             runs[-1]["pace"] = parse_pace(m[1])
+        elif runs and "ap" not in runs[-1] and (m := re.search(r"^\s*ap: (.*)", ln)):
+            runs[-1]["ap"] = parse_pace(m[1])
     s = _BENCH_SUM.search(text)
     res: dict = {"runs": runs}
     if (g := parse_gpuprof(text)):

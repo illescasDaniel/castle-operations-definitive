@@ -4,6 +4,8 @@
       "type": "stdio",
       "command": "uvx",
       "args": [
+        "--python",
+        "3.14",
         "--from",
         "jevmem",
         "jevmem-mcp"

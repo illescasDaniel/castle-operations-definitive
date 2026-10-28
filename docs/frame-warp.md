@@ -32,9 +32,11 @@ translation predicted over the elapsed time (velocity x dt), and the frame is dr
 strafe blur (judder of near geometry at 116 Hz presents) that rotation-only AP shows. User-verified at level 2 on
 2026-10-28.
 - Cvar `r_frameWarpMesh` (`CVAR_ARCHIVE | CVAR_LATCH`, code default 0 = vanilla): 0 off, 1/2/3 = depth grid step 16 / 8 / 4
-  px. Menu: GRAPHICS > DISPLAY row "Warp Parallax" (Off / Low / Medium / High -> 0 / 1 / 2 / 3), directly below Frame Warp,
-  in both layers and both variants (main and in-game); applies through Apply (soft `vid_restart`) like Frame Warp.
-  Codmod first-launch/Reset value `seta r_frameWarpMesh "2"` in `codmod_defaults.cfg` (menu Reset path = `execmodcfg`).
+  px. Menu: GRAPHICS > ADVANCED row "Warp Parallax" (Off / Low / Medium / High -> 0 / 1 / 2 / 3), after Parallax Mapping
+  (engine layer: the Effects tab, last row), in both layers and both variants (main and in-game); applies through Apply
+  (soft `vid_restart`) like Frame Warp. Codmod first-launch/Reset value is High: `seta r_frameWarpMesh "3"` in
+  `codmod_gfxdefaults.cfg` (exec'd by `codmod_defaults.cfg`, and by the ADVANCED "Restore recommended defaults" button;
+  menu Reset path = `execmodcfg`). High (step 4 px) costs roughly +0.1-0.2 ms per warp over Medium (estimate, not measured).
 - Cost: raster-bound by triangle count. Low = about -20% mesh draw
   versus Medium; the mesh adds about 0.06-0.07 ms per warp at 1920x1200 (about 0.11 ms estimated at
   2560x1600). Total warp GPU at 2560x1600 measured p50 0.46 ms / p98 0.81 ms (rotation-only about 0.25 ms).

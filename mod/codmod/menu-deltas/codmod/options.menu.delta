@@ -480,20 +480,6 @@
 +		textscale .20
 =ui/options.menu 345 351
 =ui/options.menu 89 90
-+		name display
-=ui/options.menu 260 262
-+		text "Warp Parallax:"
-+		cvar "r_frameWarpMesh"
-+		cvarTest "r_frameWarp"
-+		disableCvar { "0" "1" }
-+		cvarFloatList { "Off" 0 "Low" 1 "Medium" 2 "High" 3 }
-+		rect 240 195 320 11
-=ui/options.menu 97 98
-=ui/error.menu 217 218
-+		textaligny 9
-+		textscale .20
-=ui/options.menu 345 351
-=ui/options.menu 89 90
 +		name advanced
 =ui/options.menu 260 262
 +		text "Specular Highlights:"
@@ -531,12 +517,26 @@
 =ui/options.menu 345 351
 =ui/options.menu 89 90
 +		name advanced
+=ui/options.menu 260 262
++		text "Warp Parallax:"
++		cvar "r_frameWarpMesh"
++		cvarTest "r_frameWarp"
++		disableCvar { "0" "1" }
++		cvarFloatList { "Off" 0 "Low" 1 "Medium" 2 "High" 3 }
++		rect 240 274 320 11
+=ui/options.menu 97 98
+=ui/error.menu 217 218
++		textaligny 9
++		textscale .20
+=ui/options.menu 345 351
+=ui/options.menu 89 90
++		name advanced
 =ui/options.menu 91 92
 +		text "Restore recommended defaults"
 +		type 1
 +		textscale .20
 =ui/options.menu 76 77
-+		rect 240 280 320 11
++		rect 240 291 320 11
 =ui/options.menu 434 435
 =ui/error.menu 217 218
 +		textaligny 9

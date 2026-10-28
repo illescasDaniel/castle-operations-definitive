@@ -44,7 +44,7 @@ A (parallel): 1 interfaces + tagged GPU mark ring (`tr_public.h`, `tr_pacegpu.c`
 Then 3 backend checkpoints (`tr_backend.c`; compare_shots identical for `r_frameWarp 0/1`); 4 scheduler (`common.c`,
 `cl_main.c`, `scripts/bench.sh`; **user gate: AP-0 verdict**); 5 adaptive k + denies + suspension (**user gate**);
 6 optional: skip real tail so every present is a scheduled warp (changes present semantics: **user gate** HUD, ESC, console,
-screenshot, save/load, map change, alt-tab); 7 menu row "Smooth (Experimental)" + docs; 8 OpenWarp mesh 6-DoF.
+screenshot, save/load, map change, alt-tab); 7 menu row "Smooth (Experimental)" + docs; 8 OpenWarp mesh 6-DoF (done, user-verified 2026-10-28: `r_frameWarpMesh`, menu row "Warp Parallax", see `docs/frame-warp.md`).
 Interfaces: `ri.WarpCheckpoint(where,&pitch,&yaw)`, `re.WarpPresent(pitch,yaw)`, `paceGpu_t.markTag`. Dev cvars
 `r_frameWarpK`, `r_frameWarpBacklogUs`, `r_frameWarpCheckpoints`, `r_frameWarpApTest`, `r_frameWarpAp` (live kill switch).
 

@@ -22,6 +22,31 @@ rendering every k-th refresh, re-projecting the last real frame to the latest lo
 `r_frameWarpMaxDeg` 20, `r_frameWarpGunDepth` 0.3, `r_frameWarpGunDilate` 1, debug `r_warpDebug` 1/2/3 +
 `r_warpDebugPitch/Yaw`. Commands `warpstats`, `warprstats`.
 
+## Warp Parallax (mesh 6-DoF warp, `r_frameWarpMesh`)
+Only affects the compositor presents of Smooth (`r_frameWarp 2`); with Off or Low latency it has no effect, so the menu row
+is greyed out and not clickable (`cvarTest "r_frameWarp"` + `disableCvar { "0" "1" }`) unless Frame Warp is Smooth. The greying
+follows the ACTIVE `r_frameWarp` (the UI reads the live string, not the pending latched one), so it updates after Apply;
+the row's own value is kept while greyed. It replaces the rotation-only reprojection of the warp presents by an OpenWarp-style mesh warp: the real
+frame's depth is captured as a grid, each warp present moves the grid vertices by the camera rotation plus the camera
+translation predicted over the elapsed time (velocity x dt), and the frame is drawn as a triangle mesh. This removes the
+strafe blur (judder of near geometry at 116 Hz presents) that rotation-only AP shows. User-verified at level 2 on
+2026-10-28.
+- Cvar `r_frameWarpMesh` (`CVAR_ARCHIVE | CVAR_LATCH`, code default 0 = vanilla): 0 off, 1/2/3 = depth grid step 16 / 8 / 4
+  px. Menu: GRAPHICS > DISPLAY row "Warp Parallax" (Off / Low / Medium / High -> 0 / 1 / 2 / 3), directly below Frame Warp,
+  in both layers and both variants (main and in-game); applies through Apply (soft `vid_restart`) like Frame Warp.
+  Codmod first-launch/Reset value `seta r_frameWarpMesh "2"` in `codmod_defaults.cfg` (menu Reset path = `execmodcfg`).
+- Cost: raster-bound by triangle count. Low = about -20% mesh draw
+  versus Medium; the mesh adds about 0.06-0.07 ms per warp at 1920x1200 (about 0.11 ms estimated at
+  2560x1600). Total warp GPU at 2560x1600 measured p50 0.46 ms / p98 0.81 ms (rotation-only about 0.25 ms).
+- Live A/B cvars (no restart): `r_frameWarpMeshTranslate` (1; 0 = rotation only), `r_frameWarpMeshFill` (1; fill
+  disocclusion holes), `r_frameWarpMeshStretch` (2.0; max triangle stretch before it is discarded),
+  `r_frameWarpMeshMaxMove` (16; max applied translation in world units), `r_frameWarpMeshMaxSpeed` (1500; speed in units/s
+  above which velocity counts as a teleport and translation is dropped). Dev: `r_frameWarpMeshDt` (> 0 overrides the
+  predicted warp dt in ms), `r_warpDebug 4` (mesh visualisation), `r_warpDebugMove "x y z"` (cheat; fixed translation).
+- Known limits: moving actors update at the real frame rate (the mesh only knows camera motion); translucent surfaces
+  move with what is behind them (depth of the opaque layer); a halo shows at thin foreground objects (fill smears the
+  background); the gun stays screen-locked; a brief lag at jump start (velocity has not built up yet).
+
 ## Levels, AP requirements and setting conflicts
 - Levels of the one `r_frameWarp` row: 0 Off, 1 Low latency (late-latch), 2 Smooth (Experimental) = AP compositor
   (`docs/frame-warp-ap-plan.md`).

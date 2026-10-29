@@ -20,7 +20,8 @@ rendering every k-th refresh, re-projecting the last real frame to the latest lo
 ## Cvars and commands
 `r_frameWarp` (`CVAR_ARCHIVE | CVAR_LATCH`, default 0; user setting: GRAPHICS > DISPLAY row "Frame Warp" with three levels, Off (0) / Low latency (1, late-latch) / Smooth (Experimental) (2, compositor "AP"), in both layers, main and in-game variants; applies through the menu's Apply button = soft `vid_restart`, which re-runs `R_Init` -> `R_WarpInitTargets`; codmod first-launch/Reset value `seta r_frameWarp "0"` in `codmod_defaults.cfg`; Off is exactly the old behaviour and the row never writes `com_maxfps`/`com_maxfpsMode`/`r_vsync`), `r_frameWarpHz` (0 = auto refresh; test override),
 `r_frameWarpMaxDeg` 20, `r_frameWarpGunDepth` 0.3, `r_frameWarpGunDilate` 1, debug `r_warpDebug` 1/2/3 +
-`r_warpDebugPitch/Yaw`. Commands `warpstats`, `warprstats`.
+`r_warpDebugPitch/Yaw`. Commands `warpstats`, `warprstats`, `apstats`.
+Internal AP cvars (code defaults only, not in any menu or cfg; see `docs/frame-warp-ap-plan.md`, last section): `r_frameWarpDenyGain` (1.10; AP is denied when its distinct presents/s fall under this multiple of the late-latch estimate), `r_frameWarpDenyMinGap` (0.5; a present counts as distinct after this fraction of a slot), `r_frameWarpSeed` (1; AP starts at a rate seeded from the late-latch measurements, 0 = at the maximum slot rate).
 
 ## Warp Parallax (mesh 6-DoF warp, `r_frameWarpMesh`)
 Only affects the compositor presents of Smooth (`r_frameWarp 2`); with Off or Low latency it has no effect, so the menu row

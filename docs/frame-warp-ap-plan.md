@@ -88,3 +88,49 @@ One printed line per 2 s at most (`slot rate A -> B (real R)`). Scheduler guard 
 (plus one per overdue slot while the real frame is late); without it, after a load drop the scheduler produced 1.7 warps per
 real frame (about 238 presents/s at S 170). `r_frameWarpEarly` (default 0) lets a warp be placed a fraction of a slot
 early; it did not help served% and stays off.
+
+## Deny rule, statistics and start-up rework (2026-10-29, `common.c`)
+Why: the stats stored a real frame's GPU completion, not its swap time (the fence is queued before the present hold), so
+present intervals of held frames were wrong ("served%" said 95% while ~45% of intervals were under half a slot, and the
+old deny never fired); in `com_maxfpsMode 0` the deadline is the frame start, so the miss counter flagged nearly every frame.
+- **Present time**: a real frame's done entry is `max(GPU done, swap return)` (`paceRec_t.swapUs`, stamped in
+  `Com_PresentDone`); warps keep their GPU time. Busy time, the rate controller and `lastDoneUs` stay on GPU done.
+- **`apstats`**: `served%` is gone. New: `distinct_per_s`, `distinct_iv_p98` (a present counts as distinct only when at
+  least `r_frameWarpDenyMinGap` x T1 after the last counted one, on sorted times), `ll_est_fps`, `fe_p50/p98` (frame
+  start -> first backend command), `hold_mean` (real present hold, us). `denies_slower_ll`, `denies_gpu_hold`.
+- **Deny** (`Com_ApDenyCheck`): per 3 s window of clean running (the clock and the present collection pause on
+  non-clean frames, they do not restart), deny when distinct presents/s < `r_frameWarpDenyGain` (1.10) x the late-latch
+  estimate, unless P98 of the counted intervals is above 1.6 x k x T1 (a hitch, not a verdict; the guard uses the real period
+  because a healthy k = 2 run has P98 of about 2 T1). Estimate (`Com_ApLLEstimate`) = min(user cap if > 0, refresh
+  (`r_frameWarpHz` stands in for it), 1e6 / late-latch GPU busy, 1e6 / late-latch CPU frame time P90, and while fresh (< 60 s)
+  1e6 / the measured baseline interval); the busy time falls back to AP's own busy minus (k-1) warp costs. Message:
+  `AP delivered X/s vs late-latch Y/s (gain G): AP off for N s` (G = X / Y). Deny time doubles on repeats (30 s .. 5 min).
+  The "GPU cannot hold S_min" rule is unchanged.
+- **Baseline hygiene**: late-latch frames now measure the first backend command (the checkpoint hook runs before the
+  `ap.running` return), so they give GPU busy time (`llBusyEma`) and front-end time. The baseline (interval, busy, CPU
+  time) only updates when `CL_WarpDeny()` was NULL at the frame start (stored on the record), and is reset when the
+  `mapname` cvar changes. The "measuring the late-latch baseline" wait only counts time the client allows the warp.
+- **Start-up** (`Com_ApSeedRate`, `r_frameWarpSeed` 1): S0 = clamp(k x 0.88 x 1e6 / max(llBusy + (k-1) x warpCost,
+  cpuP90 x k / 2), S_min, S_max) instead of S_max (no late-latch busy samples yet: S_max); first start warms 30 frames
+  (was 60); a restart after > 3 s on the same map returns to the last S that held 5 s, never above the new seed; no upward
+  probe in the first 5 s. The 0.92 / 0.88 / 0.80 thresholds are unchanged.
+- **Pacing phase independent of `com_maxfpsMode`**: while AP runs the pacer uses mode 2 internally (cvar untouched):
+  the present is held to the deadline and the frame starts a lead early, lead = max(PaceLead + 500, (T - T1) + fe P98 +
+  warp cost), at most 0.9 T, i.e. at or before W - fe P98 - warp cost with W = previous deadline + T1. So the mid-period
+  warp lands in the backend, not in the front-end gap or the present hold. The deadline is now the present target in every
+  mode, which makes the miss counter (`Com_ApNoteReal`, statistics only) meaningful.
+- **Fixed on the way**: the first AP start could run a checkpoint in its top-of-frame wait before the GPU clock mapping
+  existed; marks then resolved against `calOff` 0, `lastDoneUs` was poisoned for good and no warp was ever placed (only visible
+  when AP starts once, cleanly). `Com_ApUpdate` now calibrates when the mapping is unset; `Com_ApBacklog` is clamped.
+- Internal cvars (code defaults only, never in a menu or cfg): `r_frameWarpDenyGain` 1.10, `r_frameWarpDenyMinGap` 0.5,
+  `r_frameWarpSeed` 1.
+
+### Empirical deny (2026-10-29 follow-up 2)
+
+The formula/LL-sample estimate misjudged the real late-latch rate in play (said 191/s, real ~125/s), so it no longer
+denies. When the advisory estimate says AP < r_frameWarpDenyGain x estimate (3 s clean window, >100 presents, P98
+guard as before), AP runs a 2 s late-latch trial (client must allow warping; any client deny aborts it with a 10 s
+back-off), measures the real late-latch distinct presents/s (first 0.5 s ignored) and compares it with AP's distinct/s
+from the window before. Deny (30 s, doubling to 5 min) only if measured LL x gain >= AP; otherwise AP resumes and the
+next trial waits 60 s (doubling to 16 min on repeated keeps). One line prints both numbers. r_frameWarpDenyGain 0 =
+never deny by comparison. The GPU-cannot-hold-S_min rule is unchanged.

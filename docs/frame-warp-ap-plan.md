@@ -134,3 +134,9 @@ back-off), measures the real late-latch distinct presents/s (first 0.5 s ignored
 from the window before. Deny (30 s, doubling to 5 min) only if measured LL x gain >= AP; otherwise AP resumes and the
 next trial waits 60 s (doubling to 16 min on repeated keeps). One line prints both numbers. r_frameWarpDenyGain 0 =
 never deny by comparison. The GPU-cannot-hold-S_min rule is unchanged.
+
+### Seed headroom and one-step overload (2026-10-29)
+
+`Com_ApSeedRate` now adds 12% headroom to the busy estimate and uses late-latch busy samples only if the last one is
+under 20 s old (otherwise S_max). The overload step takes the full computed target `0.88*k*1e6/busyEma` (the old 0.98
+clamp never bound: the target is already below 0.96 x S; the floor is 0.5 x S instead of 0.7).

@@ -123,3 +123,7 @@ no-VRR case (oversample ~0.8T).
 Late-latch with `r_frameWarpEdgeBlur 2` (default) looks fine at a 60 FPS cap when flicking fast; edges are unnoticeable. Parked, in case they are wanted later:
 - Lower `r_frameWarpMaxDeg` (default 20) to about 8-10 as a low-FPS fallback: clips only extreme corrections (60 FPS cap P98 was 13 deg; uncapped P98 3.4 deg), costs a little of the latency gain on those frames.
 - Adaptive overscan (`r_frameWarpOverscan`): render wider only when the measured correction is large; costs ~10% pixels (0.3-0.6 ms at 150 FPS) if always on, so never flat-on by default.
+
+## Parked: render scale / dynamic resolution (user, 2026-10-29)
+
+Many recent games hold a target frame rate by lowering the internal render resolution under load and upscaling. Wanted as a separate piece after the frame-warp follow-ups; do not lose it. It pairs naturally with AP (a stable slot rate on heavy scenes). Open questions from the earlier plan: scaler (bilinear first, FSR1 later), where the 2D/HUD is drawn (native res, over the upscaled 3D), controller (GPU time target vs. AP slot misses), interaction with SMAA T2x history and with the warp capture/depth snapshot. Touches the rend2 present path, so it needs user verification at each step (AGENTS.md safety rules). Static `r_renderScale`-style option first, dynamic controller second.

@@ -2,6 +2,10 @@
 
 Append-only log, newest first. Never rewrite history: if a decision is reversed, add a new entry that says so.
 
+## 2026-10-29 Smooth (AP, `r_frameWarp 2`) becomes the default; render scale parked as its own piece
+- **Context:** AP plus the 6-DoF mesh warp (Warp Parallax, default High) is user-verified at ~200 fps on a 240 Hz VRR panel, no strafe blur, 2561x1601 looks fine in fullscreen.
+- **Decision:** Smooth is the intended default once the AP follow-ups below are done (gentle start-up, windowed fallback seen working). Dynamic resolution / render scale (as in many new games) is a separate later piece, not part of frame warp; keep the plan alive in `docs/frame-warp.md` "Parked: render scale".
+
 ## 2026-10-26 Pacer `com_maxfpsGpuSync 2` (fence pipeline) default in codmod.cfg
 Replaces the glFinish serialisation with a GL_TIMESTAMP+fence per frame, a bounded GPU queue (`com_maxfpsGpuQueue` 1) and deadlines timed from GPU completion; mode 1 stays the old code. Headless bench: avg FPS unchanged, 1% low +4% (cap 170) / +11% (cap 237), fewer hitches; report in docs/pacer-option3-report.md. User chose it as default; `r_frameWarpEdgeBlur` default 2; edge darkening tried and rejected (looked worse).
 

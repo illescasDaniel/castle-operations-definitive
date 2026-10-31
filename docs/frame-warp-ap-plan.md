@@ -140,3 +140,78 @@ never deny by comparison. The GPU-cannot-hold-S_min rule is unchanged.
 `Com_ApSeedRate` now adds 12% headroom to the busy estimate and uses late-latch busy samples only if the last one is
 under 20 s old (otherwise S_max). The overload step takes the full computed target `0.88*k*1e6/busyEma` (the old 0.98
 clamp never bound: the target is already below 0.96 x S; the floor is 0.5 x S instead of 0.7).
+
+### Diagnostics and trial hysteresis (2026-10-31, `common.c`)
+
+**Same-clock counters.** Every present is also stamped with its CPU swap-return time (`aps.sdone`, parallel to the GPU
+series). New `apstats` lines: swap-clock kinds/hist/distinct, warp actual minus predicted completion, warp lateness vs
+previous real swap + T1, swap-return minus raw GPU done (warp / real), hold target vs resulting interval, trial counters
+(started/kept/denied/aborted). `apstats timeline [s]` prints 250 ms buckets (S, distinct, warps, reals, decl reasons, busy
+mean/max, misses, sleeps, trial state); `apstats dump` writes `apdump.txt` (timeline + both present series) to the homepath
+game dir. Rings are 32768 presents (~140 s).
+
+**Finding (headless escape1, 1920x1200, r_aa 8, mesh 3, S 233, 119 s):** the r>w / w>r asymmetry of the GPU-clock series
+(w>r 3573 us, r>w 5025 us) is mostly timestamp skew. A real present is stamped at its swap return, which is ~1.9 ms after
+its GPU done (p50 +1.93 ms); a warp is stamped at its GPU done, ~1.0 ms after its swap return (p50 -1.03 ms). On the swap
+clock the pair is w>r 4618 / r>w 3979 us (mean T1 = 4292): residual +-0.3 ms, opposite sign. Warps are not late (p50 -0.38 ms
+vs previous real swap + T1), the hold lands 0.14-0.35 ms after its target, warp prediction error p50 +0.12 ms (p2/p98
+-0.38/+0.84 ms). The true on-screen time lies between the two clocks. Unloaded run: distinct 224/s, 0 trials.
+
+**Trial hysteresis.** A trial starts only when AP < 1.0 x estimate in 2 consecutive clean windows, never while probing or
+while the slot rate slews; first keep backoff 120 s (doubles to 16 min as before). The verdict still uses
+`r_frameWarpDenyGain` against the measured late-latch rate. Dev cvar `r_frameWarpDenyForceLL <fps>` (default 0 = off)
+replaces the estimate (headless caps it at ~117). Headless checks: normal estimate, 119 s: no trial; forced 1000: trial,
+measured LL 121/s vs AP 227/s, kept, next trial in 120 s; forced 1000 with `r_frameWarpHz 116`: AP 111/s vs LL 121/s,
+denied 30 s, second trial 108 vs 120, denied 60 s.
+
+### Asymmetric slot-rate controller: fast down, slow up (2026-10-31, `common.c` `Com_ApUpdate`)
+
+Why: in heavy views the busy time swings 8.2-8.9 ms; the old EMA(16) test (down at 0.92 x period, re-aim 0.88, probe up
+at < 0.80 of the new period) crossed its threshold all the time, so S ratcheted down to the heaviest moments and crept
+back (baseline scenario: 26 downs+ups per 100 s). Delaying the reaction (parked staircase patch) made it worse; this
+keeps the down reaction fast and removes the thrash on the way up.
+- **Down**: decided on P90 of the last 48 real-frame busy times (`Com_ApBusyP90`; the ring is cleared with every
+  retarget, 20 samples needed). P90 > 0.95 x real period, or 3 consecutive misses with P90 > 0.90, steps S straight to
+  `r_frameWarpDownAim` (0.85) x k x 1e6 / P90 (at least 3% down, floor 0.5 x S); at most one step per 1 s. The
+  0.95 / 0.85 gap is the hysteresis band. A load step is seen after about 5-20 heavy frames (measured: busy step at
+  t = 66.75 s, target reached by 67.5 s, i.e. under 1 s including the 1.5%/frame slew).
+- **Up**: only when P90 stays under 0.85 x the real period of the next rung (S x 1.05) continuously for
+  `r_frameWarpUpCalm` (15 s), never within 10 s of a step down; one 5% rung per calm. A probe is kept after 150 real
+  frames; if the overload test fails at the new rate it reverts, the calm needed doubles (up to 240 s), and the next
+  up waits 10 s. A kept probe resets the calm. Start-up (`Com_ApSeedRate`), the GPU-cannot-hold-S_min rule and the
+  empirical deny are unchanged.
+- **Cvars (internal, code defaults only)**: `r_frameWarpUpCalm` 15, `r_frameWarpDownAim` 0.85.
+- **Side fix**: a real frame whose GPU work finished before its present hold ended was harvested before its swap was
+  stamped, so its distinct-present entry sat at the GPU time right behind the following warp (`Com_ApFixDone` moves it to
+  the swap time afterwards). Reduces, but does not remove, the GPU-clock skew below.
+
+### Distinct presents on the swap-return clock (2026-10-31 follow-up)
+
+The "GPU-clock skew" found above was the cause of the false trials: a real frame whose GPU work ends well before its present
+hold is stamped at its GPU completion, right behind the warp that follows it, so the pair counted as one present
+(AP read ~110-175/s in a heavy view while the swap returns were evenly spaced). Everything that judges AP's delivered rate now
+uses the **swap-return clock** (a warp's and a real present's `SDL_GL_SwapWindow` return, the same clock as the late-latch
+trial's presents): the deny window (`ap.winT`, fed from `Com_ApWinSwap` at both swap sites), the `AP delivered X/s` lines,
+`apstats` `distinct_per_s`/`distinct_iv_p98`, and the `apstats timeline` / dump `dist=` buckets. The GPU-completion version stays
+in `apstats` as `gpuclk_distinct_per_s` (and the `iv_*`, `kinds`, `hist` lines of the first block are still GPU-clock); the
+swap-clock kinds line prints `swap_distinct_per_s`. `Com_ApFixDone` (moves an early-harvested real frame's GPU-clock entry to
+its swap time) stays for the diagnostic series.
+
+Numbers (headless 1920x1200, r_aa 8, escape1, S0 233, load 3200 = 8.3 ms vs 5.1 ms, default deny settings):
+
+| | before (EMA controller, GPU clock) | after |
+|---|---|---|
+| 10 s wave, 60 s: downs+ups per 100 s | 26.3 (7 downs, 10 ups, 10 probes) | 1.5 (1 down, 0 ups) |
+| S in heavy / light | 202-213 / 233 (stepping) | 208 / 208 |
+| bucket distinct/s median, P5, ratio | 196, 116, 0.59 (GPU clock) | 208, 200, 0.96 (swap clock; GPU clock gave 0.55) |
+| misses / sleeps (span) | 55 / 5 (64.5 s) | 38 / 5 (67.9 s) |
+| distinct_per_s final (swap / GPU clock) | n/a | 206.1 / 175.7 |
+| swap-return interval std | 686 us | 614 us |
+| 30 s phases (heavy/light/heavy/light, 135 s) | n/a | 4 changes (2.96 per 100 s), ratio 0.96, no trial, per-phase distinct/s 205-208 |
+| unloaded, 80 s | 224/s, 0 downs | 227.3/s, 0 downs, no trial |
+| mild swing (r_gpuLoad 1500 vs 0) | n/a | S 233 throughout, 0 downs/probes (run before the clock change) |
+
+The 30 s run (no `r_frameWarpDenyGain 0`) no longer gets the false "AP slower than late-latch" trial: AP delivers ~205/s on
+the swap clock against a late-latch estimate of 120/s (headless, `com_maxfps` 120). Its sequence: 233 -> 207 at the first
+heavy step, 207 -> 218 -> 229 in the light phase (15 s calm per rung), 229 -> 218 revert + 203 in the second heavy phase,
+203 -> 213 in the last light phase. Raw logs of these runs were kept outside the repo (scratchpad).

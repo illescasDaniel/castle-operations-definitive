@@ -1,6 +1,6 @@
 # Frame warp (asynchronous reprojection)
 
-Branch `frame-warp` (both repos). Engine feature, default off. Goal: present at the display rate (e.g. 120 Hz) while
+Branch `frame-warp` (both repos). Engine feature; the engine code default is off (vanilla), the codmod first-launch/Reset default is Smooth (2) since 2026-10-29. Goal: present at the display rate (e.g. 120 Hz) while
 rendering every k-th refresh, re-projecting the last real frame to the latest look direction (rotation only, 3-DoF).
 
 ## How it works
@@ -49,6 +49,27 @@ strafe blur (judder of near geometry at 116 Hz presents) that rotation-only AP s
 - Known limits: moving actors update at the real frame rate (the mesh only knows camera motion); translucent surfaces
   move with what is behind them (depth of the opaque layer); a halo shows at thin foreground objects (fill smears the
   background); the gun stays screen-locked; a brief lag at jump start (velocity has not built up yet).
+
+### Object motion (enemies, doors, cages) on Smooth presents
+Only with SMAA T2x (`r_aa 8`) and Warp Parallax on: the mesh warp also moves moving entities, not just the camera view. The
+T2x velocity prepass (`docs/smaa-motion-plan.md`) already writes per-pixel motion; at capture time `RB_WarpMeshCapture`
+(`warpdepth_fp.glsl`) reduces it to a grid `tr.warpMotionImage` (RG16F, attachment 1 of the depth grid FBO): per grid texel the
+motion of the tap that wins the nearest-depth test, minus what the camera alone does to that depth (reprojection with the same
+matrix the prepass used, saved by `RB_SMAATemporal` in `tr.warp.velReproj`), in NDC per real frame. World, sky and gun taps
+write 0; object motion above 0.5 NDC (a quarter of the screen) per frame counts as a teleport and writes 0. The depth grid itself
+is unchanged. In `warpmesh_vp.glsl` each vertex fetches the motion of the texel that gave its z and shifts its old-camera-space
+position by `d * alpha` (alpha = time since capture / capture's real frame interval, clamped to 0..1, same dt as the camera
+velocity), then applies the camera rotation and translation as before. The shift is clamped to `r_frameWarpMeshObjMax` pixels;
+skirt and gun-covered vertices get none. Colour sampling is unchanged, so trailing disocclusions go through the existing stretch
+test and fill.
+- Cvars (internal, live, no menu row): `r_frameWarpMeshObjects` (1; 0 = camera motion only), `r_frameWarpMeshObjMax` (24 px).
+  Dev: `r_warpDebug 5` shows the motion grid (red = +x, green = +y, 1.0 = 0.005 NDC per frame; negative motion is black),
+  `r_warpDebugObjDt` (ms) forces the extrapolation time in the `r_warpDebug 1` mesh preview.
+- Cost: other AA modes pay nothing (the flag is only set by the T2x resolve). With T2x: `warp_depth` about 0.05 ms per real frame at
+  1920x1200, no measurable difference between objects on and off; the per-present mesh draw adds one texel fetch per vertex.
+- Limits: MSAA has no velocity buffer, so it stays camera only (also the first frame after a history reset); translucents and
+  particles keep moving with the background; entities that were not matched with last frame (new, teleported) get camera-only
+  motion; expect a 0-4 px fringe at silhouettes (the motion grid is as coarse as the depth grid and follows its nearest tap).
 
 ## Levels, AP requirements and setting conflicts
 - Levels of the one `r_frameWarp` row: 0 Off, 1 Low latency (late-latch), 2 Smooth (Experimental) = AP compositor

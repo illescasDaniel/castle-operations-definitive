@@ -2,6 +2,10 @@
 
 Append-only log, newest first. Never rewrite history: if a decision is reversed, add a new entry that says so.
 
+## 2026-10-29 Smooth (`r_frameWarp 2`) is now the codmod default; staircase fix parked
+- **Decision:** `seta r_frameWarp "2"` in `codmod_defaults.cfg` (engine code default stays 0). In-game on the 240 Hz VRR setup AP gives ~195 fps typical (180-205) vs 130-150 before frame warp. Deny is a measured 2 s late-latch trial, not a formula (the formula said 191/s when real LL was 125/s).
+- **Parked:** a staircase fix (busyEma running mean for 16 samples + 90 fresh samples before an overload step; patches in `memory/attic/ap-staircase-fix*.patch`) cut downs 10 -> 3 but the user felt worse fluctuation (120-190 fps) and sleeps rose 85 -> 200; reverted. Revisit by investigating the added sleeping first, then maybe a wider hysteresis band.
+
 ## 2026-10-29 Smooth (AP, `r_frameWarp 2`) becomes the default; render scale parked as its own piece
 - **Context:** AP plus the 6-DoF mesh warp (Warp Parallax, default High) is user-verified at ~200 fps on a 240 Hz VRR panel, no strafe blur, 2561x1601 looks fine in fullscreen.
 - **Decision:** Smooth is the intended default once the AP follow-ups below are done (gentle start-up, windowed fallback seen working). Dynamic resolution / render scale (as in many new games) is a separate later piece, not part of frame warp; keep the plan alive in `docs/frame-warp.md` "Parked: render scale".

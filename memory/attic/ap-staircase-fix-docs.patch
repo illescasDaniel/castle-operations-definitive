@@ -1,0 +1,16 @@
+diff --git a/docs/frame-warp-ap-plan.md b/docs/frame-warp-ap-plan.md
+index 8079229..4585ddc 100644
+--- a/docs/frame-warp-ap-plan.md
++++ b/docs/frame-warp-ap-plan.md
+@@ -140,3 +140,11 @@ never deny by comparison. The GPU-cannot-hold-S_min rule is unchanged.
+ `Com_ApSeedRate` now adds 12% headroom to the busy estimate and uses late-latch busy samples only if the last one is
+ under 20 s old (otherwise S_max). The overload step takes the full computed target `0.88*k*1e6/busyEma` (the old 0.98
+ clamp never bound: the target is already below 0.96 x S; the floor is 0.5 x S instead of 0.7).
++
++### Overload step on fresh samples (2026-10-29)
++
++`Com_ApRetarget` already zeroed `busyN`; the EMA, however, was seeded from one sample and had alpha 1/16, and the
++overload step fired after 24 samples. The EMA now starts as a running mean (alpha 1/(n+1) for the first 16 samples)
++and the overload step needs `AP_OVERLOAD_N` = 90 fresh samples at the current rate (about 0.8 s), so the step target
++is computed from samples taken only at that rate. Thresholds (0.92/0.88/0.80), the 3 s spacing and the deny logic are
++unchanged. The probe revert keeps its 24-sample check.

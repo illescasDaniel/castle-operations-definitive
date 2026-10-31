@@ -1,0 +1,31 @@
+diff --git a/SP/code/qcommon/common.c b/SP/code/qcommon/common.c
+index 44252dc2..2aaa281c 100644
+--- a/SP/code/qcommon/common.c
++++ b/SP/code/qcommon/common.c
+@@ -3255,7 +3255,8 @@ static void Com_ApNoteReal( paceRec_t *r, long long gUs ) {
+ 		}
+ 		busy = (double)( gUs - start );
+ 		if ( busy > 0 && busy < 100000.0 ) {
+-			ap.busyEma = ap.busyN ? ap.busyEma + ( busy - ap.busyEma ) / 16.0 : busy;
++			// fresh at the current rate after every retarget (busyN = 0): a running mean for the first 16 samples, then the EMA
++			ap.busyEma = ap.busyN ? ap.busyEma + ( busy - ap.busyEma ) / ( ap.busyN < 16 ? ap.busyN + 1 : 16 ) : busy;
+ 			ap.busyN++;
+ 			ap.winBusySum += busy;
+ 			ap.winBusyN++;
+@@ -3604,6 +3605,7 @@ static const char *Com_ApWhyNot( void ) {
+ #define AP_BUSY_MAX    0.92     // overload: GPU busy time per real frame over this fraction of the real period
+ #define AP_BUSY_AIM    0.88     // ... the step down aims at this fraction
+ #define AP_BUSY_PROBE  0.80     // a probe up needs the busy time under this fraction of the new real period
++#define AP_OVERLOAD_N  90       // fresh busy samples (at the current rate) before an overload step may fire
+ #define AP_UP_STEP     1.04     // probe: S x 1.04
+ #define AP_SLEW        0.015    // S moves at most 1.5% per real frame towards its target
+ #define AP_HOLD_US     15000000 // late-latch period after the GPU could not hold S_min
+@@ -3998,7 +4000,7 @@ static void Com_ApUpdate( void ) {
+ 			ap.probeAfterUs = now + 1500000;        // keep climbing while it holds
+ 			note = "probe kept";
+ 		}
+-	} else if ( ap.slotRate == ap.sTarget && ap.busyN >= 24 && ap.busyEma > AP_BUSY_MAX * ap.k * 1000000.0 / ap.sTarget ) {
++	} else if ( ap.slotRate == ap.sTarget && ap.busyN >= AP_OVERLOAD_N && ap.busyEma > AP_BUSY_MAX * ap.k * 1000000.0 / ap.sTarget ) {
+ 		// overload: the GPU is busy for more than AP_BUSY_MAX of a real period. Step straight to the rate it
+ 		// holds (one step, not a staircase), or hand over to late-latch when even S_min does not hold
+ 		if ( ap.sTarget <= ap.sMin + 0.5 ) {

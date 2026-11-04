@@ -25,7 +25,7 @@ import sys
 import time
 
 MAP = "escape1"
-SPOT = "1808 1600 -759.9 0 0"
+SPOT = "1346 160 -620 0 0"
 # exactly 8 startup cvars (MCP limit). Add r_gpuProfile 1 only by swapping one out for a calibration run.
 CVARS = {
     "r_frameWarp": "2", "r_frameWarpAp": "2", "r_frameWarpMesh": "3", "r_aa": "8",
@@ -35,37 +35,56 @@ CVARS = {
 # Calibrated at 1920x1200 headless on escape1 (see docs): LIGHT ~5.1 ms GPU busy per real frame (defaults, spot view);
 # HEAVY ~8.3 ms = light + the dev cvar r_gpuLoad (microseconds of synthetic GPU work per real frame, self-calibrating).
 GPU_LOAD_US = 3200
-LEVELS = {
-    "light": ["set r_gpuLoad 0", "set r_sunShadowCascadeUpdate 0", "setviewpos 1808 1600 -759.9 0 0"],
-    "heavy": ["set r_gpuLoad %d" % GPU_LOAD_US, "set r_sunShadowCascadeUpdate 0", "setviewpos 1808 1600 -759.9 0 0"],
-}
+# The user pins r_sunShadowCascadeUpdate 2 (mod/codmod/codmod.cfg): phases run at both 0 and 2 (--cascade).
+def levels(cascade):
+    vp = "setviewpos %s" % SPOT
+    return {
+        "light": ["set r_gpuLoad 0", "set r_sunShadowCascadeUpdate %d" % cascade, vp],
+        "heavy": ["set r_gpuLoad %d" % GPU_LOAD_US, "set r_sunShadowCascadeUpdate %d" % cascade, vp],
+    }
 # `wait N` counts presents (frames incl. warp presents): about 233 per second at slot rate 233.
 WAIT_PER_S = 233
+GPU_TARGET = 220.0   # pass metric: GPU-completion-clock distinct presents/s (gdist); the swap clock overstates AP under GPU-heavy load
 THRESH = {
     "changes_per_100s": 3.0,     # downs + ups
     "p5_vs_median": 0.9,         # 250 ms bucket distinct/s: P5 >= 0.9 x median
 }
 
 
-def scenario(duration_s=100, period_s=10, warm_s=4, hz=233):
-    """Return the console command list: warm-up, then alternating light/heavy phases, snapshots between."""
+def scenario(duration_s=100, period_s=10, warm_s=4, hz=233, cascade="2"):
+    """Return the console command list: warm-up, then alternating light/heavy phases, snapshots between.
+    cascade "0" / "2": r_sunShadowCascadeUpdate for the whole run; "both": 0 for the first half, 2 for the second."""
     w = lambda s: "wait %d" % max(1, int(s * WAIT_PER_S))
-    cmds = ["set r_frameWarpHz %d" % hz, "echo APSC load light"] + LEVELS["light"] + [w(warm_s + 4)]
+    first = 0 if cascade == "both" else int(cascade)
+    lv = levels(first)
+    # never r_frameWarpHz 0 headless: the refresh reads 60
+    cmds = ["set r_frameWarpHz %d" % hz, "echo APSC load light"] + lv["light"] + [w(warm_s + 4)]
     cmds += ["apstats reset", "apstats", "echo APSC start"]    # snapshot: downs/ups/misses baselines
     t, phase = 0, "heavy"
     while t < duration_s:
-        cmds += ["echo APSC load %s" % phase] + LEVELS[phase] + [w(period_s), "apstats", "echo APSC end %s" % phase]
+        if cascade == "both" and t >= duration_s / 2.0 and first == 0:
+            first = 2
+            lv = levels(2)
+            cmds += ["echo APSC cascade 2"]
+        cmds += ["echo APSC load %s" % phase] + lv[phase] + [w(period_s), "apstats", "echo APSC end %s" % phase]
         t += period_s
         phase = "light" if phase == "heavy" else "heavy"
     cmds += ["apstats timeline 140", "apstats dump"]
     return cmds
 
 
+def cell(load, cascade, hz=233, warm=1500, run=5000):
+    """Steady-state measurement cell (the headless repro): one load level, one cascade value, one apstats."""
+    return ["set r_frameWarpHz %d" % hz, "set r_frameWarpDenyGain 0", "set r_gpuLoad %d" % load,
+            "set r_sunShadowCascadeUpdate %d" % cascade, "setviewpos %s" % SPOT, "wait %d" % warm,
+            "apstats reset", "wait %d" % run, "apstats"]
+
+
 def cmd_args(a):
-    cmds = scenario(a.duration, a.period, hz=a.hz)
+    cmds = cell(a.load, int(a.cascade), a.hz) if a.cell else scenario(a.duration, a.period, hz=a.hz, cascade=a.cascade)
     out = {
         "map": MAP, "spot": SPOT, "cvars": CVARS, "commands": cmds,
-        "grep": r"codmod ap:|^AP |^ *[0-9]+\.[0-9]+ S=|APSC|apstats|slot rate|AP delivered|frame warp AP",
+        "grep": r"codmod ap|^AP |^ *[0-9]+\.[0-9]+ S=|APSC|apstats|slot rate|AP delivered|frame warp AP",
         "max_lines": 400,
         "notes": "Save the returned lines to a file and run: scripts/ap-scenario.py analyze FILE [--dump run/home/codmod/apdump.txt]. "
                  "Wait counts presents, so wall time ~ duration (heavy phases run fewer real frames). Never use timescale 0.",
@@ -110,11 +129,12 @@ def parse_log(text):
             snaps.append({"tag": None, "kv": kv, "head": head})
             head = {}
             continue
-        m = re.match(r"([0-9]+\.[0-9]+) S=(\d+) dist=(\d+) warps=(\d+) reals=(\d+) decl=\S+ busy=([\d.]+)/(\d+) miss=(\d+) sleeps=(\d+) trial=(\d+)", line)
+        m = re.match(r"([0-9]+\.[0-9]+) S=(\d+) dist=(\d+)(?: gdist=(\d+) glow=(\d+))? warps=(\d+) reals=(\d+) decl=\S+ busy=([\d.]+)/(\d+) miss=(\d+) sleeps=(\d+) trial=(\d+)", line)
         if m:
             g = m.groups()
-            tl.append({"t": float(g[0]), "slot": int(g[1]), "dist": int(g[2]), "warps": int(g[3]), "reals": int(g[4]),
-                       "busy": float(g[5]), "busymax": int(g[6]), "miss": int(g[7]), "sleeps": int(g[8]), "trial": int(g[9])})
+            tl.append({"t": float(g[0]), "slot": int(g[1]), "dist": int(g[2]), "gdist": int(g[3]) if g[3] else int(g[2]),
+                       "glow": int(g[4]) if g[4] else 0, "warps": int(g[5]), "reals": int(g[6]),
+                       "busy": float(g[7]), "busymax": int(g[8]), "miss": int(g[9]), "sleeps": int(g[10]), "trial": int(g[11])})
     return snaps, tl
 
 
@@ -208,6 +228,15 @@ def analyze(a):
                 kv.get("iv_p98"), kv.get("distinct_per_s"), kv.get("misses"), kv.get("sleeps")))
     print("   (snapshots are cumulative since `apstats reset`: busy_us_per_real is the running mean, not the phase mean)")
 
+    mk = re.findall(r"codmod ap kinds .*?r>r (\d+)/", text)
+    mh = re.findall(r"codmod ap hist \([^)]*\): ([\d.]+)", text)
+    md = re.findall(r"warp_actual_minus_pred (-?\d+)/(-?\d+)/(-?\d+)", text)
+    if mk and mh:
+        kinds = re.findall(r"codmod ap kinds .*", text)[-1]
+        nn = [int(x) for x in re.findall(r" (\d+)/[\d.]+/[\d.]+", kinds)]
+        tot = sum(nn)
+        print("  r>r share = %.1f%%  hist<0.5slot = %s%%  warp_actual_minus_pred p2/p50/p98 = %s  decl = %s" % (
+            100.0 * nn[3] / tot if tot else 0, mh[-1], "/".join(md[-1]) if md else "n/a", final.get("decl", "n/a")))
     print("== present intervals ==")
     p2, p50, p98 = final.get("iv_p2"), final.get("iv_p50"), final.get("iv_p98")
     print("  apstats: p2=%s p50=%s p98=%s us" % (p2, p50, p98))
@@ -229,17 +258,22 @@ def analyze(a):
         wall = tl[-1]["t"] - tl[0]["t"] + 0.25
         n100 = max(wall, 1e-9) / 100.0
         print("  timeline: %d buckets, %.1f s" % (len(tl), wall))
+    g = final.get("gpuclk_distinct_per_s")
+    if g is not None:
+        ok = g >= GPU_TARGET
+        print("  gpuclk_distinct_per_s = %.1f (need >= %.0f, the late-latch-equivalent target): %s" % (g, GPU_TARGET, "PASS" if ok else "FAIL"))
+        verdict.append(ok)
     changes = downs + ups
     rate = changes / n100
     ok = rate <= THRESH["changes_per_100s"]
     print("  downs+ups = %d over %.1f s -> %.2f per 100 s (limit %.1f): %s" % (changes, n100 * 100, rate, THRESH["changes_per_100s"], "PASS" if ok else "FAIL"))
     verdict.append(ok)
     if tl and len(tl) > 6:
-        d = [b["dist"] * 4 for b in tl[1:-1]]
+        d = [b["gdist"] * 4 for b in tl[1:-1]]
         med = statistics.median(d)
         p5 = pct(d, 5)
         ok = p5 >= THRESH["p5_vs_median"] * med
-        print("  250 ms-bucket distinct/s (swap-return clock): median=%.0f P5=%.0f ratio=%.3f (need >= %.2f): %s" % (med, p5, p5 / med if med else 0, THRESH["p5_vs_median"], "PASS" if ok else "FAIL"))
+        print("  250 ms-bucket distinct/s (GPU-completion clock, gdist): median=%.0f P5=%.0f ratio=%.3f (need >= %.2f): %s" % (med, p5, p5 / med if med else 0, THRESH["p5_vs_median"], "PASS" if ok else "FAIL"))
         verdict.append(ok)
         # busy by load phase using the bucket mean busy (us per real frame): shows whether the load wave reached the GPU
         b = [x["busy"] for x in tl if x["busy"] > 0]
@@ -358,6 +392,9 @@ def main():
     p.add_argument("--duration", type=int, default=100, help="seconds of square wave (default 100)")
     p.add_argument("--period", type=int, default=10, help="seconds per phase (default 10)")
     p.add_argument("--hz", type=int, default=233)
+    p.add_argument("--cascade", choices=["0", "2", "both"], default="2", help="r_sunShadowCascadeUpdate for the phases (default 2, the user's pinned value)")
+    p.add_argument("--cell", action="store_true", help="one steady cell instead of the square wave: needs --load; --cascade 0|2")
+    p.add_argument("--load", type=int, default=1500, help="r_gpuLoad for --cell")
     p.set_defaults(fn=cmd_args)
     p = sub.add_parser("analyze", help="analyze a saved console log")
     p.add_argument("log")

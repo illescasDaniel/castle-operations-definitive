@@ -18,13 +18,13 @@ rendering every k-th refresh, re-projecting the last real frame to the latest lo
   frame every k*T, k-1 warp presents in the slots between; suspends with backoff when real frames do not fit in T.
 
 ## Cvars and commands
-`r_frameWarp` (`CVAR_ARCHIVE | CVAR_LATCH`, default 0; user setting: GRAPHICS > DISPLAY row "Frame Warp" with three levels, Off (0) / Low latency (1, late-latch) / Smooth (Experimental) (2, compositor "AP"), in both layers, main and in-game variants; applies through the menu's Apply button = soft `vid_restart`, which re-runs `R_Init` -> `R_WarpInitTargets`; codmod first-launch/Reset value `seta r_frameWarp "0"` in `codmod_defaults.cfg`; Off is exactly the old behaviour and the row never writes `com_maxfps`/`com_maxfpsMode`/`r_vsync`), `r_frameWarpHz` (0 = auto refresh; test override),
+`r_frameWarp` (`CVAR_ARCHIVE | CVAR_LATCH`, default 0; user setting: GRAPHICS > DISPLAY row "Frame Warp" with two levels, Off (0) / On (2, compositor "AP"; `r_frameWarp 1` late-latch stays as a console-only mode and as AP's internal fallback), in both layers, main and in-game variants; applies through the menu's Apply button = soft `vid_restart`, which re-runs `R_Init` -> `R_WarpInitTargets`; codmod first-launch/Reset value `seta r_frameWarp "2"` in `codmod_defaults.cfg`; Off is exactly the old behaviour and the row never writes `com_maxfps`/`com_maxfpsMode`/`r_vsync`), `r_frameWarpHz` (0 = auto refresh; test override),
 `r_frameWarpMaxDeg` 20, `r_frameWarpGunDepth` 0.3, `r_frameWarpGunDilate` 1, debug `r_warpDebug` 1/2/3 +
 `r_warpDebugPitch/Yaw`. Commands `warpstats`, `warprstats`, `apstats`.
 Internal AP cvars (code defaults only, not in any menu or cfg; see `docs/frame-warp-ap-plan.md`, last section): `r_frameWarpDenyGain` (1.10; AP is denied when its distinct presents/s fall under this multiple of the late-latch estimate), `r_frameWarpDenyMinGap` (0.5; a present counts as distinct after this fraction of a slot), `r_frameWarpSeed` (1; AP starts at a rate seeded from the late-latch measurements, 0 = at the maximum slot rate).
 
 ## Warp Parallax (mesh 6-DoF warp, `r_frameWarpMesh`)
-Only affects the compositor presents of Smooth (`r_frameWarp 2`); with Off or Low latency it has no effect, so the menu row
+Only affects the compositor presents of Smooth (`r_frameWarp 2`); with Off it has no effect, so the menu row
 is greyed out and not clickable (`cvarTest "r_frameWarp"` + `disableCvar { "0" "1" }`) unless Frame Warp is Smooth. The greying
 follows the ACTIVE `r_frameWarp` (the UI reads the live string, not the pending latched one), so it updates after Apply;
 the row's own value is kept while greyed. It replaces the rotation-only reprojection of the warp presents by an OpenWarp-style mesh warp: the real
@@ -72,7 +72,7 @@ test and fill.
   motion; expect a 0-4 px fringe at silhouettes (the motion grid is as coarse as the depth grid and follows its nearest tap).
 
 ## Levels, AP requirements and setting conflicts
-- Levels of the one `r_frameWarp` row: 0 Off, 1 Low latency (late-latch), 2 Smooth (Experimental) = AP compositor
+- Levels of the one `r_frameWarp` row (2026-11-04): 0 Off (no warping at all), 2 On = AP compositor (default in codmod). 1 = late-latch, console only
   (`docs/frame-warp-ap-plan.md`).
 - AP runs only with: fullscreen, `r_vsync` 0-3 (3 recommended), `com_maxfpsGpuSync 2`, `com_maxfpsPrecise 1`. When a
   requirement is missing AP denies itself with a printed reason and falls back to late-latch (windowed is not
@@ -161,3 +161,10 @@ Repeatable headless load for `r_frameWarp 2`, to compare frame-rate stability be
 - **Thresholds**: `downs+ups` at most 3 per 100 s; 250 ms-bucket distinct presents/s P5 at least 0.9 x median (distinct counted on the swap-return clock since 2026-10-31; `apstats timeline`/dump `dist=` and `distinct_per_s` use it, `gpuclk_distinct_per_s` is the old GPU-completion count); `misses` and `sleeps` (per second) not above the baseline file (5% margin).
 - **Baseline, build of 2026-10-31 with `r_gpuLoad` (60 s wave, 10 s phases, light 5.1 / heavy 8.3 ms)**: real fps 105.9-109 in heavy, apstats intervals P2/P50/P98 780/4751/8096 us, dump GPU-completion interval mean 4601 std 2316 P1 321 P99 8235 us, swap-return std 686 (P1 3204, P99 6176); 7 downs, 10 ups (slot 233 -> about 202-213 in each heavy phase and back in light), 10 probes, 55 misses, 5 sleeps over 64.5 s; bucket distinct/s median 196, P5 116 (ratio 0.59, FAIL); downs+ups 26.3 per 100 s (FAIL, limit 3). The old 7.2 ms baseline (3 ups, 51 misses) is superseded: the 8.3 ms load makes the controller step down in every heavy phase, which is the instability the scenario exists to measure. Saved as `benchmarks/ap-baseline.json` (misses 55, sleeps 5 over 64.5 s).
 - **After the asymmetric controller + swap-clock distinct (2026-10-31, 10 s wave, 60 s)**: downs+ups 1.5 per 100 s, bucket distinct/s median 208 P5 200 ratio 0.96 (PASS), misses 38, sleeps 5, swap-return interval std 614 us; 30 s phases (135 s): 2.96 per 100 s, ratio 0.96, no trial. Saved as `benchmarks/ap-baseline-after.json`; `ap-baseline.json` stays the "before" (its 0.59 ratio was on the GPU clock, which under-counts heavy views). Details: `docs/frame-warp-ap-plan.md`.
+
+
+## Heavy-load stability (2026-11-04)
+- Warp placement: AP learns the GPU cost offset of each checkpoint per (frame shape, checkpoint, ordinal) (`Com_ApProfSample`, `Com_ApPredictCp`, cvar `r_frameWarpModel` 1) instead of assuming unresolved GPU work costs its CPU submit time. The old model mispredicted by ~2.4 ms with `r_sunShadowCascadeUpdate 2` (parity-alternating cost) and left 40% of real frames without a warp.
+- GPU-paced regime (`r_frameWarpGpuPaced` 1, 0 = old controller): once median busy per real frame exceeds 0.93 x 2 x T1 (leaves below 0.88), real frames run at GPU rate, slot rate stays at the display rate, one warp lands near the middle of each real frame (`r_frameWarpPacedGap/Win/Tgt`); no step-downs, no deny flips. Frames whose midpoint cannot be hit simply get no warp (late-latch for that frame).
+- The deny window and trial judge on max(swap return, GPU done); the headline metric is `gpuclk_distinct_per_s`.
+- Headless repro: escape1 `1346 160 -620 0 0`, `r_gpuLoad` 0/1500/3000/4500, `scripts/ap-scenario.py` (`--cascade`, `--cell`).

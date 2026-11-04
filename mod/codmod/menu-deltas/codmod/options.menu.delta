@@ -472,7 +472,7 @@
 =ui/options.menu 260 262
 +		text "Frame Warp:"
 +		cvar "r_frameWarp"
-+		cvarFloatList { "Off" 0 "Low latency" 1 "Smooth (Experimental)" 2 }
++		cvarFloatList { "Off" 0 "On" 2 }
 +		rect 240 184 320 11
 =ui/options.menu 97 98
 =ui/error.menu 217 218

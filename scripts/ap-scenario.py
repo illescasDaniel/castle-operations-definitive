@@ -73,15 +73,18 @@ def scenario(duration_s=100, period_s=10, warm_s=4, hz=233, cascade="2"):
     return cmds
 
 
-def cell(load, cascade, hz=233, warm=1500, run=5000):
+def cell(load, cascade, hz=233, warm=1500, run=5000, deny_zero=False):
     """Steady-state measurement cell (the headless repro): one load level, one cascade value, one apstats."""
-    return ["set r_frameWarpHz %d" % hz, "set r_frameWarpDenyGain 0", "set r_gpuLoad %d" % load,
+    return ["set r_frameWarpHz %d" % hz] + (["set r_frameWarpDenyGain 0"] if deny_zero else []) + ["set r_gpuLoad %d" % load,
             "set r_sunShadowCascadeUpdate %d" % cascade, "setviewpos %s" % SPOT, "wait %d" % warm,
             "apstats reset", "wait %d" % run, "apstats"]
 
 
 def cmd_args(a):
-    cmds = cell(a.load, int(a.cascade), a.hz) if a.cell else scenario(a.duration, a.period, hz=a.hz, cascade=a.cascade)
+    global GPU_LOAD_US
+    if a.heavy_load is not None:
+        GPU_LOAD_US = a.heavy_load
+    cmds = cell(a.load, int(a.cascade), a.hz, deny_zero=a.deny_zero) if a.cell else scenario(a.duration, a.period, hz=a.hz, cascade=a.cascade)
     out = {
         "map": MAP, "spot": SPOT, "cvars": CVARS, "commands": cmds,
         "grep": r"codmod ap|^AP |^ *[0-9]+\.[0-9]+ S=|APSC|apstats|slot rate|AP delivered|frame warp AP",
@@ -392,9 +395,11 @@ def main():
     p.add_argument("--duration", type=int, default=100, help="seconds of square wave (default 100)")
     p.add_argument("--period", type=int, default=10, help="seconds per phase (default 10)")
     p.add_argument("--hz", type=int, default=233)
+    p.add_argument("--heavy-load", type=int, default=None, help="r_gpuLoad of the heavy phase (default %d)" % GPU_LOAD_US)
     p.add_argument("--cascade", choices=["0", "2", "both"], default="2", help="r_sunShadowCascadeUpdate for the phases (default 2, the user's pinned value)")
     p.add_argument("--cell", action="store_true", help="one steady cell instead of the square wave: needs --load; --cascade 0|2")
     p.add_argument("--load", type=int, default=1500, help="r_gpuLoad for --cell")
+    p.add_argument("--deny-zero", action="store_true", help="--cell: force r_frameWarpDenyGain 0 (old behaviour; default keeps the engine default)")
     p.set_defaults(fn=cmd_args)
     p = sub.add_parser("analyze", help="analyze a saved console log")
     p.add_argument("log")

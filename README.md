@@ -83,6 +83,12 @@ You need your own copy of RTCW (Steam). **No game data is included or modified.*
 - **Frame pacing**: an engine-level limiter with absolute deadlines (sleep + spin) for a flat frame-time graph, sub-millisecond
   game-time interpolation so camera motion is even at any cap, and five **VSync** modes (Off / On / Adaptive / Triple /
   Low latency) plus a frame limit slider and a separate menu/cutscene frame cap (Auto = monitor refresh), all in the menu
+- **Frame Warp** (Graphics > Display, Off / **On**, On by default): renders at the real frame rate but presents at the
+  display refresh rate. Extra frames in between re-project the last rendered frame to your newest mouse look, with a
+  6-DoF depth-mesh warp for strafing (**Warp Parallax** row) and motion of animated objects under SMAA T2x, so a
+  ~110-130 fps GPU load feels like a 200+ Hz display. Needs fullscreen (VSync Triple recommended) and a high-refresh or VRR
+  monitor; windowed, menus and cutscenes fall back to plain late-latch input sampling. Details and measurements:
+  [docs/frame-warp.md](docs/frame-warp.md)
 - Wayland-friendly fullscreen and mode switching
 - Cutscenes: black letterbox bars, any key skips, and a **Skip Intro** toggle in Settings > Game
 - **Remastered cutscene videos** (optional, local): the intro and menu loops, see [HD videos](#hd-videos-optional-local-only)

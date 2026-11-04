@@ -1,0 +1,13 @@
+[mcp_servers.jevmem]
+command = "uvx"
+args = [
+    "--python",
+    "3.14",
+    "--from",
+    "jevmem",
+    "jevmem-mcp",
+]
+
+[mcp_servers.rtcw]
+command = "tools/rtcw-mcp/.venv/bin/python"
+args = ["tools/rtcw-mcp/server.py"]

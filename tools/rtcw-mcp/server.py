@@ -449,7 +449,7 @@ async def benchmark(kind: str = "normal", cvars: dict[str, str] | None = None, r
     try:
         if kind == "ab":
             return await _in_thread(ctx, _do_ab, a, b, legs, ab_profile, cvars, label)
-        return await _in_thread(ctx, _do_benchmark, kind, cvars, runs, label, max_ratio, gpuprof, None, profile)
+        return await _in_thread(ctx, _do_benchmark, kind, cvars, runs, label, max_ratio, gpuprof, profile=profile)
     except RtcwError as e:
         return _fail(e)
 

@@ -3,6 +3,12 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+
+# Replace via a temp file + rename, never an in-place overwrite: a running game has the .so/pk3 files mapped, and
+# truncating them under it crashes it with SIGBUS (e.g. on opening the ESC menu). rename keeps the old inode alive.
+cp_atomic() {
+	cp -f "$1" "$2.tmp.$$" && mv -f "$2.tmp.$$" "$2"
+}
 VANILLA=0
 BUILD_DIR=""
 
@@ -52,7 +58,7 @@ for f in "${ENGINE_FILES[@]}"; do
 		echo "ERROR: missing engine file: $src" >&2
 		exit 1
 	fi
-	cp -f "$src" "$ROOT/run/$f"
+	cp_atomic "$src" "$ROOT/run/$f"
 	echo "installed run/$f"
 done
 
@@ -62,10 +68,10 @@ for f in "${GAME_SOS[@]}"; do
 		echo "ERROR: missing game module: $src" >&2
 		exit 1
 	fi
-	cp -f "$src" "$ROOT/run/codmod/$f"
+	cp_atomic "$src" "$ROOT/run/codmod/$f"
 	echo "installed run/codmod/$f"
 	if [[ "$VANILLA" -eq 1 ]]; then
-		cp -f "$src" "$ROOT/run/main/$f"
+		cp_atomic "$src" "$ROOT/run/main/$f"
 		echo "installed run/main/$f (vanilla)"
 	fi
 done
@@ -80,7 +86,7 @@ done
 # sorts after sp_pak4 and overrides RTCW's menus (any other name sorts before the sp_ paks and loses); it must not
 # be sp_pak<N> (checksum checks) nor zz_* (renamed to sp_ by the loader, see below).
 if [[ -f "$ROOT/iortcw/SP/menus/sp_zz_engine_menus.pk3" ]]; then
-	cp -f "$ROOT/iortcw/SP/menus/sp_zz_engine_menus.pk3" "$ROOT/run/main/sp_zz_engine_menus.pk3"
+	cp_atomic "$ROOT/iortcw/SP/menus/sp_zz_engine_menus.pk3" "$ROOT/run/main/sp_zz_engine_menus.pk3"
 	echo "installed run/main/sp_zz_engine_menus.pk3"
 fi
 
@@ -90,28 +96,28 @@ python3 "$ROOT/tools/l10n/pack.py"
 # Texture fixes + specular pack (incremental, no-op when up to date; warns and continues without numpy/Pillow)
 "$ROOT/scripts/build-derived-packs.sh"
 if [[ -f "$ROOT/mod/codmod/codmod_hud.pk3" ]]; then
-	cp -f "$ROOT/mod/codmod/codmod_hud.pk3" "$ROOT/run/codmod/codmod_hud.pk3"
+	cp_atomic "$ROOT/mod/codmod/codmod_hud.pk3" "$ROOT/run/codmod/codmod_hud.pk3"
 	rm -f "$ROOT/run/codmod/zz_codmod_hud.pk3"
 	echo "installed run/codmod/codmod_hud.pk3"
 fi
 
 # codmod: hit-marker sounds (E9). Same zz_ rename rule as the HUD pk3.
 if [[ -f "$ROOT/mod/codmod/codmod_fx.pk3" ]]; then
-	cp -f "$ROOT/mod/codmod/codmod_fx.pk3" "$ROOT/run/codmod/codmod_fx.pk3"
+	cp_atomic "$ROOT/mod/codmod/codmod_fx.pk3" "$ROOT/run/codmod/codmod_fx.pk3"
 	rm -f "$ROOT/run/codmod/zz_codmod_fx.pk3"
 	echo "installed run/codmod/codmod_fx.pk3"
 fi
 
 # codmod: CoD-style main menu (vertical list). Same zz_ rename rule. (pk3 built above)
 if [[ -f "$ROOT/mod/codmod/codmod_menus.pk3" ]]; then
-	cp -f "$ROOT/mod/codmod/codmod_menus.pk3" "$ROOT/run/codmod/codmod_menus.pk3"
+	cp_atomic "$ROOT/mod/codmod/codmod_menus.pk3" "$ROOT/run/codmod/codmod_menus.pk3"
 	rm -f "$ROOT/run/codmod/zz_codmod_menus.pk3"
 	echo "installed run/codmod/codmod_menus.pk3"
 fi
 
 # codmod: benchmark launcher cfg + recorded bench demo
 if [[ -f "$ROOT/mod/codmod/codmod_bench.cfg" ]]; then
-	cp -f "$ROOT/mod/codmod/codmod_bench.cfg" "$ROOT/run/codmod/codmod_bench.cfg"
+	cp_atomic "$ROOT/mod/codmod/codmod_bench.cfg" "$ROOT/run/codmod/codmod_bench.cfg"
 	echo "installed run/codmod/codmod_bench.cfg"
 fi
 if [[ -d "$ROOT/mod/codmod/demos" ]]; then
@@ -122,7 +128,7 @@ fi
 
 # codmod: original pad prompt glyphs (Xbox-like / PlayStation-like). Same zz_ rename rule.
 if [[ -f "$ROOT/mod/codmod/codmod_pad.pk3" ]]; then
-	cp -f "$ROOT/mod/codmod/codmod_pad.pk3" "$ROOT/run/codmod/codmod_pad.pk3"
+	cp_atomic "$ROOT/mod/codmod/codmod_pad.pk3" "$ROOT/run/codmod/codmod_pad.pk3"
 	rm -f "$ROOT/run/codmod/zz_codmod_pad.pk3"
 	echo "installed run/codmod/codmod_pad.pk3"
 fi

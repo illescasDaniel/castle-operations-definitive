@@ -67,6 +67,12 @@ fi
 WRAP=()
 if [[ "${BENCH_ONSCREEN:-0}" != 1 ]]; then
 	HW="${BENCH_HEADLESS_W:-1920}"; HH="${BENCH_HEADLESS_H:-1200}"
+	# pseudo-cvar `--set bench_res WxH` sets the headless size (usable through the MCP cvars dict); not passed to the game
+	_keep=()
+	for kv in "${SET_ARGS[@]}"; do
+		if [[ "${kv%%=*}" == bench_res ]]; then HW="${kv#*=}"; HH="${HW#*x}"; HW="${HW%x*}"; else _keep+=("$kv"); fi
+	done
+	SET_ARGS=("${_keep[@]}")
 	WRAP=(gamescope --backend headless -W "$HW" -H "$HH" --)
 	[[ ${#RUN_ARGS[@]} -gt 0 ]] || RUN_ARGS=(--windowed "${HW}x${HH}")
 fi

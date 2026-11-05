@@ -222,10 +222,11 @@
 +		textscale .20
 =ui/options.menu 345 349
 =ui/ingame_system.menu 69 73
-=ui/options.menu 260 262
-+		text "Ambient Occlusion:"
-+		cvar "r_ao"
-+		cvarFloatList { "Off" 0 "SSAO" 1 "GTAO Low" 2 "GTAO Medium" 3 "GTAO High" 4 }
+@@ 577 579
++		text "Render Scale (0.25-1):"
++		cvar "r_renderScale"
++		maxChars 5
++		maxPaintChars 5
 +		rect 240 129 320 11
 =ui/options.menu 97 98
 =ui/error.menu 217 218
@@ -233,11 +234,49 @@
 +		textscale .20
 =ui/options.menu 345 349
 =ui/ingame_system.menu 69 73
-@@ 577 579
+=ui/options.menu 91 92
+=ui/cdkey.menu 276 277
++		text "FSR Sharpening (-1 auto, 0-1):"
++		cvar "r_renderScaleSharp"
++		maxChars 5
++		maxPaintChars 5
++		rect 240 140 320 11
+=ui/options.menu 97 98
+=ui/error.menu 217 218
++		textaligny 9
++		textscale .20
+=ui/options.menu 345 349
+=ui/system.menu 360 363
+=ui/options.menu 91 92
+=ui/cdkey.menu 276 277
++		text "DLS Sharpening (0-1):"
++		cvar "r_dlsStrength"
++		maxChars 5
++		maxPaintChars 5
++		rect 240 151 320 11
+=ui/options.menu 97 98
+=ui/error.menu 217 218
++		textaligny 9
++		textscale .20
+=ui/options.menu 345 349
+=ui/system.menu 360 363
+=ui/options.menu 260 262
++		text "Ambient Occlusion:"
++		cvar "r_ao"
++		cvarFloatList { "Off" 0 "SSAO" 1 "GTAO Low" 2 "GTAO Medium" 3 "GTAO High" 4 }
++		rect 240 162 320 11
+=ui/options.menu 97 98
+=ui/error.menu 217 218
++		textaligny 9
++		textscale .20
+=ui/options.menu 345 349
+=ui/ingame_system.menu 69 73
+=ui/options.menu 91 92
+=ui/cdkey.menu 276 277
 +		text "Gamma:"
 +		cvar "r_gamma"
 @@ 581 582
-+		rect 240 140 320 11
++		rect 240 173 320 11
 @@ 583 586
 =ui/error.menu 217 218
 +		textaligny 9
@@ -250,7 +289,7 @@
 +		cvar "r_cameraExposure"
 +		maxChars 6
 +		maxPaintChars 6
-+		rect 240 151 320 11
++		rect 240 184 320 11
 =ui/options.menu 97 98
 =ui/error.menu 217 218
 +		textaligny 9
@@ -261,7 +300,7 @@
 +		text "Bloom:"
 +		cvar "r_bloom"
 +		cvarFloatList { "Off" 0 "Low" 1 "Medium" 2 "High" 3 }
-+		rect 240 162 320 11
++		rect 240 195 320 11
 =ui/options.menu 97 98
 =ui/error.menu 217 218
 +		textaligny 9
@@ -272,7 +311,7 @@
 +		text "Color Grade:"
 +		cvar "r_grade"
 +		cvarFloatList { "Off" 0 "On (default)" 1 }
-+		rect 240 173 320 11
++		rect 240 206 320 11
 =ui/options.menu 97 98
 =ui/error.menu 217 218
 +		textaligny 9
@@ -283,7 +322,7 @@
 =ui/ingame_system.menu 462 464
 +		textscale .20
 =ui/options.menu 76 77
-+		rect 240 184 320 11
++		rect 240 217 320 11
 =ui/options.menu 434 435
 =ui/error.menu 217 218
 +		textaligny 9
@@ -297,7 +336,7 @@
 +		type 1
 +		textscale .20
 =ui/options.menu 76 77
-+		rect 240 195 320 11
++		rect 240 228 320 11
 =ui/options.menu 434 435
 =ui/error.menu 217 218
 +		textaligny 9
@@ -313,7 +352,7 @@
 +		cvar "cl_benchSummary"
 +		maxChars 64
 +		maxPaintChars 44
-+		rect 240 206 320 11
++		rect 240 239 320 11
 =ui/options.menu 97 98
 =ui/error.menu 217 218
 +		textaligny 9
@@ -321,7 +360,17 @@
 =ui/options.menu 101 103
 +		forecolor .85 .85 .85 .9
 =ui/bookv.menu 115 118
-=ui/options.menu 89 90
+=ui/ingame_system.menu 71 73
+=ui/options.menu 91 92
++		text "Render Scale needs Apply (1 = native). Sharpening: 0 = off, 1 = max."
++		rect 240 253 320 10
+=ui/ingame_save.menu 280 281
+=ui/default.menu 47 48
++		textaligny 8
+=ui/system.menu 564 565
++		forecolor .85 .85 .85 .9
+=ui/bookp.menu 139 141
+=ui/options.menu 441 444
 +		name advanced
 =ui/options.menu 91 92
 +		text "Modifying these settings will not usually change"

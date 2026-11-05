@@ -157,28 +157,28 @@
 =ui/error.menu 217 218
 +		textaligny 9
 +		textscale .20
-@@ 329 450
+@@ 329 353
 +		action { play "sound/misc/kcaction.wav" ; open vidmode_popmenu }
-@@ 453 454
++		}
+@@ 355 356
 +		name display
-@@ 455 457
+@@ 357 365
 =ui/controls.menu 720 721
 +		text "Display Mode:"
 +		cvar "r_displayMode"
 +		cvarFloatList { "Windowed" 0 "Borderless Windowed" 1 "Fullscreen (default)" 2 }
 +		rect 240 129 320 11
-@@ 458 460
+=ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
 +		textaligny 9
 +		textscale .20
-@@ 461 462
-=ui/ingame_options.menu 86 87
-@@ 464 465
+@@ 366 372
+=ui/ingame_options.menu 326 329
 +		}
-@@ 466 466
-=ui/ingame_options.menu 213 214
+@@ 374 375
 +		name display
-=ui/options.menu 260 262
+@@ 376 384
+=ui/controls.menu 720 721
 +		text "Vertical Sync:"
 +		cvar "r_vsync"
 +		cvarFloatList { "Off" 0 "On" 1 "Adaptive" 2 "Triple Buffer" 3 "Low Latency" 4 }
@@ -187,10 +187,13 @@
 =ui/error.menu 217 218
 +		textaligny 9
 +		textscale .20
-=ui/ingame_options.menu 325 329
-=ui/ingame_options.menu 450 453
+@@ 385 390
+=ui/ingame_options.menu 326 329
++		}
+@@ 392 393
 +		name display
-=ui/options.menu 260 262
+@@ 394 402
+=ui/controls.menu 720 721
 +		text "Frame Rate Limit:"
 +		cvar "com_maxfps"
 +		cvarFloatList { "Off" 0 "Auto (%hz)" -1 "30" 30 "60" 60 "75" 75 "90" 90 "120" 120 "144" 144 "165" 165 "240" 240 "360" 360 }
@@ -199,10 +202,13 @@
 =ui/error.menu 217 218
 +		textaligny 9
 +		textscale .20
-=ui/ingame_options.menu 325 329
-=ui/ingame_options.menu 450 453
+@@ 404 410
+=ui/ingame_options.menu 327 329
++		}
+@@ 412 420
 +		name display
-=ui/options.menu 260 262
+@@ 421 430
+=ui/controls.menu 720 721
 +		text "Menu Frame Rate Limit:"
 +		cvar "com_maxfpsMenu"
 +		cvarFloatList { "Auto (%hz)" -1 "Off" 0 "30" 30 "60" 60 "75" 75 "90" 90 "120" 120 "144" 144 "165" 165 "240" 240 "360" 360 }
@@ -211,9 +217,13 @@
 =ui/error.menu 217 218
 +		textaligny 9
 +		textscale .20
-=ui/ingame_options.menu 325 329
-=ui/ingame_system.menu 69 73
-=ui/options.menu 260 262
+@@ 432 436
+=ui/ingame_options.menu 327 329
++		}
+@@ 438 439
+=ui/ingame_system.menu 72 73
+@@ 440 443
+=ui/controls.menu 720 721
 +		text "Anti-Aliasing:"
 +		cvar "r_aa"
 +		cvarFloatList { "Off" 0 "SMAA 1x" 4 "SMAA T2x (Recommended)" 8 "MSAA 2x" 5 "MSAA 4x" 6 "MSAA 8x" 7 }
@@ -224,11 +234,50 @@
 +		textscale .20
 =ui/ingame_options.menu 325 329
 =ui/ingame_system.menu 69 73
+=ui/ingame_options.menu 216 217
+=ui/cdkey.menu 276 277
++		text "Render Scale (0.25-1):"
++		cvar "r_renderScale"
++		maxChars 5
++		maxPaintChars 5
++		rect 240 129 320 11
+=ui/ingame_options.menu 81 82
+=ui/error.menu 217 218
++		textaligny 9
++		textscale .20
+=ui/ingame_options.menu 325 329
+=ui/ingame_system.menu 69 73
+=ui/ingame_options.menu 216 217
+=ui/cdkey.menu 276 277
++		text "FSR Sharpening (-1 auto, 0-1):"
++		cvar "r_renderScaleSharp"
++		maxChars 5
++		maxPaintChars 5
++		rect 240 140 320 11
+=ui/ingame_options.menu 81 82
+=ui/error.menu 217 218
++		textaligny 9
++		textscale .20
+=ui/ingame_options.menu 325 329
+=ui/system.menu 360 363
+=ui/ingame_options.menu 216 217
+=ui/cdkey.menu 276 277
++		text "DLS Sharpening (0-1):"
++		cvar "r_dlsStrength"
++		maxChars 5
++		maxPaintChars 5
++		rect 240 151 320 11
+=ui/ingame_options.menu 81 82
+=ui/error.menu 217 218
++		textaligny 9
++		textscale .20
+=ui/ingame_options.menu 325 329
+=ui/system.menu 360 363
 =ui/options.menu 260 262
 +		text "Ambient Occlusion:"
 +		cvar "r_ao"
 +		cvarFloatList { "Off" 0 "SSAO" 1 "GTAO Low" 2 "GTAO Medium" 3 "GTAO High" 4 }
-+		rect 240 129 320 11
++		rect 240 162 320 11
 =ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
 +		textaligny 9
@@ -241,7 +290,7 @@
 +		cvar "r_gamma"
 +		maxChars 6
 +		maxPaintChars 6
-+		rect 240 140 320 11
++		rect 240 173 320 11
 =ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
 +		textaligny 9
@@ -254,7 +303,7 @@
 +		cvar "r_cameraExposure"
 +		maxChars 6
 +		maxPaintChars 6
-+		rect 240 151 320 11
++		rect 240 184 320 11
 =ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
 +		textaligny 9
@@ -265,7 +314,7 @@
 +		text "Bloom:"
 +		cvar "r_bloom"
 +		cvarFloatList { "Off" 0 "Low" 1 "Medium" 2 "High" 3 }
-+		rect 240 162 320 11
++		rect 240 195 320 11
 =ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
 +		textaligny 9
@@ -276,7 +325,7 @@
 +		text "Color Grade:"
 +		cvar "r_grade"
 +		cvarFloatList { "Off" 0 "On (default)" 1 }
-+		rect 240 173 320 11
++		rect 240 206 320 11
 =ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
 +		textaligny 9
@@ -287,17 +336,27 @@
 =ui/ingame_system.menu 462 464
 +		textscale .20
 =ui/ingame_options.menu 38 39
-+		rect 240 184 320 11
-=ui/ingame_options.menu 443 444
++		rect 240 217 320 11
+@@ 444 447
 =ui/error.menu 217 218
 +		textaligny 9
-=ui/ingame_options.menu 41 42
+@@ 448 449
 =ui/controls.menu 563 565
 +		action { play "sound/misc/kcaction.wav" ;
 +		hide grpOptions ; show driver }
-=ui/ingame_options.menu 450 453
-+		name advanced
+=ui/ingame_system.menu 69 73
 =ui/ingame_options.menu 216 217
++		text "Render Scale needs Apply (1 = native). Sharpening: 0 = off, 1 = max."
++		rect 240 231 320 10
+=ui/ingame_save.menu 280 281
+=ui/default.menu 47 48
++		textaligny 8
+=ui/system.menu 564 565
++		forecolor .85 .85 .85 .9
+=ui/ingame_options.menu 7 8
+@@ 453 454
++		name advanced
+@@ 455 463
 +		text "Modifying these settings will not usually change"
 +		rect 240 114 320 10
 =ui/ingame_save.menu 280 281
@@ -305,7 +364,8 @@
 +		textaligny 8
 +		textscale .17
 =ui/controls.menu 80 81
-=ui/bookp.menu 139 141
+@@ 464 466
+=ui/ingame_options.menu 44 45
 @@ 468 474
 =ui/ingame_options.menu 213 214
 +		name advanced

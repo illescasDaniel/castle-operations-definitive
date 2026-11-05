@@ -111,6 +111,10 @@ runK: run1 is a warm-up, the others are measured repeats. Each runK has:
   and bench window.
 * `cascades.csv` - sun shadow cascades: frames rendered / reused, why a cached cascade (1, 2) was re-rendered
   (`rerender_*`), GPU interval of the render, and in mode 2 batches/tris/verts/MDS share per render.
+* `mds_lod_summary.csv`, `mds_lod.csv` (only if the build has the MDS LOD diagnostics) - MDS surfaces by view (`casc0-3`,
+  `other_shadow`, `prepass`, `color`) and LOD decision reason (`proj_nonpos`, `flag_full`, `proj_clamped`, `computed_full`,
+  `computed_reduced`) with emitted/max verts and tris over the whole run; and a sample (every 7th depth-view surface) with
+  entity, surface, projected radius, LOD and the main color pass decision for the same surface (`main_*`, -1 = none seen).
 * `cvars.csv` - values of the renderer/pacing cvars at the end of the run. `wolfconfig_after_run.cfg`, `bench_override.cfg`
   and `console.log.gz` are the run's complete settings and log; `gpu_telemetry.csv` = clocks/temperature/power every 250 ms.
 * `frames.csv` - one row per 3D frame: `frame`, `ref_time_ms` (game time), `x,y,z,yaw,pitch` camera, `bench_window`
@@ -148,6 +152,8 @@ def load_run(rd: Path):
     r["counters"] = read_csv(rd / "counters.csv")
     r["cascades"] = read_csv(rd / "cascades.csv")
     r["shaders"] = read_csv(rd / "shaders.csv")
+    r["mdslod"] = read_csv(rd / "mds_lod_summary.csv")  # absent in sessions from before C3
+    r["mdslod_samples"] = read_csv(rd / "mds_lod.csv")
     r["run"] = json.loads((rd / "run.json").read_text()) if (rd / "run.json").is_file() else {}
     line = (rd / "bench_line.txt").read_text().strip() if (rd / "bench_line.txt").is_file() else ""
     r["bench_line"] = line
@@ -243,6 +249,55 @@ def frame_stats(rows):
     if not g:
         return {"n": 0, "mean": 0, "p50": 0, "p95": 0, "p99": 0, "max": 0}
     return {"n": len(g), "mean": mean(g), "p50": pctl(g, .5), "p95": pctl(g, .95), "p99": pctl(g, .99), "max": max(g)}
+
+
+def mds_lod_section(run):
+    """'MDS LOD in depth views' tables from mds_lod_summary.csv (whole run) and mds_lod.csv (sampled, bench window)."""
+    L = ["## MDS LOD in depth views (last measured mode 1 run)\n",
+         "Surfaces by view and LOD decision reason. `proj_nonpos`: RB_ProjectRadius returned 0 (full-LOD fallback); `flag_full`: "
+         "REFLAG_FULL_LOD; `proj_clamped`: projected radius >= 1; `computed_full`: radius < 1 but LOD value still 1.0; "
+         "`computed_reduced`: LOD < 1. Verts/tris are emitted vs the surface maximum. Whole run (warm-up included).\n"]
+    rows = []
+    tot = {}
+    for r in run["mdslod"]:
+        tot[r["view"]] = tot.get(r["view"], 0.0) + fl(r["surfaces"])
+    for r in run["mdslod"]:
+        n = fl(r["surfaces"])
+        if not n:
+            continue
+        mv, ev = fl(r["max_verts"]), fl(r["emitted_verts"])
+        mt, et = fl(r["max_tris"]), fl(r["emitted_tris"])
+        rows.append((r["view"], r["reason"], f"{n:.0f}", f"{100 * n / tot[r['view']]:.1f}%", f"{ev:.0f}", f"{mv:.0f}",
+                     f"{100 * ev / mv:.1f}%" if mv else "-", f"{et:.0f}", f"{mt:.0f}", f"{100 * et / mt:.1f}%" if mt else "-"))
+    L.append(table(rows, ["view", "reason", "surfaces", "share of view", "emitted verts", "max verts", "verts %", "emitted tris",
+                          "max tris", "tris %"]))
+    L.append("")
+    smp = run.get("mdslod_samples") or []
+    win = run.get("win") or []
+    if smp and win:
+        t0 = min(fl(x["ref_time_ms"]) for x in win)
+        t1 = max(fl(x["ref_time_ms"]) for x in win)
+        smp = [x for x in smp if t0 <= fl(x["ref_time_ms"]) <= t1]
+    if smp:
+        L.append(f"### Sampled depth-view surfaces vs the main color pass (bench window, {len(smp)} samples)\n")
+        agg = {}
+        for x in smp:
+            a = agg.setdefault((x["view"], x["reason"]), [0, 0, 0, 0, 0, 0.0])
+            a[0] += 1
+            a[1] += fl(x["emitted_verts"])
+            a[2] += fl(x["max_verts"])
+            if fl(x["main_verts"], -1) >= 0:
+                a[3] += 1
+                a[4] += fl(x["main_verts"])
+                a[5] += fl(x["emitted_verts"])
+        rows = []
+        for (v, rs), a in sorted(agg.items()):
+            rows.append((v, rs, a[0], f"{100 * a[1] / a[2]:.1f}%" if a[2] else "-", a[3],
+                         f"{100 * a[5] / a[4]:.1f}%" if a[4] else "-"))
+        L.append(table(rows, ["view", "reason", "samples", "emitted/max verts", "with main ref", "emitted vs main-pass verts"]))
+        L.append("\n`emitted vs main-pass verts` > 100% means the depth view drew more detail than the main view did for the same "
+                 "surface (reference = latest main color decision for that entity/surface, usually the previous frame).\n")
+    return L
 
 
 def main():
@@ -409,9 +464,14 @@ def main():
         L.append(table(mrows, ["part", "color passes", "depth passes", "total"]))
         if cnt:
             L.append("")
-            L.append(table([(k, v["avg_per_frame_bench_window"]) for k, v in cnt.items()], ["counter", "per frame (bench window)"]))
+            L.append(table([(k, v["avg_per_frame_bench_window"]) for k, v in cnt.items() if not k.startswith("mdslod_")],
+                           ["counter", "per frame (bench window)"]))
         L.append("\nTangent cost is only incurred when the surface's shader wants ATTR_TANGENT; compare `mds_tangent_depth` against "
                  "`mds_tangent_color` and `mds_skin_*` to judge whether skipping tangents in depth passes is worth doing.\n")
+
+    # ---- MDS LOD in depth views (C3 diagnostics; skipped for older sessions)
+    if last1 and last1.get("mdslod"):
+        L.extend(mds_lod_section(last1))
 
     # ---- cascades
     if last1 and last1["cascades"]:

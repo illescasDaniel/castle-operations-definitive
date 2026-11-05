@@ -20,7 +20,7 @@ derived from two cvars for display:
 Normal Maps Off sets `r_parallaxMapping` 0 and `r_parallaxMapShadows` 0 (parallax needs the `_nh` normals).
 
 Off disables all parallax paths. Engine code defaults are vanilla (0); the mod's first-launch/Reset values are `seta` in
-`mod/codmod/codmod_gfxdefaults.cfg` (On). Internal pins in `mod/codmod/codmod.cfg`: `r_parallaxMapOffset 0`,
+`mod/codmod/codmod_gfxdefaults.cfg` (On, without self-shadows since 2026-11-05: they cost 0.23 ms of the opaque pass at 2560x1600 and the look is near identical; the user picks "On + Self-Shadows" to restore them). Internal pins in `mod/codmod/codmod.cfg`: `r_parallaxMapOffset 0`,
 `r_baseParallax 0.02` (0.06 tried 2026-10-23: better on crypt1, but trainyard walls looked bad, so kept at 0.02), `r_parallaxFloorScale 0.5` (all CVAR_LATCH except floor scale). Engine defaults kept:
 `r_parallaxMaxSteps 48`, `r_parallaxFadeDist 1200`, `r_parallaxCavity 0.5` (live, not latched).
 

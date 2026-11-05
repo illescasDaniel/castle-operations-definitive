@@ -124,3 +124,13 @@ Committed and pushed (user tested). `tools/spec-bake/` bakes `_s` maps per mater
 **Weapon normals (2026-10-22):** pistol A/B approved by the user (small positive); all 27 weapon skins baked into `run/codmod/codmod_height_weapons.pk3` (normals only; hands/arms and effect skins excluded). **Awaiting the user's in-game look** at the other weapons; remove the pk3 to revert. Not committed (pk3 git-ignored; tool + docs changed).
 **Performance profiling (2026-11-05):** Astra revised and moved the plan to `profiling/performance-plan.md`, using the v3 baseline and AO A/B alongside earlier captures. Depth-pass MDS tangents measured 0.718 ms CPU/frame; AO-off improved median FPS 11.2% with a visual tradeoff. Next: review the plan and, if proceeding, validate the proposed MDS optimization. Engine + outer profiler changes remain uncommitted; no game runs or engine changes were made for this analysis.
 
+
+
+## 2026-11-05 perf combo awaiting in-game check
+Main iortcw tree (uncommitted, staged) = PP-copies + RAYS + RS combined; enabled by default via mod/codmod/codmod.cfg (r_gradeNoCopy 1, r_smaaT2xPingPong 1, r_smaaT2xNoSceneCopy 1, r_sunRaysOpt 1) and codmod_defaults.cfg (r_renderScale 0.77, r_renderScaleFilter 1). Bench 160 -> 227 fps at 2560x1600. Next: user plays (checklist in profiling/blocks-results/RS.md + PP-copies.md); then decide defaults/menu row, commit iortcw then outer pointer.
+
+## 2026-11-05 update: sharpening and render defaults
+- Small four render patches + parallaxOpt now default on in the engine; mod defaults in `codmod_gfxdefaults.cfg` (render scale 0.77, FSR1 filter on).
+- GRAPHICS rows (EDITFIELD): Render Scale, FSR Sharpening (`r_renderScaleSharp`, -1 auto = off at scale 1 / 0.5 below, 0..1 explicit), DLS Sharpening (`r_dlsStrength`, default 0).
+- `install.sh` now installs atomically (temp file + rename) to avoid SIGBUS in a running game.
+- Awaiting the user's in-game judgement of RCAS/DLS looks. Later idea: SMAA T2x temporal upscaling.

@@ -115,7 +115,14 @@ user's choice. Never edit the user's `wolfconfig.cfg` (`docs/testing.md`, Safety
 ## What is exposed, and why
 
 GRAPHICS shows only settings with a real effect (mode, fullscreen, vsync, FPS cap, anti-aliasing,
-gamma, HDR exposure).
+gamma, HDR exposure, render scale).
+Render Scale is a latched EDITFIELD (0.25-1, default 0.77 from `codmod_gfxdefaults.cfg`, 1 = native) under Anti-Aliasing; it
+needs Apply, FSR1 upscales the lower-resolution scene, and Restore defaults resets it. Rows that Restore must reset have to
+live in `codmod_gfxdefaults.cfg`, not `codmod_defaults.cfg`.
+Two EDITFIELD rows under Render Scale, "FSR Sharpening (-1 auto, 0-1)" (`r_renderScaleSharp`, mod -1) and "DLS Sharpening
+(0-1)" (`r_dlsStrength`, mod 0), both live and reset by Restore (values in `codmod_gfxdefaults.cfg`). FSR -1 = auto (RCAS
+0.5 when upscaling, off at render scale 1); 0-1 explicit at any scale, 0 = off. DLS 0 = off, 1 = max. The edit field
+takes a leading minus sign (text field, `maxChars 5`). Rows below them are shifted 22 px. Design and costs: `profiling/blocks-results/RS.md`, section "Sharpening".
 ADVANCED lists the rest with each default tagged "(default)". Settings tied to the sun/shadow pipeline (depth
 prepass, force sun, HDR chain) stay hidden because toggling them alone is misleading; see `docs/performance.md`.
 First-launch display defaults: SMAA High, vsync Triple Buffer, no FPS cap, desktop resolution (`r_mode -2`), fullscreen.

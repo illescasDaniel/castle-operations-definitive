@@ -30,10 +30,17 @@ MODEL_URL = "https://github.com/HugoTini/DeepBump/raw/master/deepbump256.onnx"
 MAX_SIDE = 1024
 TILE = 256
 
+# paper-like / flat printed textures never get a normal+height map (see the "flat" skip rule in RULES)
+FLAT_RE = (r"anatomychart|/maps/|/director/|poster|paper|wallpaper|/board_(c|m)|/book_|/chat/office_c04|kobra_|al_hitler|"
+           r"/(tsign|streetname|number\d+)_|town_props/store_c04|osa_sign|osa_m01|mesure_c|controlpanel|"
+           r"48stars|unionjack")
 # Ordered regex rules on the lowercase texture stem; first match wins. "skip" = no map.
 RULES = [
     ("skip", r"(decals|/sfx/|sky|skies|glass|window(?!/shudder)|/alpha/|/lights/|light_|fog|flame|ember|torch|/tree/|"
              r"/common/|/sign|flag|picture|haze|/models/|^models)"),
+    # flat printed/painted surfaces (paper, posters, charts, maps, photos, signs, wallpaper, book covers, control-panel
+    # prints): DeepBump invents relief from the ink, which looks like embossed 3D. No _nh at all, so they stay plain diffuse.
+    ("skip", FLAT_RE),
     # props (crates, barrels, train parts) are shared with free-standing brushes: normals only, never parallax
     ("prop", r"/props/|castle_props|/barrel|/box_|/crate"),
     ("floor", r"floor"),
@@ -60,7 +67,7 @@ CLASS_STRENGTH = {"panel": 0.25, "marble": 0.5}
 # `--preset NAME` = the model packs as shipped: (--models regex, --exclude regex, --models-opaque, default --out)
 PRESETS = {
     "props": (r"^models/(mapobjects|powerups|ammo|flags|furniture)/",
-              r"/(tree|snow_tree|plants|bush|sky|shards|shard)/|glass|/(light|lamps|lamp|flares|lightning|gratelamp|colua0|xlab_props)/|"
+              r"/(tree|snow_tree|plants|bush|sky|shards|shard)/|glass|/(light|lamps|lamp|flares|lightning|gratelamp|colua0|xlab_props)/|clipboard/(letter|envelope)|/book/|/flag/|/curtain/|"
               r"flare|shadow|beam|water|goo|bpblood|gibs|radarbeeps|radarsweep|/fire|propeller|parachute|hologirl|portal|scoreboard|"
               r"arenalogo|_ui_|bjui/|letters/|c_bibbles|/cin$|skull_spirit|/test/|/test2?/|characters/test|temphead|templower|"
               r"tempupper|ghost|elec[0-9]|cagelight|cage_light|camplt|sconce|chandlier|bel_lamp|pendant|light_m4|desklamp|dirt|blink|end/castle",

@@ -29,6 +29,11 @@ also covers metal, marble, shutters and burnt floors (normals only, see the clas
 fake tinfx environment stage, a lightmap-first order or an ember underlay (`resolve_diffuse`); rend2 needs
 `r_codShaderCollapse 1` (set in `codmod.cfg`) to give those shaders lightall + `_nh`.
 
+Flat printed/paper textures (anatomy charts, maps, framed photos, bulletin boards, posters, wallpaper, book covers, signs,
+street/house numbers, control-panel prints, kobra signs) are listed in `FLAT_RE` and skipped: no `_nh`, so they stay plain
+diffuse (DeepBump turned the ink into embossed relief). Add a pattern there when another flat texture looks 3D; the props
+preset excludes paper/book/flag/curtain models the same way.
+
 Model packs (normals only, shipped presets; `--preset NAME` fills `--models`, `--exclude`, `--models-opaque` and `--out`):
 
 ```bash

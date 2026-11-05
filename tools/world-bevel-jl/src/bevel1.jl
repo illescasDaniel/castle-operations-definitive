@@ -2,8 +2,10 @@
 # Ported line by line from the original Python prototype (since removed); names are kept so old notes still match.
 # Surface indexes (`si`) stay 0-based like in the BSP/Python; Julia array positions are 1-based.
 
+# props/ (crates, switch boxes, panels): their texture is a front-face print, so a bevel strip would sample the plain side
+# area of it and leave a dark, spec-less band along the edges. Corner rounding is for walls; props are smoothed separately.
 const DEFAULT_SKIP = "sky|caulk|nodraw|clip|trigger|hint|fog|water|glass|decal|slime|lava|portal|skip|origin|window|" *
-                     "alpha/|/sfx/|lights?/|_light|flare|cloth|curtain|lightgrid"
+                     "alpha/|/sfx/|lights?/|_light|flare|cloth|curtain|lightgrid|props/"
 
 Base.@kwdef mutable struct Opts
     radius::Float64 = 3.0

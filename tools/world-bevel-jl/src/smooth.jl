@@ -253,9 +253,12 @@ function relayout(bsp::Bsp, S::Vector{Surface}, V0::Vector{DrawVert}, I0::Vector
 end
 
 const DEFAULT_SMOOTH = r"^models[/\\](?!players)|textures/(props|metal_misc|wood|chat)/"
+# Edges sharper than this stay hard. 90 meant a box's exact 90-degree edges (dot == 0, not < 0) were smoothed, so crates,
+# switch boxes and panels turned into pillows; 60 keeps them sharp while barrels/round props (<= 30 degrees) stay smooth.
+const DEFAULT_CREASE = 60.0
 const DEFAULT_BRUSH_PROPS = r"textures/(props|metal_misc|wood|town_wood|chat)/"
 
-function smooth_trisoup(bsp::Bsp, rx::Regex; crease=90.0, quiet=false)
+function smooth_trisoup(bsp::Bsp, rx::Regex; crease=DEFAULT_CREASE, quiet=false)
     V0, I0, S = verts(bsp), indexes(bsp), surfaces(bsp)
     names = shader_names(bsp)
     mods = Dict{Int,Tuple{Vector{DrawVert},Vector{Int32}}}()
@@ -282,7 +285,7 @@ function smooth_trisoup(bsp::Bsp, rx::Regex; crease=90.0, quiet=false)
     out
 end
 
-function smooth_brush_props(bsp::Bsp; rx=DEFAULT_BRUSH_PROPS, max_extent=100.0, min_faces=6, crease=90.0, quiet=false)
+function smooth_brush_props(bsp::Bsp; rx=DEFAULT_BRUSH_PROPS, max_extent=100.0, min_faces=6, crease=DEFAULT_CREASE, quiet=false)
     V0, I0, S = verts(bsp), indexes(bsp), surfaces(bsp)
     names = shader_names(bsp)
     m0 = models(bsp)[1]

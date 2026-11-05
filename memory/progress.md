@@ -5,6 +5,7 @@ Open items first. Finished work moves to `archive.md`. Phase details live in `do
 ## RTCW remaster (`codmod`) — CoD4 feel + HD presentation
 
 ### Done
+- [x] **Prone sprint exit and editable settings drafts (2026-11-05):** built and installed; user responded positively. Headless smoke did not start successfully.
 - [x] **Profiler v2 + tooling (2026-11-05, uncommitted):** `tr_gpuprof.c` adds MDS/assemble/UpdateTessVao CPU scopes, counters, sun-cascade state and reasons, physical draws, T2x/grade copy marks, `bench_window` via `cl_benchMeasuring`; `scripts/profile.sh` (1+3 / 1+1 runs, `environment/`, GPU telemetry), `profile-report.py` (median+range), `profile-compare.py`, `profile-ab.sh` (interleaved ABBA, untested), MCP `benchmark(profile=true)` (needs MCP restart; untested). Baseline: `profiling/20261105-111101-framewarp-off-v2` (229.9 fps, GPU 4.25 ms).
 - [x] **C1 MDS depth tangents skipped (2026-11-05, branch feature/profiling-improvements, awaiting in-game look):** `r_mdsDepthTangents` (engine default 0 = skip tangents in depth-fill passes; 1 = stock). ABBA profiler-off 240.6 -> 255.4 fps (+6.2%), sunshadow 0.60 -> 0.32 ms. Reports in `profiling/blocks-results/` (A1-A4, C1, performance-blocks.md). Next: C2 (depth upload attribute trim, `r_depthAttribTrim`).
 - [x] **Frame-warp-off benchmark analysis (2026-11-05):** updated `profiling/performance-plan.md` with v3 and AO A/B evidence; prioritizes measured MDS depth-tangent work, AO experiments, and validation gates.

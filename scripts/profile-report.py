@@ -85,6 +85,8 @@ bench-modeN.log console output of the bench runs
 mode1/runK/     r_gpuProfile 1: normal speed. Use for FPS, GPU pass times, CPU scopes, per-frame series
 mode2/runK/     r_gpuProfile 2: adds per-batch timestamps => per-shader GPU/CPU cost. FPS NOT representative
                 (the extra queries slow the frame); relative shader costs are still valid.
+mem/runK/       only with `profile.sh --mem` (com_memProfile 1, r_gpuProfile off; run1 warm-up): memory profiler files, see below
+mem_categories.csv, mem_timeline.csv   session-level memory files written by the report (see "Memory profiler files")
 ```
 runK: run1 is a warm-up, the others are measured repeats. Each runK has:
 
@@ -123,6 +125,40 @@ runK: run1 is a warm-up, the others are measured repeats. Each runK has:
   render), `cnt_*`, `cpu_*_ms` per scope, `pass_*_ms` per pass.
 * `run.json` - engine-side facts: mode, frame counts, dropped frames, GL renderer, resolution, a few cvars.
 * `bench_line.txt`, `bench_frametimes.txt` - the bench's own FPS summary and wall-clock frame times.
+
+## Memory profiler files (`mem/runK/`, opt-in `scripts/profile.sh --mem`, or `scripts/bench.sh --memprof`)
+Design and rationale: `docs/memory-profiler-plan.md`. A census, not allocation hooks: VRAM bytes are computed analytically from the
+renderer's image/FBO/VAO tables (analytic formulas, not driver numbers), RAM comes from `/proc/self/smaps` at dump points. Sizes in
+the CSVs are bytes unless the column says `_mb`/`_kb`; every engine timeline row is stamped with `epoch_ms` (CLOCK_REALTIME).
+`bench.sh --memprof` without `profile.sh` copies the same files to `benchmarks/STAMP-LABEL-runK.mem/`.
+
+* `mem_vram_objects.csv` - `kind` (texture|renderbuffer|buffer|estimate), `category` (e.g. `tex_world`, `rt_scene`, `buf_vaocache`),
+  `map` (diffuse|normal|spec|-), `pak` (source pak basename, `dir` = loose file, `-` = not file-backed), `name`, size, `levels`,
+  `faces`, `samples`, `format`, `bytes` (-1 = unknown format, see `note`), `used_in_bench` (bound at least once in the bench window), `note`.
+  Sorted by bytes. `estimate` rows (loadscreen, default framebuffer) are not measured.
+* `mem_vram_categories.csv` - `category,count,bytes,mb,pct,bytes_used_in_bench`.
+* `mem_vram_timeline.csv` - `epoch_ms,t_ms,event,frame,bench,tex,rt,rb,buf,est,total,num_images,nvx_avail_kb,nvx_evict_count,nvx_evicted_kb`:
+  census totals per sample (load marks, periodic, bench start/end) plus the driver's NVX free memory and eviction counters.
+* `mem_ram.csv` - `section,item,bytes,note`: `rollup` (rss/anon/file/shmem), `smaps_anon`, `smaps_file` (top 15), `smaps_dev`,
+  `hunk`, `hunk_phase` (hunk deltas between load marks), `malloc` and `sound` (`note=nested`: parts of anon/file already counted,
+  never add them to the rollup), `derived` (`unattributed_anon`, `profiler_overhead`).
+* `mem_ram_timeline.csv` - `epoch_ms,t_ms,event,rss,anon,file,shmem,hunk_used,hunk_temp_hw,malloc_inuse,malloc_free,sound_bytes`.
+* `mem_meta.json` - resolution, GL renderer, NVX dedicated kb, bench start frame, memory-relevant cvars.
+* `memmon.csv` - `scripts/memmon.sh` sampler every 0.5 s: `t` (s), `epoch_ms`, `rss_mb`, `anon_mb`, `file_mb`, `swap_mb`,
+  `vram_proc_mb` (nvidia-smi, this process: the ground truth the census is compared with), `vram_total_mb` (whole GPU).
+* `bench_line.txt`, `wolfconfig_after_run.cfg` - as above.
+
+Session-level files written by `profile-report.py` next to `summary.md`:
+
+* `mem_categories.csv` - `category,count,bytes,mb,pct,bytes_used_in_bench,runs`: median over the measured `mem/` runs.
+* `mem_timeline.csv` - the last measured run's engine RAM rows, renderer VRAM rows and memmon samples merged by `epoch_ms`
+  (`source` = engine|renderer|memmon; the latest value of every other source is carried forward; MB). Plot this for load peak vs
+  steady state. Sessions or runs without `mem/` simply have no Memory section.
+
+The summary's "Memory" section reads: VRAM accounted vs nvidia-smi (the remainder is what the formulas do not see), category
+ranking, texture MB per pak and per map type, top 25 objects, bytes resident but unused in the bench window, RAM decomposition
+and hunk by phase, then load peak vs steady state vs bench end. Never combine `--memprof` with `--profile 1`: periodic samples
+add hitches and the gpuprof arrays inflate RSS.
 
 ## Pass names (GPU mark intervals; a pass is the GPU time since the previous mark, including GPU idle gaps)
 `frame_start` clears/setup, `shadowmap/sunshadow/flashshadow` shadow maps, `prepass` depth prepass, `depthcopy`,
@@ -297,6 +333,325 @@ def mds_lod_section(run):
         L.append(table(rows, ["view", "reason", "samples", "emitted/max verts", "with main ref", "emitted vs main-pass verts"]))
         L.append("\n`emitted vs main-pass verts` > 100% means the depth view drew more detail than the main view did for the same "
                  "surface (reference = latest main color decision for that entity/surface, usually the previous frame).\n")
+    return L
+
+
+# ---------------------------------------------------------------- memory profiler (com_memProfile), see docs/memory-profiler-plan.md
+MB = 1048576.0
+
+
+def mb(x):
+    return f"{max(0.0, fl(x)) / MB:.1f}"
+
+
+def load_mem_run(rd: Path):
+    """One mem/runK folder: the engine's mem_*.csv/json plus memmon.csv (None/[] for files an older build did not write)."""
+    r = {"dir": rd, "name": rd.name}
+    r["objects"] = read_csv(rd / "mem_vram_objects.csv")
+    r["cats"] = read_csv(rd / "mem_vram_categories.csv")
+    r["vtl"] = read_csv(rd / "mem_vram_timeline.csv")
+    r["ram"] = read_csv(rd / "mem_ram.csv")
+    r["rtl"] = read_csv(rd / "mem_ram_timeline.csv")
+    r["smi"] = read_csv(rd / "memmon.csv")
+    try:
+        r["meta"] = json.loads((rd / "mem_meta.json").read_text())
+    except (OSError, ValueError):
+        r["meta"] = {}
+    return r
+
+
+def mget(meta, *keys):
+    for k in keys:
+        if meta.get(k) not in (None, ""):
+            return meta[k]
+    return None
+
+
+def mem_has_data(r):
+    return bool(r["objects"] or r["cats"] or r["vtl"] or r["ram"] or r["rtl"] or r["smi"])
+
+
+def ram_val(r, section, item):
+    for x in r["ram"]:
+        if x.get("section") == section and x.get("item") == item:
+            return fl(x.get("bytes"))
+    return None
+
+
+def bench_window_epochs(r):
+    """(start_epoch_ms, end_epoch_ms) of the bench window from the VRAM/RAM timeline rows, None where unknown."""
+    start = end = None
+    for x in r["vtl"]:
+        e = fl(x.get("epoch_ms"), None)
+        if e is None:
+            continue
+        if start is None and x.get("bench") in ("1", 1):
+            start = e
+        end = e
+    for x in r["rtl"]:
+        e = fl(x.get("epoch_ms"), None)
+        if e is not None and str(x.get("event", "")).startswith("bench_start") and start is None:
+            start = e
+        if e is not None and (end is None or e > end):
+            end = e
+    return start, end
+
+
+def smi_series(r, col):
+    """[(epoch_ms, value)] from memmon.csv (empty for csvs from before the epoch column)."""
+    out = []
+    for x in r["smi"]:
+        e = fl(x.get("epoch_ms"), None)
+        v = x.get(col, "")
+        if e is not None and v not in ("", None):
+            out.append((e, fl(v)))
+    return out
+
+
+def merged_timeline(r):
+    """One row per sample of any source (engine RAM, renderer VRAM, memmon), sorted by epoch, with the latest value of every
+    other source carried forward. Sizes in MB."""
+    cols = ["ram_rss_mb", "ram_anon_mb", "ram_file_mb", "ram_hunk_used_mb", "ram_malloc_inuse_mb", "vram_total_mb", "vram_tex_mb",
+            "vram_rt_mb", "vram_rb_mb", "vram_buf_mb", "vram_evict_count", "smi_rss_mb", "smi_anon_mb", "smi_vram_proc_mb",
+            "smi_vram_total_mb"]
+    ev = []
+    for x in r["rtl"]:
+        e = fl(x.get("epoch_ms"), None)
+        if e is not None:
+            ev.append((e, "engine", x.get("event", ""), "", {"ram_rss_mb": fl(x.get("rss")) / MB, "ram_anon_mb": fl(x.get("anon")) / MB,
+                         "ram_file_mb": fl(x.get("file")) / MB, "ram_hunk_used_mb": fl(x.get("hunk_used")) / MB,
+                         "ram_malloc_inuse_mb": fl(x.get("malloc_inuse")) / MB}))
+    for x in r["vtl"]:
+        e = fl(x.get("epoch_ms"), None)
+        if e is not None:
+            ev.append((e, "renderer", x.get("event", ""), x.get("bench", ""), {
+                "vram_total_mb": fl(x.get("total")) / MB, "vram_tex_mb": fl(x.get("tex")) / MB, "vram_rt_mb": fl(x.get("rt")) / MB,
+                "vram_rb_mb": fl(x.get("rb")) / MB, "vram_buf_mb": fl(x.get("buf")) / MB,
+                "vram_evict_count": fl(x.get("nvx_evict_count"))}))
+    for x in r["smi"]:
+        e = fl(x.get("epoch_ms"), None)
+        if e is not None:
+            v = {"smi_rss_mb": fl(x.get("rss_mb")), "smi_anon_mb": fl(x.get("anon_mb")), "smi_vram_total_mb": fl(x.get("vram_total_mb"))}
+            if x.get("vram_proc_mb", "") != "":
+                v["smi_vram_proc_mb"] = fl(x.get("vram_proc_mb"))
+            ev.append((e, "memmon", "", "", v))
+    ev.sort(key=lambda t: t[0])
+    if not ev:
+        return [], []
+    t0 = ev[0][0]
+    cur, bench, rows = {}, "", []
+    for e, src, event, b, vals in ev:
+        cur.update(vals)
+        if b != "":
+            bench = b
+        rows.append([f"{e:.0f}", f"{(e - t0) / 1000:.3f}", src, event, bench] + [f"{cur[c]:.2f}" if c in cur else "" for c in cols])
+    return ["epoch_ms", "t_s", "source", "event", "bench"] + cols, rows
+
+
+def write_csv(p: Path, header, rows):
+    with p.open("w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(header)
+        w.writerows(rows)
+
+
+def session_categories(runs):
+    """Median over the measured runs per VRAM category -> (header, rows) for mem_categories.csv."""
+    per = defaultdict(lambda: defaultdict(list))
+    for r in runs:
+        for x in r["cats"]:
+            c = x.get("category", "")
+            per[c]["count"].append(fl(x.get("count")))
+            per[c]["bytes"].append(fl(x.get("bytes")))
+            per[c]["used"].append(fl(x.get("bytes_used_in_bench")))
+    tot = sum(med(v["bytes"]) for v in per.values()) or 1.0
+    rows = []
+    for c, v in sorted(per.items(), key=lambda kv: -med(kv[1]["bytes"])):
+        b = med(v["bytes"])
+        rows.append([c, f"{med(v['count']):.0f}", f"{b:.0f}", f"{b / MB:.2f}", f"{100 * b / tot:.1f}", f"{med(v['used']):.0f}",
+                     len(v["bytes"])])
+    return ["category", "count", "bytes", "mb", "pct", "bytes_used_in_bench", "runs"], rows
+
+
+def memory_section(d: Path):
+    """('Memory' markdown lines, notes) for <d>/mem; writes mem_categories.csv and mem_timeline.csv. Empty list when there is no
+    usable mem/ folder (sessions without profile.sh --mem, or a build without the memory profiler)."""
+    md = d / "mem"
+    if not md.is_dir():
+        return []
+    allruns = [load_mem_run(x) for x in sorted_runs(md)]
+    allruns = [r for r in allruns if mem_has_data(r)]
+    if not allruns:
+        return ["## Memory\n", "`mem/` exists but holds no mem_*.csv files (engine built without the memory profiler, or "
+                "`com_memProfile` did not take effect).\n"]
+    runs = allruns[1:] if len(allruns) > 1 else allruns
+    last = runs[-1]
+    L = ["## Memory (RAM + VRAM census)\n"]
+    meta = last["meta"]
+    cv = meta.get("cvars", {}) if isinstance(meta.get("cvars"), dict) else {}
+    L.append(f"Run `{last['name']}` of {len(allruns)} (run1 warm-up, {len(runs)} measured; categories are the median over the measured "
+             f"runs, everything else is from `{last['name']}`). Resolution {mget(meta, 'resolution', 'res') or '?'}, GL "
+             f"{mget(meta, 'gl_renderer', 'renderer', 'gl') or '?'}, NVX dedicated {mb(fl(mget(meta, 'nvx_dedicated_kb', 'nvx_dedicated')) * 1024)} MB. Cvars: "
+             + (", ".join(f"{k} {v}" for k, v in cv.items()) or "n/a") + ".\n")
+
+    start, end = bench_window_epochs(last)
+    vtl = last["vtl"]
+    # ---- VRAM accounted vs nvidia-smi
+    if vtl or last["smi"]:
+        endrow = next((x for x in reversed(vtl) if str(x.get("event", "")).startswith("bench_end")), vtl[-1] if vtl else None)
+        acc = fl(endrow.get("total")) if endrow else None
+        proc = smi_series(last, "vram_proc_mb")
+        smi_at = None
+        if proc and endrow and endrow.get("epoch_ms"):
+            e = fl(endrow["epoch_ms"])
+            smi_at = min(proc, key=lambda t: abs(t[0] - e))[1]
+        elif proc:
+            smi_at = proc[-1][1]
+        evc = [fl(x.get("nvx_evict_count")) for x in vtl if x.get("nvx_evict_count", "") != ""]
+        L.append("### VRAM: accounted vs driver\n")
+        rows = []
+        if acc is not None:
+            rows.append(("accounted by the census (" + str(endrow.get("event", "?")) + " row)", f"{acc / MB:.0f} MB"))
+            for k, label in (("tex", "textures"), ("rt", "render-target textures"), ("rb", "renderbuffers"), ("buf", "buffers (VAO/VBO)"),
+                             ("est", "estimates (loadscreen, default fb)")):
+                if endrow.get(k, "") != "":
+                    rows.append((f"  of which {label}", f"{fl(endrow[k]) / MB:.0f} MB"))
+        if smi_at is not None:
+            rows.append(("nvidia-smi, this process (sample nearest that row)", f"{smi_at:.0f} MB"))
+            if acc is not None:
+                rows.append(("unaccounted remainder (driver, context, alignment, fragmentation)", f"{smi_at - acc / MB:.0f} MB ({100 * (smi_at - acc / MB) / smi_at:.0f}% of the process)" if smi_at else "-"))
+        elif last["smi"]:
+            rows.append(("nvidia-smi, this process", "n/a (driver did not list the process, or memmon.csv has no epoch column)"))
+        if proc:
+            rows.append(("nvidia-smi process peak over the run", f"{max(v for _, v in proc):.0f} MB"))
+        if evc:
+            rows.append(("driver evictions (NVX evict count) during the run", f"{evc[-1] - evc[0]:.0f}"
+                         + (f" (evicted {(fl(vtl[-1].get('nvx_evicted_kb')) - fl(vtl[0].get('nvx_evicted_kb'))) / 1024:.0f} MB)"
+                            if vtl[-1].get("nvx_evicted_kb", "") != "" else "")))
+        if mget(meta, 'nvx_dedicated_kb', 'nvx_dedicated'):
+            rows.append(("dedicated VRAM of the GPU (NVX)", f"{fl(mget(meta, 'nvx_dedicated_kb', 'nvx_dedicated')) / 1024:.0f} MB"))
+        L.append(table(rows, ["item", "value"]))
+        L.append("\nThe census is analytic (see the plan): rows marked estimate are not measured; the remainder is the sum of what "
+                 "the formulas cannot see. Evictions > 0 mean the driver ran out of VRAM and swapped.\n")
+
+    # ---- categories (session csv + ranking)
+    hdr, crow = session_categories(runs)
+    if crow:
+        write_csv(d / "mem_categories.csv", hdr, crow)
+        L.append("### VRAM by category (median over measured runs)\n")
+        L.append(table([(c[0], c[1], c[3], c[4] + "%", f"{fl(c[5]) / MB:.1f}", f"{(fl(c[2]) - fl(c[5])) / MB:.1f}") for c in crow[:25]],
+                       ["category", "objects", "MB", "share", "MB used in bench", "MB unused in bench"]))
+        L.append("")
+    objs = last["objects"]
+    if objs:
+        tex = [o for o in objs if o.get("kind") == "texture"]
+        by_pak = defaultdict(lambda: [0, 0.0, 0.0])
+        for o in tex:
+            g = by_pak[o.get("pak") or "-"]
+            g[0] += 1; g[1] += max(0.0, fl(o.get("bytes"))); g[2] += max(0.0, fl(o.get("bytes"))) if o.get("used_in_bench") in ("1", 1) else 0.0
+        if by_pak:
+            L.append(f"### Texture VRAM by source pak ({last['name']}; `dir` = loose files, `-` = not file-backed)\n")
+            L.append(table([(k, v[0], f"{v[1] / MB:.1f}", f"{v[2] / MB:.1f}") for k, v in sorted(by_pak.items(), key=lambda kv: -kv[1][1])[:15]],
+                           ["pak", "images", "MB", "MB used in bench"]))
+            L.append("")
+        by_map = defaultdict(lambda: [0, 0.0])
+        for o in tex:
+            g = by_map[(o.get("category", ""), o.get("map") or "-")]
+            g[0] += 1; g[1] += max(0.0, fl(o.get("bytes")))
+        if by_map:
+            L.append("### Texture VRAM by category and map type (diffuse / normal / spec)\n")
+            L.append(table([(k[0], k[1], v[0], f"{v[1] / MB:.1f}") for k, v in sorted(by_map.items(), key=lambda kv: -kv[1][1])[:20]],
+                           ["category", "map", "images", "MB"]))
+            L.append("")
+        unk = [o for o in objs if fl(o.get("bytes")) < 0]
+        if unk:
+            L.append(f"**{len(unk)} object(s) have an unknown format (bytes -1) and are not in any total**, e.g. "
+                     + ", ".join(f"`{o.get('name')}`" for o in unk[:5]) + ".\n")
+        L.append("### Top 25 VRAM objects\n")
+        top = sorted(objs, key=lambda o: -fl(o.get("bytes")))[:25]
+        L.append(table([(o.get("kind"), o.get("category"), o.get("map"), o.get("pak"), f"`{o.get('name')}`",
+                         f"{o.get('width')}x{o.get('height')}" + (f"x{o['faces']}" if o.get("faces") not in (None, "", "1") else ""),
+                         o.get("format"), mb(o.get("bytes")), o.get("used_in_bench"), o.get("note", "")) for o in top],
+                       ["kind", "category", "map", "pak", "name", "size", "format", "MB", "used in bench", "note"]))
+        L.append("")
+        unused = [o for o in objs if o.get("used_in_bench") in ("0", 0) and fl(o.get("bytes")) > 0]
+        if any(o.get("used_in_bench", "") != "" for o in objs):
+            ub = sum(fl(o["bytes"]) for o in unused)
+            allb = sum(fl(o["bytes"]) for o in objs if fl(o.get("bytes")) > 0) or 1.0
+            L.append(f"### Resident but not used in the bench window: {ub / MB:.0f} MB ({100 * ub / allb:.0f}% of the census, {len(unused)} objects)\n")
+            L.append("Candidates for lazy loading or smaller formats; `used` means bound at least once after the bench started, so "
+                     "things used only during load or by another part of the level show up here.\n")
+            L.append(table([(o.get("category"), o.get("pak"), f"`{o.get('name')}`", f"{o.get('width')}x{o.get('height')}", o.get("format"), mb(o.get("bytes")))
+                            for o in sorted(unused, key=lambda o: -fl(o["bytes"]))[:15]],
+                           ["category", "pak", "name", "size", "format", "MB"]))
+            L.append("")
+
+    # ---- RAM
+    ram = last["ram"]
+    if ram:
+        L.append("### RAM: rollup decomposition\n")
+        sec = defaultdict(list)
+        for x in ram:
+            sec[x.get("section", "")].append(x)
+        roll = {x["item"]: fl(x["bytes"]) for x in sec.get("rollup", [])}
+        rows = [(k, mb(roll[k])) for k in ("rss", "anon", "file", "shmem") if k in roll]
+        L.append(table(rows, ["rollup", "MB"]))
+        L.append("")
+        for title, key, n in (("Anonymous memory (smaps_anon)", "smaps_anon", 12), ("File-backed mappings, top (smaps_file)", "smaps_file", 8),
+                              ("Device / memfd mappings (smaps_dev)", "smaps_dev", 6)):
+            if sec.get(key):
+                L.append(f"**{title}**\n")
+                L.append(table([(x["item"], mb(x["bytes"]), x.get("note", "")) for x in sorted(sec[key], key=lambda x: -fl(x["bytes"]))[:n]],
+                               ["item", "MB", "note"]))
+                L.append("")
+        if sec.get("derived"):
+            L.append("**Derived**: " + "; ".join(f"{x['item']} {mb(x['bytes'])} MB" for x in sec["derived"]) +
+                     ". `unattributed_anon` = anon RSS minus the attributed anonymous mappings; `profiler_overhead` is the profiler's own memory.\n")
+        if sec.get("hunk"):
+            L.append("**Hunk**: " + "; ".join(f"{x['item']} {mb(x['bytes'])} MB" for x in sec["hunk"]) + "\n")
+        if sec.get("hunk_phase"):
+            L.append("**Hunk by load phase** (delta of hunk use between load marks; the hunk is cleared on each map load)\n")
+            L.append(table([(x["item"], mb(x["bytes"]), x.get("note", "")) for x in sec["hunk_phase"]], ["phase", "MB", "note"]))
+            L.append("")
+        nested = sec.get("malloc", []) + sec.get("sound", [])
+        if nested:
+            L.append("**Nested values (parts of anon/file RSS already counted above, never add them to the rollup)**: "
+                     + "; ".join(f"{x['section']}.{x['item']} {mb(x['bytes'])} MB" for x in nested) + "\n")
+
+    # ---- load peak vs steady state vs bench end
+    rtl = last["rtl"]
+    if rtl or vtl or last["smi"]:
+        L.append("### Load peak vs steady state vs bench end\n")
+        rows = []
+
+        def pick(series, lo, hi):
+            return [v for e, v in series if (lo is None or e >= lo) and (hi is None or e < hi)]
+
+        rss = [(fl(x.get("epoch_ms")), fl(x.get("rss")) / MB) for x in rtl if x.get("epoch_ms")]
+        vt = [(fl(x.get("epoch_ms")), fl(x.get("total")) / MB) for x in vtl if x.get("epoch_ms")]
+        sp = smi_series(last, "vram_proc_mb")
+        sr = smi_series(last, "rss_mb")
+        for name, ser in (("RAM RSS (engine rows)", rss), ("RAM RSS (memmon)", sr), ("VRAM accounted (renderer rows)", vt),
+                          ("VRAM process (nvidia-smi)", sp)):
+            if not ser:
+                continue
+            pre = pick(ser, None, start)
+            win = pick(ser, start, None)
+            rows.append((name, f"{max(pre):.0f}" if pre else "-", f"{pre[-1]:.0f}" if pre else "-",
+                         f"{med(win):.0f}" if win else "-", f"{ser[-1][1]:.0f}", f"{max(v for _, v in ser):.0f}"))
+        if rows:
+            L.append(table(rows, ["MB", "load peak (before bench)", "end of load (steady start)", "bench window median", "last sample", "overall peak"]))
+            L.append("\nLoad peak > steady state means memory was freed after loading (temporary decode buffers, hunk temp); "
+                     "a bench-end value above the bench-start one means growth during play (leaks, lazy uploads).\n")
+        if not start:
+            L.append("The bench-start edge is unknown (no `bench=1` renderer row), so the load/bench split above uses the whole run as load.\n")
+
+    # ---- merged timeline csv
+    hdr, rows = merged_timeline(last)
+    if rows:
+        write_csv(d / "mem_timeline.csv", hdr, rows)
+        L.append(f"Files: `mem_categories.csv` (median over measured runs), `mem_timeline.csv` ({len(rows)} rows of {last['name']}: engine RAM, "
+                 "renderer VRAM and memmon samples merged by epoch, latest values carried forward), raw per-run files in `mem/runK/`.\n")
     return L
 
 
@@ -575,11 +930,14 @@ def main():
         L.append(table(rows, ["pass", "ms/frame", "batch ms", "non-batch ms", "top shaders (ms/frame)"]))
         L.append("")
 
+    L += memory_section(d)
+
     L.append("## Reading notes\n")
     L.append("* mode1 = honest speed; mode2 = per-shader breakdown with inflated absolute times. Shader percentages are of the mode 2 frame.\n"
              "* `non-batch ms` of a pass = pass time minus draw batches: fullscreen work, clears, GPU idle gaps and timestamp overhead.\n"
              "* GPU buckets are timestamp intervals since the previous mark and can include idle gaps; CPU scopes are inclusive.\n"
              "* Ranges are across the measured repeats of this session only. For decisions use `scripts/profile-ab.sh` (interleaved A/B).\n"
+             "* `Memory` section (only with `profile.sh --mem`): analytic VRAM census + `/proc` RAM breakdown, from a separate pass.\n"
              "* Full column documentation: `profiling/README.md`. Inputs that produced this data: `environment/`.\n")
     (d / "summary.md").write_text("\n".join(L))
     print(f"wrote {d / 'summary.md'}")

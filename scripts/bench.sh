@@ -17,6 +17,7 @@ usage() {
 	cat <<'USAGE'
 Usage: scripts/bench.sh [--label NAME] [--runs N] [--mangohud] [--windowed WxH]
                         [--set CVAR VALUE]... [--env KEY=VAL]... [--gpumon] [--gpuprof]
+                        [--memmon] [--memprof] [--profile N]
 
   --label NAME   Tag for results.csv and saved frame-time logs (default: run)
   --runs N       Runs (default 3); run 1 is a warm-up, excluded from the median
@@ -27,6 +28,12 @@ Usage: scripts/bench.sh [--label NAME] [--runs N] [--mangohud] [--windowed WxH]
   --gpuprof      Set r_gpuProfile 1 and print the per-pass GPU timing table of each run (also saved as
                  benchmarks/STAMP-LABEL-runN.gpuprof.txt)
   --gpumon       Sample GPU/memory utilisation with nvidia-smi during each run
+  --memmon       Sample the game's RAM (RSS) and VRAM every 0.5 s (scripts/memmon.sh); prints peak/median per run, adds
+                 ram_peak/vram_peak to results.csv cfg, saves benchmarks/STAMP-LABEL-runN.mem.csv
+  --memprof      Memory profiler: com_memProfile 1 (implies --memmon). Copies the engine's profiling/mem_* files (RAM/VRAM
+                 census, timelines, meta; see docs/memory-profiler-plan.md) plus the memmon csv into $PROFILE_OUT/runK/
+                 (profile.sh --mem) or benchmarks/STAMP-LABEL-runK.mem/. Do not combine with --profile 1 (timeline
+                 sampling perturbs FPS). scripts/profile.sh --mem wraps it and the report adds a Memory section
   --profile N    Full profiler (r_gpuProfile N; 1 = GPU passes + CPU scopes + per-frame rows, 2 = also per-shader
                  batch timings, slower). Copies the engine's profiling/ files (passes.csv, cpu_scopes.csv, frames.csv,
                  shaders.csv, run.json) into $PROFILE_OUT/runK/ (default profiling/STAMP-LABEL). scripts/profile.sh
@@ -39,7 +46,9 @@ SET_ARGS=()
 ENV_ARGS=()
 SET_DESC=""
 GPUMON=0
+MEMMON=0
 GPUPROF=0
+MEMPROF=0
 PROFILE=0
 PROFILE_OUT="${PROFILE_OUT:-}"
 while [[ $# -gt 0 ]]; do
@@ -51,6 +60,8 @@ while [[ $# -gt 0 ]]; do
 		--set) SET_ARGS+=("$2=$3"); SET_DESC+=" $2=$3"; shift 3 ;;
 		--env) ENV_ARGS+=("$2"); SET_DESC+=" $2"; shift 2 ;;
 		--gpumon) GPUMON=1; shift ;;
+		--memmon) MEMMON=1; shift ;;
+		--memprof) MEMPROF=1; MEMMON=1; SET_ARGS+=("com_memProfile=1"); SET_DESC+=" com_memProfile=1"; shift ;;
 		--profile) PROFILE="$2"; SET_ARGS+=("r_gpuProfile=$2"); SET_DESC+=" r_gpuProfile=$2"; shift 2 ;;
 		--gpuprof) GPUPROF=1; SET_ARGS+=("r_gpuProfile=1"); SET_DESC+=" r_gpuProfile=1"; shift ;;
 		-h|--help) usage; exit 0 ;;
@@ -87,7 +98,7 @@ restore() {
 	fi
 	rm -f "$SAVED"
 }
-trap 'restore; rm -f "$HOME_CFG/bench_override.cfg"; if [[ -n "${TELEMPID:-}" ]]; then kill "$TELEMPID" 2>/dev/null || true; fi' EXIT
+trap 'restore; rm -f "$HOME_CFG/bench_override.cfg"; if [[ -n "${TELEMPID:-}" ]]; then kill "$TELEMPID" 2>/dev/null || true; fi; if [[ -n "${MEMPID:-}" ]]; then kill "$MEMPID" 2>/dev/null || true; fi' EXIT
 
 STAMP="$(date +%Y%m%d-%H%M%S)"
 SHA_OUTER="$(git -C "$ROOT" rev-parse --short HEAD 2>/dev/null || echo ?)"
@@ -100,6 +111,8 @@ for ((i = 1; i <= RUNS; i++)); do
 	: > "$LOG"
 	if ((PROFILE)); then
 		[[ -n "$PROFILE_OUT" ]] || PROFILE_OUT="$ROOT/profiling/$STAMP-$LABEL"
+	fi
+	if ((PROFILE || MEMPROF)); then
 		mkdir -p "$HOME_CFG/profiling"; find "$HOME_CFG/profiling" -mindepth 1 -delete
 	fi
 	TELEM=""
@@ -116,6 +129,12 @@ for ((i = 1; i <= RUNS; i++)); do
 		nvidia-smi dmon -s um -d 1 >"$GPULOG" 2>/dev/null &
 		MONPID=$!
 	fi
+	MEMLOG=""
+	if ((MEMMON)); then
+		MEMLOG="$OUT/$STAMP-$LABEL-run$i.mem.csv"
+		"$ROOT/scripts/memmon.sh" "$MEMLOG" 0.5 &
+		MEMPID=$!
+	fi
 	# Overrides: startup +set (replaces run.sh's, needed for latched cvars) plus a late exec that
 	# re-applies them after codmod.cfg (its "seta" would otherwise leave a pending latch).
 	# The engine drops "+" command-line commands beyond 32 (MAX_CONSOLE_LINES) and run.sh uses ~27,
@@ -125,6 +144,14 @@ for ((i = 1; i <= RUNS; i++)); do
 	env "${ENV_ARGS[@]}" RTCW_STARTUP_SETS="${SET_ARGS[*]}" "${WRAP[@]}" "$LAUNCHER" "${RUN_ARGS[@]}" +exec bench_override.cfg +demo codmod_bench >/dev/null 2>&1 || true
 	if [[ -n "$TELEM" ]]; then
 		kill "$TELEMPID" 2>/dev/null || true; wait "$TELEMPID" 2>/dev/null || true
+	fi
+	meminfo=""
+	if [[ -n "$MEMLOG" ]]; then
+		kill "$MEMPID" 2>/dev/null || true; wait "$MEMPID" 2>/dev/null || true
+		# peak = max over the run; vram_proc is the game's own GPU memory, vram_total the whole GPU (incl. desktop, ~2 GB base)
+		meminfo="$(awk -F, 'NR>1{ if($3>r)r=$3; if($4>a)a=$4; if($7!=""&&$7+0>vp)vp=$7+0; if($8+0>vt)vt=$8+0; if(NR==2||$8+0<v0)v0=$8+0 }
+			END{printf "ram_peak=%.0fMB(anon %.0f) vram_proc_peak=%sMB vram_total_peak=%.0fMB(min %.0f)", r, a, (vp?vp:"n/a"), vt, v0}' "$MEMLOG")"
+		echo "   $meminfo"
 	fi
 	gpuinfo=""
 	if ((GPUMON)); then
@@ -152,7 +179,7 @@ for ((i = 1; i <= RUNS; i++)); do
 	[[ -n "$apline" ]] && echo "   ap: $apline"
 	histline="$(grep -a 'codmod ap hist\|codmod ap kinds' "$LOG" | tail -2 | sed 's/.*codmod ap /ap /' || true)"
 	[[ -n "$histline" ]] && echo "   $histline"
-	echo "$STAMP,$LABEL,$i,$SHA_OUTER,$SHA_ENGINE,${kv[frames]},${kv[seconds]},${kv[avg_fps]},${kv[low1_fps]},${kv[median_ms]},${kv[p95_ms]},${kv[p99_ms]},${kv[max_ms]},${kv[hitches]},\"$cfgline${SET_DESC:+ |$SET_DESC} $gpuinfo\"" >> "$OUT/results.csv"
+	echo "$STAMP,$LABEL,$i,$SHA_OUTER,$SHA_ENGINE,${kv[frames]},${kv[seconds]},${kv[avg_fps]},${kv[low1_fps]},${kv[median_ms]},${kv[p95_ms]},${kv[p99_ms]},${kv[max_ms]},${kv[hitches]},\"$cfgline${SET_DESC:+ |$SET_DESC} $gpuinfo${meminfo:+ $meminfo}\"" >> "$OUT/results.csv"
 	if ((GPUPROF)); then
 		# the table is printed at renderer shutdown: take the last block of "codmod gpuprof:" lines
 		grep -a 'codmod gpuprof:' "$LOG" | sed 's/^.*codmod gpuprof: //' | awk '/^frames=/{buf=""} {buf=buf $0 "\n"} END{printf "%s", buf}' > "$OUT/$STAMP-$LABEL-run$i.gpuprof.txt"
@@ -170,6 +197,16 @@ for ((i = 1; i <= RUNS; i++)); do
 		gzip -c "$LOG" > "$PROFILE_OUT/run$i/console.log.gz" 2>/dev/null || true
 		if [[ -n "$TELEM" ]]; then mv -f "$TELEM" "$PROFILE_OUT/run$i/gpu_telemetry.csv"; TELEM=""; fi
 		echo "   profile: $PROFILE_OUT/run$i"
+	fi
+	if ((MEMPROF)); then
+		if ((PROFILE)); then MEMDIR="$PROFILE_OUT/run$i"; else MEMDIR="${PROFILE_OUT:+$PROFILE_OUT/run$i}"; MEMDIR="${MEMDIR:-$OUT/$STAMP-$LABEL-run$i.mem}"; fi
+		mkdir -p "$MEMDIR"
+		# with --profile the generic copy above already brought profiling/* (incl. mem_*) along
+		cp -f "$HOME_CFG"/profiling/mem_* "$MEMDIR/" 2>/dev/null || echo "WARNING: no profiling/mem_* files written (run $i; engine without the memory profiler?)" >&2
+		cp -f "$MEMLOG" "$MEMDIR/memmon.csv" 2>/dev/null || true
+		printf '%s\n' "$line" > "$MEMDIR/bench_line.txt"
+		cp -f "$CFG" "$MEMDIR/wolfconfig_after_run.cfg" 2>/dev/null || true
+		echo "   memprof: $MEMDIR"
 	fi
 	if ((i > 1 || RUNS == 1)); then
 		AVGS+=("${kv[avg_fps]}"); LOWS+=("${kv[low1_fps]}"); P99S+=("${kv[p99_ms]}")

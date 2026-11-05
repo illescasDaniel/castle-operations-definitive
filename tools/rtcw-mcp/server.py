@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import csv
 import json
 import re
 import shutil
@@ -317,7 +318,39 @@ def parse_spin(text: str) -> dict:
     return {"rows": rows}
 
 
-def _do_benchmark(kind, cvars, runs, label, max_ratio, gpuprof, tick=None, profile=False):
+def _mem_head(summary: Path, limit: int = 6000) -> str | None:
+    """The '## Memory' section of a profile summary.md (up to `limit` chars), None if the session has none."""
+    if not summary.is_file():
+        return None
+    text = summary.read_text()
+    i = text.find("## Memory")
+    if i < 0:
+        return None
+    j = text.find("\n## ", i + 3)
+    return text[i:j if j > 0 else len(text)][:limit]
+
+
+def _mem_tables(out: str) -> dict:
+    """bench.sh --memprof output -> the last run's `mem_dir`, its VRAM category table and RAM rollup (MB)."""
+    dirs = re.findall(r"^\s*memprof: (\S+)", out, re.M)
+    res: dict = {}
+    if not dirs:
+        return res
+    d = Path(dirs[-1])
+    res["mem_dir"] = str(d)
+    cats = d / "mem_vram_categories.csv"
+    if cats.is_file():
+        res["vram_categories"] = [{k: v for k, v in row.items()} for row in csv.DictReader(cats.open())][:25]
+    ram = d / "mem_ram.csv"
+    if ram.is_file():
+        res["ram_rollup_mb"] = {r["item"]: round(float(r["bytes"]) / 1048576, 1)
+                                for r in csv.DictReader(ram.open()) if r.get("section") == "rollup"}
+    if not cats.is_file() and not ram.is_file():
+        res["warnings_mem"] = "no mem_*.csv files were written (engine built without the memory profiler?)"
+    return res
+
+
+def _do_benchmark(kind, cvars, runs, label, max_ratio, gpuprof, tick=None, profile=False, memprof=False):
     cv = core.check_cvars(cvars)
     if not re.match(r"^[\w.\-]+$", label):
         raise RtcwError("label: letters, digits, . _ - only")
@@ -325,10 +358,10 @@ def _do_benchmark(kind, cvars, runs, label, max_ratio, gpuprof, tick=None, profi
         t0 = time.monotonic()
         if kind == "normal" and profile:
             # full render profile: runs + 1 warm-up in mode 1, 2 runs in mode 2 (see profiling/README.md)
-            args = ["scripts/profile.sh", "--label", label, "--runs", str(runs + 1)]
+            args = ["scripts/profile.sh", "--label", label, "--runs", str(runs + 1)] + (["--mem"] if memprof else [])
             for k, v in cv.items():
                 args += ["--set", k, v]
-            rc, out, hung = _run_script(args, timeout=240 * (runs + 3) + 300, tick=tick)
+            rc, out, hung = _run_script(args, timeout=240 * (runs + 3) + 300 + (500 if memprof else 0), tick=tick)
             m = re.search(r"profile written to (\S+)", out)
             res = {"runs": [], "ok": rc == 0 and bool(m)}
             if m:
@@ -336,13 +369,17 @@ def _do_benchmark(kind, cvars, runs, label, max_ratio, gpuprof, tick=None, profi
                 summ = Path(m.group(1)) / "summary.md"
                 if summ.is_file():
                     res["summary_head"] = summ.read_text()[:6000]
+                if memprof:
+                    res["memory_summary"] = _mem_head(summ)
         elif kind == "normal":
-            args = ["scripts/bench.sh", "--label", label, "--runs", str(runs)] + (["--gpuprof"] if gpuprof else [])
+            args = ["scripts/bench.sh", "--label", label, "--runs", str(runs)] + (["--gpuprof"] if gpuprof else []) + (["--memprof"] if memprof else [])
             for k, v in cv.items():
                 args += ["--set", k, v]
             rc, out, hung = _run_script(args, timeout=240 * runs + 120, tick=tick)
             res = parse_bench(out)
             res["ok"] = rc == 0 and bool(res["runs"])
+            if memprof:
+                res.update(_mem_tables(out))
         else:
             if cv:
                 raise RtcwError("spin-test.sh does not accept cvars; run kind=normal for A/B with cvars")
@@ -425,14 +462,18 @@ def _do_ab(a, b, legs, ab_profile, cvars, label, tick=None):
 async def benchmark(kind: str = "normal", cvars: dict[str, str] | None = None, runs: int = 3,
                     label: str = "mcp", max_ratio: float = 1.25, gpuprof: bool = False, profile: bool = False,
                     a: dict[str, str] | None = None, b: dict[str, str] | None = None, legs: int = 4,
-                    ab_profile: int = 1, ctx: Context | None = None) -> dict:
+                    ab_profile: int = 1, memprof: bool = False, ctx: Context | None = None) -> dict:
     """Run a benchmark off-screen. kind="normal": scripts/bench.sh (replays the benchmark demo `runs` times, run 1 is
     warm-up) -> avg fps, 1% low, P99, hitches per run and the median; appended to benchmarks/results.csv. `cvars` are
     forced via --set. gpuprof=true adds r_gpuProfile 1 and returns the per-pass GPU ms table of the last run
     (`gpu_passes_last_run`: avg ms, % of GPU time, max, hit %; the table of every run is saved as
     benchmarks/<stamp>-<label>-runN.gpuprof.txt). profile=true runs scripts/profile.sh instead (`runs` measured + 1 warm-up in
     mode 1, then 2 per-shader runs; ~5-8 min) and returns `profile_dir` (summary.md, CSVs, environment/; format in
-    profiling/README.md) plus the head of summary.md; use it for function/pass/shader-level analysis. kind="spin": scripts/spin-test.sh -> GPU ms for still vs turning views and PASS/FAIL against
+    profiling/README.md) plus the head of summary.md; use it for function/pass/shader-level analysis.
+    memprof=true turns on the RAM+VRAM memory profiler (com_memProfile 1, bench.sh --memprof, implies memmon; plan:
+    docs/memory-profiler-plan.md): with kind="normal" the result has `mem_dir` (mem_*.csv of the last run), `vram_categories`
+    (top 25 categories: count, bytes, mb, pct, bytes_used_in_bench) and `ram_rollup_mb`; with profile=true it adds a separate
+    memory pass (profile.sh --mem) and `memory_summary`, the Memory section of summary.md. Not for kind="ab"/"spin". kind="spin": scripts/spin-test.sh -> GPU ms for still vs turning views and PASS/FAIL against
     `max_ratio`. Always headless; ~1-5 minutes.
     kind="ab": scripts/profile-ab.sh, interleaved ABBA legs (1 warm-up + `legs` per condition, 1 bench run per leg;
     minutes: the timeout is 240 s per leg). `a` and `b` are the cvars of each condition (`{}` = defaults), `cvars` are common to both (e.g.
@@ -444,12 +485,16 @@ async def benchmark(kind: str = "normal", cvars: dict[str, str] | None = None, r
         return _fail(RtcwError("kind must be 'normal', 'spin' or 'ab'"))
     if kind != "ab" and (a is not None or b is not None):
         return _fail(RtcwError("a / b are only for kind='ab'"))
+    if memprof and kind != "normal":
+        return _fail(RtcwError("memprof is only for kind='normal'"))
+    if memprof and gpuprof:
+        return _fail(RtcwError("memprof and gpuprof do not combine (gpuprof arrays inflate RSS, periodic samples add hitches)"))
     if kind == "ab" and (profile or gpuprof):
         return _fail(RtcwError("for kind='ab' use ab_profile=0|1 instead of profile / gpuprof"))
     try:
         if kind == "ab":
             return await _in_thread(ctx, _do_ab, a, b, legs, ab_profile, cvars, label)
-        return await _in_thread(ctx, _do_benchmark, kind, cvars, runs, label, max_ratio, gpuprof, profile=profile)
+        return await _in_thread(ctx, _do_benchmark, kind, cvars, runs, label, max_ratio, gpuprof, profile=profile, memprof=memprof)
     except RtcwError as e:
         return _fail(e)
 

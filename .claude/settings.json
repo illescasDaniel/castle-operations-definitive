@@ -9,7 +9,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "uvx jevmem hook session-start",
+            "command": "uvx --python 3.14 jevmem hook session-start",
             "timeout": 15
           }
         ]
@@ -20,7 +20,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "uvx jevmem hook user-prompt",
+            "command": "uvx --python 3.14 jevmem hook user-prompt",
             "timeout": 20
           }
         ]

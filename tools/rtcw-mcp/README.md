@@ -32,7 +32,7 @@ Game runs take minutes. Claude Code's MCP tool timeout is long by default, but i
 | `texture_coverage(map, spots[], shader_filter, ...)` | Runs the `normalcov` console command at each spot and returns the parsed table: per shader `count`, diffuse `image`, `status` (`parallax`, `_nh found, parallax off`, `normal map`, `NO NORMAL MAP`, `not lightall`, `normals off (cvars)`), per-status totals, covered %. |
 | `console_log(map, commands[], spot, grep, max_lines, ...)` | Runs console commands at a spot and returns the output they produced (e.g. `viewpos`, `gpuprof`). `quit`/`bind`/`exec`/`vid_restart` are refused. |
 | `load_times(maps[], level_change, profile_level)` | Wraps `scripts/load-test.sh`: total ms, presents, max gap@stage, p95, gaps > 33 ms (+ gap list). |
-| `benchmark(kind=normal\|spin, cvars, runs, label, max_ratio, gpuprof)` | `bench.sh` (avg / 1% low / P99 / hitches per run + median, appended to `benchmarks/results.csv`; `gpuprof=true` adds the per-pass GPU ms table via `bench.sh --gpuprof`) or `spin-test.sh` (GPU ms still vs turning, PASS/FAIL). Always headless. |
+| `benchmark(kind=normal\|spin\|ab, cvars, runs, label, max_ratio, gpuprof, profile, a, b, legs, ab_profile)` | `bench.sh` (avg / 1% low / P99 / hitches per run + median, appended to `benchmarks/results.csv`; `gpuprof=true` adds the per-pass GPU ms table via `bench.sh --gpuprof`) `profile=true` runs `scripts/profile.sh` (runs+1 mode-1 runs, 2 per-shader runs, ~5-8 min) and returns `profile_dir` + the head of `summary.md` (format: `profiling/README.md`), or `spin-test.sh` (GPU ms still vs turning, PASS/FAIL). Always headless. `kind="ab"` runs interleaved A/B legs, see below. |
 | `compare_shots(a, b)` | Two images or two labels: differing-pixel %, max/mean diff, and an "A \| B \| diff x16" PNG. No game. (`scripts/shots-diff.py` handles both `shot*.tga` and `spot*.tga` sets.) |
 | `build(game_only=true, install=true)` | `scripts/build.sh [--game-only] --install`; returns warning/error counts and the first diagnostics (output tail only on failure). Use `game_only=false` when engine/renderer files changed. |
 | `game_status`, `list_maps`, `known_spots(map)` | Is a game/build/bake running; maps in `run/main/*.pk3`; spots from `benchmarks/spots-*.txt` plus documented ones. Resources: `rtcw://spots`, `rtcw://gotchas` (this file). |
@@ -41,6 +41,26 @@ Example (the trainyard stone wall; `town_wall/town_c22a1burn` is expected as `pa
 `texture_coverage(map="trainyard", spots=["-1012.1 481.6 88.1 -143.3 9.5"], shader_filter="town_wall")`.
 A spot is `x y z yaw pitch`; the console command `viewpos` prints a ready `setviewpos x y z yaw pitch` line (decimal
 commas are accepted).
+
+### A/B campaigns: `benchmark(kind="ab")`
+
+Runs `scripts/profile-ab.sh` under the same lock and wolfconfig guard as the other game runs: one warm-up leg of A,
+then ABBA legs (`legs` per condition). Each leg is one bench run on the benchmark demo.
+
+```
+benchmark(kind="ab", a={"r_ao": "2"}, b={"r_ao": "4"}, legs=4, ab_profile=1,
+          cvars={"r_frameWarp": "0"}, label="ao-2-vs-4")
+```
+
+- `a` / `b`: the cvars of each condition (`{}` = defaults). Required, both must be given.
+- `cvars`: common to both conditions. Nothing is added by default: pass `r_frameWarp` here if you want it.
+- Startup limit: each condition's leg (common + its own cvars, a shared name counted once) is at most 8 cvars.
+- `legs`: 1-10 measured legs per condition. Timeout 240 s per leg, plus 300 s.
+- `ab_profile`: `1` (default) runs `profile-ab.sh --profile 1` (full profiler per leg); `0` runs the legs profiler-off
+  (`bench_line.txt` + `bench_frametimes.txt` only). `profile` and `gpuprof` are refused with `kind="ab"`.
+- Returns `dir` (`profiling/<stamp>-ab-<label>/`), `conditions`, `fps` (per measured leg, A and B, warm-up excluded),
+  and `compare` (the `scripts/profile-compare.py` text). If the compare fails (for example profiler-off legs, which have
+  no `frames.csv`), it returns `compare_error` instead.
 
 ## Safety behaviour
 

@@ -225,5 +225,105 @@ class TestTools(Patched):
         self.assertEqual(res["pairs"][0]["differing_px_pct"], 100.0)
 
 
+class TestAB(Patched):
+    """benchmark(kind="ab"): argument construction and validation with _run_script mocked (no game, no profile-ab.sh)."""
+
+    def setUp(self):
+        super().setUp()
+        import shutil
+        (core.ROOT / "scripts").mkdir(parents=True, exist_ok=True)
+        shutil.copy2(Path(server.__file__).resolve().parent.parent.parent / "scripts" / "profile-compare.py",
+                     core.ROOT / "scripts" / "profile-compare.py")
+        self._orig_run = server._run_script
+        self.calls = []
+        self.legs_written = 0
+        outer = self
+
+        def fake_run(args, timeout, tick=None, extra_env=None):
+            outer.calls.append((list(args), timeout))
+            d = core.ROOT / "profiling" / f"fake-ab-{len(outer.calls)}"
+            for cond, runs in (("A", (1, 2, 3)), ("B", (2, 3))):
+                for i in runs:
+                    rd = d / cond / "mode1" / f"run{i}"
+                    rd.mkdir(parents=True, exist_ok=True)
+                    (rd / "bench_line.txt").write_text(f"frames=600 avg_fps={100 + i}.0 low1_fps=90\n")
+            (d / "conditions.txt").write_text("A: r_ao 2\nB: r_ao 4\n")
+            return 0, f"noise\ninterleaved A/B written to {d}\n", False
+        server._run_script = fake_run
+
+    def tearDown(self):
+        server._run_script = self._orig_run
+        super().tearDown()
+
+    def ab(self, **kw):
+        kw.setdefault("a", {"r_ao": "2"})
+        kw.setdefault("b", {"r_ao": "4"})
+        return asyncio.run(server.benchmark(kind="ab", **kw))
+
+    def test_args_and_timeout(self):
+        res = self.ab(legs=2, cvars={"r_frameWarp": "0"}, label="t")
+        self.assertTrue(res["ok"], res)
+        args, timeout = self.calls[0]
+        self.assertEqual(args[:1], ["scripts/profile-ab.sh"])
+        self.assertEqual(args[args.index("--a") + 1], "r_ao 2")
+        self.assertEqual(args[args.index("--b") + 1], "r_ao 4")
+        self.assertEqual(args[args.index("--legs") + 1], "2")
+        self.assertEqual(args[args.index("--profile") + 1], "1")
+        self.assertEqual(args[args.index("--") :], ["--", "--set", "r_frameWarp", "0"])
+        self.assertEqual(timeout, 240 * (2 * 2 + 1) + 300)
+        self.assertEqual(res["fps"], {"A": [102.0, 103.0], "B": [102.0, 103.0]})  # warm-up run1 skipped
+        self.assertTrue("compare" in res or "compare_error" in res)  # profile-compare.py may still lack a frames.csv-free path
+
+    def test_no_default_cvars(self):
+        self.ab(legs=1)
+        args, _ = self.calls[0]
+        self.assertNotIn("--", args)
+        self.assertNotIn("r_frameWarp", " ".join(args))
+        self.assertEqual(args[args.index("--a") + 1], "r_ao 2")
+
+    def test_empty_condition_and_profiler_off(self):
+        self.ab(a={}, legs=1, ab_profile=0)
+        args, _ = self.calls[0]
+        self.assertEqual(args[args.index("--a") + 1], "")
+        self.assertEqual(args[args.index("--profile") + 1], "0")
+
+    def test_startup_cvar_limit_counts_common(self):
+        common = {f"c{i}": "1" for i in range(5)}
+        a = {f"x{i}": "1" for i in range(3)}  # 5 common + 3 = 8: fine
+        self.assertTrue(self.ab(cvars=common, a=a, b={})["ok"])
+        a9 = {f"x{i}": "1" for i in range(4)}  # 5 + 4 = 9: refused
+        res = self.ab(cvars=common, a=a9, b={})
+        self.assertFalse(res["ok"])
+        self.assertIn("at most 8", res["error"])
+        # the condition's value wins over a common one with the same name: counted once
+        self.assertTrue(self.ab(cvars={"r_ao": "2"}, a={"r_ao": "4"}, b={})["ok"])
+
+    def test_validation(self):
+        for kw, want in (
+            ({"a": None}, "needs a and b"),
+            ({"b": None}, "needs a and b"),
+            ({"legs": 0}, "legs"),
+            ({"legs": 11}, "legs"),
+            ({"ab_profile": 2}, "ab_profile"),
+            ({"a": {"r_ao": "2 3"}}, "not allowed"),
+            ({"a": {"bad name": "1"}}, "bad cvar name"),
+            ({"label": "a/b"}, "label"),
+            ({"profile": True}, "ab_profile"),
+        ):
+            res = self.ab(**kw)
+            self.assertFalse(res["ok"], kw)
+            self.assertIn(want, res["error"], kw)
+        self.assertEqual(self.calls, [])  # nothing launched
+        res = asyncio.run(server.benchmark(kind="normal", a={}, b={}))
+        self.assertIn("only for kind='ab'", res["error"])
+
+    def test_refused_while_locked(self):
+        with core.exclusive("hold the lock"):
+            res = self.ab()
+        self.assertFalse(res["ok"])
+        self.assertIn("already running", res["error"])
+        self.assertEqual(self.calls, [])
+
+
 if __name__ == "__main__":
     unittest.main()

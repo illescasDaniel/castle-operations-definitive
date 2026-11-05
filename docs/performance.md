@@ -131,6 +131,29 @@ blocking. The table prints with the `gpuprof` command (`gpuprof reset` clears it
 `benchmarks/STAMP-LABEL-runN.gpuprof.txt` (the `benchmark` MCP tool returns it parsed). Columns: average ms per 3D frame, share of GPU frame time, worst frame, % of frames that
 ran the pass.
 
+### Full profile (2026-11-05): `scripts/profile.sh`
+
+`scripts/profile.sh [--label NAME] [--runs N] [--runs2 N] [bench args]` runs the bench demo headless (mode 1: 1 warm-up +
+3 measured runs; mode 2: 1 + 1) and writes `profiling/<stamp>-<label>/` (git-ignored, `profiling/latest` symlink; format in
+`profiling/README.md`, start with `summary.md`: per-run values, median and range, stats over the bench window only).
+Mode 1 (`r_gpuProfile 1`, normal speed): `passes.csv`, `cpu_scopes.csv` (inclusive, nested; incl. `assemble_<kind>_<color|depth>`,
+`mds_*` surface-assembly parts, `be_RB_UpdateTessVao`, `be_R_DrawElements`), `counters.csv` (MDS surfaces/verts/tris),
+`cascades.csv` (sun cascade render/reuse + re-render reasons), `frames.csv` (per frame: camera x,y,z,yaw,pitch,
+`bench_window`, cascade state, counters, every pass and CPU scope), `gpu_telemetry.csv` (clocks/temp/power, 250 ms).
+Mode 2 (`r_gpuProfile 2`, ~8% slower, FPS not representative): `shaders.csv` by shader x pass x entity kind x iterator x
+depth_fill, with physical draw/subdraw counts. `environment/` archives SHAs, dirty diffs, binary and demo hashes, pack
+names and mod cfgs. `gpuprof dump` writes the files from the console any time. MCP: `benchmark(profile=true)`.
+Compare sessions: `scripts/profile-compare.py A B`. Test a change: `scripts/profile-ab.sh --label X --a "r_foo 0" --b "r_foo 1"`
+(interleaved A B B A ..., warm-up leg first, then `profile-compare.py <dir>/A <dir>/B`). Protocol: >=3 measured repeats, report
+median and range, same game-time window, keep `r_frameWarp 0`; treat differences inside the run-to-run range (~3% FPS) as noise.
+Engine: `tr_gpuprof.c` (hooks in tr_shade.c, tr_vbo.c, tr_animation.c, tr_main.c, tr_backend.c, tr_postprocess.c; client sets
+`cl_benchMeasuring` around the measured stretch).
+
+**Profile `framewarp-off-v2` (engine 9637a959, 1920x1200 headless, SMAA 3, r_ao 4): 229.9 fps [224.0-232.6], GPU 4.25 ms.**
+scene_opaque 0.85, sun shadow maps 0.57 (+ mask 0.20), AO chain 0.78, SMAA+T2x 0.57 (of which the two T2x copies 0.13),
+grade+copy 0.22 (copy 0.14), bloom 0.29. CPU: MDS tangent assembly 0.79 ms/frame, 89% of it in depth-fill passes (shadows,
+prepass). Cascades 1/2 re-render on a schedule (~2900 frames) and ~150 times for box moves; cascade 0 every frame.
+
 Image checks: `scripts/shots.sh --label NAME [--set CVAR VALUE]` takes 6 deterministic screenshots of the bench demo
 (`timedemo` steps 50 ms of game time per frame; the same build and settings gives bit-identical shots), and
 `scripts/shots-diff.py A B` (also for `shot-at.sh`'s `spotNN.tga`) prints per-shot differing pixels and max difference, and writes amplified diff PNGs.

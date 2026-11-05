@@ -54,3 +54,6 @@ mod/codmod/codmod_zfix.pk3
 mod/codmod/codmod_bevel.pk3
 **/codmod_bevel.pk3
 **/codmod_bevel_*.pk3
+
+# profiling output (scripts/profile.sh): frame/pass/shader timing data, regenerated per run
+profiling/

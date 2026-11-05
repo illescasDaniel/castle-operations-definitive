@@ -7,6 +7,7 @@ import json
 import re
 import shutil
 import subprocess
+import sys
 import time
 from pathlib import Path
 from typing import Annotated, Any
@@ -316,13 +317,26 @@ def parse_spin(text: str) -> dict:
     return {"rows": rows}
 
 
-def _do_benchmark(kind, cvars, runs, label, max_ratio, gpuprof, tick=None):
+def _do_benchmark(kind, cvars, runs, label, max_ratio, gpuprof, tick=None, profile=False):
     cv = core.check_cvars(cvars)
     if not re.match(r"^[\w.\-]+$", label):
         raise RtcwError("label: letters, digits, . _ - only")
     with core.exclusive(f"run the {kind} benchmark") as warnings:
         t0 = time.monotonic()
-        if kind == "normal":
+        if kind == "normal" and profile:
+            # full render profile: runs + 1 warm-up in mode 1, 2 runs in mode 2 (see profiling/README.md)
+            args = ["scripts/profile.sh", "--label", label, "--runs", str(runs + 1)]
+            for k, v in cv.items():
+                args += ["--set", k, v]
+            rc, out, hung = _run_script(args, timeout=240 * (runs + 3) + 300, tick=tick)
+            m = re.search(r"profile written to (\S+)", out)
+            res = {"runs": [], "ok": rc == 0 and bool(m)}
+            if m:
+                res["profile_dir"] = m.group(1)
+                summ = Path(m.group(1)) / "summary.md"
+                if summ.is_file():
+                    res["summary_head"] = summ.read_text()[:6000]
+        elif kind == "normal":
             args = ["scripts/bench.sh", "--label", label, "--runs", str(runs)] + (["--gpuprof"] if gpuprof else [])
             for k, v in cv.items():
                 args += ["--set", k, v]
@@ -344,19 +358,98 @@ def _do_benchmark(kind, cvars, runs, label, max_ratio, gpuprof, tick=None):
     return res
 
 
+AB_LEG_TIMEOUT = 240  # seconds per A/B leg (one profiled bench run, ~1-2 min) before the hung-run kill
+
+
+def _do_ab(a, b, legs, ab_profile, cvars, label, tick=None):
+    """kind="ab": scripts/profile-ab.sh, ABBA legs of condition a vs b (cvars per condition, `cvars` common to both)."""
+    if a is None or b is None:
+        raise RtcwError("kind=ab needs a and b: cvar dicts per condition ({} = defaults)")
+    if not 1 <= legs <= 10:
+        raise RtcwError("legs: 1-10 measured legs per condition")
+    if ab_profile not in (0, 1):
+        raise RtcwError("ab_profile: 1 = profiler on (default), 0 = profiler off")
+    if not re.match(r"^[\w.\-]+$", label):
+        raise RtcwError("label: letters, digits, . _ - only")
+    common, ca, cb = core.check_cvars(cvars), core.check_cvars(a), core.check_cvars(b)
+    for name, cond in (("a", ca), ("b", cb)):
+        n = len(common.keys() | cond.keys())  # the leg's startup cvars: common + this condition (condition wins)
+        if n > core.MAX_STARTUP_CVARS:
+            raise RtcwError(f"condition {name}: {n} startup cvars with the common ones; at most "
+                            f"{core.MAX_STARTUP_CVARS} per leg")
+
+    def spec(d):
+        return " ".join(f"{k} {v}" for k, v in d.items())  # validated: no spaces in names or values
+
+    args = ["scripts/profile-ab.sh", "--label", label, "--legs", str(legs), "--profile", str(ab_profile),
+            "--a", spec(ca), "--b", spec(cb)]
+    if common:
+        args += ["--", *[x for k, v in common.items() for x in ("--set", k, v)]]
+    timeout = AB_LEG_TIMEOUT * (2 * legs + 1) + 300  # warm-up leg + 2 conditions x legs
+    with core.exclusive("run the A/B benchmark") as warnings, core.wolfconfig_guard():
+        t0 = time.monotonic()
+        rc, out, hung = _run_script(args, timeout=timeout, tick=tick)
+    res: dict = {"kind": "ab", "label": label, "legs": legs, "ab_profile": ab_profile, "a": ca, "b": cb,
+                 "common": common, "exit_code": rc, "seconds": round(time.monotonic() - t0, 1), "warnings": warnings}
+    if hung:
+        res["warnings"].append("HUNG: the script was terminated after its long timeout")
+    m = re.search(r"interleaved A/B written to (\S+)", out)
+    res["ok"] = rc == 0 and bool(m)
+    if not m:
+        res["output_tail"] = _tail(out)
+        return res
+    d = Path(m[1])
+    res["dir"] = str(d)
+    if (d / "conditions.txt").is_file():
+        res["conditions"] = (d / "conditions.txt").read_text()
+    # per measured leg (warm-up run1 skipped): avg fps from bench_line.txt, works with the profiler off too
+    res["fps"] = {}
+    for cond in ("A", "B"):
+        vals = []
+        for rd in sorted((d / cond / "mode1").glob("run*"), key=lambda x: int(x.name[3:])):
+            p = rd / "bench_line.txt"
+            if rd.name != "run1" and p.is_file():
+                kv = dict(t.split("=", 1) for t in p.read_text().split() if "=" in t)
+                vals.append(float(kv.get("avg_fps", 0)))
+        res["fps"][cond] = vals
+    cmp = subprocess.run([sys.executable, "scripts/profile-compare.py", str(d / "A"), str(d / "B")], cwd=core.ROOT,
+                         capture_output=True, text=True, timeout=600)
+    if cmp.returncode == 0:
+        res["compare"] = cmp.stdout
+    else:  # e.g. profiler-off legs have no frames.csv, which profile-compare.py does not read yet
+        res["compare_error"] = _tail(cmp.stderr or cmp.stdout)
+    return res
+
+
 @mcp.tool()
 async def benchmark(kind: str = "normal", cvars: dict[str, str] | None = None, runs: int = 3,
-                    label: str = "mcp", max_ratio: float = 1.25, gpuprof: bool = False, ctx: Context | None = None) -> dict:
+                    label: str = "mcp", max_ratio: float = 1.25, gpuprof: bool = False, profile: bool = False,
+                    a: dict[str, str] | None = None, b: dict[str, str] | None = None, legs: int = 4,
+                    ab_profile: int = 1, ctx: Context | None = None) -> dict:
     """Run a benchmark off-screen. kind="normal": scripts/bench.sh (replays the benchmark demo `runs` times, run 1 is
     warm-up) -> avg fps, 1% low, P99, hitches per run and the median; appended to benchmarks/results.csv. `cvars` are
     forced via --set. gpuprof=true adds r_gpuProfile 1 and returns the per-pass GPU ms table of the last run
     (`gpu_passes_last_run`: avg ms, % of GPU time, max, hit %; the table of every run is saved as
-    benchmarks/<stamp>-<label>-runN.gpuprof.txt). kind="spin": scripts/spin-test.sh -> GPU ms for still vs turning views and PASS/FAIL against
-    `max_ratio`. Always headless; ~1-5 minutes."""
-    if kind not in ("normal", "spin"):
-        return _fail(RtcwError("kind must be 'normal' or 'spin'"))
+    benchmarks/<stamp>-<label>-runN.gpuprof.txt). profile=true runs scripts/profile.sh instead (`runs` measured + 1 warm-up in
+    mode 1, then 2 per-shader runs; ~5-8 min) and returns `profile_dir` (summary.md, CSVs, environment/; format in
+    profiling/README.md) plus the head of summary.md; use it for function/pass/shader-level analysis. kind="spin": scripts/spin-test.sh -> GPU ms for still vs turning views and PASS/FAIL against
+    `max_ratio`. Always headless; ~1-5 minutes.
+    kind="ab": scripts/profile-ab.sh, interleaved ABBA legs (1 warm-up + `legs` per condition, 1 bench run per leg;
+    minutes: the timeout is 240 s per leg). `a` and `b` are the cvars of each condition (`{}` = defaults), `cvars` are common to both (e.g.
+    {"r_frameWarp": "0"} if you want it: nothing is added by default). ab_profile=1 profiles every leg, 0 runs them
+    profiler-off (bench_line + frametimes only). Returns `dir`, `conditions`, per-leg `fps` (A/B lists, warm-up
+    excluded) and `compare` (scripts/profile-compare.py text; `compare_error` if that failed, e.g. profiler-off legs
+    before profile-compare.py reads them). Each leg must fit the 8-cvar startup limit with the common cvars."""
+    if kind not in ("normal", "spin", "ab"):
+        return _fail(RtcwError("kind must be 'normal', 'spin' or 'ab'"))
+    if kind != "ab" and (a is not None or b is not None):
+        return _fail(RtcwError("a / b are only for kind='ab'"))
+    if kind == "ab" and (profile or gpuprof):
+        return _fail(RtcwError("for kind='ab' use ab_profile=0|1 instead of profile / gpuprof"))
     try:
-        return await _in_thread(ctx, _do_benchmark, kind, cvars, runs, label, max_ratio, gpuprof)
+        if kind == "ab":
+            return await _in_thread(ctx, _do_ab, a, b, legs, ab_profile, cvars, label)
+        return await _in_thread(ctx, _do_benchmark, kind, cvars, runs, label, max_ratio, gpuprof, None, profile)
     except RtcwError as e:
         return _fail(e)
 

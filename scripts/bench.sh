@@ -27,6 +27,10 @@ Usage: scripts/bench.sh [--label NAME] [--runs N] [--mangohud] [--windowed WxH]
   --gpuprof      Set r_gpuProfile 1 and print the per-pass GPU timing table of each run (also saved as
                  benchmarks/STAMP-LABEL-runN.gpuprof.txt)
   --gpumon       Sample GPU/memory utilisation with nvidia-smi during each run
+  --profile N    Full profiler (r_gpuProfile N; 1 = GPU passes + CPU scopes + per-frame rows, 2 = also per-shader
+                 batch timings, slower). Copies the engine's profiling/ files (passes.csv, cpu_scopes.csv, frames.csv,
+                 shaders.csv, run.json) into $PROFILE_OUT/runK/ (default profiling/STAMP-LABEL). scripts/profile.sh
+                 wraps both modes and writes the summary.
 USAGE
 }
 
@@ -36,6 +40,8 @@ ENV_ARGS=()
 SET_DESC=""
 GPUMON=0
 GPUPROF=0
+PROFILE=0
+PROFILE_OUT="${PROFILE_OUT:-}"
 while [[ $# -gt 0 ]]; do
 	case "$1" in
 		--label) LABEL="$2"; shift 2 ;;
@@ -45,6 +51,7 @@ while [[ $# -gt 0 ]]; do
 		--set) SET_ARGS+=("$2=$3"); SET_DESC+=" $2=$3"; shift 3 ;;
 		--env) ENV_ARGS+=("$2"); SET_DESC+=" $2"; shift 2 ;;
 		--gpumon) GPUMON=1; shift ;;
+		--profile) PROFILE="$2"; SET_ARGS+=("r_gpuProfile=$2"); SET_DESC+=" r_gpuProfile=$2"; shift 2 ;;
 		--gpuprof) GPUPROF=1; SET_ARGS+=("r_gpuProfile=1"); SET_DESC+=" r_gpuProfile=1"; shift ;;
 		-h|--help) usage; exit 0 ;;
 		*) echo "unknown arg: $1" >&2; usage >&2; exit 1 ;;
@@ -74,7 +81,7 @@ restore() {
 	fi
 	rm -f "$SAVED"
 }
-trap 'restore; rm -f "$HOME_CFG/bench_override.cfg"' EXIT
+trap 'restore; rm -f "$HOME_CFG/bench_override.cfg"; if [[ -n "${TELEMPID:-}" ]]; then kill "$TELEMPID" 2>/dev/null || true; fi' EXIT
 
 STAMP="$(date +%Y%m%d-%H%M%S)"
 SHA_OUTER="$(git -C "$ROOT" rev-parse --short HEAD 2>/dev/null || echo ?)"
@@ -85,6 +92,18 @@ declare -a AVGS LOWS P99S
 for ((i = 1; i <= RUNS; i++)); do
 	echo ">> run $i/$RUNS"
 	: > "$LOG"
+	if ((PROFILE)); then
+		[[ -n "$PROFILE_OUT" ]] || PROFILE_OUT="$ROOT/profiling/$STAMP-$LABEL"
+		mkdir -p "$HOME_CFG/profiling"; find "$HOME_CFG/profiling" -mindepth 1 -delete
+	fi
+	TELEM=""
+	if ((PROFILE)); then
+		# clock / power / temperature trace of the run (sustained-clock check); stopped after the game exits
+		TELEM="$(mktemp)"
+		nvidia-smi --query-gpu=timestamp,clocks.sm,clocks.mem,temperature.gpu,power.draw,utilization.gpu,clocks_throttle_reasons.active \
+			--format=csv -lms 250 >"$TELEM" 2>/dev/null &
+		TELEMPID=$!
+	fi
 	GPULOG=""
 	if ((GPUMON)); then
 		GPULOG="$(mktemp)"
@@ -98,6 +117,9 @@ for ((i = 1; i <= RUNS; i++)); do
 	printf 'set com_maxfps 0\nset cl_benchDemo 1\nset nextdemo quit\n' > "$HOME_CFG/bench_override.cfg"
 	for kv in "${SET_ARGS[@]}"; do echo "seta ${kv%%=*} \"${kv#*=}\"" >> "$HOME_CFG/bench_override.cfg"; done
 	env "${ENV_ARGS[@]}" RTCW_STARTUP_SETS="${SET_ARGS[*]}" "${WRAP[@]}" "$LAUNCHER" "${RUN_ARGS[@]}" +exec bench_override.cfg +demo codmod_bench >/dev/null 2>&1 || true
+	if [[ -n "$TELEM" ]]; then
+		kill "$TELEMPID" 2>/dev/null || true; wait "$TELEMPID" 2>/dev/null || true
+	fi
 	gpuinfo=""
 	if ((GPUMON)); then
 		kill "$MONPID" 2>/dev/null || true; wait "$MONPID" 2>/dev/null || true
@@ -131,6 +153,18 @@ for ((i = 1; i <= RUNS; i++)); do
 		sed 's/^/   gpu: /' "$OUT/$STAMP-$LABEL-run$i.gpuprof.txt"
 	fi
 	cp -f "$HOME_CFG/benchmarks/last_frametimes.txt" "$OUT/$STAMP-$LABEL-run$i.txt" 2>/dev/null || true
+	if ((PROFILE)); then
+		mkdir -p "$PROFILE_OUT/run$i"
+		cp -f "$HOME_CFG"/profiling/* "$PROFILE_OUT/run$i/" 2>/dev/null || echo "WARNING: no profiling files written (run $i)" >&2
+		cp -f "$HOME_CFG/benchmarks/last_frametimes.txt" "$PROFILE_OUT/run$i/bench_frametimes.txt" 2>/dev/null || true
+		printf '%s\n' "$line" > "$PROFILE_OUT/run$i/bench_line.txt"
+		# what the run actually used: cvars after the run (wolfconfig is written at quit), the override cfg, the console log
+		cp -f "$CFG" "$PROFILE_OUT/run$i/wolfconfig_after_run.cfg" 2>/dev/null || true
+		cp -f "$HOME_CFG/bench_override.cfg" "$PROFILE_OUT/run$i/bench_override.cfg" 2>/dev/null || true
+		gzip -c "$LOG" > "$PROFILE_OUT/run$i/console.log.gz" 2>/dev/null || true
+		if [[ -n "$TELEM" ]]; then mv -f "$TELEM" "$PROFILE_OUT/run$i/gpu_telemetry.csv"; TELEM=""; fi
+		echo "   profile: $PROFILE_OUT/run$i"
+	fi
 	if ((i > 1 || RUNS == 1)); then
 		AVGS+=("${kv[avg_fps]}"); LOWS+=("${kv[low1_fps]}"); P99S+=("${kv[p99_ms]}")
 	fi

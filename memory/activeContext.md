@@ -1,3 +1,15 @@
+**Beta documentation and agent instructions (2026-11-06):** README describes the project as beta; shared project instructions are consolidated in AGENTS.md, with CLAUDE.md importing it and the Claude-specific workflow.
+
+**Versioning (2026-11-06):** `VERSION` is 1.0-beta; release build, AppImage metadata and ZIP use it. Both packages rebuilt; user reports the earlier AppImage looked fine.
+
+**Personal AppImage (2026-11-06):** `scripts/package-appimage.py` builds the installed game and local packs into an ignored AppImage; saves live under XDG data. Archive and launcher checked; in-game verification on another PC remains. README documents prerequisites.
+
+**Release polish (2026-11-06):** Frame Warp defaults to On again per user correction. Routine AP messages require developer mode, the disabled-flashlight diagnostic is removed, and release builds identify as 1.51d-SP-codv1.0.
+
+**Mesa startup crash (2026-11-06):** Intel/Mesa rejected the SSAO upsample shader extension directive after a fragment output declaration. Moved it into the renderer shader header and rebuilt/installed; strict GLSL compilation passed. Portable ZIP regenerated. Headless console smoke returned `ok: false` without diagnostics; other PC needs an in-game test. Engine edits are uncommitted.
+
+**Portable package (2026-11-06):** `scripts/package.py` archives the installed Linux x86-64 runtime, original game paks and installed enhancements to ignored `build/`; see README. Saves and settings are separate.
+
 **Prone and settings fields (2026-11-05):** User clarified the reported issue was prone, not crouch. Reverted the crouch-only edits and updated `bg_pmove.c` so forward + sprint exits prone after the entry transition, subject to headroom; existing prone/crouch/jump exits remain. Settings draft changes in `ui_shared.{c,h}` remain. Built and installed; user responded positively. Prior headless console smoke returned `ok: false` without diagnostics. Engine changes committed and pushed as `1e01b0ed`.
 
 **Memory savings shipped (2026-11-05):** `com_mallocTrim` (default 1) trims the glibc heap on the first active frame after a load (RSS -118 MB steady); `r_ext_compressed_textures 1` is the codmod default in `codmod_gfxdefaults.cfg` (user's saved wolfconfig 0 still wins: set it once via console + vid_restart; visual check of normals/height + HD diffuse pending); MangoHud shows ram/procmem/proc_vram.

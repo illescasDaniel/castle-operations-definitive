@@ -42,6 +42,15 @@ if [[ ! -d "$ROOT/iortcw/SP" ]]; then
 fi
 
 MAKE_ARGS=(-j"$JOBS" "$TARGET")
+if [[ "$TARGET" == release ]]; then
+	COD_VERSION="$(<"$ROOT/VERSION")"
+	if [[ "$USE_CONTAINER" -eq 1 ]]; then
+		VERSION_FILE=/src/VERSION
+	else
+		VERSION_FILE="$ROOT/VERSION"
+	fi
+	MAKE_ARGS+=(COD_RELEASE=1 "VERSION=1.51d-SP-codv${COD_VERSION}" "COD_VERSION_FILE=$VERSION_FILE")
+fi
 if [[ "$GAME_ONLY" -eq 1 ]]; then
 	MAKE_ARGS+=(BUILD_CLIENT=0)
 fi

@@ -1,3 +1,15 @@
+- [x] Update beta status and consolidate shared agent instructions in AGENTS.md (2026-11-06).
+
+- [x] Version the mod and packages as 1.0-beta, including AppImage metadata (2026-11-06).
+
+- [x] Personal AppImage packaging and README instructions; other-PC play test pending (2026-11-06).
+
+- [x] Restore Frame Warp On default and quiet routine diagnostics; release build version is 1.51d-SP-codv1.0 (2026-11-06).
+
+- [x] Fix Mesa shader startup error by placing the texture-gather extension directive before shader declarations (2026-11-06); other-PC verification pending.
+
+- [x] Personal portable Linux package: `scripts/package.py` collects the installed runtime and local game assets into a private ZIP (2026-11-06).
+
 # Progress
 
 Open items first. Finished work moves to `archive.md`. Phase details live in `docs/plan.md` (section 7 mirrors this list).

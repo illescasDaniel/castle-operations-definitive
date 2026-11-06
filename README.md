@@ -5,9 +5,9 @@ the [ioRTCW](https://github.com/iortcw/iortcw) source port (engine fork:
 [illescasDaniel/iortcw](https://github.com/illescasDaniel/iortcw)). It plays like a modern shooter and looks and sounds
 better, while the campaign stays RTCW.
 
-> **Status: early development (pre-release).** This is the first public snapshot, not a final release. Things will
-> change, and some parts are rough. Developed and tested on **Linux** only; Windows is untested. Issues and feedback
-> are welcome.
+> **Status: beta (1.0-beta).** Most development is complete; the focus is now on testing the game, fixing issues,
+> and polishing the remaining details. Developed and tested on **Linux** only; Windows is untested. Issues and
+> feedback are welcome.
 
 It started as a movement and gunplay overhaul and grew well beyond that: HUD, menus, a new renderer feature set,
 frame pacing, 3D audio, controller support and optional AI-remastered textures and audio. `codmod` is the internal
@@ -354,3 +354,40 @@ flags may still change. Design notes and history: [`docs/plan.md`](docs/plan.md)
   and the scripts in this repository are released under the **GNU GPL v3 with ioRTCW's
   additional terms**, see [`LICENSE`](LICENSE). The engine is derived from the id Software RTCW source release and ioRTCW.
 - Third-party code and ideas (SMAA, Enemy Territory: Legacy prone, OpenAL Soft, ...) are credited in [`docs/credits.md`](docs/credits.md).
+
+## Personal portable package
+
+The current mod and package version is recorded in [`VERSION`](VERSION).
+
+After `scripts/setup.sh` and `scripts/build.sh --install`, run `scripts/package.py`.
+It creates `build/castle-operations-definitive-linux-x86_64.zip` (git-ignored),
+containing the installed Linux x86-64 game, your original RTCW data and all installed
+`.pk3` enhancement packs. Rebuild or install changes before packaging; optional
+packs are included only if present in `run/`. Extract the archive on another
+compatible Linux x86-64 computer and run `./play.sh` inside the extracted folder.
+SDL2, OpenAL and working OpenGL drivers are required; binaries built on a newer
+Linux distribution may not run on an older one. Saves and settings start fresh in
+`home/`; copy `run/home/` separately if you want your existing progress.
+
+The archive contains copyrighted game data and local derivatives: keep it private
+and do not redistribute it. It does not require Steam on the destination machine.
+
+## Personal AppImage
+
+On Linux x86-64, after `scripts/setup.sh` and `scripts/build.sh --install`, install
+[appimagetool](https://github.com/AppImage/appimagetool) or set `APPIMAGETOOL` to
+its executable path, then run `scripts/package-appimage.py`. It leaves staging files
+in `build/`, which can be moved to the trash after a successful build. It creates
+`build/Castle-Operations-Definitive-x86_64.AppImage` (git-ignored) from the installed
+runtime and all installed enhancement packs. The builder may download its AppImage
+runtime; for an offline build set `APPIMAGE_RUNTIME` to a downloaded x86-64 runtime.
+
+Make the AppImage executable and run it on a compatible Linux x86-64 computer. Saves
+and settings are stored in `~/.local/share/castle-operations-definitive/` (or under
+`$XDG_DATA_HOME` when set); copy `run/home/` contents there to transfer progress.
+`RTCW_HOMEPATH` can override that location. The target still needs SDL2, OpenAL,
+OpenGL drivers and a compatible glibc; building on a newer distribution can limit
+compatibility with older ones. Normal AppImage execution also needs FUSE; see the
+[AppImage documentation](https://docs.appimage.org/user-guide/run-appimages.html)
+for extraction options. The AppImage contains your original game data and local
+derivatives, so keep it private and do not redistribute it.

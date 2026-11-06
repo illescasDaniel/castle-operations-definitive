@@ -24,8 +24,15 @@ note. Full protocol: the `jev-memory` skill.
 Never alter the rend2 present/2D path or the user's `wolfconfig.cfg` without user verification; both broke the
 game once (no HUD, wiped binds). Rules and cause in `docs/testing.md` ("Safety rules"). The engine is a separate
 repo in `iortcw/`, a git submodule of the outer repo (fork https://github.com/illescasDaniel/iortcw, branch `main`; `iortcw/SP/run-sp.sh` runs it standalone as plain RTCW;
-`upstream` remote = ioRTCW). Engine/game-code commits go in the submodule repo and are pushed to the fork; then the
-outer repo commits the bumped submodule pointer (there is no `patches/` any more). Check `git status` in both repos.
+`upstream` remote = ioRTCW). Check `git status` in both repos. Commit or push only when the user asks. When
+committing engine/game-code changes, commit in the submodule first, then commit the updated submodule pointer in the
+outer repo (there is no `patches/` any more). Push to the fork only when requested.
+
+## Gameplay and verification
+
+Gate player movement changes in `bg_pmove.c` on `!ps->aiChar` so they do not alter AI behaviour. Put gameplay tuning
+behind `cod_*` cvars. Follow the phase and in-game verification gates in `docs/plan.md` and relevant feature plans;
+record pending gates in `memory/activeContext.md`. This project does not use SDD or `code-grader`.
 
 ## Building
 

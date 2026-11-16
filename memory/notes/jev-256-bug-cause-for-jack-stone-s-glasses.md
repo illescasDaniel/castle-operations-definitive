@@ -1,6 +1,6 @@
 ---
 name: jev-256-bug-cause-for-jack-stone-s-glasses
-description: On 2026-10-16, rtcw-cod bug cause for Jack Stone's glasses floating ~20cm above his face in OSA cutscenes (cut
+description: "On 2026-10-16, rtcw-cod bug cause for Jack Stone's glasses floating ~20cm above his face in OSA cutscenes (cut"
 type: incident
 date: 2026-10-16
 status: current

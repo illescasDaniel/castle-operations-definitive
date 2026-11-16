@@ -1,6 +1,6 @@
 ---
 name: jev-268-please-always-launch-the-benchmarks-off-screen
-description: please always launch the benchmarks off-screen with the command we used on a previous session
+description: "please always launch the benchmarks off-screen with the command we used on a previous session"
 type: context
 date: 2026-10-21
 status: current

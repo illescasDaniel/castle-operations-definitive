@@ -1,6 +1,6 @@
 ---
 name: jev-285-bug-cause-white-holes-in-bevelled-maps
-description: 2026-10-23 rtcw-cod bug cause  white holes in bevelled maps (escape1) come from rounding convex edges  foreign
+description: "2026-10-23 rtcw-cod bug cause  white holes in bevelled maps (escape1) come from rounding convex edges  foreign"
 type: incident
 date: 2026-10-23
 status: current

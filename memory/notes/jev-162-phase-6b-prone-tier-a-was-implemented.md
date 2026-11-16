@@ -1,6 +1,6 @@
 ---
 name: jev-162-phase-6b-prone-tier-a-was-implemented
-description: On 2026-10-09, Phase 6b prone tier A was implemented in iortcw branch codmod  CTRL binds to +prone (WBUTTON_EX
+description: "On 2026-10-09, Phase 6b prone tier A was implemented in iortcw branch codmod  CTRL binds to +prone (WBUTTON_EX"
 type: decision
 date: 2026-10-09
 status: current

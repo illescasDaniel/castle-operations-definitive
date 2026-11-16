@@ -1,7 +1,7 @@
 ---
 id: DOC-006
 title: Bevel corners - continuous lighting, connected textures, white hole
-summary: Bevel corners - continuous lighting, connected textures, white hole; historical design and implementation details, check against code before use
+summary: Bevel corners - continuous lighting, connected textures, white hole — Problem (repro — scripts/shot-at.sh --map tram --label NAME --spots-file benchmarks/spots-tram.txt --windowed 1280x720); Renderer facts; Phases (verify on the 5 tram spots
 type: explanation
 status: draft
 updated: 2026-10-22

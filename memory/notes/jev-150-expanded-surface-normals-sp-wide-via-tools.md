@@ -1,6 +1,6 @@
 ---
 name: jev-150-expanded-surface-normals-sp-wide-via-tools
-description: On 2026-10-09, rtcw-cod expanded surface normals SP-wide via tools/pom-bake --preset all  about 831 *_n.png ma
+description: "On 2026-10-09, rtcw-cod expanded surface normals SP-wide via tools/pom-bake --preset all  about 831 *_n.png ma"
 type: decision
 date: 2026-10-09
 status: superseded

@@ -1,6 +1,6 @@
 ---
 name: jev-299-rtcw-mcp-test-setup-runs-need-cvars
-description: 2026-10-28 rtcw MCP test setup  runs need cvars com_maxfps 120, com_maxfpsGpuSync 2, com_maxfpsMode 0, r_vsync
+description: "2026-10-28 rtcw MCP test setup  runs need cvars com_maxfps 120, com_maxfpsGpuSync 2, com_maxfpsMode 0, r_vsync"
 type: gotcha
 date: 2026-10-28
 status: current

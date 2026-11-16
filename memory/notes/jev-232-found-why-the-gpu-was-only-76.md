@@ -1,6 +1,6 @@
 ---
 name: jev-232-found-why-the-gpu-was-only-76
-description: On 2026-10-14, rtcw-cod found why the GPU was only ~76-80% busy uncapped  stock rend2 RB_SwapBuffers called gl
+description: "On 2026-10-14, rtcw-cod found why the GPU was only ~76-80% busy uncapped  stock rend2 RB_SwapBuffers called gl"
 type: incident
 date: 2026-10-14
 status: current

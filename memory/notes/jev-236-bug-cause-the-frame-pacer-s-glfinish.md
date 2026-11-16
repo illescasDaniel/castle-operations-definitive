@@ -1,6 +1,6 @@
 ---
 name: jev-236-bug-cause-the-frame-pacer-s-glfinish
-description: 2026-10-14 rtcw-cod bug cause  the frame pacer's glFinish before the swap (com_maxfpsGpuSync 1, Com_PresentWai
+description: "2026-10-14 rtcw-cod bug cause  the frame pacer's glFinish before the swap (com_maxfpsGpuSync 1, Com_PresentWai"
 type: incident
 date: 2026-10-14
 status: current

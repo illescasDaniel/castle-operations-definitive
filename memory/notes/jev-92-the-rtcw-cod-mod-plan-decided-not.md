@@ -1,6 +1,6 @@
 ---
 name: jev-92-the-rtcw-cod-mod-plan-decided-not
-description: On 2026-10-08 the rtcw-cod mod plan decided not to change the g_speed cvar, because g_speed also drives every
+description: "On 2026-10-08 the rtcw-cod mod plan decided not to change the g_speed cvar, because g_speed also drives every"
 type: decision
 date: 2026-10-08
 status: current

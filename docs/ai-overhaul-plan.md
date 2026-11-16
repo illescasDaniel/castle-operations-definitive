@@ -1,7 +1,7 @@
 ---
 id: DOC-001
 title: Tactical AI overhaul (F.E.A.R.-style soldiers)
-summary: Tactical AI overhaul (F.E.A.R.-style soldiers); historical design and implementation details, check against code before use
+summary: Tactical AI overhaul (F.E.A.R.-style soldiers) — 1. Why the current AI feels stupid (diagnosis); 2. What the engine gives us (constraints); 3. Architecture
 type: explanation
 status: draft
 updated: 2026-10-20

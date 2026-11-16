@@ -1,7 +1,7 @@
 # Project memory
 
 Start with [NOW.md](NOW.md) and [MEMORY.md](MEMORY.md). These and the dated notes follow the memory-1 protocol.
-The material below describes the former memory-bank system and is retained as a guide to its historical files;
+Run `python3 scripts/memory_check.py --memory memory` after updating notes. The material below describes the former memory-bank system and is retained as a guide to its historical files;
 those files are not the current session status.
 
 Project state for AI coding agents, as plain markdown tracked in git. Each branch or worktree carries its own copy, so

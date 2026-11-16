@@ -1,6 +1,6 @@
 ---
 name: jev-160-the-user-playtested-and-kept-the-rtcw
-description: On 2026-10-09, the user playtested and kept the rtcw-cod rend2 graphics defaults pack (MSAA 2, AF 16, float li
+description: "On 2026-10-09, the user playtested and kept the rtcw-cod rend2 graphics defaults pack (MSAA 2, AF 16, float li"
 type: decision
 date: 2026-10-09
 status: current

@@ -1,6 +1,6 @@
 ---
 name: jev-151-defaults-iortcw-rend2-screen-space-ao-with
-description: On 2026-10-09, rtcw-cod defaults ioRTCW rend2 screen-space AO with r_ssao 1 in mod/codmod/codmod.cfg and early
+description: "On 2026-10-09, rtcw-cod defaults ioRTCW rend2 screen-space AO with r_ssao 1 in mod/codmod/codmod.cfg and early"
 type: decision
 date: 2026-10-09
 status: current

@@ -1,6 +1,6 @@
 ---
 name: jev-142-save-load-sigsegv-in-clientthink-real-g
-description: On 2026-10-09, rtcw-cod save-load SIGSEGV in ClientThink_real G_SetOrigin was caused by gclient cameraPortal b
+description: "On 2026-10-09, rtcw-cod save-load SIGSEGV in ClientThink_real G_SetOrigin was caused by gclient cameraPortal b"
 type: incident
 date: 2026-10-09
 status: current

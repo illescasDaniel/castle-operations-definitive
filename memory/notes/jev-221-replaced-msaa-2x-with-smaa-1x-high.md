@@ -1,6 +1,6 @@
 ---
 name: jev-221-replaced-msaa-2x-with-smaa-1x-high
-description: On 2026-10-12, rtcw-cod replaced MSAA 2x with SMAA 1x High (r_smaa 3, MSAA 0) as the default AA  a rend2 pass
+description: "On 2026-10-12, rtcw-cod replaced MSAA 2x with SMAA 1x High (r_smaa 3, MSAA 0) as the default AA  a rend2 pass"
 type: decision
 date: 2026-10-12
 status: current

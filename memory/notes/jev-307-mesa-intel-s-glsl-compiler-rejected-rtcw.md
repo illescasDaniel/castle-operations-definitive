@@ -1,6 +1,6 @@
 ---
 name: jev-307-mesa-intel-s-glsl-compiler-rejected-rtcw
-description: On 2026-11-06 Mesa Intel's GLSL compiler rejected rtcw-cod's SSAO upsample shader because its texture gather e
+description: "On 2026-11-06 Mesa Intel's GLSL compiler rejected rtcw-cod's SSAO upsample shader because its texture gather e"
 type: incident
 date: 2026-11-06
 status: current

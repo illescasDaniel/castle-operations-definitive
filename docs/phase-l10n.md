@@ -1,7 +1,7 @@
 ---
 id: DOC-036
 title: Phase L — Localization (planned, not started)
-summary: Phase L — Localization (planned, not started); historical design and implementation details, check against code before use
+summary: Phase L — Localization (planned, not started) — Policy — translations are committed (2026-10-16)
 type: explanation
 status: draft
 updated: 2026-10-16

@@ -1,6 +1,6 @@
 ---
 name: jev-266-rend2-parallax-perf-findings-architect-with-r
-description: 2026-10-22 rtcw-cod rend2 parallax perf findings (architect)  with r_sunlightMode 1 the POM sun self-shadow ma
+description: "2026-10-22 rtcw-cod rend2 parallax perf findings (architect)  with r_sunlightMode 1 the POM sun self-shadow ma"
 type: gotcha
 date: 2026-10-22
 status: current

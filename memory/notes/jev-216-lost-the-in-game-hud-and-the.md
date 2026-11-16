@@ -1,6 +1,6 @@
 ---
 name: jev-216-lost-the-in-game-hud-and-the
-description: On 2026-10-11, rtcw-cod lost the in-game HUD and the visible pause menu because a rend2 perf edit made RB_Post
+description: "On 2026-10-11, rtcw-cod lost the in-game HUD and the visible pause menu because a rend2 perf edit made RB_Post"
 type: incident
 date: 2026-10-11
 status: current

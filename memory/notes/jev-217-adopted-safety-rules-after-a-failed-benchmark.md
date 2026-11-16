@@ -1,6 +1,6 @@
 ---
 name: jev-217-adopted-safety-rules-after-a-failed-benchmark
-description: On 2026-10-11, rtcw-cod adopted safety rules after a failed benchmark attempt broke the HUD and wiped the user
+description: "On 2026-10-11, rtcw-cod adopted safety rules after a failed benchmark attempt broke the HUD and wiped the user"
 type: incident
 date: 2026-10-11
 status: current

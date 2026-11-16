@@ -1,6 +1,6 @@
 ---
 name: jev-166-ads-iron-sight-bake-uses-absolute-per
-description: On 2026-10-09, rtcw-cod ADS iron-sight bake uses absolute per-weapon cg_codAdsView rows while cod_adsTune is o
+description: "On 2026-10-09, rtcw-cod ADS iron-sight bake uses absolute per-weapon cg_codAdsView rows while cod_adsTune is o"
 type: gotcha
 date: 2026-10-09
 status: current

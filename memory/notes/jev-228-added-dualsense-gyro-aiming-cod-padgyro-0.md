@@ -1,6 +1,6 @@
 ---
 name: jev-228-added-dualsense-gyro-aiming-cod-padgyro-0
-description: On 2026-10-13, rtcw-cod added DualSense gyro aiming  cod_padGyro 0/1/2 (Off/ADS only default/Always), gyro rea
+description: "On 2026-10-13, rtcw-cod added DualSense gyro aiming  cod_padGyro 0/1/2 (Off/ADS only default/Always), gyro rea"
 type: decision
 date: 2026-10-13
 status: current

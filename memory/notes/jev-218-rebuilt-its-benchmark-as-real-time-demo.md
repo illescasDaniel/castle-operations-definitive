@@ -1,6 +1,6 @@
 ---
 name: jev-218-rebuilt-its-benchmark-as-real-time-demo
-description: On 2026-10-11, rtcw-cod rebuilt its benchmark as real-time demo replay (cl_benchDemo 1 + plain `demo codmod_be
+description: "On 2026-10-11, rtcw-cod rebuilt its benchmark as real-time demo replay (cl_benchDemo 1 + plain `demo codmod_be"
 type: decision
 date: 2026-10-11
 status: current

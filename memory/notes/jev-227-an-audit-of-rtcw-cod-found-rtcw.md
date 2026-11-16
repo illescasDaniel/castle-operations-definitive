@@ -1,6 +1,6 @@
 ---
 name: jev-227-an-audit-of-rtcw-cod-found-rtcw
-description: On 2026-10-12, an audit of rtcw-cod found RTCW on Steam ships English-only data (only text/EnglishUSA, English
+description: "On 2026-10-12, an audit of rtcw-cod found RTCW on Steam ships English-only data (only text/EnglishUSA, English"
 type: gotcha
 date: 2026-10-12
 status: current

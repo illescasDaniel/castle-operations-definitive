@@ -1,6 +1,6 @@
 ---
 name: jev-257-bug-cause-for-dark-wall-floor-corners
-description: On 2026-10-16, rtcw-cod bug cause for dark wall/floor corners showing through fog volumes (escape1 corridor)
+description: "On 2026-10-16, rtcw-cod bug cause for dark wall/floor corners showing through fog volumes (escape1 corridor)"
 type: incident
 date: 2026-10-16
 status: current

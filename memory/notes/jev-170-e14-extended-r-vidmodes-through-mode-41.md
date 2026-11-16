@@ -1,6 +1,6 @@
 ---
 name: jev-170-e14-extended-r-vidmodes-through-mode-41
-description: On 2026-10-09, E14 extended r_vidModes through mode 41 in ui_shared.c and both SP renderers, and the r_mode me
+description: "On 2026-10-09, E14 extended r_vidModes through mode 41 in ui_shared.c and both SP renderers, and the r_mode me"
 type: incident
 date: 2026-10-09
 status: current

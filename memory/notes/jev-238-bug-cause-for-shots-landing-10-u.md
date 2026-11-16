@@ -1,6 +1,6 @@
 ---
 name: jev-238-bug-cause-for-shots-landing-10-u
-description: On 2026-10-15, rtcw-cod bug cause for shots landing ~10 u above the crosshair while leaning  the camera lean o
+description: "On 2026-10-15, rtcw-cod bug cause for shots landing ~10 u above the crosshair while leaning  the camera lean o"
 type: incident
 date: 2026-10-15
 status: current

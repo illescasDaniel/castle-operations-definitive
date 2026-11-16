@@ -1,7 +1,7 @@
 ---
 id: DOC-032
 title: Phase 5d — Binds, toggle crouch, health clamp, flashlight, reload anim
-summary: Phase 5d — Binds, toggle crouch, health clamp, flashlight, reload anim; historical design and implementation details, check against code before use
+summary: Phase 5d — Binds, toggle crouch, health clamp, flashlight, reload anim — Goal; Behaviour; Files
 type: explanation
 status: draft
 updated: 2026-10-18

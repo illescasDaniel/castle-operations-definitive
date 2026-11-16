@@ -1,6 +1,6 @@
 ---
 name: jev-260-decision-the-player-kick-went-back-to
-description: On 2026-10-20, rtcw-cod decision  the player kick went back to vanilla RTCW strength (cod_kickDamage 15 in mod
+description: "On 2026-10-20, rtcw-cod decision  the player kick went back to vanilla RTCW strength (cod_kickDamage 15 in mod"
 type: decision
 date: 2026-10-20
 status: current

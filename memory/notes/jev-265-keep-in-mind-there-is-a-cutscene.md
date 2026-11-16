@@ -1,6 +1,6 @@
 ---
 name: jev-265-keep-in-mind-there-is-a-cutscene
-description: keep in mind there is a cutscene on the first escape1 mission, i usually skip it pressing enter
+description: "keep in mind there is a cutscene on the first escape1 mission, i usually skip it pressing enter"
 type: preference
 date: 2026-10-21
 status: current

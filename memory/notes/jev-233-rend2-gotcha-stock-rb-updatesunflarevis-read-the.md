@@ -1,6 +1,6 @@
 ---
 name: jev-233-rend2-gotcha-stock-rb-updatesunflarevis-read-the
-description: 2026-10-14 rend2 gotcha  stock RB_UpdateSunFlareVis read the previous frame's sun occlusion query with a block
+description: "2026-10-14 rend2 gotcha  stock RB_UpdateSunFlareVis read the previous frame's sun occlusion query with a block"
 type: incident
 date: 2026-10-14
 status: current

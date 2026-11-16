@@ -1,6 +1,6 @@
 ---
 name: jev-180-options-tabs-became-video-sound-view-performance
-description: On 2026-10-09, codmod Options tabs became VIDEO SOUND VIEW  PERFORMANCE rows merged into VIDEO, GRAPHICS renam
+description: "On 2026-10-09, codmod Options tabs became VIDEO SOUND VIEW  PERFORMANCE rows merged into VIDEO, GRAPHICS renam"
 type: decision
 date: 2026-10-09
 status: current

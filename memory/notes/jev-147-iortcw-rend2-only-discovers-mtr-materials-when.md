@@ -1,6 +1,6 @@
 ---
 name: jev-147-iortcw-rend2-only-discovers-mtr-materials-when
-description: On 2026-10-09, ioRTCW rend2 only discovers .mtr materials when a same-basename .shader exists under scripts/ (
+description: "On 2026-10-09, ioRTCW rend2 only discovers .mtr materials when a same-basename .shader exists under scripts/ ("
 type: incident
 date: 2026-10-09
 status: current

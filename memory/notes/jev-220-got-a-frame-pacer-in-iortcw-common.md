@@ -1,6 +1,6 @@
 ---
 name: jev-220-got-a-frame-pacer-in-iortcw-common
-description: On 2026-10-12, rtcw-cod got a frame pacer in ioRTCW (common.c Com_FrameWaitTop/Com_PresentWait/Com_PresentDone
+description: "On 2026-10-12, rtcw-cod got a frame pacer in ioRTCW (common.c Com_FrameWaitTop/Com_PresentWait/Com_PresentDone"
 type: incident
 date: 2026-10-12
 status: current

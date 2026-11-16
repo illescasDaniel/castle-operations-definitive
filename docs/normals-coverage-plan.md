@@ -1,7 +1,7 @@
 ---
 id: DOC-021
 title: Normals everywhere - models, characters and wall coverage (plan, 2026-10-23)
-summary: Normals everywhere - models, characters and wall coverage (plan, 2026-10-23); historical design and implementation details, check against code before use
+summary: Normals everywhere - models, characters and wall coverage (plan, 2026-10-23) — Findings so far; Plan; Open questions
 type: explanation
 status: draft
 updated: 2026-10-23

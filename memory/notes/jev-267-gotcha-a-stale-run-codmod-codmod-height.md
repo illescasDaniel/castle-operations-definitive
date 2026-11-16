@@ -1,6 +1,6 @@
 ---
 name: jev-267-gotcha-a-stale-run-codmod-codmod-height
-description: 2026-10-22 rtcw-cod gotcha  a stale run/codmod/codmod_height_legacy.pk3 sorts after codmod_height.pk3 and sile
+description: "2026-10-22 rtcw-cod gotcha  a stale run/codmod/codmod_height_legacy.pk3 sorts after codmod_height.pk3 and sile"
 type: incident
 date: 2026-10-22
 status: current

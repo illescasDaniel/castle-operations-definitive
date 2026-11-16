@@ -1,6 +1,6 @@
 ---
 name: jev-167-baked-absolute-per-weapon-cg-codadsview-from
-description: On 2026-10-09, rtcw-cod baked absolute per-weapon cg_codAdsView from codmod_ads_tune.log (8 SAVEs; FG42 seeded
+description: "On 2026-10-09, rtcw-cod baked absolute per-weapon cg_codAdsView from codmod_ads_tune.log (8 SAVEs; FG42 seeded"
 type: decision
 date: 2026-10-09
 status: current

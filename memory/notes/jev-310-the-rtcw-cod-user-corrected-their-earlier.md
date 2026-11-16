@@ -1,6 +1,6 @@
 ---
 name: jev-310-the-rtcw-cod-user-corrected-their-earlier
-description: On 2026-11-06 the rtcw-cod user corrected their earlier preference and requested Frame Warp enabled by default
+description: "On 2026-11-06 the rtcw-cod user corrected their earlier preference and requested Frame Warp enabled by default"
 type: preference
 date: 2026-11-06
 status: current

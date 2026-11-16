@@ -1,6 +1,6 @@
 ---
 name: jev-161-uncapped-fps-by-default-with-seta-com
-description: On 2026-10-09, codmod uncapped FPS by default with seta com_maxfps "0" in mod/codmod/codmod.cfg only, because
+description: "On 2026-10-09, codmod uncapped FPS by default with seta com_maxfps \"0\" in mod/codmod/codmod.cfg only, because"
 type: decision
 date: 2026-10-09
 status: current

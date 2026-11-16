@@ -1,7 +1,7 @@
 ---
 id: DOC-045
 title: Testing Guide
-summary: Testing Guide; historical design and implementation details, check against code before use
+summary: Testing Guide — Every change (agent); Safety rules (learned the hard way, 2026-10-11); Cutscene lighting (lite mode + rcutsceneFx)
 type: how-to
 status: draft
 updated: 2026-10-23
@@ -24,14 +24,10 @@ There is no automated test harness for game feel. Testing combines **build check
    errors and no *new* warnings in files we touched:
    `make ... 2>&1 | grep -E "warning|error" | grep -E "bg_cod|cg_cod|bg_pmove|cg_view|cg_weapons|g_active|g_weapon"`.
 2. (Install is done by `--install` above.)
-3. Smoke run (opens a window for ~45 s):
-   `timeout 45 scripts/run.sh --windowed 1280x720 +spdevmap escape1 +set cod_debugHud 1`
-   Then scan `run/home/codmod/rtcwconsole.log` for `ERROR`, `WARNING: ... cod_`, crashes, and our
-   own `codmod` prints. (ioRTCW names the file `rtcwconsole.log`, not `qconsole.log`.)
-   Performance smoke test (off-screen, ~12 s): `scripts/spin-test.sh` (turning must cost about the same GPU time as a
-   still view; see `docs/performance.md`). Benchmarks always run off-screen.
-4. If the agent has screenshot or computer-use access, it can capture a screenshot of the HUD
-   to sanity-check the numbers. Otherwise it leaves the in-game verification to the user.
+3. Use the `rtcw` MCP server for any agent-driven game run. It runs headlessly, guards the user's config, and
+   refuses while the user is playing; see `tools/rtcw-mcp/README.md`. Use its console and screenshot tools for
+   smoke checks and its benchmark tool for measurements.
+4. Leave the in-game HUD and feel verification to the user.
 
 ## Safety rules (learned the hard way, 2026-10-11)
 
@@ -40,7 +36,7 @@ user's binds. Rules so it cannot repeat:
 
 1. **HUD/menus are the canary.** Anything touching `rend2/tr_backend.c`, `tr_fbo.c`, `RB_SwapBuffers`,
    `RB_PostProcess`, `cl_scrn.c` or `SCR_DrawScreenField` must be checked **by the user in a real map**
-   (HUD visible, ESC pause menu visible) with MSAA on (our default) before it is called done.
+   (HUD visible, ESC pause menu visible) with MSAA on before it is called done.
    All 2D is drawn *after* post-process; the final present must include it. Never present
    `tr.msaaResolveFbo` straight after post-process.
 2. **No automated HUD smoke test.** Tried and dropped: the real flow is main menu → click → cutscene

@@ -1,6 +1,6 @@
 ---
 name: jev-177-pause-settings-back-esc-must-run-close
-description: On 2026-10-09, pause settings BACK/Esc must run close ingame_* ; open ingame because Menus_CloseByName does no
+description: "On 2026-10-09, pause settings BACK/Esc must run close ingame_* ; open ingame because Menus_CloseByName does no"
 type: incident
 date: 2026-10-09
 status: current

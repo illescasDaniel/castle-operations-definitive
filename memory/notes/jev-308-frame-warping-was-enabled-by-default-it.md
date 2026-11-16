@@ -1,6 +1,6 @@
 ---
 name: jev-308-frame-warping-was-enabled-by-default-it
-description: frame warping was enabled by default, it shouldn't. frame warping should be disabled by default always unless
+description: "frame warping was enabled by default, it shouldn't. frame warping should be disabled by default always unless"
 type: preference
 date: 2026-11-05
 status: superseded

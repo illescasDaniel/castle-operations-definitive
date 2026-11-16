@@ -1,6 +1,6 @@
 ---
 name: jev-174-main-options-opens-setup-menu-hub-settings
-description: On 2026-10-09, codmod Main OPTIONS opens setup_menu (hub), settings value pages and ui/mods.menu use setup-sty
+description: "On 2026-10-09, codmod Main OPTIONS opens setup_menu (hub), settings value pages and ui/mods.menu use setup-sty"
 type: decision
 date: 2026-10-09
 status: current

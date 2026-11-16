@@ -1,7 +1,7 @@
 ---
 id: DOC-027
 title: Phase 3 — Aim Down Sights (ADS)
-summary: Phase 3 — Aim Down Sights (ADS); historical design and implementation details, check against code before use
+summary: Phase 3 — Aim Down Sights (ADS) — Design summary; 3.1 Input; 3.2 Per-weapon gameplay table (shared) — bgcod.c
 type: explanation
 status: draft
 updated: 2026-10-12

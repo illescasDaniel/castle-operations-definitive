@@ -1,6 +1,6 @@
 ---
 name: jev-295-frame-warp-ap-r-framewarp-2-verified
-description: 2026-10-28 frame warp AP (r_frameWarp 2)  verified pixel-identical real frame vs warp-off at r_aa 4/5/8 (r_aa
+description: "2026-10-28 frame warp AP (r_frameWarp 2)  verified pixel-identical real frame vs warp-off at r_aa 4/5/8 (r_aa"
 type: incident
 date: 2026-10-28
 status: current

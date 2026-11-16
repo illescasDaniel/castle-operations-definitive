@@ -1,6 +1,6 @@
 ---
 name: jev-235-tooling-scripts-shots-sh-takes-deterministic-screenshots
-description: 2026-10-14 codmod tooling  scripts/shots.sh takes deterministic screenshots of the bench demo (timedemo plus w
+description: "2026-10-14 codmod tooling  scripts/shots.sh takes deterministic screenshots of the bench demo (timedemo plus w"
 type: incident
 date: 2026-10-14
 status: current

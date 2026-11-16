@@ -1,7 +1,7 @@
 ---
 id: DOC-034
 title: Phase 6b — Prone (ported from Enemy Territory)
-summary: Phase 6b — Prone (ported from Enemy Territory); historical design and implementation details, check against code before use
+summary: Phase 6b — Prone (ported from Enemy Territory) — Tiers; Tier A — Prone gameplay; Tier B — Third-person prone animations (optional, cosmetic)
 type: explanation
 status: draft
 updated: 2026-10-12

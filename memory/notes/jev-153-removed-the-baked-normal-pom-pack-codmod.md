@@ -1,6 +1,6 @@
 ---
 name: jev-153-removed-the-baked-normal-pom-pack-codmod
-description: On 2026-10-09, rtcw-cod removed the baked normal/POM pack (codmod_pom.pk3 and tools/pom-bake) after an A/B wit
+description: "On 2026-10-09, rtcw-cod removed the baked normal/POM pack (codmod_pom.pk3 and tools/pom-bake) after an A/B wit"
 type: decision
 date: 2026-10-09
 status: current

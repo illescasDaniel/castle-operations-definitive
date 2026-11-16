@@ -1,7 +1,7 @@
 ---
 id: DOC-015
 title: Gyro aiming (DualSense)
-summary: Gyro aiming (DualSense); historical design and implementation details, check against code before use
+summary: Gyro aiming (DualSense)
 type: explanation
 status: draft
 updated: 2026-10-13

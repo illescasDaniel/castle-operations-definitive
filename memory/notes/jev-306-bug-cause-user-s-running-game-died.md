@@ -1,6 +1,6 @@
 ---
 name: jev-306-bug-cause-user-s-running-game-died
-description: 2026-11-05 rtcw-cod bug cause  user's running game died with SIGBUS (Misaligned address) on opening the ESC me
+description: "2026-11-05 rtcw-cod bug cause  user's running game died with SIGBUS (Misaligned address) on opening the ESC me"
 type: incident
 date: 2026-11-05
 status: current

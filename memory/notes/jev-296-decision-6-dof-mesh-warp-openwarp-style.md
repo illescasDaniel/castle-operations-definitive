@@ -1,6 +1,6 @@
 ---
 name: jev-296-decision-6-dof-mesh-warp-openwarp-style
-description: 2026-10-28 decision  6-DoF mesh warp (OpenWarp-style) used only for AP presents; depth snapshotted at RB_WarpC
+description: "2026-10-28 decision  6-DoF mesh warp (OpenWarp-style) used only for AP presents; depth snapshotted at RB_WarpC"
 type: decision
 date: 2026-10-28
 status: current

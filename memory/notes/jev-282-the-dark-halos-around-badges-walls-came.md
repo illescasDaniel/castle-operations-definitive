@@ -1,6 +1,6 @@
 ---
 name: jev-282-the-dark-halos-around-badges-walls-came
-description: 2026-10-23 rtcw-cod  the dark halos around badges/walls came from the HD diffuse pack (Real-ESRGAN general-wdn
+description: "2026-10-23 rtcw-cod  the dark halos around badges/walls came from the HD diffuse pack (Real-ESRGAN general-wdn"
 type: incident
 date: 2026-10-23
 status: current

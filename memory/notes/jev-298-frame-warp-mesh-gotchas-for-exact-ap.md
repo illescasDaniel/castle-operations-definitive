@@ -1,6 +1,6 @@
 ---
 name: jev-298-frame-warp-mesh-gotchas-for-exact-ap
-description: 2026-10-28 frame warp mesh gotchas  for exact AP screenshot comparisons set r_sunShadowCascadeUpdate 0 (mesh t
+description: "2026-10-28 frame warp mesh gotchas  for exact AP screenshot comparisons set r_sunShadowCascadeUpdate 0 (mesh t"
 type: incident
 date: 2026-10-28
 status: current

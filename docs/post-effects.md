@@ -1,7 +1,7 @@
 ---
 id: DOC-038
 title: Post effects - bloom and colour grade
-summary: Post effects - bloom and colour grade; historical design and implementation details, check against code before use
+summary: Post effects - bloom and colour grade — Cost (bench demo, 2561x1601, SMAA High, median of 3, same session); Highlight roll-off (2026-10-22)
 type: explanation
 status: draft
 updated: 2026-10-22

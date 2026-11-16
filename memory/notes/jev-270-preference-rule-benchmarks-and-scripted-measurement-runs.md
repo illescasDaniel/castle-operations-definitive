@@ -1,6 +1,6 @@
 ---
 name: jev-270-preference-rule-benchmarks-and-scripted-measurement-runs
-description: 2026-10-22 rtcw-cod preference/rule  benchmarks and scripted measurement runs always run off-screen (headless
+description: "2026-10-22 rtcw-cod preference/rule  benchmarks and scripted measurement runs always run off-screen (headless"
 type: decision
 date: 2026-10-22
 status: current

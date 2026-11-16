@@ -1,6 +1,6 @@
 ---
 name: jev-165-after-playtest-cod-pronescale-default-was-locked
-description: On 2026-10-09, after playtest, cod_proneScale default was locked to 0.55 (about 110 u/s at jog 200), replacing
+description: "On 2026-10-09, after playtest, cod_proneScale default was locked to 0.55 (about 110 u/s at jog 200), replacing"
 type: decision
 date: 2026-10-09
 status: current

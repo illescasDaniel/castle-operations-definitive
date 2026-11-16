@@ -1,6 +1,6 @@
 ---
 name: jev-183-ships-cod-style-left-vertical-menu-lists
-description: From 2026-10-09 onward, codmod ships CoD-style left vertical menu lists by overriding ui/*.menu files inside c
+description: "From 2026-10-09 onward, codmod ships CoD-style left vertical menu lists by overriding ui/*.menu files inside c"
 type: decision
 date: 2026-10-09
 status: current

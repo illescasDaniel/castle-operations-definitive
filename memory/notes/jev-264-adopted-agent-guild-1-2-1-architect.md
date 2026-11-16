@@ -1,6 +1,6 @@
 ---
 name: jev-264-adopted-agent-guild-1-2-1-architect
-description: On 2026-10-22, rtcw-cod adopted agent-guild 1.2.1 (architect/coder/utility subagents, .claude/development-work
+description: "On 2026-10-22, rtcw-cod adopted agent-guild 1.2.1 (architect/coder/utility subagents, .claude/development-work"
 type: decision
 date: 2026-10-22
 status: current

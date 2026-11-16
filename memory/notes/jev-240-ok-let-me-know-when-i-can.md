@@ -1,6 +1,6 @@
 ---
 name: jev-240-ok-let-me-know-when-i-can
-description: ok, let me know when i can test in-game. also, we should not gitignore our translations, so people can use the
+description: "ok, let me know when i can test in-game. also, we should not gitignore our translations, so people can use the"
 type: preference
 date: 2026-10-15
 status: current

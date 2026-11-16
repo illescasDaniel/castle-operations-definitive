@@ -1,7 +1,7 @@
 ---
 id: DOC-043
 title: Subtitles
-summary: Subtitles; historical design and implementation details, check against code before use
+summary: Subtitles — How it works; Usage
 type: how-to
 status: draft
 updated: 2026-10-18

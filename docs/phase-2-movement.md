@@ -1,7 +1,7 @@
 ---
 id: DOC-026
 title: Phase 2 — Modernized Movement (CoD4 Tuning)
-summary: Phase 2 — Modernized Movement (CoD4 Tuning); historical design and implementation details, check against code before use
+summary: Phase 2 — Modernized Movement (CoD4 Tuning) — 2.0 Foundations — tuning framework + debug HUD; 2.1 Walk / jog / sprint speeds; 2.2 Crouch transitions (~30% snappier)
 type: explanation
 status: draft
 updated: 2026-10-16

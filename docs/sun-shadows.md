@@ -1,7 +1,7 @@
 ---
 id: DOC-044
 title: Stable sun shadows
-summary: Stable sun shadows; historical design and implementation details, check against code before use
+summary: Stable sun shadows — Verification so far
 type: explanation
 status: draft
 updated: 2026-10-22

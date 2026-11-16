@@ -1,7 +1,7 @@
 ---
 id: DOC-041
 title: SMAA anti-aliasing (replaces MSAA 2x as default) — plan
-summary: SMAA anti-aliasing (replaces MSAA 2x as default) — plan; historical design and implementation details, check against code before use
+summary: SMAA anti-aliasing (replaces MSAA 2x as default) — plan — Goal; Design; Steps
 type: explanation
 status: draft
 updated: 2026-10-22

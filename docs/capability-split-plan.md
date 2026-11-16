@@ -1,7 +1,7 @@
 ---
 id: DOC-007
 title: Plan - separate engine capability from codmod config
-summary: Plan - separate engine capability from codmod config; historical design and implementation details, check against code before use
+summary: Plan - separate engine capability from codmod config — 1. Audit summary (what is coupled today); 2. Mechanism (how the mod switches things on); 2b. Menus in two layers (added 2026-10-18)
 type: explanation
 status: draft
 updated: 2026-10-18

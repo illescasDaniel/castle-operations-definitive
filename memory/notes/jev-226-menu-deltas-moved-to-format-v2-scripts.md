@@ -1,6 +1,6 @@
 ---
 name: jev-226-menu-deltas-moved-to-format-v2-scripts
-description: On 2026-10-12, rtcw-cod menu deltas moved to format v2 (scripts/menus.py)  any run of lines present in an RTCW
+description: "On 2026-10-12, rtcw-cod menu deltas moved to format v2 (scripts/menus.py)  any run of lines present in an RTCW"
 type: decision
 date: 2026-10-12
 status: current

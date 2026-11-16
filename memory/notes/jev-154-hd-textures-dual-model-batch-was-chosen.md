@@ -1,6 +1,6 @@
 ---
 name: jev-154-hd-textures-dual-model-batch-was-chosen
-description: On 2026-10-09, hd-textures dual-model batch was chosen for RTCW HD pack  world textures use general-wdn at 2x
+description: "On 2026-10-09, hd-textures dual-model batch was chosen for RTCW HD pack  world textures use general-wdn at 2x"
 type: decision
 date: 2026-10-09
 status: superseded

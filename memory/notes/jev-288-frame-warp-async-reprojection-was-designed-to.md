@@ -1,6 +1,6 @@
 ---
 name: jev-288-frame-warp-async-reprojection-was-designed-to
-description: On 2026-10-24, rtcw-cod frame warp (async reprojection) was designed to replay the copied rend2 2D command tai
+description: "On 2026-10-24, rtcw-cod frame warp (async reprojection) was designed to replay the copied rend2 2D command tai"
 type: incident
 date: 2026-10-24
 status: current

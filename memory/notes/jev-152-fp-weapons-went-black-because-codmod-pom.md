@@ -1,6 +1,6 @@
 ---
 name: jev-152-fp-weapons-went-black-because-codmod-pom
-description: On 2026-10-09, rtcw-cod FP weapons went black because codmod_pom.mtr used rgbGen vertexLit on viewmodel skins;
+description: "On 2026-10-09, rtcw-cod FP weapons went black because codmod_pom.mtr used rgbGen vertexLit on viewmodel skins;"
 type: incident
 date: 2026-10-09
 status: current

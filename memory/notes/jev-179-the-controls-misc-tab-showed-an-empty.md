@@ -1,6 +1,6 @@
 ---
 name: jev-179-the-controls-misc-tab-showed-an-empty
-description: On 2026-10-09, the Controls MISC tab showed an empty page because its action used show miscellaneous while eve
+description: "On 2026-10-09, the Controls MISC tab showed an empty page because its action used show miscellaneous while eve"
 type: incident
 date: 2026-10-09
 status: current

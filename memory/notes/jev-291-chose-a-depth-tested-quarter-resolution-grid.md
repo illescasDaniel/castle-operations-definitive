@@ -1,6 +1,6 @@
 ---
 name: jev-291-chose-a-depth-tested-quarter-resolution-grid
-description: On 2026-10-24, rtcw-cod chose a depth-tested quarter-resolution grid mesh warp (OpenWarp style  vertex-shader
+description: "On 2026-10-24, rtcw-cod chose a depth-tested quarter-resolution grid mesh warp (OpenWarp style  vertex-shader"
 type: preference
 date: 2026-10-24
 status: current

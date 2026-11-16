@@ -1,7 +1,7 @@
 ---
 id: DOC-024
 title: Performance benchmark
-summary: Performance benchmark; historical design and implementation details, check against code before use
+summary: Performance benchmark — How it works; Running; Metrics
 type: how-to
 status: draft
 updated: 2026-11-05

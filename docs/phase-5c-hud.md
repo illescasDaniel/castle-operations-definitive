@@ -1,7 +1,7 @@
 ---
 id: DOC-031
 title: Phase 5c — CoD-style on-screen HUD
-summary: Phase 5c — CoD-style on-screen HUD; historical design and implementation details, check against code before use
+summary: Phase 5c — CoD-style on-screen HUD — Goal; Behaviour; Files
 type: explanation
 status: draft
 updated: 2026-10-12

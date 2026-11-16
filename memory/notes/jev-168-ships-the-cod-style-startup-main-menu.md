@@ -1,6 +1,6 @@
 ---
 name: jev-168-ships-the-cod-style-startup-main-menu
-description: On 2026-10-09, codmod ships the CoD-style startup main menu as ui/main.menu inside codmod_menus.pk3 (not zz_*)
+description: "On 2026-10-09, codmod ships the CoD-style startup main menu as ui/main.menu inside codmod_menus.pk3 (not zz_*)"
 type: decision
 date: 2026-10-09
 status: current

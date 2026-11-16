@@ -1,6 +1,6 @@
 ---
 name: jev-157-flashlight-switched-from-a-chain-of-point
-description: On 2026-10-09, rtcw-cod flashlight switched from a chain of point dlights (including an impact light on the ai
+description: "On 2026-10-09, rtcw-cod flashlight switched from a chain of point dlights (including an impact light on the ai"
 type: decision
 date: 2026-10-09
 status: current

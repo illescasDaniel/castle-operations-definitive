@@ -1,32 +1,7 @@
 {
   "enabledMcpjsonServers": [
-    "jevmem",
     "rtcw"
   ],
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uvx --python 3.14 jevmem hook session-start",
-            "timeout": 15
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uvx --python 3.14 jevmem hook user-prompt",
-            "timeout": 20
-          }
-        ]
-      }
-    ]
-  },
   "permissions": {
     "allow": [
       "Bash(gh pr *)"

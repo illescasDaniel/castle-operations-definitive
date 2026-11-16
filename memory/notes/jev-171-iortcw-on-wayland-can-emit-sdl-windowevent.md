@@ -1,6 +1,6 @@
 ---
 name: jev-171-iortcw-on-wayland-can-emit-sdl-windowevent
-description: On 2026-10-09, ioRTCW on Wayland can emit SDL_WINDOWEVENT_RESIZED with only ±1 or ±2 pixel deltas versus the c
+description: "On 2026-10-09, ioRTCW on Wayland can emit SDL_WINDOWEVENT_RESIZED with only ±1 or ±2 pixel deltas versus the c"
 type: incident
 date: 2026-10-09
 status: current

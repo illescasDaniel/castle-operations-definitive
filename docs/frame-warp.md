@@ -1,7 +1,7 @@
 ---
 id: DOC-013
 title: Frame warp (asynchronous reprojection)
-summary: Frame warp (asynchronous reprojection); historical design and implementation details, check against code before use
+summary: Frame warp (asynchronous reprojection) — How it works; Cvars and commands; Warp Parallax (mesh 6-DoF warp, rframeWarpMesh)
 type: explanation
 status: draft
 updated: 2026-11-04

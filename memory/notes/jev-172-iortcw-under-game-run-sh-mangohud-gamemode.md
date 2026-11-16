@@ -1,6 +1,6 @@
 ---
 name: jev-172-iortcw-under-game-run-sh-mangohud-gamemode
-description: On 2026-10-09, ioRTCW under game_run.sh (MangoHud + gamemode, SDL Wayland) SIGSEGV'd on fullscreen Apply becau
+description: "On 2026-10-09, ioRTCW under game_run.sh (MangoHud + gamemode, SDL Wayland) SIGSEGV'd on fullscreen Apply becau"
 type: incident
 date: 2026-10-09
 status: current

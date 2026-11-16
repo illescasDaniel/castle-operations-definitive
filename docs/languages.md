@@ -1,7 +1,7 @@
 ---
 id: DOC-016
 title: Languages (text and audio packs)
-summary: Languages (text and audio packs); historical design and implementation details, check against code before use
+summary: Languages (text and audio packs) — User-facing settings; Pack layout; Encoding
 type: how-to
 status: draft
 updated: 2026-10-21

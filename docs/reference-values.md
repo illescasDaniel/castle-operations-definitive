@@ -1,7 +1,7 @@
 ---
 id: DOC-039
 title: Reference Values - Vanilla RTCW vs CoD4 vs Mod Defaults
-summary: Reference Values - Vanilla RTCW vs CoD4 vs Mod Defaults; historical design and implementation details, check against code before use
+summary: Reference Values - Vanilla RTCW vs CoD4 vs Mod Defaults — Scale sanity check; Vanilla RTCW player (verified at ioRTCW 438e7d4); CoD4 reference
 type: reference
 status: draft
 updated: 2026-10-18

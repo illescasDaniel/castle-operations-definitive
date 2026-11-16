@@ -1,6 +1,6 @@
 ---
 name: jev-304-profiling-scripts-profile-sh-writes-profiling-stamp
-description: 2026-11-05 rtcw-cod profiling  scripts/profile.sh writes profiling/<stamp>-<label>/ (mode1 r_gpuProfile 1, mod
+description: "2026-11-05 rtcw-cod profiling  scripts/profile.sh writes profiling/<stamp>-<label>/ (mode1 r_gpuProfile 1, mod"
 type: incident
 date: 2026-11-05
 status: current

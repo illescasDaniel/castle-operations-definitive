@@ -1,6 +1,6 @@
 ---
 name: jev-219-perf-matrix-rtx-4070-laptop-2561x1601-msaa2
-description: On 2026-10-11, rtcw-cod perf matrix (RTX 4070 Laptop, 2561x1601, MSAA2) showed the game is GPU-bound (~165 FPS
+description: "On 2026-10-11, rtcw-cod perf matrix (RTX 4070 Laptop, 2561x1601, MSAA2) showed the game is GPU-bound (~165 FPS"
 type: gotcha
 date: 2026-10-11
 status: current

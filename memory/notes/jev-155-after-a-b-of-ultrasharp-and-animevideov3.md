@@ -1,6 +1,6 @@
 ---
 name: jev-155-after-a-b-of-ultrasharp-and-animevideov3
-description: On 2026-10-09, after A/B of UltraSharp and animevideov3, RTCW codmod HD fonts were locked to general-wdn (real
+description: "On 2026-10-09, after A/B of UltraSharp and animevideov3, RTCW codmod HD fonts were locked to general-wdn (real"
 type: decision
 date: 2026-10-09
 status: current

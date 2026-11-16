@@ -1,6 +1,6 @@
 ---
 name: jev-255-bug-cause-for-the-mangohud-gamemode-row
-description: On 2026-10-16, rtcw-cod bug cause for the MangoHud GAMEMODE row (and the whole custom HUD) missing  scripts/ga
+description: "On 2026-10-16, rtcw-cod bug cause for the MangoHud GAMEMODE row (and the whole custom HUD) missing  scripts/ga"
 type: incident
 date: 2026-10-16
 status: current

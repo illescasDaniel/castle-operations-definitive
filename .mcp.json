@@ -1,16 +1,5 @@
 {
   "mcpServers": {
-    "jevmem": {
-      "type": "stdio",
-      "command": "uvx",
-      "args": [
-        "--python",
-        "3.14",
-        "--from",
-        "jevmem",
-        "jevmem-mcp"
-      ]
-    },
     "rtcw": {
       "type": "stdio",
       "command": "tools/rtcw-mcp/.venv/bin/python",

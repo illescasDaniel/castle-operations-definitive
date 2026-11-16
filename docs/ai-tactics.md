@@ -1,7 +1,7 @@
 ---
 id: DOC-002
 title: Tactical enemy AI
-summary: Tactical enemy AI; historical design and implementation details, check against code before use
+summary: Tactical enemy AI — Turning it on and off; What soldiers do, by phase; Difficulty (ggameskill)
 type: explanation
 status: draft
 updated: 2026-10-20

@@ -1,6 +1,6 @@
 ---
 name: jev-305-c1-r-mdsdepthtangents-0-new-cvar-default
-description: 2026-11-05 rtcw-cod C1  r_mdsDepthTangents 0 (new cvar, default 1 = old) skips MDS tangent computation in dept
+description: "2026-11-05 rtcw-cod C1  r_mdsDepthTangents 0 (new cvar, default 1 = old) skips MDS tangent computation in dept"
 type: incident
 date: 2026-11-05
 status: current

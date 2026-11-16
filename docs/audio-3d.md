@@ -1,7 +1,7 @@
 ---
 id: DOC-004
 title: 3D audio (HRTF)
-summary: 3D audio (HRTF); historical design and implementation details, check against code before use
+summary: 3D audio (HRTF) — Cvars (engine); Libraries considered; Notes
 type: explanation
 status: draft
 updated: 2026-10-12

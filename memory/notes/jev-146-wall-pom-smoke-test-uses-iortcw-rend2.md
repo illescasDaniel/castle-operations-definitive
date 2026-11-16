@@ -1,6 +1,6 @@
 ---
 name: jev-146-wall-pom-smoke-test-uses-iortcw-rend2
-description: On 2026-10-09, rtcw-cod wall POM smoke test uses ioRTCW rend2 (not opengl1)  offline tools/pom-bake builds RGB
+description: "On 2026-10-09, rtcw-cod wall POM smoke test uses ioRTCW rend2 (not opengl1)  offline tools/pom-bake builds RGB"
 type: decision
 date: 2026-10-09
 status: current

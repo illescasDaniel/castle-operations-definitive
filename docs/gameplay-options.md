@@ -1,7 +1,7 @@
 ---
 id: DOC-014
 title: Gameplay options (MODS > GAMEPLAY)
-summary: Gameplay options (MODS > GAMEPLAY); historical design and implementation details, check against code before use
+summary: Gameplay options (MODS > GAMEPLAY)
 type: reference
 status: draft
 updated: 2026-10-18

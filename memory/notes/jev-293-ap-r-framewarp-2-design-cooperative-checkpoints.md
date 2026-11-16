@@ -1,6 +1,6 @@
 ---
 name: jev-293-ap-r-framewarp-2-design-cooperative-checkpoints
-description: On 2026-10-26, rtcw-cod AP (r_frameWarp 2) design  cooperative checkpoints at render-command boundaries plus C
+description: "On 2026-10-26, rtcw-cod AP (r_frameWarp 2) design  cooperative checkpoints at render-command boundaries plus C"
 type: decision
 date: 2026-10-26
 status: current

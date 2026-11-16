@@ -1,6 +1,6 @@
 ---
 name: jev-302-ap-heavy-load-fix-uncommitted-at-time
-description: 2026-11-04  AP heavy-load fix (uncommitted at time of note). Root causes  (1) Com_ApBacklog assumed unresolved
+description: "2026-11-04  AP heavy-load fix (uncommitted at time of note). Root causes  (1) Com_ApBacklog assumed unresolved"
 type: incident
 date: 2026-11-04
 status: current

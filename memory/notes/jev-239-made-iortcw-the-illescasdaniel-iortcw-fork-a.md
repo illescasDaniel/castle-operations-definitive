@@ -1,6 +1,6 @@
 ---
 name: jev-239-made-iortcw-the-illescasdaniel-iortcw-fork-a
-description: On 2026-10-15, rtcw-cod made iortcw/ (the illescasDaniel/iortcw fork) a git submodule of the outer codmod repo
+description: "On 2026-10-15, rtcw-cod made iortcw/ (the illescasDaniel/iortcw fork) a git submodule of the outer codmod repo"
 type: decision
 date: 2026-10-15
 status: current

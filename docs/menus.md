@@ -1,7 +1,7 @@
 ---
 id: DOC-020
 title: Menus - building and editing rules
-summary: Menus - building and editing rules; historical design and implementation details, check against code before use
+summary: Menus - building and editing rules — Which layer does a row belong in; How menus are stored (licensing); Build and install
 type: how-to
 status: draft
 updated: 2026-11-05

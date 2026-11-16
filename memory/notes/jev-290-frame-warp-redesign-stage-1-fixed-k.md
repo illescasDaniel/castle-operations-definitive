@@ -1,6 +1,6 @@
 ---
 name: jev-290-frame-warp-redesign-stage-1-fixed-k
-description: On 2026-10-24, rtcw-cod frame warp redesign  Stage 1 fixed-k pacer gives a real frame only T (not kT) on one t
+description: "On 2026-10-24, rtcw-cod frame warp redesign  Stage 1 fixed-k pacer gives a real frame only T (not kT) on one t"
 type: decision
 date: 2026-10-24
 status: superseded

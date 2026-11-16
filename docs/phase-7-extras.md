@@ -1,7 +1,7 @@
 ---
 id: DOC-035
 title: Phase 7 — Optional Extras (only on user request)
-summary: Phase 7 — Optional Extras (only on user request); historical design and implementation details, check against code before use
+summary: Phase 7 — Optional Extras (only on user request)
 type: explanation
 status: draft
 updated: 2026-10-13

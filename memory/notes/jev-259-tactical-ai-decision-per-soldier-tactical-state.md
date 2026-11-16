@@ -1,6 +1,6 @@
 ---
 name: jev-259-tactical-ai-decision-per-soldier-tactical-state
-description: 2026-10-18 RTCW codmod tactical AI decision  per-soldier tactical state lives in static arrays (codAI   in ai_
+description: "2026-10-18 RTCW codmod tactical AI decision  per-soldier tactical state lives in static arrays (codAI   in ai_"
 type: gotcha
 date: 2026-10-18
 status: current

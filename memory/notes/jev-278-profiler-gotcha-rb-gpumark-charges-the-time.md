@@ -1,6 +1,6 @@
 ---
 name: jev-278-profiler-gotcha-rb-gpumark-charges-the-time
-description: 2026-10-23 rtcw-cod profiler gotcha  RB_GpuMark charges the time since the previous mark to the named bucket.
+description: "2026-10-23 rtcw-cod profiler gotcha  RB_GpuMark charges the time since the previous mark to the named bucket."
 type: incident
 date: 2026-10-23
 status: current

@@ -1,6 +1,6 @@
 ---
 name: jev-148-escape1-wall-pom-expanded-to-all-19
-description: On 2026-10-09, rtcw-cod escape1 wall POM expanded to all 19 BSP wall textures (castle/cathedrale/xlab/miltary
+description: "On 2026-10-09, rtcw-cod escape1 wall POM expanded to all 19 BSP wall textures (castle/cathedrale/xlab/miltary"
 type: decision
 date: 2026-10-09
 status: current

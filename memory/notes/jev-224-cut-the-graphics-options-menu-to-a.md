@@ -1,6 +1,6 @@
 ---
 name: jev-224-cut-the-graphics-options-menu-to-a
-description: On 2026-10-12, rtcw-cod cut the GRAPHICS options menu to a single page (Video Mode, Fullscreen, VSync, FPS lim
+description: "On 2026-10-12, rtcw-cod cut the GRAPHICS options menu to a single page (Video Mode, Fullscreen, VSync, FPS lim"
 type: decision
 date: 2026-10-12
 status: current

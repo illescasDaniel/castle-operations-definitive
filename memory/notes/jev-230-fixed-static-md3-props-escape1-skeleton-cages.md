@@ -1,6 +1,6 @@
 ---
 name: jev-230-fixed-static-md3-props-escape1-skeleton-cages
-description: On 2026-10-13, rtcw-cod fixed static MD3 props (escape1 skeleton cages, iron gates) being unlit by the flashli
+description: "On 2026-10-13, rtcw-cod fixed static MD3 props (escape1 skeleton cages, iron gates) being unlit by the flashli"
 type: incident
 date: 2026-10-13
 status: current

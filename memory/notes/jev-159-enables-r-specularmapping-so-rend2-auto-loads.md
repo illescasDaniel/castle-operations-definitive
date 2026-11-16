@@ -1,6 +1,6 @@
 ---
 name: jev-159-enables-r-specularmapping-so-rend2-auto-loads
-description: On 2026-10-09, rtcw-cod enables r_specularMapping so rend2 auto-loads textures/*_s as specular maps, but ships
+description: "On 2026-10-09, rtcw-cod enables r_specularMapping so rend2 auto-loads textures/*_s as specular maps, but ships"
 type: gotcha
 date: 2026-10-09
 status: current

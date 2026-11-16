@@ -1,6 +1,6 @@
 ---
 name: jev-225-stopped-tracking-rtcw-derived-menu-files-and
-description: On 2026-10-12, rtcw-cod stopped tracking RTCW-derived .menu files and menu/hud pk3s (id game data, not GPL). G
+description: "On 2026-10-12, rtcw-cod stopped tracking RTCW-derived .menu files and menu/hud pk3s (id game data, not GPL). G"
 type: decision
 date: 2026-10-12
 status: current

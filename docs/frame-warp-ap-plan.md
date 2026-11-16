@@ -1,7 +1,7 @@
 ---
 id: DOC-012
 title: Compositor mode (r_frameWarp 2, "AP") plan, architect report 2026-10-26
-summary: Compositor mode (r_frameWarp 2, "AP") plan, architect report 2026-10-26; historical design and implementation details, check against code before use
+summary: Compositor mode (r_frameWarp 2, "AP") plan, architect report 2026-10-26 — Mechanism; Decisions; Trade-off to tell the user
 type: explanation
 status: draft
 updated: 2026-10-31

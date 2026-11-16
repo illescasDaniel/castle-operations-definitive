@@ -1,6 +1,6 @@
 ---
 name: jev-95-phase-3-ads-iortcw-codmod-branch-implemented
-description: codmod Phase 3 (ADS, iortcw codmod branch, implemented 2026-10-08)  BG_COD_MAX_CVARS was bumped from 32 to 64
+description: "codmod Phase 3 (ADS, iortcw codmod branch, implemented 2026-10-08)  BG_COD_MAX_CVARS was bumped from 32 to 64"
 type: gotcha
 date: 2026-10-08
 status: current

@@ -1,6 +1,6 @@
 ---
 name: jev-149-pom-on-escape1-made-props-look-floating
-description: On 2026-10-09, rtcw-cod POM on escape1 made props look floating because many castle_wall shaders are also used
+description: "On 2026-10-09, rtcw-cod POM on escape1 made props look floating because many castle_wall shaders are also used"
 type: decision
 date: 2026-10-09
 status: current

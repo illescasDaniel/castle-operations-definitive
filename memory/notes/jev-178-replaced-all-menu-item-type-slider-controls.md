@@ -1,6 +1,6 @@
 ---
 name: jev-178-replaced-all-menu-item-type-slider-controls
-description: On 2026-10-09, codmod replaced all menu ITEM_TYPE_SLIDER controls with ITEM_TYPE_EDITFIELD plus cvar and maxCh
+description: "On 2026-10-09, codmod replaced all menu ITEM_TYPE_SLIDER controls with ITEM_TYPE_EDITFIELD plus cvar and maxCh"
 type: decision
 date: 2026-10-09
 status: current

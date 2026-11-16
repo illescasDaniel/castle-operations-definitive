@@ -1,7 +1,7 @@
 ---
 id: DOC-040
 title: SMAA on moving objects — plan
-summary: SMAA on moving objects — plan; historical design and implementation details, check against code before use
+summary: SMAA on moving objects — plan — Problem; What the code shows; Phase 0 result (user screenshots, 2026-10-21)
 type: explanation
 status: draft
 updated: 2026-10-22

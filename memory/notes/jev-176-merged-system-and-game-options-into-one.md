@@ -1,6 +1,6 @@
 ---
 name: jev-176-merged-system-and-game-options-into-one
-description: On 2026-10-09, codmod merged System and Game Options into one Options menu (options_menu / ingame_options) wit
+description: "On 2026-10-09, codmod merged System and Game Options into one Options menu (options_menu / ingame_options) wit"
 type: decision
 date: 2026-10-09
 status: current

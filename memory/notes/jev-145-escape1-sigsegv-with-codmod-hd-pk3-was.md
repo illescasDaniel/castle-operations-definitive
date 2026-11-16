@@ -1,6 +1,6 @@
 ---
 name: jev-145-escape1-sigsegv-with-codmod-hd-pk3-was
-description: On 2026-10-09, escape1 SIGSEGV with codmod_hd.pk3 was ResampleTexture stack overflow  p1 1024 /p2 1024  overfl
+description: "On 2026-10-09, escape1 SIGSEGV with codmod_hd.pk3 was ResampleTexture stack overflow  p1 1024 /p2 1024  overfl"
 type: incident
 date: 2026-10-09
 status: current

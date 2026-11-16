@@ -1,6 +1,6 @@
 ---
 name: jev-173-settings-value-menus-system-options-controls-and
-description: On 2026-10-09, codmod settings value menus (system/options/controls and ingame_*) became CoD-style fullscreen
+description: "On 2026-10-09, codmod settings value menus (system/options/controls and ingame_*) became CoD-style fullscreen"
 type: incident
 date: 2026-10-09
 status: current

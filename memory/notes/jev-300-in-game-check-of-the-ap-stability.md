@@ -1,6 +1,6 @@
 ---
 name: jev-300-in-game-check-of-the-ap-stability
-description: 2026-10-31  In-game check of the AP stability rework (commits iortcw bfdbc1c3 / outer 8734f03) on the user's h
+description: "2026-10-31  In-game check of the AP stability rework (commits iortcw bfdbc1c3 / outer 8734f03) on the user's h"
 type: gotcha
 date: 2026-10-31
 status: current

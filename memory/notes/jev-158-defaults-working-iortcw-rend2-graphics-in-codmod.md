@@ -1,6 +1,6 @@
 ---
 name: jev-158-defaults-working-iortcw-rend2-graphics-in-codmod
-description: On 2026-10-09, rtcw-cod defaults working ioRTCW rend2 graphics in codmod.cfg and scripts/run.sh latch +sets  r
+description: "On 2026-10-09, rtcw-cod defaults working ioRTCW rend2 graphics in codmod.cfg and scripts/run.sh latch +sets  r"
 type: decision
 date: 2026-10-09
 status: current

@@ -1,7 +1,7 @@
 ---
 id: DOC-030
 title: Phase 5b — Health, stamina & vital HUD
-summary: Phase 5b — Health, stamina & vital HUD; historical design and implementation details, check against code before use
+summary: Phase 5b — Health, stamina & vital HUD — Goal; Behaviour; Files
 type: explanation
 status: draft
 updated: 2026-10-12

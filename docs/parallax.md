@@ -1,7 +1,7 @@
 ---
 id: DOC-023
 title: Parallax mapping
-summary: Parallax mapping; historical design and implementation details, check against code before use
+summary: Parallax mapping — Settings; Height pack; Weapon skins
 type: explanation
 status: draft
 updated: 2026-11-05

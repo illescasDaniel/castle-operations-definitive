@@ -1,7 +1,7 @@
 ---
 id: DOC-029
 title: Phase 5 — Movement weight + fire responsiveness
-summary: Phase 5 — Movement weight + fire responsiveness; historical design and implementation details, check against code before use
+summary: Phase 5 — Movement weight + fire responsiveness — Goal; Behaviour; Files
 type: explanation
 status: draft
 updated: 2026-10-20

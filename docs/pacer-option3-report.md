@@ -1,7 +1,7 @@
 ---
 id: DOC-022
 title: Option 3 report - fence pipeline pacer (com_maxfpsGpuSync 2)
-summary: Option 3 report - fence pipeline pacer (com_maxfpsGpuSync 2); historical design and implementation details, check against code before use
+summary: Option 3 report - fence pipeline pacer (com_maxfpsGpuSync 2)
 type: explanation
 status: draft
 updated: 2026-10-26

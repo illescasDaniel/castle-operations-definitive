@@ -1,7 +1,7 @@
 ---
 id: DOC-005
 title: Bevel corners round 2 - why spots 1-8 still fail and the plan (architect, 2026-10-22)
-summary: Bevel corners round 2 - why spots 1-8 still fail and the plan (architect, 2026-10-22); historical design and implementation details, check against code before use
+summary: Bevel corners round 2 - why spots 1-8 still fail and the plan (architect, 2026-10-22) — Diagnosis; Decisions taken (defaults, user may revise); Phases
 type: explanation
 status: draft
 updated: 2026-10-22

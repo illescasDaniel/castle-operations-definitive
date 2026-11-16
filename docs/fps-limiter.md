@@ -1,7 +1,7 @@
 ---
 id: DOC-011
 title: Frame-perfect FPS limiter (engine level)
-summary: Frame-perfect FPS limiter (engine level); historical design and implementation details, check against code before use
+summary: Frame-perfect FPS limiter (engine level) — 1. Why the current cap is not flat; 2. Design; 3. Measurement (prove it is flat)
 type: explanation
 status: draft
 updated: 2026-10-18

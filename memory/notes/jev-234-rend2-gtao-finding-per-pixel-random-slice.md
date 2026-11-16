@@ -1,6 +1,6 @@
 ---
 name: jev-234-rend2-gtao-finding-per-pixel-random-slice
-description: 2026-10-14 rend2 GTAO finding  per-pixel random slice directions make far GTAO taps miss the texture cache (co
+description: "2026-10-14 rend2 GTAO finding  per-pixel random slice directions make far GTAO taps miss the texture cache (co"
 type: gotcha
 date: 2026-10-14
 status: current

@@ -1,7 +1,7 @@
 ---
 id: DOC-003
 title: Architecture & Cross-Cutting Rules
-summary: Architecture & Cross-Cutting Rules; historical design and implementation details, check against code before use
+summary: Architecture & Cross-Cutting Rules — 0. Engine fork vs mod folder — who does what; 1. Codebase map (SP only — ignore iortcw/MP/); 2. How a movement frame flows
 type: explanation
 status: draft
 updated: 2026-10-21

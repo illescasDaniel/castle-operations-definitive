@@ -1,7 +1,7 @@
 ---
 id: DOC-037
 title: RTCW remaster (codmod) — Master Plan
-summary: RTCW remaster (codmod) — Master Plan; historical design and implementation details, check against code before use
+summary: RTCW remaster (codmod) — Master Plan — 1. Goal; 2. Hard rules for the execution agent; 3. Phases
 type: explanation
 status: draft
 updated: 2026-10-23

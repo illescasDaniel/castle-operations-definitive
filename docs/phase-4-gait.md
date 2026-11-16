@@ -1,7 +1,7 @@
 ---
 id: DOC-028
 title: Phase 4 — Gait / movement presentation
-summary: Phase 4 — Gait / movement presentation; historical design and implementation details, check against code before use
+summary: Phase 4 — Gait / movement presentation — Goal; Behaviour; Cvars
 type: explanation
 status: draft
 updated: 2026-10-12

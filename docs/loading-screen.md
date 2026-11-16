@@ -1,7 +1,7 @@
 ---
 id: DOC-018
 title: Loading screen - never freeze
-summary: Loading screen - never freeze; historical design and implementation details, check against code before use
+summary: Loading screen - never freeze — Problem and root cause; Measuring — comloadProfile and scripts/load-test.sh; Phase 1 — CLLoadingTick (clscrn.c)
 type: explanation
 status: draft
 updated: 2026-10-23

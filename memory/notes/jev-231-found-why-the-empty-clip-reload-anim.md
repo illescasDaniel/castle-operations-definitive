@@ -1,6 +1,6 @@
 ---
 name: jev-231-found-why-the-empty-clip-reload-anim
-description: On 2026-10-13, rtcw-cod found why the empty-clip reload anim sometimes never played  in cg_predict.c, weapAnim
+description: "On 2026-10-13, rtcw-cod found why the empty-clip reload anim sometimes never played  in cg_predict.c, weapAnim"
 type: incident
 date: 2026-10-13
 status: current

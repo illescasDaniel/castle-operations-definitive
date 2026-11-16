@@ -1,6 +1,6 @@
 ---
 name: jev-301-headless-repro-of-the-user-s-heavy
-description: 2026-11-04  Headless repro of the user's heavy cage view  escape1 spot `1346 160 -620 0 0` (cage origin 1646 1
+description: "2026-11-04  Headless repro of the user's heavy cage view  escape1 spot `1346 160 -620 0 0` (cage origin 1646 1"
 type: gotcha
 date: 2026-11-04
 status: current

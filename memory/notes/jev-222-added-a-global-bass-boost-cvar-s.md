@@ -1,6 +1,6 @@
 ---
 name: jev-222-added-a-global-bass-boost-cvar-s
-description: On 2026-10-12, rtcw-cod added a global bass boost (cvar s_alBass, dB, low-shelf biquad at 200 Hz) in iortcw/SP
+description: "On 2026-10-12, rtcw-cod added a global bass boost (cvar s_alBass, dB, low-shelf biquad at 200 Hz) in iortcw/SP"
 type: decision
 date: 2026-10-12
 status: superseded

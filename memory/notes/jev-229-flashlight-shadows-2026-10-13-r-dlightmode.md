@@ -1,6 +1,6 @@
 ---
 name: jev-229-flashlight-shadows-2026-10-13-r-dlightmode
-description: Flashlight shadows (2026-10-13)  r_dlightMode 2 cube shadows are broken, so the flashlight uses one spot shado
+description: "Flashlight shadows (2026-10-13)  r_dlightMode 2 cube shadows are broken, so the flashlight uses one spot shado"
 type: incident
 date: 2026-10-13
 status: current

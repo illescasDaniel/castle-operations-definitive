@@ -1,6 +1,6 @@
 ---
 name: jev-258-bug-cause-for-specular-highlights-dropping-bench
-description: On 2026-10-17, rtcw-cod bug cause for specular highlights dropping bench FPS 274 -> 141  rend2 turns every ai_
+description: "On 2026-10-17, rtcw-cod bug cause for specular highlights dropping bench FPS 274 -> 141  rend2 turns every ai_"
 type: incident
 date: 2026-10-17
 status: current

@@ -1,6 +1,6 @@
 ---
 name: jev-169-after-confirming-the-cod-style-vertical-main
-description: On 2026-10-09, after confirming the CoD-style vertical main menu, codmod also overrides ui/ingame.menu in codm
+description: "On 2026-10-09, after confirming the CoD-style vertical main menu, codmod also overrides ui/ingame.menu in codm"
 type: decision
 date: 2026-10-09
 status: current

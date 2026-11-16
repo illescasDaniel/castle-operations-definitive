@@ -1,7 +1,7 @@
 ---
 id: DOC-008
 title: Third-party credits
-summary: Third-party credits; historical design and implementation details, check against code before use
+summary: Third-party credits — SMAA (Enhanced Subpixel Morphological Antialiasing); ioRTCW and the RTCW source; Enemy Territory — Legacy
 type: reference
 status: draft
 updated: 2026-10-16

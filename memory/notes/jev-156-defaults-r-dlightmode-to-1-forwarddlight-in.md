@@ -1,6 +1,6 @@
 ---
 name: jev-156-defaults-r-dlightmode-to-1-forwarddlight-in
-description: On 2026-10-09, rtcw-cod defaults r_dlightMode to 1 (ForwardDlight) in codmod.cfg and scripts/run.sh because fl
+description: "On 2026-10-09, rtcw-cod defaults r_dlightMode to 1 (ForwardDlight) in codmod.cfg and scripts/run.sh because fl"
 type: decision
 date: 2026-10-09
 status: current

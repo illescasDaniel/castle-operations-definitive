@@ -1,7 +1,7 @@
 ---
 id: DOC-010
 title: Flashlight - per-pixel light on models, shadows
-summary: Flashlight - per-pixel light on models, shadows; historical design and implementation details, check against code before use
+summary: Flashlight - per-pixel light on models, shadows — One-time key tip
 type: explanation
 status: draft
 updated: 2026-10-21

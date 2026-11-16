@@ -13,7 +13,7 @@ when work concludes. The old memory-bank files are preserved as historical sourc
 ## Documentation
 
 Read `docs/INDEX.md` to find relevant documents and check their status and freshness against code. Before changing code,
-use `python3 /home/daniel/.agents/skills/docs-1/scripts/docs_index.py covers <path>...` to find affected docs; update
+use `python3 scripts/docs_index.py covers <path>...` to find affected docs; update
 them alongside the change. After editing docs, run the script's `write` and `check` commands. Unverified drafts are
 historical context, not authoritative current behavior. Cite documentation by its DOC ID.
 

@@ -1,6 +1,6 @@
 ---
 name: jev-164-after-playtest-cod-pronescale-default-was-raised
-description: On 2026-10-09, after playtest, cod_proneScale default was raised from 0.15 (CoD4 30 u/s) to 0.4 (80 u/s) becau
+description: "On 2026-10-09, after playtest, cod_proneScale default was raised from 0.15 (CoD4 30 u/s) to 0.4 (80 u/s) becau"
 type: decision
 date: 2026-10-09
 status: superseded

@@ -1,6 +1,6 @@
 ---
 name: jev-269-bug-cause-for-fps-loss-while-moving
-description: 2026-10-22 rtcw-cod bug cause for FPS loss while moving the mouse  rend2 VaoCache (tr_vbo.c) re-memcpy'd and g
+description: "2026-10-22 rtcw-cod bug cause for FPS loss while moving the mouse  rend2 VaoCache (tr_vbo.c) re-memcpy'd and g"
 type: incident
 date: 2026-10-22
 status: current

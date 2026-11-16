@@ -1,6 +1,6 @@
 ---
 name: jev-175-default-sound-levels-are-s-volume-0
-description: On 2026-10-09, codmod default sound levels are s_volume 0.489583 (Effects) and s_musicvolume 0.510417 (Music),
+description: "On 2026-10-09, codmod default sound levels are s_volume 0.489583 (Effects) and s_musicvolume 0.510417 (Music),"
 type: gotcha
 date: 2026-10-09
 status: current

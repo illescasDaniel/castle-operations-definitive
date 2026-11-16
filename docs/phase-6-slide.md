@@ -1,7 +1,7 @@
 ---
 id: DOC-033
 title: Phase 6 — Tactical Slide
-summary: Phase 6 — Tactical Slide; historical design and implementation details, check against code before use
+summary: Phase 6 — Tactical Slide — Behaviour spec; State (all networked); Implementation — bgpmove.c
 type: explanation
 status: draft
 updated: 2026-10-12

@@ -1,7 +1,7 @@
 ---
 id: DOC-009
 title: Execution Prompt (paste into a fresh Claude Sonnet session)
-summary: Execution Prompt (paste into a fresh Claude Sonnet session); historical design and implementation details, check against code before use
+summary: Execution Prompt (paste into a fresh Claude Sonnet session) — Read first, in this order (don't skip); How to work; Non-negotiable rules (details in plan.md §2 and architecture.md §3)
 type: explanation
 status: draft
 updated: 2026-10-15

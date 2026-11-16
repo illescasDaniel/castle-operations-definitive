@@ -2,14 +2,15 @@
 Updated: 2026-11-16
 
 ## Doing
-Migrating project memory and documentation to memory-1 and docs-1.
+No active feature work.
 
 ## Done recently
-- Committed the RTCW MCP configuration as be974a0.
-- Imported the RTCW-scoped jevmem entries and indexed existing documentation as unverified drafts.
+- Migrated 101 RTCW-scoped jevmem entries and indexed 45 existing documents.
+- Retired the project jevmem hooks and corrected the game smoke-test instructions.
+- Checked current Frame Warp, prone, kick and audio defaults against config and verified both migration checkers.
 
 ## Next
-1. Check the migration against current code, fix checker findings, and commit the verified changes.
+1. When working in an area, check its draft documentation against current code and mark it verified only after review.
 
 ## Open questions / blocked
-- None.
+- Existing documents are indexed as drafts: their full contents have not yet been audited against current code.

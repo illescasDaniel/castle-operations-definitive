@@ -1,6 +1,6 @@
 ---
 name: jev-237-bug-cause-for-jitter-when-strafing-while
-description: On 2026-10-14, rtcw-cod bug cause for jitter when strafing while counter-aiming at a fixed point  in ioRTCW CL
+description: "On 2026-10-14, rtcw-cod bug cause for jitter when strafing while counter-aiming at a fixed point  in ioRTCW CL"
 type: incident
 date: 2026-10-14
 status: current

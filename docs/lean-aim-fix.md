@@ -1,7 +1,7 @@
 ---
 id: DOC-017
 title: Lean + aim - shots land above the crosshair (fix plan)
-summary: Lean + aim - shots land above the crosshair (fix plan); historical design and implementation details, check against code before use
+summary: Lean + aim - shots land above the crosshair (fix plan) — Symptom; Root cause; Fix — one shared lean-offset function used by camera and server
 type: explanation
 status: draft
 updated: 2026-10-15

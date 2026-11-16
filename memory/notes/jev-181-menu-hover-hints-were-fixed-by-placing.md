@@ -1,6 +1,6 @@
 ---
 name: jev-181-menu-hover-hints-were-fixed-by-placing
-description: On 2026-10-09, codmod menu hover hints were fixed by placing yesno_message, slider_message, keyBindStatus, and
+description: "On 2026-10-09, codmod menu hover hints were fixed by placing yesno_message, slider_message, keyBindStatus, and"
 type: decision
 date: 2026-10-09
 status: current

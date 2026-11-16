@@ -1,6 +1,6 @@
 ---
 name: jev-223-tried-a-global-bass-boost-s-albass
-description: On 2026-10-12, rtcw-cod tried a global bass boost (s_alBass  low-shelf biquad at 200 Hz applied to PCM before
+description: "On 2026-10-12, rtcw-cod tried a global bass boost (s_alBass  low-shelf biquad at 200 Hz applied to PCM before"
 type: decision
 date: 2026-10-12
 status: current

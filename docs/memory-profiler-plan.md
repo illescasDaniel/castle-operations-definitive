@@ -1,7 +1,7 @@
 ---
 id: DOC-019
 title: Memory profiler plan (RAM + VRAM, 2026-11-05)
-summary: Memory profiler plan (RAM + VRAM, 2026-11-05); historical design and implementation details, check against code before use
+summary: Memory profiler plan (RAM + VRAM, 2026-11-05) — Approach; Hunk attribution; Bench-end dump
 type: explanation
 status: draft
 updated: 2026-11-05

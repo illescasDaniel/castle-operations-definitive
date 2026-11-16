@@ -1,7 +1,7 @@
 ---
 id: DOC-042
 title: SSAO (rend2) - GTAO + depth-aware upsample
-summary: SSAO (rend2) - GTAO + depth-aware upsample; historical design and implementation details, check against code before use
+summary: SSAO (rend2) - GTAO + depth-aware upsample — Pipeline (RBDrawSurfs -> RBPostProcess); Cvars (not archived, not menu-exposed); Cost (RTX 4070 Laptop, 2561x1601, SMAA 3, bench demo, uncapped, median of 3)
 type: explanation
 status: draft
 updated: 2026-10-18

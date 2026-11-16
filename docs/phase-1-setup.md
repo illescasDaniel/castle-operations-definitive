@@ -1,7 +1,7 @@
 ---
 id: DOC-025
 title: Phase 1 — Linux Workspace Setup & Baseline Build
-summary: Phase 1 — Linux Workspace Setup & Baseline Build; historical design and implementation details, check against code before use
+summary: Phase 1 — Linux Workspace Setup & Baseline Build — Facts already verified (do not re-research); Tasks; Acceptance criteria (gate)
 type: how-to
 status: draft
 updated: 2026-10-22

@@ -5,6 +5,7 @@
 #src ui/credit.menu sha256=81fe8de5ee0a324483378209b9a9f3f64697f1cce563d1dad60bfdc5eee77b1e
 #src ui/error.menu sha256=d8082e15dc125112689b431f799d17958025389efe435cb8f64a39e68cf4223c
 #src ui/ingame_controls.menu sha256=012cb5b0b443e10d28bfc8d0c0d564a1b45f0f923660fe05a936c7040fbc6150
+#src ui/ingame_load.menu sha256=97a6ae9352abc90425549a392e04a0275a8f6f973d69c8908820ddc71e2439df
 #src ui/notebook.menu sha256=7bc854e3ffa6fb56f4036ec3158fc6c0192156d47fd9dc37bbd30240e410c55f
 #src ui/play.menu sha256=a588d0fc5985e36554b5ebf2c516b65fe26a837c207c634a9ab2f2e658c1ccb5
 @@ 3 4
@@ -119,47 +120,43 @@
 @@ 179 185
 +		name game
 =ui/cdkey.menu 276 277
-+		text "Field of View:"
-+		cvar "cg_fov"
-+		maxChars 4
-+		maxPaintChars 4
-+		rect 240 160 320 14
-@@ 186 207
-=ui/error.menu 217 218
-@@ 215 217
-@@ 218 224
-+		name game
-=ui/cdkey.menu 276 277
 =ui/options.menu 397 398
 +		cvar "cg_hudAlpha"
 +		maxChars 6
 +		maxPaintChars 6
++		rect 240 160 320 14
+@@ 186 207
+=ui/error.menu 217 218
+@@ 215 217
+@@ 218 220
++		name game
+@@ 221 224
++		text "Skip Intro:"
++		cvar "cod_skipIntro"
 +		rect 240 185 320 14
 @@ 225 226
 =ui/error.menu 217 218
 @@ 231 233
-=ui/options.menu 212 214
+=ui/ingame_load.menu 318 320
 @@ 235 246
-=ui/options.menu 461 463
-+		name game
-=ui/cdkey.menu 276 277
-+		text "Gamma:"
-+		cvar "r_gamma"
-+		maxChars 6
-+		maxPaintChars 6
-+		rect 240 210 320 14
-@@ 247 250
-=ui/error.menu 217 218
-+		textaligny 11
-=ui/options.menu 100 101
-@@ 253 254
-=ui/options.menu 81 82
-@@ 255 257
-@@ 259 268
 +		name game
 =ui/options.menu 129 130
-+		text "Skip Intro:"
-+		cvar "cod_skipIntro"
++		text "Subtitles:"
++		cvar "cod_subtitles"
++		rect 240 210 320 14
+@@ 247 248
+=ui/error.menu 217 218
+@@ 249 250
+=ui/options.menu 100 101
+@@ 253 257
+=ui/ingame_load.menu 318 320
+@@ 259 268
++		name game
+=ui/cdkey.menu 276 277
++		text "Subtitle Size (0.5-2.5):  "
++		cvar "cod_subtitleScale"
++		maxChars 8
++		maxPaintChars 8
 +		rect 240 235 320 14
 @@ 269 270
 =ui/error.menu 217 218
@@ -167,36 +164,7 @@
 =ui/options.menu 100 101
 @@ 275 300
 =ui/options.menu 81 82
-@@ 302 332
-@@ 333 339
-+		name game
-=ui/options.menu 129 130
-+		text "Subtitles:"
-+		cvar "cod_subtitles"
-+		rect 240 260 320 14
-@@ 340 343
-=ui/error.menu 217 218
-@@ 344 345
-=ui/options.menu 100 101
-@@ 348 349
-=ui/options.menu 81 82
-@@ 351 355
-@@ 356 367
-+		name game
-=ui/cdkey.menu 276 277
-+		text "Subtitle Size (0.5-2.5):  "
-+		cvar "cod_subtitleScale"
-+		maxChars 8
-+		maxPaintChars 8
-+		rect 240 285 320 14
-=ui/options.menu 97 98
-=ui/error.menu 217 218
-=ui/options.menu 99 101
-@@ 368 438
-=ui/options.menu 102 103
-@@ 439 481
-=ui/options.menu 81 82
-@@ 482 555
+@@ 301 555
 @@ 563 564
 =ui/options.menu 81 82
 @@ 565 571

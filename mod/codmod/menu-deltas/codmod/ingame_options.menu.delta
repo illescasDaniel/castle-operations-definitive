@@ -24,7 +24,7 @@
 =ui/ingame.menu 27 29
 +	style 0
 +	border 0
-+	onOpen { hide grpOptions ; show graphics ; show graphicsapply ; setfocus ctr_display }
++	onOpen { hide grpOptions ; show display ; show graphicsapply ; setfocus ctr_display }
 +	onEsc { close ingame_options ; open ingame_settings }
 @@ 15 16
 +////////// CHROME /////////////////////////////////////////////////////////
@@ -117,7 +117,7 @@
 +	hide grpOptions ; show display ; show graphicsapply }
 =ui/clipboard.menu 89 92
 =ui/system.menu 42 43
-+	text "GRAPHICS"
++	text "QUALITY"
 =ui/controls.menu 105 106
 =ui/play.menu 196 198
 +	textscale .30
@@ -157,17 +157,76 @@
 =ui/error.menu 217 218
 +		textaligny 9
 +		textscale .20
-@@ 329 353
+@@ 329 330
 +		action { play "sound/misc/kcaction.wav" ; open vidmode_popmenu }
 +		}
-@@ 355 356
+@@ 331 331
+=ui/ingame_options.menu 213 214
 +		name display
-@@ 357 365
-=ui/controls.menu 720 721
+=ui/options.menu 260 262
 +		text "Display Mode:"
 +		cvar "r_displayMode"
 +		cvarFloatList { "Windowed" 0 "Borderless Windowed" 1 "Fullscreen (default)" 2 }
 +		rect 240 129 320 11
+=ui/ingame_options.menu 81 82
+=ui/error.menu 217 218
++		textaligny 9
++		textscale .20
+=ui/ingame_options.menu 325 329
++		}
+@@ 332 332
+=ui/ingame_options.menu 213 214
++		name display
+=ui/options.menu 260 262
++		text "Vertical Sync:"
++		cvar "r_vsync"
++		cvarFloatList { "Off" 0 "On" 1 "Adaptive" 2 "Triple Buffer" 3 "Low Latency" 4 }
++		rect 240 140 320 11
+=ui/ingame_options.menu 81 82
+=ui/error.menu 217 218
++		textaligny 9
++		textscale .20
+=ui/ingame_options.menu 325 329
++		}
+@@ 333 333
+=ui/ingame_options.menu 213 214
++		name display
+=ui/options.menu 260 262
++		text "Frame Rate Limit:"
++		cvar "com_maxfps"
++		cvarFloatList { "Off" 0 "Auto (%hz)" -1 "30" 30 "60" 60 "75" 75 "90" 90 "120" 120 "144" 144 "165" 165 "240" 240 "360" 360 }
++		rect 240 151 320 11
+=ui/ingame_options.menu 81 82
+=ui/error.menu 217 218
++		textaligny 9
++		textscale .20
+=ui/ingame_options.menu 325 329
++		}
+@@ 334 335
+@@ 336 337
++		name display
+@@ 338 347
+=ui/controls.menu 720 721
++		text "Menu Frame Rate Limit:"
++		cvar "com_maxfpsMenu"
++		cvarFloatList { "Auto (%hz)" -1 "Off" 0 "30" 30 "60" 60 "75" 75 "90" 90 "120" 120 "144" 144 "165" 165 "240" 240 "360" 360 }
++		rect 240 162 320 11
+=ui/ingame_options.menu 81 82
+=ui/error.menu 217 218
++		textaligny 9
++		textscale .20
+@@ 348 352
+=ui/ingame_options.menu 326 329
++		}
+@@ 355 356
++		name display
+@@ 357 365
+=ui/cdkey.menu 276 277
++		text "Field of View:"
++		cvar "cg_fov"
++		maxChars 4
++		maxPaintChars 4
++		rect 240 195 320 11
 =ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
 +		textaligny 9
@@ -178,11 +237,12 @@
 @@ 374 375
 +		name display
 @@ 376 384
-=ui/controls.menu 720 721
-+		text "Vertical Sync:"
-+		cvar "r_vsync"
-+		cvarFloatList { "Off" 0 "On" 1 "Adaptive" 2 "Triple Buffer" 3 "Low Latency" 4 }
-+		rect 240 140 320 11
+=ui/cdkey.menu 276 277
++		text "Gamma:"
++		cvar "r_gamma"
++		maxChars 6
++		maxPaintChars 6
++		rect 240 206 320 11
 =ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
 +		textaligny 9
@@ -191,38 +251,8 @@
 =ui/ingame_options.menu 326 329
 +		}
 @@ 392 393
-+		name display
-@@ 394 402
-=ui/controls.menu 720 721
-+		text "Frame Rate Limit:"
-+		cvar "com_maxfps"
-+		cvarFloatList { "Off" 0 "Auto (%hz)" -1 "30" 30 "60" 60 "75" 75 "90" 90 "120" 120 "144" 144 "165" 165 "240" 240 "360" 360 }
-+		rect 240 151 320 11
-=ui/ingame_options.menu 81 82
-=ui/error.menu 217 218
-+		textaligny 9
-+		textscale .20
-@@ 404 410
-=ui/ingame_options.menu 327 329
-+		}
-@@ 412 420
-+		name display
-@@ 421 430
-=ui/controls.menu 720 721
-+		text "Menu Frame Rate Limit:"
-+		cvar "com_maxfpsMenu"
-+		cvarFloatList { "Auto (%hz)" -1 "Off" 0 "30" 30 "60" 60 "75" 75 "90" 90 "120" 120 "144" 144 "165" 165 "240" 240 "360" 360 }
-+		rect 240 162 320 11
-=ui/ingame_options.menu 81 82
-=ui/error.menu 217 218
-+		textaligny 9
-+		textscale .20
-@@ 432 436
-=ui/ingame_options.menu 327 329
-+		}
-@@ 438 439
 =ui/ingame_system.menu 72 73
-@@ 440 443
+@@ 394 402
 =ui/controls.menu 720 721
 +		text "Anti-Aliasing:"
 +		cvar "r_aa"
@@ -232,9 +262,12 @@
 =ui/error.menu 217 218
 +		textaligny 9
 +		textscale .20
-=ui/ingame_options.menu 325 329
-=ui/ingame_system.menu 69 73
-=ui/ingame_options.menu 216 217
+@@ 404 410
+=ui/ingame_options.menu 327 329
++		}
+@@ 412 420
+=ui/ingame_system.menu 72 73
+@@ 421 430
 =ui/cdkey.menu 276 277
 +		text "Render Scale (0.25-1):"
 +		cvar "r_renderScale"
@@ -245,9 +278,12 @@
 =ui/error.menu 217 218
 +		textaligny 9
 +		textscale .20
-=ui/ingame_options.menu 325 329
-=ui/ingame_system.menu 69 73
-=ui/ingame_options.menu 216 217
+@@ 432 436
+=ui/ingame_options.menu 327 329
++		}
+@@ 438 439
+=ui/ingame_system.menu 72 73
+@@ 440 443
 =ui/cdkey.menu 276 277
 +		text "FSR Sharpening (-1 auto, 0-1):"
 +		cvar "r_renderScaleSharp"
@@ -286,24 +322,11 @@
 =ui/ingame_system.menu 69 73
 =ui/ingame_options.menu 216 217
 =ui/cdkey.menu 276 277
-+		text "Gamma:"
-+		cvar "r_gamma"
-+		maxChars 6
-+		maxPaintChars 6
-+		rect 240 173 320 11
-=ui/ingame_options.menu 81 82
-=ui/error.menu 217 218
-+		textaligny 9
-+		textscale .20
-=ui/ingame_options.menu 325 329
-=ui/ingame_system.menu 69 73
-=ui/ingame_options.menu 216 217
-=ui/cdkey.menu 276 277
 +		text "Exposure:"
 +		cvar "r_cameraExposure"
 +		maxChars 6
 +		maxPaintChars 6
-+		rect 240 184 320 11
++		rect 240 173 320 11
 =ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
 +		textaligny 9
@@ -314,7 +337,7 @@
 +		text "Bloom:"
 +		cvar "r_bloom"
 +		cvarFloatList { "Off" 0 "Low" 1 "Medium" 2 "High" 3 }
-+		rect 240 195 320 11
++		rect 240 184 320 11
 =ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
 +		textaligny 9
@@ -325,7 +348,7 @@
 +		text "Color Grade:"
 +		cvar "r_grade"
 +		cvarFloatList { "Off" 0 "On (default)" 1 }
-+		rect 240 206 320 11
++		rect 240 195 320 11
 =ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
 +		textaligny 9
@@ -336,7 +359,7 @@
 =ui/ingame_system.menu 462 464
 +		textscale .20
 =ui/ingame_options.menu 38 39
-+		rect 240 217 320 11
++		rect 240 206 320 11
 @@ 444 447
 =ui/error.menu 217 218
 +		textaligny 9

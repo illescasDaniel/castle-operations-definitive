@@ -97,7 +97,7 @@ never name them `zz_*`.
 - Never name a pk3 `zz_*`: the engine renames those to `sp_` (see `codmod.cfg`, `memory/decisions.md`).
 - Options live in `options.menu` (main) and `ingame_options.menu` (pause). Change both and keep their rows identical
   (the benchmark rows exist only in the main one). `system.menu` / `ingame_system.menu` are redirect stubs.
-- Options page: tabs `ctr_display` (items `name display`: video mode, display mode, vsync, FPS limits, frame pacing), `ctr_graphics` (`name graphics`) and `ctr_advanced` (`name advanced`). Display Mode (windowed / borderless / fullscreen) is the cvar `r_displayMode`, a view over `r_fullscreen` + `r_noborder` (`CL_ApplyDisplayMode` in cl_main.c); borderless forces `r_mode -2`. Every row has
+- Options page: tabs `ctr_display` (items `name display`: video mode, display mode, vsync, FPS limits, frame pacing, FOV and gamma), `ctr_graphics` (labelled Quality) (`name graphics`) and `ctr_advanced` (`name advanced`). Display Mode (windowed / borderless / fullscreen) is the cvar `r_displayMode`, a view over `r_fullscreen` + `r_noborder` (`CL_ApplyDisplayMode` in cl_main.c); borderless forces `r_mode -2`. Every row has
   `group grpOptions`, `rect 240 <y> 320 11`, 11 px pitch. Tabs show their items with
   `hide grpOptions ; show <name> ; show graphicsapply`. A tab's last row must stay above the Apply button (y 418).
 - Text does not wrap or clip: at scale .17 about 55 characters fit from x=240. Split long notes into several lines.
@@ -128,8 +128,7 @@ user's choice. Never edit the user's `wolfconfig.cfg` (`docs/testing.md`, Safety
 
 ## What is exposed, and why
 
-GRAPHICS shows only settings with a real effect (mode, fullscreen, vsync, FPS cap, anti-aliasing,
-gamma, HDR exposure, render scale).
+Graphics has Display, Quality and Advanced tabs. Display includes FOV (mod default 100) and gamma; Quality includes anti-aliasing, HDR exposure and render scale.
 Render Scale is a latched EDITFIELD (0.25-1, default 0.77 from `codmod_gfxdefaults.cfg`, 1 = native) under Anti-Aliasing; it
 needs Apply, FSR1 upscales the lower-resolution scene, and Restore defaults resets it. Rows that Restore must reset have to
 live in `codmod_gfxdefaults.cfg`, not `codmod_defaults.cfg`.

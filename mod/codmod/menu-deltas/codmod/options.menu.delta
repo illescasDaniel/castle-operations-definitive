@@ -119,7 +119,7 @@
 +	hide grpOptions ; show display ; show graphicsapply }
 =ui/clipboard.menu 89 92
 =ui/system.menu 42 43
-+	text "GRAPHICS"
++	text "QUALITY"
 =ui/controls.menu 105 106
 =ui/play.menu 196 198
 +	textscale .30
@@ -210,6 +210,32 @@
 +		textaligny 9
 +		textscale .20
 =ui/options.menu 345 349
+=ui/cdkey.menu 113 117
++		name display
+@@ 577 579
++		text "Field of View:"
++		cvar "cg_fov"
++		maxChars 4
++		maxPaintChars 4
++		rect 240 195 320 11
+=ui/options.menu 97 98
+=ui/error.menu 217 218
++		textaligny 9
++		textscale .20
+=ui/options.menu 345 349
+=ui/options.menu 441 444
++		name display
+=ui/options.menu 91 92
+=ui/cdkey.menu 276 277
++		text "Gamma:"
++		cvar "r_gamma"
+@@ 581 582
++		rect 240 206 320 11
+@@ 583 586
+=ui/error.menu 217 218
++		textaligny 9
++		textscale .20
+=ui/options.menu 345 349
 =ui/ingame_system.menu 69 73
 =ui/options.menu 260 262
 +		text "Anti-Aliasing:"
@@ -222,7 +248,8 @@
 +		textscale .20
 =ui/options.menu 345 349
 =ui/ingame_system.menu 69 73
-@@ 577 579
+=ui/options.menu 91 92
+=ui/cdkey.menu 276 277
 +		text "Render Scale (0.25-1):"
 +		cvar "r_renderScale"
 +		maxChars 5
@@ -273,23 +300,11 @@
 =ui/ingame_system.menu 69 73
 =ui/options.menu 91 92
 =ui/cdkey.menu 276 277
-+		text "Gamma:"
-+		cvar "r_gamma"
-@@ 581 582
-+		rect 240 173 320 11
-@@ 583 586
-=ui/error.menu 217 218
-+		textaligny 9
-+		textscale .20
-=ui/options.menu 345 349
-=ui/ingame_system.menu 69 73
-=ui/options.menu 91 92
-=ui/cdkey.menu 276 277
 +		text "Exposure:"
 +		cvar "r_cameraExposure"
 +		maxChars 6
 +		maxPaintChars 6
-+		rect 240 184 320 11
++		rect 240 173 320 11
 =ui/options.menu 97 98
 =ui/error.menu 217 218
 +		textaligny 9
@@ -300,7 +315,7 @@
 +		text "Bloom:"
 +		cvar "r_bloom"
 +		cvarFloatList { "Off" 0 "Low" 1 "Medium" 2 "High" 3 }
-+		rect 240 195 320 11
++		rect 240 184 320 11
 =ui/options.menu 97 98
 =ui/error.menu 217 218
 +		textaligny 9
@@ -311,7 +326,7 @@
 +		text "Color Grade:"
 +		cvar "r_grade"
 +		cvarFloatList { "Off" 0 "On (default)" 1 }
-+		rect 240 206 320 11
++		rect 240 195 320 11
 =ui/options.menu 97 98
 =ui/error.menu 217 218
 +		textaligny 9
@@ -322,7 +337,7 @@
 =ui/ingame_system.menu 462 464
 +		textscale .20
 =ui/options.menu 76 77
-+		rect 240 217 320 11
++		rect 240 206 320 11
 =ui/options.menu 434 435
 =ui/error.menu 217 218
 +		textaligny 9
@@ -336,7 +351,7 @@
 +		type 1
 +		textscale .20
 =ui/options.menu 76 77
-+		rect 240 228 320 11
++		rect 240 217 320 11
 =ui/options.menu 434 435
 =ui/error.menu 217 218
 +		textaligny 9
@@ -352,7 +367,7 @@
 +		cvar "cl_benchSummary"
 +		maxChars 64
 +		maxPaintChars 44
-+		rect 240 239 320 11
++		rect 240 228 320 11
 =ui/options.menu 97 98
 =ui/error.menu 217 218
 +		textaligny 9
@@ -363,7 +378,7 @@
 =ui/ingame_system.menu 71 73
 =ui/options.menu 91 92
 +		text "Render Scale needs Apply (1 = native). Sharpening: 0 = off, 1 = max."
-+		rect 240 253 320 10
++		rect 240 242 320 10
 =ui/ingame_save.menu 280 281
 =ui/default.menu 47 48
 +		textaligny 8

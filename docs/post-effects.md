@@ -4,7 +4,7 @@ title: Post effects - bloom and colour grade
 summary: Post effects - bloom and colour grade — Cost (bench demo, 2561x1601, SMAA High, median of 3, same session); Highlight roll-off (2026-10-22)
 type: explanation
 status: draft
-updated: 2026-10-22
+updated: 2026-11-16
 verified:
 covers: [iortcw/SP/code/rend2/tr_postprocess.c]
 related: []
@@ -72,3 +72,7 @@ Bright sky/windows used to clip to flat white (tonemap hard clamp + bloom screen
 rolls values above `SHOULDER_KNEE` (0.7) off Reinhard-style instead of clamping, and bloom is pinned lower
 (`r_bloomThreshold` 0.8, `r_bloomIntensity` 1.8, was 0.6 / 2.5) so it no longer washes the sky out. Torch/lamp glow is
 a little tighter. Tune in `codmod.cfg`; revert the shoulder by making the knee 1.0.
+
+## Panini correction
+
+`r_panini` is a live, archived graphics setting, enabled in codmod's advanced graphics defaults and disabled by default in the standalone engine. It applies standard Panini projection (d=1) to full-frame world views when the rendered horizontal FOV is at least 70 degrees. The vertical field is cropped to avoid empty corners; HUD and menus remain unwarped. It runs in the existing 3D grade composite and requires framebuffer objects and `r_postProcess 1`. Partial views, sky portals and model previews are excluded; a two-pixel viewport tolerance accommodates odd display dimensions and render-scale rounding.

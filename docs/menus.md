@@ -4,7 +4,7 @@ title: Menus - building and editing rules
 summary: Menus - building and editing rules — Which layer does a row belong in; How menus are stored (licensing); Build and install
 type: how-to
 status: draft
-updated: 2026-11-05
+updated: 2026-11-16
 verified:
 covers: [mod/codmod/menu-deltas/**, scripts/build-menus.sh, iortcw]
 related: []
@@ -34,7 +34,7 @@ the submodule (and pushed to the fork), codmod deltas in this repo.
 ## Which layer does a row belong in
 
 - **Engine layer**: rows for cvars that the engine/fork implements and that work without the mod: `r_ao`, `r_aa`,
-  `r_bloom`, `r_grade`, `r_codSpecular`, `r_flashlightShadow`, `r_cameraExposure`, gamma, `r_displayMode`, `r_vsync`,
+  `r_bloom`, `r_grade`, `r_panini`, `r_codSpecular`, `r_flashlightShadow`, `r_cameraExposure`, gamma, `r_displayMode`, `r_vsync`,
   `com_maxfps`/`com_maxfpsMenu`, video-mode popup, shadow size/filter, anisotropic filter, `s_alHRTF`, `in_joystick`,
   `cod_padSensX/Y`, `cod_padGyro`, `cod_padGyroSens` (read by `cl_input.c`, so engine despite the prefix),
   `cod_subtitles`/`cod_subtitleScale`, text/audio language popups. Rules: no references to codmod cfgs, codmod art

@@ -401,10 +401,10 @@
 =ui/ingame_system.menu 487 492
 +		name advanced
 =ui/options.menu 260 262
-+		text "Shadow Map Size:"
-+		cvar "r_shadowMapSize"
-+		cvarFloatList { "512" 512 "1024" 1024 "2048 (default)" 2048 }
-+		rect 240 153 320 11
++		text "Panini Correction:"
++		cvar "r_panini"
++		cvarFloatList { "Off" 0 "On (default)" 1 }
++		rect 240 285 320 11
 @@ 483 486
 =ui/error.menu 217 218
 +		textaligny 9
@@ -413,10 +413,10 @@
 +		name advanced
 @@ 495 501
 =ui/controls.menu 720 721
-+		text "Flashlight Shadow Size:"
-+		cvar "r_flashlightShadowSize"
++		text "Shadow Map Size:"
++		cvar "r_shadowMapSize"
 +		cvarFloatList { "512" 512 "1024" 1024 "2048 (default)" 2048 }
-+		rect 240 164 320 11
++		rect 240 153 320 11
 @@ 502 505
 =ui/error.menu 217 218
 +		textaligny 9
@@ -425,10 +425,10 @@
 +		name advanced
 @@ 514 521
 =ui/controls.menu 720 721
-+		text "Soft Shadows:"
-+		cvar "r_shadowFilter"
-+		cvarFloatList { "Off" 0 "Soft" 1 "Softer (default)" 2 }
-+		rect 240 175 320 11
++		text "Flashlight Shadow Size:"
++		cvar "r_flashlightShadowSize"
++		cvarFloatList { "512" 512 "1024" 1024 "2048 (default)" 2048 }
++		rect 240 164 320 11
 =ui/ingame_options.menu 81 82
 =ui/error.menu 217 218
 +		textaligny 9
@@ -438,6 +438,18 @@
 +		name advanced
 @@ 531 533
 =ui/controls.menu 720 721
++		text "Soft Shadows:"
++		cvar "r_shadowFilter"
++		cvarFloatList { "Off" 0 "Soft" 1 "Softer (default)" 2 }
++		rect 240 175 320 11
+=ui/ingame_options.menu 81 82
+=ui/error.menu 217 218
++		textaligny 9
++		textscale .20
+=ui/ingame_options.menu 325 331
+=ui/ingame_options.menu 213 214
++		name advanced
+=ui/options.menu 260 262
 +		text "Anisotropic Filter:"
 +		cvar "r_ext_texture_filter_anisotropic"
 +		cvarFloatList { "Off" 0 "2x" 2 "4x" 4 "8x" 8 "16x (default)" 16 }
@@ -572,7 +584,7 @@
 +		type 1
 +		textscale .20
 =ui/ingame_options.menu 38 39
-+		rect 240 291 320 11
++		rect 240 302 320 11
 =ui/ingame_options.menu 443 444
 =ui/error.menu 217 218
 +		textaligny 9

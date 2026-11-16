@@ -1,3 +1,17 @@
+---
+id: DOC-017
+title: Lean + aim - shots land above the crosshair (fix plan)
+summary: Lean + aim - shots land above the crosshair (fix plan); historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-15
+verified:
+covers: [iortcw/SP/code/cgame/cg_view.c, iortcw/SP/code/game/g_weapon.c, iortcw/SP/code/game/bg_cod.h, iortcw/SP/code/game/bg_cod.c, scripts/build.sh]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Lean + aim: shots land above the crosshair (fix plan)
 
 Status: steps 1-3 implemented 2026-10-15 (engine `3e63880a`) plus step 4 (viewmodel lean fade in ADS), confirmed in-game by the user 2026-10-15. Executor: follow the steps in order, then stop for the

@@ -1,3 +1,17 @@
+---
+id: DOC-015
+title: Gyro aiming (DualSense)
+summary: Gyro aiming (DualSense); historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-13
+verified:
+covers: []
+related: []
+supersedes:
+superseded_by:
+---
+
 # Gyro aiming (DualSense)
 
 `cod_padGyro`: 0 Off, **1 Aiming (default, only while ADS)**, 2 Always. `cod_padGyroSens` (multiplier, default 1),

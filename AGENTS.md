@@ -2,22 +2,20 @@
 
 Single-player **Return to Castle Wolfenstein** remaster via ioRTCW: CoD4-style
 movement/gunplay, plus optional local AI HD textures and HD audio (tools in
-`tools/`; generated pk3s stay private). Start with `docs/plan.md` (read order
-at the top of that file).
+`tools/`; generated pk3s stay private). Start with `docs/INDEX.md`, then read the relevant documents.
 
-## Memory bank
+## Project memory
 
-Project state lives in `memory/` (git-tracked, so it follows the branch). At session start, read
-`memory/activeContext.md` then `memory/progress.md`. Update on these triggers only: a task is completed or discovered
-(`progress.md`); focus changes, a blocker is hit or work concludes (`activeContext.md`); a significant technical
-decision is made (`decisions.md`, append-only, newest first). Full protocol: the `memory-bank` skill.
+At session start read `memory/NOW.md` and `memory/MEMORY.md`, then check status against git. Record durable decisions,
+preferences, incidents and gotchas as dated notes; use `memory/LATER.md` for deferred open items. Update `NOW.md`
+when work concludes. The old memory-bank files are preserved as historical sources; use the `memory-1` protocol.
 
-## Long-term memory (jevmem)
+## Documentation
 
-The `jevmem` MCP server stores dated facts that stay true: decisions with reasons, bug causes, gotchas, preferences.
-Write them with `memory_write` right after they happen; recall with `memory_recall`. Never store current state or next
-steps there (that goes in `memory/`). A significant decision gets both a `decisions.md` entry and a one-fact jevmem
-note. Full protocol: the `jev-memory` skill.
+Read `docs/INDEX.md` to find relevant documents and check their status and freshness against code. Before changing code,
+use `python3 /home/daniel/.agents/skills/docs-1/scripts/docs_index.py covers <path>...` to find affected docs; update
+them alongside the change. After editing docs, run the script's `write` and `check` commands. Unverified drafts are
+historical context, not authoritative current behavior. Cite documentation by its DOC ID.
 
 ## Safety rules
 
@@ -32,7 +30,7 @@ outer repo (there is no `patches/` any more). Push to the fork only when request
 
 Gate player movement changes in `bg_pmove.c` on `!ps->aiChar` so they do not alter AI behaviour. Put gameplay tuning
 behind `cod_*` cvars. Follow the phase and in-game verification gates in `docs/plan.md` and relevant feature plans;
-record pending gates in `memory/activeContext.md`. This project does not use SDD or `code-grader`.
+record pending gates in `memory/NOW.md` or `memory/LATER.md`. This project does not use SDD or `code-grader`.
 
 ## Building
 

@@ -1,3 +1,17 @@
+---
+id: DOC-024
+title: Performance benchmark
+summary: Performance benchmark; historical design and implementation details, check against code before use
+type: how-to
+status: draft
+updated: 2026-11-05
+verified:
+covers: [scripts/bench.sh, scripts/profile.sh, iortcw]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Performance benchmark
 
 Measures per-frame cost on a fixed, recorded route. Benchmark only: it does not change rendering,

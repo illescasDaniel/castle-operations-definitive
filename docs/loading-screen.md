@@ -1,3 +1,17 @@
+---
+id: DOC-018
+title: Loading screen - never freeze
+summary: Loading screen - never freeze; historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-23
+verified:
+covers: [mod/codmod/codmod.cfg, scripts/load-test.sh]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Loading screen: never freeze
 
 Goal: no present-to-present gap above 33 ms (30 FPS) while a map loads. All of it is internal engine config

@@ -1,3 +1,17 @@
+---
+id: DOC-003
+title: Architecture & Cross-Cutting Rules
+summary: Architecture & Cross-Cutting Rules; historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-21
+verified:
+covers: [mod/codmod/**, scripts/run.sh, iortcw]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Architecture & Cross-Cutting Rules
 
 Everything here applies to phases 2–5b. Line numbers refer to ioRTCW commit `438e7d4`

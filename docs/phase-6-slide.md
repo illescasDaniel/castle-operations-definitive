@@ -1,3 +1,17 @@
+---
+id: DOC-033
+title: Phase 6 — Tactical Slide
+summary: Phase 6 — Tactical Slide; historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-12
+verified:
+covers: []
+related: []
+supersedes:
+superseded_by:
+---
+
 # Phase 6 — Tactical Slide
 
 **Prerequisite:** Phase 5d (binds / toggle crouch / flashlight / reload anim) confirmed.

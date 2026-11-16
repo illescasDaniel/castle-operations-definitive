@@ -1,3 +1,17 @@
+---
+id: DOC-043
+title: Subtitles
+summary: Subtitles; historical design and implementation details, check against code before use
+type: how-to
+status: draft
+updated: 2026-10-18
+verified:
+covers: [tools/subtitles/build/text/subtitles.txt, tools/subtitles/transcribe.py, tools/subtitles/pack.py, iortcw/SP/code/cgame/cg_subtitles.c, tools/subtitles]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Subtitles
 
 Voice-line subtitles for the single-player campaign (phase L1 of [phase-l10n.md](phase-l10n.md)). The text is

@@ -1,3 +1,17 @@
+---
+id: DOC-002
+title: Tactical enemy AI
+summary: Tactical enemy AI; historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-20
+verified:
+covers: [iortcw]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Tactical enemy AI
 
 Human enemy soldiers in the remaster fight like a squad instead of standing in the open: they take cover, peek, strafe,

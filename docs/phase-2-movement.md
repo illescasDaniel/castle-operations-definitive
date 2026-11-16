@@ -1,3 +1,17 @@
+---
+id: DOC-026
+title: Phase 2 — Modernized Movement (CoD4 Tuning)
+summary: Phase 2 — Modernized Movement (CoD4 Tuning); historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-16
+verified:
+covers: [scripts/build.sh, scripts/install.sh]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Phase 2 — Modernized Movement (CoD4 Tuning)
 
 **Prerequisite:** Phase 1 confirmed by the user.

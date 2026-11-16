@@ -1,3 +1,17 @@
+---
+id: DOC-025
+title: Phase 1 — Linux Workspace Setup & Baseline Build
+summary: Phase 1 — Linux Workspace Setup & Baseline Build; historical design and implementation details, check against code before use
+type: how-to
+status: draft
+updated: 2026-10-22
+verified:
+covers: [iortcw/SP, scripts/setup.sh, iortcw/.git, scripts/build.sh, scripts/install.sh, iortcw/SP/build/release-linux-x86_64/, scripts/run.sh, mod/codmod/codmod.cfg]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Phase 1 — Linux Workspace Setup & Baseline Build
 
 **Goal:** a reproducible workspace. It builds unmodified ioRTCW SP (engine plus

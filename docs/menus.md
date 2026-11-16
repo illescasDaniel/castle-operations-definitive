@@ -1,3 +1,17 @@
+---
+id: DOC-020
+title: Menus - building and editing rules
+summary: Menus - building and editing rules; historical design and implementation details, check against code before use
+type: how-to
+status: draft
+updated: 2026-11-05
+verified:
+covers: [mod/codmod/menu-deltas/**, scripts/build-menus.sh, iortcw]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Menus: building and editing rules
 
 Menus come in **two layers**. The engine layer is for engine features any player can use; the codmod layer is the

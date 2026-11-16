@@ -1,3 +1,17 @@
+---
+id: DOC-041
+title: SMAA anti-aliasing (replaces MSAA 2x as default) — plan
+summary: SMAA anti-aliasing (replaces MSAA 2x as default) — plan; historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-22
+verified:
+covers: [scripts/bench.sh, iortcw/rend2-cvars.txt, mod/codmod/codmod.cfg, scripts/run.sh, mod/codmod/ui/options.menu, scripts/install.sh]
+related: []
+supersedes:
+superseded_by:
+---
+
 # SMAA anti-aliasing (replaces MSAA 2x as default) — plan
 
 Status: **done** (implemented, benchmarked +18% vs MSAA 2x, user-tested in game: HUD/menus fine) (2026-10-12). SMAA code is by Jimenez et al. (MIT), see [credits.md](credits.md). Engine work in `iortcw/` (branch `codmod`), rend2 only.

@@ -1,3 +1,17 @@
+---
+id: DOC-042
+title: SSAO (rend2) - GTAO + depth-aware upsample
+summary: SSAO (rend2) - GTAO + depth-aware upsample; historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-18
+verified:
+covers: [iortcw/SP/code/rend2/]
+related: []
+supersedes:
+superseded_by:
+---
+
 # SSAO (rend2): GTAO + depth-aware upsample
 
 Engine-side only (`iortcw/SP/code/rend2/`). `r_ssao` (0/1) is derived from `r_ao` (see below), so it is the on/off

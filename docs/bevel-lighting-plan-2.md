@@ -1,3 +1,17 @@
+---
+id: DOC-005
+title: Bevel corners round 2 - why spots 1-8 still fail and the plan (architect, 2026-10-22)
+summary: Bevel corners round 2 - why spots 1-8 still fail and the plan (architect, 2026-10-22); historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-22
+verified:
+covers: [scripts/shot-at.sh, scripts/seam-metric.py, scripts/build-world.sh]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Bevel corners round 2: why spots 1-8 still fail and the plan (architect, 2026-10-22)
 
 Follow-up to `docs/bevel-lighting-plan.md` (P0-P4 implemented). Repro: `scripts/shot-at.sh --map tram --label NAME

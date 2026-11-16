@@ -1,3 +1,17 @@
+---
+id: DOC-006
+title: Bevel corners - continuous lighting, connected textures, white hole
+summary: Bevel corners - continuous lighting, connected textures, white hole; historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-22
+verified:
+covers: [tools/world-bevel-jl/src, scripts/shot-at.sh, scripts/seam-metric.py, scripts/build-world.sh]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Bevel corners: continuous lighting, connected textures, white hole
 
 Status: approved by the user 2026-10-22, implementation in progress. Tool: `tools/world-bevel-jl/src` (`bevel1.jl`

@@ -1,3 +1,17 @@
+---
+id: DOC-032
+title: Phase 5d — Binds, toggle crouch, health clamp, flashlight, reload anim
+summary: Phase 5d — Binds, toggle crouch, health clamp, flashlight, reload anim; historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-18
+verified:
+covers: [mod/codmod/codmod_binds.cfg, scripts/run.sh]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Phase 5d — Binds, toggle crouch, health clamp, flashlight, reload anim
 
 **Prerequisite:** Phase 5c (CoD HUD) confirmed.

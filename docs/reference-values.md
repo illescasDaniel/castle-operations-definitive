@@ -1,3 +1,17 @@
+---
+id: DOC-039
+title: Reference Values - Vanilla RTCW vs CoD4 vs Mod Defaults
+summary: Reference Values - Vanilla RTCW vs CoD4 vs Mod Defaults; historical design and implementation details, check against code before use
+type: reference
+status: draft
+updated: 2026-10-18
+verified:
+covers: [iortcw, mod/codmod/**]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Reference Values: Vanilla RTCW vs CoD4 vs Mod Defaults
 
 All speeds are in game units per second (u/s), horizontal.

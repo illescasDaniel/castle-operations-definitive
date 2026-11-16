@@ -1,3 +1,17 @@
+---
+id: DOC-045
+title: Testing Guide
+summary: Testing Guide; historical design and implementation details, check against code before use
+type: how-to
+status: draft
+updated: 2026-10-23
+verified:
+covers: [scripts/**, tools/rtcw-mcp/**, iortcw]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Testing Guide
 
 There is no automated test harness for game feel. Testing combines **build checks**,

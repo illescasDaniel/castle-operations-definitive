@@ -1,3 +1,17 @@
+---
+id: DOC-027
+title: Phase 3 — Aim Down Sights (ADS)
+summary: Phase 3 — Aim Down Sights (ADS); historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-12
+verified:
+covers: [mod/codmod/codmod.cfg, mod/codmod/codmod_binds.cfg, scripts/run.sh]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Phase 3 — Aim Down Sights (ADS)
 
 **Prerequisite:** Phase 2 confirmed. The tuning framework, debug HUD, and `STAT_COD_*` exist.

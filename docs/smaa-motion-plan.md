@@ -1,3 +1,17 @@
+---
+id: DOC-040
+title: SMAA on moving objects — plan
+summary: SMAA on moving objects — plan; historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-22
+verified:
+covers: []
+related: []
+supersedes:
+superseded_by:
+---
+
 # SMAA on moving objects — plan
 
 Status: **plan only** (2026-10-21), not implemented. Builds on [smaa.md](smaa.md) (SMAA 1x, `r_aa 3` default).

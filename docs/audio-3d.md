@@ -1,3 +1,17 @@
+---
+id: DOC-004
+title: 3D audio (HRTF)
+summary: 3D audio (HRTF); historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-12
+verified:
+covers: [iortcw/SP/code/client/snd_openal.c]
+related: []
+supersedes:
+superseded_by:
+---
+
 # 3D audio (HRTF)
 
 Positional sound already ran through OpenAL Soft (`iortcw/SP/code/client/snd_openal.c`); every entity sound has a

@@ -1,3 +1,17 @@
+---
+id: DOC-014
+title: Gameplay options (MODS > GAMEPLAY)
+summary: Gameplay options (MODS > GAMEPLAY); historical design and implementation details, check against code before use
+type: reference
+status: draft
+updated: 2026-10-18
+verified:
+covers: [mod/codmod/ui/gameplay.menu]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Gameplay options (MODS > GAMEPLAY)
 
 Eleven on/off toggles that switch the mod's mechanics back to original RTCW. Menu: `mod/codmod/ui/gameplay.menu`

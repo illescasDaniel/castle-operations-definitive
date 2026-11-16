@@ -1,3 +1,17 @@
+---
+id: DOC-028
+title: Phase 4 — Gait / movement presentation
+summary: Phase 4 — Gait / movement presentation; historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-12
+verified:
+covers: []
+related: []
+supersedes:
+superseded_by:
+---
+
 # Phase 4 — Gait / movement presentation
 
 **Prerequisite:** Phase 3 ADS core accepted (per-weapon iron-sight bake may still be deferred).

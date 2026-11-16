@@ -1,3 +1,17 @@
+---
+id: DOC-031
+title: Phase 5c — CoD-style on-screen HUD
+summary: Phase 5c — CoD-style on-screen HUD; historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-12
+verified:
+covers: [mod/codmod/ui/hud.menu, mod/codmod/codmod.cfg]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Phase 5c — CoD-style on-screen HUD
 
 **Prerequisite:** Phase 5b (vitals + ammo scale + interact hints) confirmed.

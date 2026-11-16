@@ -1,3 +1,17 @@
+---
+id: DOC-023
+title: Parallax mapping
+summary: Parallax mapping; historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-11-05
+verified:
+covers: [mod/codmod/codmod_gfxdefaults.cfg, mod/codmod/codmod.cfg, tools/height-bake, tools/height-bake/.venv/bin/python, tools/height-bake/height_bake.py, scripts/build-menus.sh, scripts/build.sh]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Parallax mapping
 
 Relief parallax (with self-shadowing) on walls and floors, driven by AI-generated height maps. rend2 samples a

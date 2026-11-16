@@ -1,3 +1,17 @@
+---
+id: DOC-038
+title: Post effects - bloom and colour grade
+summary: Post effects - bloom and colour grade; historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-22
+verified:
+covers: [iortcw/SP/code/rend2/tr_postprocess.c]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Post effects: bloom and colour grade
 
 Both are on by default (`r_bloom 2` = Medium, `r_grade 1`); an existing wolfconfig with a saved `seta r_bloom "0"` / `seta r_grade "0"` keeps the user's old choice (archived cvars; only Reset restores the new defaults). Code:

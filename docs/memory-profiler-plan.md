@@ -1,3 +1,17 @@
+---
+id: DOC-019
+title: Memory profiler plan (RAM + VRAM, 2026-11-05)
+summary: Memory profiler plan (RAM + VRAM, 2026-11-05); historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-11-05
+verified:
+covers: [scripts/bench.sh, scripts/memmon.sh, iortcw/SP/code, scripts/profile-report.py, iortcw/SP/Makefile, scripts/profile.sh, tools/rtcw-mcp/server.py]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Memory profiler plan (RAM + VRAM, 2026-11-05)
 
 Architect design, approved by the user incl. pak attribution. Goal: see WHERE memory goes (the totals come from

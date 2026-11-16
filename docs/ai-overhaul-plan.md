@@ -1,3 +1,17 @@
+---
+id: DOC-001
+title: Tactical AI overhaul (F.E.A.R.-style soldiers)
+summary: Tactical AI overhaul (F.E.A.R.-style soldiers); historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-20
+verified:
+covers: [scripts/build.sh, scripts/gen-cod-tuning.py, mod/codmod/codmod_tuning.cfg]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Tactical AI overhaul (F.E.A.R.-style soldiers)
 
 Goal: human enemies that use cover, pop out to shoot, crouch, move around corners, coordinate as a squad, flank,

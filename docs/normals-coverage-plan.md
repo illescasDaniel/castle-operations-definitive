@@ -1,3 +1,17 @@
+---
+id: DOC-021
+title: Normals everywhere - models, characters and wall coverage (plan, 2026-10-23)
+summary: Normals everywhere - models, characters and wall coverage (plan, 2026-10-23); historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-23
+verified:
+covers: [tools/height-bake/README.md]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Normals everywhere: models, characters and wall coverage (plan, 2026-10-23)
 
 Status 2026-10-23: steps 0-5 implemented and built, uncommitted. User confirmed characters look good in game; walls and props still to be judged; step 6 (perf) and the halo fix open. Gate: user confirms each step in game. Background: `docs/parallax.md`,

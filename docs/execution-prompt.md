@@ -1,3 +1,17 @@
+---
+id: DOC-009
+title: Execution Prompt (paste into a fresh Claude Sonnet session)
+summary: Execution Prompt (paste into a fresh Claude Sonnet session); historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-15
+verified:
+covers: [mod/]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Execution Prompt (paste into a fresh Claude Sonnet session)
 
 Start the session in the repo root (`rtcw-cod/`). Paste everything inside the

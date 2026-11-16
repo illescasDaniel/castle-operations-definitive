@@ -1,3 +1,17 @@
+---
+id: DOC-012
+title: Compositor mode (r_frameWarp 2, "AP") plan, architect report 2026-10-26
+summary: Compositor mode (r_frameWarp 2, "AP") plan, architect report 2026-10-26; historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-31
+verified:
+covers: [scripts/build.sh, scripts/bench.sh, mod/codmod/codmod.cfg]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Compositor mode (`r_frameWarp 2`, "AP") plan, architect report 2026-10-26
 
 Status: planned, nothing built. Gate: user go-ahead for step 1.

@@ -1,3 +1,17 @@
+---
+id: DOC-007
+title: Plan - separate engine capability from codmod config
+summary: Plan - separate engine capability from codmod config; historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-18
+verified:
+covers: [mod/codmod/, iortcw/SP/menus/deltas/, iortcw/SP/Makefile, scripts/build.sh, scripts/shots.sh, scripts/run.sh, scripts/build-menus.sh, scripts/menus.py]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Plan: separate engine capability from codmod config
 
 Status: Phase 1 implemented 2026-10-18 (uncommitted; menu layers in progress); awaiting user in-game check.

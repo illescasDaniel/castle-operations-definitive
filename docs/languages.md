@@ -1,3 +1,17 @@
+---
+id: DOC-016
+title: Languages (text and audio packs)
+summary: Languages (text and audio packs); historical design and implementation details, check against code before use
+type: how-to
+status: draft
+updated: 2026-10-21
+verified:
+covers: [mod/codmod/codmod_defaults.cfg, mod/codmod/lang/, tools/l10n/pack.py, scripts/install.sh, tools/l10n/flags.py]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Languages (text and audio packs)
 
 Status: in progress (2026-10-16). This file is the contract between the translation data, the engine code and the

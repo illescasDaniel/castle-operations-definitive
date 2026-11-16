@@ -1,3 +1,17 @@
+---
+id: DOC-011
+title: Frame-perfect FPS limiter (engine level)
+summary: Frame-perfect FPS limiter (engine level); historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-18
+verified:
+covers: [iortcw/SP/code/qcommon/common.c, scripts/bench.sh, mod/codmod/codmod_defaults.cfg, scripts/run.sh]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Frame-perfect FPS limiter (engine level)
 
 Goal: a frametime graph that is a **flat line** at the cap (e.g. 6.944 ms for 144),

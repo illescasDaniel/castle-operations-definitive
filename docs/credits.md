@@ -1,3 +1,17 @@
+---
+id: DOC-008
+title: Third-party credits
+summary: Third-party credits; historical design and implementation details, check against code before use
+type: reference
+status: draft
+updated: 2026-10-16
+verified:
+covers: [iortcw/SP/code/rend2/, tools/hd-textures, tools/hd-audio, tools/hd-video, mod/codmod/ui/assets/codmod_cursor.tga, mod/codmod/demos/codmod_bench.dm_50]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Third-party credits
 
 ## SMAA (Enhanced Subpixel Morphological Antialiasing)

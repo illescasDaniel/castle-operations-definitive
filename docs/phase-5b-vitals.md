@@ -1,3 +1,17 @@
+---
+id: DOC-030
+title: Phase 5b — Health, stamina & vital HUD
+summary: Phase 5b — Health, stamina & vital HUD; historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-12
+verified:
+covers: [mod/codmod/, mod/codmod/ui/hud.menu, mod/codmod/codmod.cfg, mod/codmod/codmod_hud.pk3]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Phase 5b — Health, stamina & vital HUD
 
 **Prerequisite:** Phase 5.5 quickknife confirmed.

@@ -1,3 +1,17 @@
+---
+id: DOC-044
+title: Stable sun shadows
+summary: Stable sun shadows; historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-22
+verified:
+covers: [iortcw/SP/code/rend2, mod/codmod/codmod.cfg, scripts/bench.sh]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Stable sun shadows
 
 Cascaded sun shadows (`r_forceSun 1`, `r_sunShadows 1`, 3 cascades + a level-wide 4th) used to swim when the

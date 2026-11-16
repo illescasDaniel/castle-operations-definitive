@@ -1,3 +1,17 @@
+---
+id: DOC-010
+title: Flashlight - per-pixel light on models, shadows
+summary: Flashlight - per-pixel light on models, shadows; historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-21
+verified:
+covers: [iortcw/CODMOD.md]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Flashlight: per-pixel light on models, shadows
 
 Engine side lives in `iortcw/` (see `iortcw/CODMOD.md`, "rend2 additions").

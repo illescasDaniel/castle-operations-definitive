@@ -1,3 +1,17 @@
+---
+id: DOC-036
+title: Phase L — Localization (planned, not started)
+summary: Phase L — Localization (planned, not started); historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-16
+verified:
+covers: [iortcw/SP/code/client/cl_keys.c, tools/subtitles/build/text/subtitles.txt, mod/codmod/lang/, tools/l10n/pack.py]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Phase L — Localization (planned, not started)
 
 Only on user request. RTCW on Steam is English-only: `text/EnglishUSA/` (briefings, objectives), `text/strings.txt` and

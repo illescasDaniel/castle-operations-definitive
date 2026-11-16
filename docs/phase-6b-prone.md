@@ -1,3 +1,17 @@
+---
+id: DOC-034
+title: Phase 6b — Prone (ported from Enemy Territory)
+summary: Phase 6b — Prone (ported from Enemy Territory); historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-12
+verified:
+covers: [mod/codmod/codmod.cfg, mod/codmod/codmod_binds.cfg, scripts/run.sh]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Phase 6b — Prone (ported from Enemy Territory)
 
 **Prerequisite:** Phase 6 (slide) confirmed. Prone touches the same stance code as crouch smoothing (phase 2),

@@ -1,3 +1,17 @@
+---
+id: DOC-035
+title: Phase 7 — Optional Extras (only on user request)
+summary: Phase 7 — Optional Extras (only on user request); historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-13
+verified:
+covers: [tools/hd-textures, tools/hd-audio]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Phase 7 — Optional Extras (only on user request)
 
 Backlog of CoD4-feel improvements outside the core phases. Each is independent.

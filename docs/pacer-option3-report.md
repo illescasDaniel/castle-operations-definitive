@@ -1,3 +1,17 @@
+---
+id: DOC-022
+title: Option 3 report - fence pipeline pacer (com_maxfpsGpuSync 2)
+summary: Option 3 report - fence pipeline pacer (com_maxfpsGpuSync 2); historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-26
+verified:
+covers: []
+related: []
+supersedes:
+superseded_by:
+---
+
 # Option 3 report: fence pipeline pacer (com_maxfpsGpuSync 2)
 
 Implemented and built, NOT committed. Headless 1920x1200 bench, median of 3 runs, `r_vsync 3`.

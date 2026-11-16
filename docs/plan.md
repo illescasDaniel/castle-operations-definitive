@@ -1,3 +1,17 @@
+---
+id: DOC-037
+title: RTCW remaster (codmod) — Master Plan
+summary: RTCW remaster (codmod) — Master Plan; historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-23
+verified:
+covers: [iortcw, mod/codmod/**]
+related: []
+supersedes:
+superseded_by:
+---
+
 # RTCW remaster (`codmod`) — Master Plan
 
 > **Audience:** an execution agent (or human) implementing this mod.

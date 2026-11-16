@@ -1,3 +1,17 @@
+---
+id: DOC-013
+title: Frame warp (asynchronous reprojection)
+summary: Frame warp (asynchronous reprojection); historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-11-04
+verified:
+covers: [iortcw]
+related: []
+supersedes:
+superseded_by:
+---
+
 # Frame warp (asynchronous reprojection)
 
 Branch `frame-warp` (both repos). Engine feature; the engine code default is off (vanilla), the codmod first-launch/Reset default is Smooth (2) since 2026-10-29. Goal: present at the display rate (e.g. 120 Hz) while

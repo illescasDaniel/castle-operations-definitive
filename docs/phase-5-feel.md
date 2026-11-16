@@ -1,3 +1,17 @@
+---
+id: DOC-029
+title: Phase 5 — Movement weight + fire responsiveness
+summary: Phase 5 — Movement weight + fire responsiveness; historical design and implementation details, check against code before use
+type: explanation
+status: draft
+updated: 2026-10-20
+verified:
+covers: []
+related: []
+supersedes:
+superseded_by:
+---
+
 # Phase 5 — Movement weight + fire responsiveness
 
 **Prerequisite:** Phase 4 (gait) confirmed.

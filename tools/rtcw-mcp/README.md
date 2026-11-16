@@ -4,7 +4,7 @@ Local MCP server (stdio, Python) that lets an agent drive the game headless: scr
 normal-map coverage, console output, load-time profiling, benchmarks, image diffs and builds. It wraps the existing
 scripts in `scripts/` where one fits (`load-test.sh`, `bench.sh`, `spin-test.sh`, `build.sh`) and re-implements the
 `shot-at.sh` flow for the screenshot / console / coverage tools (they need per-spot log capture, which `shot-at.sh`
-discards). Nothing is registered globally: you decide.
+discards). The repository registers the server for Claude Code and Codex; it is not registered globally.
 
 ## Setup
 
@@ -15,14 +15,18 @@ uv venv .venv && uv pip install --python .venv/bin/python -r requirements.txt   
 .venv/bin/python tests/smoke_stdio.py           # starts server.py over stdio, lists tools, calls the read-only ones
 ```
 
-Register it for this project only (writes `.mcp.json`; or use `--scope user` for everywhere):
+The tracked `.mcp.json` (Claude Code) and `.codex/config.toml` (Codex) register the same server using paths relative
+to the repository root. Start the client in this repository, trust the project if prompted, and restart the session
+after creating the virtual environment or changing the configuration. Check discovery with:
 
 ```bash
-claude mcp add rtcw --scope project -- /home/daniel/Projects/Code/Games/rtcw-cod/tools/rtcw-mcp/.venv/bin/python /home/daniel/Projects/Code/Games/rtcw-cod/tools/rtcw-mcp/server.py
+codex mcp get rtcw
+claude mcp list
 ```
 
-Game runs take minutes. Claude Code's MCP tool timeout is long by default, but if you lowered it, set
-`MCP_TOOL_TIMEOUT=900000` (ms). The server sends progress pings while the game runs.
+Game runs take minutes. The project Codex configuration sets a two-hour tool timeout for long benchmarks. Claude
+Code's MCP tool timeout is long by default, but if you lowered it, set `MCP_TOOL_TIMEOUT=7200000` (ms). The server
+sends progress pings while the game runs.
 
 ## Tools
 

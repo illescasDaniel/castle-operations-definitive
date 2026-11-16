@@ -1,3 +1,5 @@
+- [x] Document RTCW MCP registration for Codex and Claude and configure a longer Codex tool timeout (2026-11-16); Codex discovery and game_status verified.
+
 - [x] Update beta status and consolidate shared agent instructions in AGENTS.md (2026-11-06).
 
 - [x] Version the mod and packages as 1.0-beta, including AppImage metadata (2026-11-06).

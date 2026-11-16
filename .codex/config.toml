@@ -11,3 +11,4 @@ args = [
 [mcp_servers.rtcw]
 command = "tools/rtcw-mcp/.venv/bin/python"
 args = ["tools/rtcw-mcp/server.py"]
+tool_timeout_sec = 7200

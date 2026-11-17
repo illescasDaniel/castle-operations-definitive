@@ -5,7 +5,7 @@ the [ioRTCW](https://github.com/iortcw/iortcw) source port (engine fork:
 [illescasDaniel/iortcw](https://github.com/illescasDaniel/iortcw)). It plays like a modern shooter and looks and sounds
 better, while the campaign stays RTCW.
 
-> **Status: beta (1.0-beta).** Most development is complete; the focus is now on testing the game, fixing issues,
+> **Status: beta (1.1-beta).** Most development is complete; the focus is now on testing the game, fixing issues,
 > and polishing the remaining details. Developed and tested on **Linux** only; Windows is untested. Issues and
 > feedback are welcome.
 

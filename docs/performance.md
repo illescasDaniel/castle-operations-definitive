@@ -157,6 +157,17 @@ Mode 1 (`r_gpuProfile 1`, normal speed): `passes.csv`, `cpu_scopes.csv` (inclusi
 Mode 2 (`r_gpuProfile 2`, ~8% slower, FPS not representative): `shaders.csv` by shader x pass x entity kind x iterator x
 depth_fill, with physical draw/subdraw counts. `environment/` archives SHAs, dirty diffs, binary and demo hashes, pack
 names and mod cfgs. `gpuprof dump` writes the files from the console any time. MCP: `benchmark(profile=true)`.
+Dynamic tessellation uploads are counted in bytes (vertex attributes and indices) and vertices, split by color/depth;
+VAO cache uploads have separate byte counters. MDV CPU interpolation has separate color/depth scopes and vertex counters.
+Parallax and specular share the opaque pass: use interleaved on/off runs to estimate their effects, not a subtraction
+of per-shader timestamps. AO has separate pass marks; their sum includes any GPU idle gaps.
+Perf-campaign switches (2026-11-18, engine default 0, enabled in `mod/codmod/codmod.cfg`; interleaved origin/main vs
+patched at 1920x1200, warp 0, scale 1: ~248 -> ~261 fps in one session, ~+5%): `r_depthAttribTrim`; `r_sunShadowNearReuse`
+(cascade 0 re-rendered every 2nd frame, not for sky-portal scenes); `r_mdsShadowLod 2` (cheaper animated-model LOD in
+shadow passes); `r_mdsIndexCache` (cached reduced MDS index lists, cleared on model reload and LOD change);
+`r_parallaxNearHit`, `r_parallaxRefinePar`, `r_specularSkip` (latched, shader defines in `lightall_fp.glsl`).
+Tried and dropped, no measurable gain: scalar R8 SSAO targets, direct depth uploads, MDS skin-cache fast path, parallax
+march width. GPU is ~94% busy at 1920x1200, so threading and overlap cannot help; reduce fullscreen pass work instead.
 Compare sessions: `scripts/profile-compare.py A B`. Test a change: `scripts/profile-ab.sh --label X --a "r_foo 0" --b "r_foo 1"`
 (interleaved A B B A ..., warm-up leg first, then `profile-compare.py <dir>/A <dir>/B`). Protocol: >=3 measured repeats, report
 median and range, same game-time window, keep `r_frameWarp 0`; treat differences inside the run-to-run range (~3% FPS) as noise.

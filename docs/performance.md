@@ -166,6 +166,7 @@ patched at 1920x1200, warp 0, scale 1: ~248 -> ~261 fps in one session, ~+5%): `
 (cascade 0 re-rendered every 2nd frame, not for sky-portal scenes); `r_mdsShadowLod 2` (cheaper animated-model LOD in
 shadow passes); `r_mdsIndexCache` (cached reduced MDS index lists, cleared on model reload and LOD change);
 `r_parallaxNearHit`, `r_parallaxRefinePar`, `r_specularSkip` (latched, shader defines in `lightall_fp.glsl`).
+`r_postPingPong 1` (bit-exact ping-pong, skips `grade_copy`/`sharpen_copy`; 2 also covers HDR direct grade, +-1 level): A/B 258.1 -> 265.0 fps (+2.7%), GPU 3.82 -> 3.69 ms, 1% low 164 -> 174.
 Tried and dropped, no measurable gain: scalar R8 SSAO targets, direct depth uploads, MDS skin-cache fast path, parallax
 march width. GPU is ~94% busy at 1920x1200, so threading and overlap cannot help; reduce fullscreen pass work instead.
 Compare sessions: `scripts/profile-compare.py A B`. Test a change: `scripts/profile-ab.sh --label X --a "r_foo 0" --b "r_foo 1"`

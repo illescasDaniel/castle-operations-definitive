@@ -298,3 +298,17 @@ Regression guard: `scripts/spin-test.sh [--max-ratio R]` (off-screen, ~12 s) loa
 GPU frame time (`r_gpuProfile`) for a still view and for `+left` at `cl_yawspeed` 5/100/700, prints the ratio to the
 still view and exits 1 if any exceeds R (default 1.25). Healthy: ~0.95-1.07. Re-run it after touching the world
 rendering path (VAO cache, draw batching, shadow passes). It restores `wolfconfig.cfg`.
+
+## Flashlight / AO round (2026-11-20, 2560x1600, warp 0, render scale 1, tram demo)
+
+Baseline: 173.2 fps flashlight off, 145.9 fps on (flashlight costs ~16%, mostly `scene_opaque` re-drawing every lit surface per spot light).
+Kept (cvars default 0, enabled in `mod/codmod/codmod.cfg`):
+
+| Patch | Effect |
+|---|---|
+| `r_dlightSpotMerge` | the two coaxial flashlight spots are lit in one draw (`FindSpotMergePartner`, lobe-2 data in `u_SpotMerge`); falls back to two draws for pbr, dlightMode >= 2, dlshader, differing origin/direction. Alone: +5.4% with the flashlight on. |
+| `r_ssaoDepthInAO` | the first two SSAO passes write AO in r and raw depth in g (half-res RG32F), so blur taps are one fetch. Borderline alone. |
+
+Both together, interleaved A/B (4 legs): 149.8 -> 154.0 fps (+2.8%) flashlight on, 169.6 -> 171.9 (+1.4%) off. Run-to-run noise is about +-3%, so these are small gains; the screenshots match baseline at the noise floor.
+Dropped (no measurable gain, code removed): `r_dlightSpotCull`, `r_flashShadowPvs`, `r_mdsFlashLod`, `r_flashMaskScissor`, `r_ssaoTemporal`, `r_ssaoFarSkip`, `r_ssaoBlur`.
+Gotcha: flashlight screenshots on `tram` spot 1 are not deterministic (two identical-config runs differ by mean 2.5), so compare spot 2 and use two baselines for the noise floor. `cod_flashlightForce 1` forces the flashlight on for benchmarks.

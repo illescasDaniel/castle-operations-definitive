@@ -45,3 +45,7 @@ After the player has had control in a level for 4 s, a center print "Toggle Flas
 `cod_tipFlashlightShown` (default 0, saved in wolfconfig.cfg; not in the mod cfgs). Toggling the flashlight first also
 marks it shown; an unbound key leaves it armed. `cod_tipFlashlightShown 0` in the console re-arms it. The text is
 translated as a template (see docs/languages.md).
+
+## Cost and the merged draw (2026-11-20)
+
+The flashlight is two coaxial shadowed spot dlights (`CG_CodAddFlashlight`); `ForwardDlight` redraws each lit surface per light, which costs ~16% fps. `r_dlightSpotMerge` (enabled in `codmod.cfg`) draws both in one pass when they share origin/direction and have proportional colours; otherwise it falls back to two draws. Numbers in DOC-024. Culling spot lights, PVS-limiting the shadow, a lower model LOD and a scissored mask gave no gain and were removed.

@@ -87,3 +87,7 @@ stages of the main view use it (`backEnd.aoReady`). `r_ssaoAmbient 0` goes back 
 
 A mip chain of the half-res depth with `textureLod` for far taps (XeGTAO style) gave no gain on GTAO High
 (183 vs 181 FPS, 2561x1601); removed to keep the shader simple.
+
+## Depth in the AO target (`r_ssaoDepthInAO`, 2026-11-20)
+
+Cvar (engine default 0, enabled in `codmod.cfg`): the SSAO pass writes AO (r) and raw depth (g) into two half-res RG32F images (`R_SsaoAoImage`), and the depth-aware blur reads depth from g instead of a second texture fetch. The shader flag is the +0.25 fraction of the sample/slice count in `u_SsaoParams`; the blur flag is the sign of `u_ViewInfo.w`. Gain is small (about 0.05 ms). Tried and dropped (no gain): temporal noise phase, far-distance skip, shorter/skipped blur.
